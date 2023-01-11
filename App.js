@@ -1,6 +1,7 @@
 import React from 'react';
 import Login from './frontend/screens/login';
 import LandingPage from './frontend/screens/landingPage';
+import Register from './frontend/screens/registration.js'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -14,6 +15,7 @@ export default function App() {
           component={Login}
           options={{headerShown: false}}></Stack.Screen>
           <Stack.Screen name="landingPage" component={LandingPage}></Stack.Screen>
+          <Stack.Screen name="registration" component={Register} />
         </Stack.Navigator>
       </NavigationContainer>
     )
