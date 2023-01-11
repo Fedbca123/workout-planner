@@ -22,7 +22,8 @@ class Login extends React.Component {
         super(props)
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            error: '',
         }
         this.passwordRef = React.createRef();
         // bind all functions to class
@@ -48,16 +49,21 @@ class Login extends React.Component {
         .then((response) => {
             if (response.status == 200)
             {
-                // Go to landing Page here
-                console.log("Logged in")
+                this.setState({error: ''});
                 this.props.navigation.navigate("landingPage");
             }
-        }, (error) => {
-            console.log(error);
+            
+        })
+        .catch((error) => {
+            this.setState({error: error.response.data.Error});
         });
     }
 
     render() {
+        const {error} = this.state;
+        errorText = (
+            <Text style= {styles.error}> {error} </Text>
+        )
         return (
             <ScrollView
                 bounces={false}
@@ -74,6 +80,7 @@ class Login extends React.Component {
                     </View>
     
                     <View style={styles.buttoncontainer}>
+                        <Text style= {styles.error}> {this.state.error} </Text>
                         <TextInput style={styles.inputstyle} 
                             placeholder="Email"
                             returnKeyType="next"
@@ -157,6 +164,11 @@ const styles = StyleSheet.create({
         padding:8,
         marginVertical:2
     },
+    error: {
+        textAlign: 'center',
+        color: '#fb9357',
+        fontSize: 16,
+    }
 });
       
 export default Login;
