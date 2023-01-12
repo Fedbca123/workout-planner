@@ -53,7 +53,7 @@ class Login extends React.Component {
             
         })
         .catch((e) => {
-            if (e.response) {this.setState({error: e.response.data.Error});}
+            if (e.response) this.setState({error: e.response.data.Error});
         });
     }
 
@@ -87,6 +87,7 @@ class Login extends React.Component {
                         <TextInput style={styles.inputstyle} 
                             placeholder="Password"
                             returnKeyType="go"
+                            autoCapitalize='none'
                             ref={this.passwordRef}
                             secureTextEntry
                             onChangeText={(text) => {this.passwordInputHandler(text)}}/>
@@ -102,7 +103,8 @@ class Login extends React.Component {
                             color="#C4C4C4"
                             accessibilityLabel="Create an account"
                             onPress={() => {
-                              this.props.navigation.navigate("registration")
+                              this.state.error = '';
+                              this.props.navigation.navigate("registration");
                             }}/>
                     </View>
                 </KeyboardAvoidingView>
