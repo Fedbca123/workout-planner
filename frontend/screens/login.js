@@ -5,12 +5,10 @@ import {
     Image, 
     View, 
     TextInput,
-    Alert,
     KeyboardAvoidingView,
     ScrollView
   } from 'react-native';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { API_URL, PORT } from "@env";
 const baserUrl = API_URL + PORT + '/';
@@ -22,7 +20,8 @@ class Login extends React.Component {
         super(props)
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            error: '',
         }
         this.passwordRef = React.createRef();
         // bind all functions to class
@@ -42,18 +41,19 @@ class Login extends React.Component {
 
     loginHandler(){
         axios.post(baserUrl + "users/login", {
-            email: this.state["email"],
-            password: this.state["password"]
+            email: this.state.email,
+            password: this.state.password
         })
         .then((response) => {
             if (response.status == 200)
             {
-                // Go to landing Page here
-                console.log("Logged in")
+                this.setState({error: ''});
                 this.props.navigation.navigate("landingPage");
             }
-        }, (error) => {
-            console.log(error);
+            
+        })
+        .catch((e) => {
+            if (e.response) {this.setState({error: e.response.data.Error});}
         });
     }
 
@@ -74,6 +74,8 @@ class Login extends React.Component {
                     </View>
     
                     <View style={styles.buttoncontainer}>
+                        <Text style = {styles.error}> {this.state.error} </Text>
+
                         <TextInput style={styles.inputstyle} 
                             placeholder="Email"
                             returnKeyType="next"
@@ -160,6 +162,11 @@ const styles = StyleSheet.create({
         padding:8,
         marginVertical:2
     },
+    error: {
+        textAlign: 'center',
+        color: '#fb9357',
+        fontSize: 16,
+    }
 });
       
 export default Login;
