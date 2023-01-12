@@ -86,6 +86,7 @@ class Register extends React.Component{
             <TextInput style={styles.inputstyle} 
             placeholder="***"
             returnKeyType="next"
+            autoCapitalize='none'
             ref={this.passwordRef}
             onSubmitEditing={() => {this.passwordConfirmRef.current.focus();}}
             onChangeText={(text)=>this.setState({password:text})}/>
@@ -94,6 +95,7 @@ class Register extends React.Component{
             <TextInput style={styles.inputstyle} 
             placeholder="***"
             returnKeyType="done"
+            autoCapitalize='none'
             ref={this.passwordConfirmRef}
             onChangeText={(text)=>this.setState({passwordConfirmation:text})}/>
           </View>
@@ -175,6 +177,15 @@ const styles = StyleSheet.create({
       marginVertical:10,
       borderRadius: '10rem'
   },
+  inputerrorstyle:{
+    textAlign: 'center',
+    borderWidth: 1,
+    borderColor: '#fb9357',
+    width: '70%',
+    padding:8,
+    marginVertical:10,
+    borderRadius: '10rem'
+},
   form:{
     /*borderRadius: '10rem',
     borderWidth: 1,

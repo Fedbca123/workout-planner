@@ -87,6 +87,7 @@ class Login extends React.Component {
                         <TextInput style={styles.inputstyle} 
                             placeholder="Password"
                             returnKeyType="go"
+                            autoCapitalize='none'
                             ref={this.passwordRef}
                             secureTextEntry
                             onChangeText={(text) => {this.passwordInputHandler(text)}}/>
