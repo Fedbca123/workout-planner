@@ -3,7 +3,23 @@ import React from 'react';
 import {ScrollView, KeyboardAvoidingView} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-const Register = (props) => {
+class Register extends React.Component{
+  constructor(props) {
+    super(props)
+    this.state = {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      passwordConfirmation: ''
+    }
+    this.lastNameRef = React.createRef();
+    this.emailRef = React.createRef();
+    this.passwordRef = React.createRef();
+    this.passwordConfirmRef = React.createRef();
+  }
+
+  render(){
     return  (
       <KeyboardAwareScrollView 
         extraHeight={100}
@@ -16,31 +32,45 @@ const Register = (props) => {
             placeholder="John"
             returnKeyType="next"
             keyboardType="email-address"
+            onSubmitEditing={() => {this.lastNameRef.current.focus();}}
+            onChangeText={(text)=>this.setState({firstName:text})}
             /*onChangeText={usernameInputHandler}*//>
             
             <Text style={styles.text}>Last Name</Text>
             <TextInput style={styles.inputstyle} 
             placeholder="Smith"
             returnKeyType="next"
-            /*onChangeText={passwordInputHandler}*//>
+            ref={this.lastNameRef}
+            onSubmitEditing={() => {this.emailRef.current.focus();}}
+            onChangeText={(text)=>this.setState({lastName:text})}/>
+
             <Text style={styles.text}>Email Address</Text>
             <TextInput style={styles.inputstyle} 
             placeholder="user@server.com"
-            returnKeyType="go"
-            /*onChangeText={passwordInputHandler}*//>
+            returnKeyType="next"
+            ref={this.emailRef}
+            onSubmitEditing={() => {this.passwordRef.current.focus();}}
+            onChangeText={(text)=>this.setState({email:text})}/>
+
             <Text style={styles.text}>Password</Text>
             <TextInput style={styles.inputstyle} 
             placeholder="***"
-            returnKeyType="go"
-            /*onChangeText={passwordInputHandler}*//>
+            returnKeyType="next"
+            ref={this.passwordRef}
+            onSubmitEditing={() => {this.passwordConfirmRef.current.focus();}}
+            onChangeText={(text)=>this.setState({password:text})}/>
+
             <Text style={styles.text}>Confirm Password</Text>
             <TextInput style={styles.inputstyle} 
             placeholder="***"
-            returnKeyType="go"
-            /*onChangeText={passwordInputHandler}*//>
+            returnKeyType="done"
+            ref={this.passwordConfirmRef}
+            onChangeText={(text)=>this.setState({passwordConfirmation:text})}/>
           </View>
           <View style={styles.buttoncontainer}>
-            <Pressable style={styles.button}>
+            <Pressable
+              style={styles.button}
+              onPress={()=>{console.log(this.state)}}>
               <Text style={styles.buttontext}>Register</Text>
             </Pressable>
             <Button 
@@ -48,13 +78,13 @@ const Register = (props) => {
               color="#C4C4C4"
               accessibilityLabel="Return to Login"
               onPress={() => {
-                props.navigation.navigate("login")
+                this.props.navigation.navigate("login")
               }}/>
           </View>
         </View>
       </KeyboardAwareScrollView>
-        
     )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -76,9 +106,9 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       paddingTop: 10,
       width: '100%',
-      borderColor: 'black',
-      borderWidth:1,
-      alignSelf: 'center'
+      alignSelf: 'center',
+      //borderColor: 'black',
+      //borderWidth: 1
   },
   heading:{
       color: '#2B2B2B',
@@ -110,12 +140,13 @@ const styles = StyleSheet.create({
       borderColor: '#C4C4C4',
       width: '70%',
       padding:8,
-      marginVertical:10
+      marginVertical:10,
+      borderRadius: '10rem'
   },
   form:{
-    borderRadius: '10rem',
+    /*borderRadius: '10rem',
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'black',*/
     margin: 'auto',
     paddingVertical: 20,
     paddingHorizontal: 5,
@@ -129,10 +160,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: '10rem',
     elevation: 20,
-    backgroundColor: 'black',
+    backgroundColor: "#10B9F1",
+    width: '100%'
   },
   buttontext: {
-    color: '#C4C4C4',
+    color: 'white',
     fontFamily: 'HelveticaNeue',
     fontWeight: 400,
     fontSize: 16,
