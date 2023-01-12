@@ -17,6 +17,7 @@ class Register extends React.Component{
       passwordConfirmation: '',
       error: ''
     }
+    this.firstNameRef = React.createRef();
     this.lastNameRef = React.createRef();
     this.emailRef = React.createRef();
     this.passwordRef = React.createRef();
@@ -25,16 +26,41 @@ class Register extends React.Component{
   }
 
   registerHandler () {
+
+    // Make input border red if fields are empty
+    if (this.state.firstName === '') this.firstNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+    else this.firstNameRef.current.setNativeProps({style: styles.inputstyle});
+
+    if (this.state.lastName === '') this.lastNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+    else this.lastNameRef.current.setNativeProps({style: styles.inputstyle});
+
+    if (this.state.email === '') this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+    else this.emailRef.current.setNativeProps({style: styles.inputstyle});
+
+    if (this.state.password === '') this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+    else this.passwordRef.current.setNativeProps({style: styles.inputstyle});
+
+    if (this.state.passwordConfirmation === '') 
+    {
+        this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
+        this.setState({error: "Please enter all fields!"})
+        return;
+    }
+    else this.passwordConfirmRef.current.setNativeProps({style: styles.inputstyle});
+    
+    // Make password conf border red if it doesnt match password
     if (this.state.password !== this.state.passwordConfirmation)
     {
+        this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
         this.setState({error: 'Passwords do not match!'});
         return;
     }
+    else this.passwordConfirmRef.current.setNativeProps({style: styles.inputstyle});
 
     axios.post(baserUrl + 'users/register', {
         firstName: this.state.firstName,
         lastName: this.state.lastName,
-        email: this.state.lastName,
+        email: this.state.email,
         password: this.state.password
     })
     .then((response) => {
@@ -46,6 +72,15 @@ class Register extends React.Component{
     })
     .catch((e) => {
         if (e.response) this.setState({error: e.response.data.Error});
+        if (e.response.status == 501)
+        {
+            this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+            this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
+        }
+        else if(e.response.status == 502)
+        {
+            this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+        }
     });
   }
 
@@ -61,6 +96,7 @@ class Register extends React.Component{
             <TextInput style={styles.inputstyle} 
             placeholder="John"
             returnKeyType="next"
+            ref={this.firstNameRef}
             keyboardType="email-address"
             onSubmitEditing={() => {this.lastNameRef.current.focus();}}
             onChangeText={(text)=>this.setState({firstName:text})}
@@ -112,6 +148,7 @@ class Register extends React.Component{
               accessibilityLabel="Return to Login"
               onPress={() => {
                 this.props.navigation.navigate("login")
+                
               }}/>
           </View>
         </View>
