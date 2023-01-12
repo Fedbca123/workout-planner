@@ -100,7 +100,10 @@ class Login extends React.Component {
                         <Button 
                             title="Create an account"
                             color="#C4C4C4"
-                            accessibilityLabel="Create an account"/>
+                            accessibilityLabel="Create an account"
+                            onPress={() => {
+                              this.props.navigation.navigate("registration")
+                            }}/>
                     </View>
                 </KeyboardAvoidingView>
             </ScrollView> 
