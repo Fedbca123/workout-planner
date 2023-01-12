@@ -11,15 +11,19 @@ router.route('/register').post(async (req,res) =>
 
     if (!firstName || !lastName || !email || !password)
     {
-        return res.status(400).send({Error: "Please enter all fields!"});
+        return res.status(500).send({Error: "Please enter all fields!"});
     }
 
+    if (password.length < 8)
+    {
+        return res.status(501).send({Error: "Password must be atleast 8 characters!"});
+    }
     // Check if user exists
     const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
-
+    
     if (emailExists)
     {
-        return res.status(400).send({Error: "Email already exists!"});
+        return res.status(502).send({Error: "Email already exists!"});
     }
     
     const salt = await bcrypt.genSalt(10);

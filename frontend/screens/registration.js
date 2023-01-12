@@ -1,7 +1,10 @@
 import { StyleSheet, Button, Text, Image, View, SafeAreaView, TextInput, Pressable } from 'react-native';
 import React from 'react';
 import {ScrollView, KeyboardAvoidingView} from 'react-native';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import axios from 'axios';
+import { API_URL, PORT } from "@env";
+const baserUrl = API_URL + PORT + '/';
 
 class Register extends React.Component{
   constructor(props) {
@@ -11,12 +14,39 @@ class Register extends React.Component{
       lastName: '',
       email: '',
       password: '',
-      passwordConfirmation: ''
+      passwordConfirmation: '',
+      error: ''
     }
     this.lastNameRef = React.createRef();
     this.emailRef = React.createRef();
     this.passwordRef = React.createRef();
     this.passwordConfirmRef = React.createRef();
+    this.registerHandler = this.registerHandler.bind(this);
+  }
+
+  registerHandler () {
+    if (this.state.password !== this.state.passwordConfirmation)
+    {
+        this.setState({error: 'Passwords do not match!'});
+        return;
+    }
+
+    axios.post(baserUrl + 'users/register', {
+        firstName: this.state.firstName,
+        lastName: this.state.lastName,
+        email: this.state.lastName,
+        password: this.state.password
+    })
+    .then((response) => {
+        if (response.status == 200)
+        {
+            this.setState({error: ''});
+            this.props.navigation.navigate("landingPage");
+        }
+    })
+    .catch((e) => {
+        if (e.response) this.setState({error: e.response.data.Error});
+    });
   }
 
   render(){
@@ -67,10 +97,11 @@ class Register extends React.Component{
             ref={this.passwordConfirmRef}
             onChangeText={(text)=>this.setState({passwordConfirmation:text})}/>
           </View>
+          <Text style={styles.error}>{this.state.error}</Text>
           <View style={styles.buttoncontainer}>
             <Pressable
               style={styles.button}
-              onPress={()=>{console.log(this.state)}}>
+              onPress={()=>{this.registerHandler()}}>
               <Text style={styles.buttontext}>Register</Text>
             </Pressable>
             <Button 
@@ -93,7 +124,7 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'center'
   },
   textcontainer: {
       flex: .8,
@@ -116,6 +147,7 @@ const styles = StyleSheet.create({
       fontSize: 36,
       textAlign: 'center',
       paddingVertical: 20,
+      marginTop: 75
   },
   text:{
       fontFamily: 'HelveticaNeue',
@@ -169,7 +201,12 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 16,
     fontWeight: 'normal',
-  }
+  },
+  error: {
+    textAlign: 'center',
+    color: '#fb9357',
+    fontSize: 16,
+}
 });
 
 export default Register; 
