@@ -5,12 +5,10 @@ import {
     Image, 
     View, 
     TextInput,
-    Alert,
     KeyboardAvoidingView,
     ScrollView
   } from 'react-native';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { API_URL, PORT } from "@env";
 const baserUrl = API_URL + PORT + '/';
@@ -43,8 +41,8 @@ class Login extends React.Component {
 
     loginHandler(){
         axios.post(baserUrl + "users/login", {
-            email: this.state["email"],
-            password: this.state["password"]
+            email: this.state.email,
+            password: this.state.password
         })
         .then((response) => {
             if (response.status == 200)
@@ -54,16 +52,12 @@ class Login extends React.Component {
             }
             
         })
-        .catch((error) => {
-            this.setState({error: error.response.data.Error});
+        .catch((e) => {
+            if (e.response) {this.setState({error: e.response.data.Error});}
         });
     }
 
     render() {
-        const {error} = this.state;
-        errorText = (
-            <Text style= {styles.error}> {error} </Text>
-        )
         return (
             <ScrollView
                 bounces={false}
@@ -80,7 +74,8 @@ class Login extends React.Component {
                     </View>
     
                     <View style={styles.buttoncontainer}>
-                        <Text style= {styles.error}> {this.state.error} </Text>
+                        <Text style = {styles.error}> {this.state.error} </Text>
+
                         <TextInput style={styles.inputstyle} 
                             placeholder="Email"
                             returnKeyType="next"
