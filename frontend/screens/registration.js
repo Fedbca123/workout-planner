@@ -3,26 +3,11 @@ import React from 'react';
 import {ScrollView, KeyboardAvoidingView} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-
-/*<ScrollView
-                bounces={false}
-                contentContainerStyle={styles.container}
-                >
-          
-        <KeyboardAvoidingView
-                    behavior = {"position"/*Platform.OS === "ios" ? "padding" : "height" }
-                    keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 5} >
-          
-              
-                      
-        
-        </KeyboardAvoidingView>
-      </ScrollView> 
-*/
-
 const Register = (props) => {
     return  (
-      <KeyboardAwareScrollView extraHeight={100} contentContainerStyle={styles.container}>
+      <KeyboardAwareScrollView 
+        extraHeight={100}
+        contentContainerStyle={styles.container}>
         <View style={{flex:1}}>
           <Text style={styles.heading} >Tell us a little about yourself</Text>
           <View style={styles.form}>
@@ -56,7 +41,7 @@ const Register = (props) => {
           </View>
           <View style={styles.buttoncontainer}>
             <Pressable style={styles.button}>
-              <Text style={styles.buttontext}>Return to Login</Text>
+              <Text style={styles.buttontext}>Register</Text>
             </Pressable>
             <Button 
               title="Return to Login"
@@ -142,12 +127,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 3,
+    borderRadius: '10rem',
+    elevation: 20,
     backgroundColor: 'black',
   },
   buttontext: {
-    color: '#C4C4C4'
+    color: '#C4C4C4',
+    fontFamily: 'HelveticaNeue',
+    fontWeight: 400,
+    fontSize: 16,
+    fontWeight: 'normal',
   }
 });
 
