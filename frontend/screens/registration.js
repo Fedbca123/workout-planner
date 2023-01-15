@@ -142,14 +142,16 @@ class Register extends React.Component{
               onPress={()=>{this.registerHandler()}}>
               <Text style={styles.buttontext}>Register</Text>
             </Pressable>
-            <Button 
-              title="Return to Login"
-              color="#C4C4C4"
-              accessibilityLabel="Return to Login"
-              onPress={() => {
-                this.props.navigation.navigate("login")
+            <View style ={{margin:5}}>
+              <Button 
+                title="Back to Login"
+                color="#C4C4C4"
+                accessibilityLabel="Back to Login"
+                onPress={() => {
+                  this.props.navigation.navigate("login")
                 
               }}/>
+            </View>
           </View>
         </View>
       </KeyboardAwareScrollView>
