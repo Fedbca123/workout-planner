@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import axios from 'axios';
 import { API_URL, PORT } from "@env";
 const baserUrl = API_URL + PORT + '/';
+const allGood = true;
 
 class Register extends React.Component{
   constructor(props) {
@@ -26,36 +27,83 @@ class Register extends React.Component{
   }
 
   registerHandler () {
+    const emptyFirstname = this.state.firstName === '';
+    const emptyLastname = this.state.lastName === '';
+    const emptyEmail = this.state.email === '';
+    const emptyPassword = this.state.password === '';
+    const emptyPasswordConf = this.state.passwordConfirmation === '';
 
-    // Make input border red if fields are empty
-    if (this.state.firstName === '') this.firstNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+    // if all empty fields, one message is sufficient
+    if(emptyFirstname && emptyLastname && emptyEmail && emptyPassword && emptyPasswordConf){
+      this.firstNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+      this.lastNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+      this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+      this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+      this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
+
+      this.setState({error: "Please enter all fields!"});
+      return;
+    }
+
+    let error = '';
+
+    // -----first name -----//
+    if (emptyFirstname){
+      this.firstNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+      error += 'Please provide a first name!\n';
+    }
     else this.firstNameRef.current.setNativeProps({style: styles.inputstyle});
 
-    if (this.state.lastName === '') this.lastNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+    // -----last name -----//
+    if (emptyLastname) {
+      this.lastNameRef.current.setNativeProps({style: styles.inputerrorstyle});
+      error += "Please provide a last name!\n";
+    }
     else this.lastNameRef.current.setNativeProps({style: styles.inputstyle});
 
-    if (this.state.email === '') this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+    // -------email----------//
+    if (emptyEmail){
+      this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+      error += "Please provide an email address!\n";
+    }
+    // make sure email field matches a regex
+    else if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.email)){
+      this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+      error += 'Email is not in proper format!\n'
+    }
     else this.emailRef.current.setNativeProps({style: styles.inputstyle});
 
-    if (this.state.password === '') this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
-    else this.passwordRef.current.setNativeProps({style: styles.inputstyle});
+    //----password and confirmation------//
+    this.passwordRef.current.setNativeProps({style: styles.inputstyle});
+    this.passwordConfirmRef.current.setNativeProps({style: styles.inputstyle});
 
-    if (this.state.passwordConfirmation === '') 
+    if(emptyPassword && emptyPasswordConf){
+      this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+      this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
+      error += 'Please provide both a password and password confirmation!\n';
+    }
+    else if (emptyPassword) {
+      this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+      error += "Please provide a password!\n";
+    }
+    else if (emptyPasswordConf) 
     {
         this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
-        this.setState({error: "Please enter all fields!"})
-        return;
+        error += 'Please enter the confirmed password!\n';
     }
-    else this.passwordConfirmRef.current.setNativeProps({style: styles.inputstyle});
+    else if (this.state.password !== this.state.passwordConfirmation)
+    {
+        this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
+        error += 'Passwords do not match!\n';
+    }
     
-    // Make password conf border red if it doesnt match password
-    if (this.state.password !== this.state.passwordConfirmation)
-    {
-        this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
-        this.setState({error: 'Passwords do not match!'});
-        return;
+    // if every test passes, error is none
+    if(error != ''){
+      this.setState({error: error});
+      return;
+    }else{
+      this.setState({error: ''});
     }
-    else this.passwordConfirmRef.current.setNativeProps({style: styles.inputstyle});
 
     axios.post(baserUrl + 'users/register', {
         firstName: this.state.firstName,
