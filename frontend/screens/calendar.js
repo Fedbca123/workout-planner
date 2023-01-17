@@ -4,7 +4,7 @@ import { Calendar } from 'react-native-calendars';
 const legs = {key: 'massage', color: 'blue', selectedDotColor: 'blue'};
 const arms = {key: 'workout', color: 'green'};
 
-export default function Event() {
+export default function CalendarPage() {
   return (
 
     <View style={styles.container}>

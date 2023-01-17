@@ -40,7 +40,6 @@ class Login extends React.Component {
     }
 
     loginHandler(){
-        console.log(baseUrl); 
         axios.post(baseUrl + "users/login", {
             email: this.state.email,
             password: this.state.password
@@ -49,9 +48,8 @@ class Login extends React.Component {
             if (response.status == 200)
             {
                 this.setState({error: ''});
-                this.props.navigation.navigate("landingPage");
+                this.props.navigation.navigate("home");
             }
-            
         })
         .catch((e) => {
             if (e.response) this.setState({error: e.response.data.Error});
