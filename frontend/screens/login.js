@@ -96,7 +96,12 @@ class Login extends React.Component {
                             title="Login"
                             color="#10B9F1"
                             // expecting line below to turn into authentication or page switching soon enough //
-                            onPress={() => this.loginHandler()}/>
+                            onPress={() => this.loginHandler()}
+                            // onPress={() => {
+                            //     this.state.error = '';
+                            //     this.props.navigation.navigate("calendar");
+                            //   }}
+                            />
     
                         <Button 
                             title="Create an account"
