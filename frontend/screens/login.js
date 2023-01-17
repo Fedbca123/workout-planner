@@ -11,7 +11,7 @@ import {
 import React from 'react';
 import axios from 'axios';
 import { API_URL, PORT } from "@env";
-const baserUrl = API_URL + PORT + '/';
+const baseUrl = API_URL + PORT + '/';
 
 //export default function App() {
 class Login extends React.Component {
@@ -40,7 +40,9 @@ class Login extends React.Component {
     }
 
     loginHandler(){
-        axios.post(baserUrl + "users/login", {
+        console.log(baseUrl);
+        
+        axios.post(baseUrl + "users/login", {
             email: this.state.email,
             password: this.state.password
         })
