@@ -10,8 +10,8 @@ import {
   } from 'react-native';
 import React from 'react';
 import axios from 'axios';
-import { API_URL, PORT } from "@env";
-const baseUrl = API_URL + PORT + '/';
+import config from '../../config';
+const baseUrl = config.API_URL + config.PORT + '/';
 
 //export default function App() {
 class Login extends React.Component {
@@ -40,8 +40,7 @@ class Login extends React.Component {
     }
 
     loginHandler(){
-        console.log(baseUrl);
-        
+        console.log(baseUrl); 
         axios.post(baseUrl + "users/login", {
             email: this.state.email,
             password: this.state.password

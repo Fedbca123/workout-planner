@@ -3,8 +3,8 @@ import React from 'react';
 import {ScrollView, KeyboardAvoidingView} from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import axios from 'axios';
-import { API_URL, PORT } from "@env";
-const baserUrl = API_URL + PORT + '/';
+import config from '../../config';
+const baserUrl = config.API_URL + config.PORT + '/';
 const allGood = true;
 
 class Register extends React.Component{
