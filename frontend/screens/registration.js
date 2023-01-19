@@ -50,26 +50,26 @@ class Register extends React.Component{
     // -----first name -----//
     if (emptyFirstname){
       this.firstNameRef.current.setNativeProps({style: styles.inputerrorstyle});
-      error += 'Please provide a first name!\n';
+      error += '- Please provide a first name!\n';
     }
     else this.firstNameRef.current.setNativeProps({style: styles.inputstyle});
 
     // -----last name -----//
     if (emptyLastname) {
       this.lastNameRef.current.setNativeProps({style: styles.inputerrorstyle});
-      error += "Please provide a last name!\n";
+      error += "- Please provide a last name!\n";
     }
     else this.lastNameRef.current.setNativeProps({style: styles.inputstyle});
 
     // -------email----------//
     if (emptyEmail){
       this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
-      error += "Please provide an email address!\n";
+      error += "- Please provide an email address!\n";
     }
     // make sure email field matches a regex
     else if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.email)){
       this.emailRef.current.setNativeProps({style: styles.inputerrorstyle});
-      error += 'Email is not in proper format!\n'
+      error += '- Email is not in proper format!\n'
     }
     else this.emailRef.current.setNativeProps({style: styles.inputstyle});
 
@@ -80,23 +80,29 @@ class Register extends React.Component{
     if(emptyPassword && emptyPasswordConf){
       this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
       this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
-      error += 'Please provide both a password and password confirmation!\n';
+      error += '- Please provide both a password and password confirmation!\n';
     }
     else if (emptyPassword) {
       this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
-      error += "Please provide a password!\n";
+      error += "- Please provide a password!\n";
     }
     else if (emptyPasswordConf) 
     {
         this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
-        error += 'Please enter the confirmed password!\n';
+        error += '- Please enter the confirmed password!\n';
     }
     else if (this.state.password !== this.state.passwordConfirmation)
     {
         this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
-        error += 'Passwords do not match!\n';
+        error += '- Passwords do not match!\n';
     }
-    
+    else if(!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(this.state.password))
+    {
+        this.passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+        this.passwordConfirmRef.current.setNativeProps({style: styles.inputerrorstyle});
+        error += '- Passwords must be at least 8 characters and have at least one uppercase letter, one lowercase letter, and one number.';
+    }
+
     // if every test passes, error is none
     if(error != ''){
       this.setState({error: error});
@@ -115,7 +121,7 @@ class Register extends React.Component{
         if (response.status == 200)
         {
             this.setState({error: ''});
-            this.props.navigation.navigate("home");
+            this.props.navigation.navigate("landingPage");
         }
     })
     .catch((e) => {
@@ -183,7 +189,11 @@ class Register extends React.Component{
             ref={this.passwordConfirmRef}
             onChangeText={(text)=>this.setState({passwordConfirmation:text})}/>
           </View>
-          <Text style={styles.error}>{this.state.error}</Text>
+
+          <View style={{width:'90%'}}>
+            <Text style={styles.error}>{this.state.error}</Text>
+          </View>
+          
           <View style={styles.buttoncontainer}>
             <Pressable
               style={styles.button}
@@ -197,7 +207,6 @@ class Register extends React.Component{
                 accessibilityLabel="Back to Login"
                 onPress={() => {
                   this.props.navigation.navigate("login")
-                
               }}/>
             </View>
           </View>
