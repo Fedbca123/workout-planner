@@ -9,6 +9,14 @@ var storage = multer.diskStorage({
   }
 });
 
-var upload = multer({storage: storage});
+const imageFilter = function(req, file, cb) {
+  // accept image files only
+  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+    return cb(new Error('Only image files are accepted!'), false);
+  }
+  cb(null, true);
+};
+
+var upload = multer({storage: storage, fileFilter: imageFilter});
 
 module.exports = upload;

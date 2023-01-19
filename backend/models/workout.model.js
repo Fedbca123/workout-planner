@@ -17,10 +17,8 @@ var workoutSchema = new Schema({
     unique: false,
     trim: true
   },
-  img: {
-    data: Buffer,
-    contentType: String
-  },
+  image: String,
+  imageId: String,
   exercises: {
     type: [Exercise],
     required: false,

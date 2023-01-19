@@ -3,6 +3,9 @@ let Exercise = require('../models/exercise.model');
 const upload = require('../middleware/uploadMiddleware');
 const fs = require('fs');
 var path = require('path');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
+const cloudinary = require('../cloudinary');
 
 //------GET-----//
 router.route('/').get((req,res) => {
@@ -22,19 +25,16 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   // gather information to add exercise into database
   const title = req.body.title;
   const description = req.body.description;
-  
-  var final_img = null;
 
+  var image = null;
+  var imageId = null;
   if(req.file){
-    var imgPath = __dirname + '/../middleware/temp/';
-    var img = fs.readFileSync(path.join(imgPath + req.file.filename));
-
-    //var encode_img = img.toString('base64');
-
-    final_img = {
-      contentType: req.file.mimetype,
-      data: img
-    }
+    await cloudinary.v2.uploader.upload(req.file.path,{folder: "exercises"},function(err, result) {
+      if (err)
+        return res.status(501).send({Error: err});
+      image = result.url;
+      imageId = result.public_id;
+    });
   }else{
     console.log('no image exists in this upload. Maybe the team wants to have a default picture?');
   }
@@ -51,7 +51,8 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const newExercise = new Exercise({
     title,
     description,
-    img: final_img,
+    image,
+    imageId,
     exerciseType,
     sets,
     reps,
@@ -63,8 +64,8 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   })
 
   newExercise.save()
-    .then(() => res.json(`Exercise ${newExercise.title} saved!`))
-    .catch(err => res.status(400).json('Error: ' + err));
+    .then(() => res.json(newExercise))
+    .catch(err => res.status(502).send({Error: err}));
 
   if(req.file){
     await unlinkAsync(req.file.path);
@@ -101,7 +102,16 @@ router.route('/:id').patch(async (req,res) => {
 });
 
 //------DELETE-----//
-router.route('/:id').delete((req,res) => {
+router.route('/:id').delete(async (req,res) => {
+  const exercise = await Exercise.findById(req.params.id);
+  console.log(exercise)
+  await cloudinary.v2.uploader.destroy(exercise.imageId, function(err, result) {
+    if (err)
+      console.log("There was an error deleting the exercise Photo")
+    else{
+      console.log("Photo deleted");
+    }
+  });
   Exercise.findByIdAndDelete(req.params.id)
     .then(deletion => res.json(`Exercise ${deletion.title} deleted!`))
     .catch(err => res.status(400).json('Error: ' + err));
