@@ -121,7 +121,7 @@ class Register extends React.Component{
         if (response.status == 200)
         {
             this.setState({error: ''});
-            this.props.navigation.navigate("landingPage");
+            this.props.navigation.navigate("home");
         }
     })
     .catch((e) => {
@@ -151,10 +151,9 @@ class Register extends React.Component{
             placeholder="John"
             returnKeyType="next"
             ref={this.firstNameRef}
-            keyboardType="email-address"
+            keyboardType="next"
             onSubmitEditing={() => {this.lastNameRef.current.focus();}}
-            onChangeText={(text)=>this.setState({firstName:text})}
-            /*onChangeText={usernameInputHandler}*//>
+            onChangeText={(text)=>this.setState({firstName:text})}/>
             
             <Text style={styles.text}>Last Name</Text>
             <TextInput style={styles.inputstyle} 
@@ -175,6 +174,7 @@ class Register extends React.Component{
             <Text style={styles.text}>Password</Text>
             <TextInput style={styles.inputstyle} 
             placeholder="***"
+            secureTextEntry={true}
             returnKeyType="next"
             autoCapitalize='none'
             ref={this.passwordRef}
@@ -184,13 +184,17 @@ class Register extends React.Component{
             <Text style={styles.text}>Confirm Password</Text>
             <TextInput style={styles.inputstyle} 
             placeholder="***"
+            secureTextEntry={true}
             returnKeyType="done"
             autoCapitalize='none'
             ref={this.passwordConfirmRef}
             onChangeText={(text)=>this.setState({passwordConfirmation:text})}/>
           </View>
 
-          <View style={{width:'90%'}}>
+          <View style={{
+            width:'90%',
+            alignSelf: 'center'
+            }}>
             <Text style={styles.error}>{this.state.error}</Text>
           </View>
           
@@ -236,8 +240,6 @@ const styles = StyleSheet.create({
       paddingTop: 10,
       width: '100%',
       alignSelf: 'center',
-      //borderColor: 'black',
-      //borderWidth: 1
   },
   heading:{
       color: '#2B2B2B',
@@ -283,9 +285,6 @@ const styles = StyleSheet.create({
     borderRadius: '10rem'
 },
   form:{
-    /*borderRadius: '10rem',
-    borderWidth: 1,
-    borderColor: 'black',*/
     margin: 'auto',
     paddingVertical: 20,
     paddingHorizontal: 5,
