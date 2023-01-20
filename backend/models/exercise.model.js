@@ -16,12 +16,8 @@ var exerciseSchema = new Schema({
     unique: false,
     trim: true
   },
-  img: {
-    required: false,
-    unique: false,
-    data: Buffer,
-    contentType: String
-  },
+  image: String,
+  imageId: String,
   exerciseType: {
     type: String,
     enum: ['AMRAP', 'CARDIO', 'SETSXREPS'],
