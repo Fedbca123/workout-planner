@@ -8,7 +8,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
 export default function HomeNav (props) {
-  console.log('in homenav', props.route)
     return (
         <Tab.Navigator initialRouteName='landingPage'>
             <Tab.Screen name="landingPage" 
