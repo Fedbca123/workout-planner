@@ -1,41 +1,72 @@
 import { StyleSheet, Button, TouchableOpacity, Text, Image, View, SafeAreaView, TextInput } from 'react-native';
 import React from 'react';
 import reactDom from 'react-dom';
+import axios from 'axios';
+import config from '../../config';
+const baseUrl = config.API_URL + config.PORT + '/';
 
-const LandingPage = () => {
-    const handleScratchPress = () => {
+//const LandingPage = (props) => {
+class LandingPage extends React.Component{
+    constructor(props){
+      super(props);
+      this.state={
+        firstName:props.route.params.user.firstName,
+        lastName:props.route.params.user.lastName,
+        scheduledWorkouts: props.route.params.user.scheduledWorkouts
+      }
+      this.handleScratchPress = this.handleScratchPress.bind(this);
+      this.handleTemplatePress = this.handleTemplatePress.bind(this);
+      this.loadCurrentDayWorkoutStatus = this.loadCurrentDayWorkoutStatus.bind(this);
+    }
+
+    handleScratchPress(){
         console.log("Scratch Button Pressed");
         // Nav Link here
     }
-    const handleTemplatePress = () => {
+    handleTemplatePress(){
         console.log("Template Button Pressed");
         // Nav Link here
     }
-    return  (
-            <View style={styles.HeaderContainer}>
-                <Text style={styles.Text}>Hello, Adam Smith</Text>
-                <Text style={styles.Text}>You have no workout scheduled today</Text>
-                <View>
-                    <Text style={styles.HeaderText}>Create a Workout From</Text>
-                </View>
-                <View style={styles.CreateWorkoutCntnr}>
-                    <View style={styles.CreateWorkoutBttnsContainer}>
-                        <TouchableOpacity onPress={handleScratchPress}>
-                                    <Text style={styles.CreateWorkoutBttns}>Scratch</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.CreateWorkoutBttnsContainer}>
-                        <TouchableOpacity onPress={handleTemplatePress}>
-                                    <Text style={styles.CreateWorkoutBttns}>Template</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            <View style={styles.BodyContainer}>
-                <Text style={styles.HeaderText}>Your Saved Workouts</Text>
+    
+    loadCurrentDayWorkoutStatus(){
+      // logic to define whether a workout exists today or not
+      return "no workout scheduled today"
+    }
+    
+    //componentWillMount(){
+    // could do a call through axios to get user info for each render.
+    // this would be a lot of API calls though I think.
+    // either way this is something to consider and discuss but for now we have loaded info
+    //}
+    
+    render(){
+      return  (
+        <View style={styles.HeaderContainer}>
+          <Text style={styles.Text}>Hello, {this.state.firstName} {this.state.lastName}</Text>
+          <Text style={styles.Text}>You have {this.loadCurrentDayWorkoutStatus()}</Text>
+          <View>
+              <Text style={styles.HeaderText}>Create a Workout From</Text>
+          </View>
+          <View style={styles.CreateWorkoutCntnr}>
+            <View style={styles.CreateWorkoutBttnsContainer}>
+              <TouchableOpacity onPress={this.handleScratchPress}>
+                <Text style={styles.CreateWorkoutBttns}>Scratch</Text>
+              </TouchableOpacity>
             </View>
+            <View style={styles.CreateWorkoutBttnsContainer}>
+              <TouchableOpacity onPress={this.handleTemplatePress}>
+                <Text style={styles.CreateWorkoutBttns}>Template</Text>
+              </TouchableOpacity>
             </View>
-            
+          </View>
+          <View style={styles.BodyContainer}>
+            <Text style={styles.HeaderText}>Your Saved Workouts</Text>
+            {/* Logic to define how to load the saved workouts */}
+          </View>
+        </View>    
     )
+    }
+    
     
 }
 
