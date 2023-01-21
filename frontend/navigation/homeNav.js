@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
-export default function HomeNav () {
+export default function HomeNav (props) {
     return (
         <Tab.Navigator initialRouteName='landingPage'>
             <Tab.Screen name="landingPage" 
@@ -24,7 +24,8 @@ export default function HomeNav () {
                             }}
                         />
                     )
-                }} 
+                }}
+                initialParams={{user: props.route.params.user}}
             />
             <Tab.Screen name="friends" 
                 component={Friends} 
@@ -40,7 +41,9 @@ export default function HomeNav () {
                             }}
                         />
                     )
-                    }} />
+                }}
+                initialParams={{user: props.route.params.user}} 
+              />
             <Tab.Screen name="calendar" 
                 component={CalendarPage}
                 options={{
@@ -56,6 +59,7 @@ export default function HomeNav () {
                         />
                     )
                 }} 
+                initialParams={{user: props.route.params.user}}
             />
         </Tab.Navigator>
     )

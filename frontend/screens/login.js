@@ -48,7 +48,8 @@ class Login extends React.Component {
             if (response.status == 200)
             {
                 this.setState({error: ''});
-                this.props.navigation.navigate("home");
+                //console.log('response',response.data._id)
+                this.props.navigation.navigate("home",{user: response.data});
             }
         })
         .catch((e) => {

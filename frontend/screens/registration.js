@@ -121,7 +121,7 @@ class Register extends React.Component{
         if (response.status == 200)
         {
             this.setState({error: ''});
-            this.props.navigation.navigate("home");
+            this.props.navigation.navigate("home", {user: response.data});
         }
     })
     .catch((e) => {
