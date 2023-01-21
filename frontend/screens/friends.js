@@ -9,7 +9,8 @@ const users = [
 ]
 
 export default function Friends(props) {
-    return  (
+  //console.log("friends", props.route.params.user)  
+  return  (
         <SafeAreaView style={styles.container}>
             <Text style={styles.Title}>Friends</Text>
             <Text style={styles.Heading}>Workout friends</Text>

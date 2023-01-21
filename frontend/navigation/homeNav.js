@@ -41,7 +41,9 @@ export default function HomeNav (props) {
                             }}
                         />
                     )
-                    }} />
+                }}
+                initialParams={{user: props.route.params.user}} 
+              />
             <Tab.Screen name="calendar" 
                 component={CalendarPage}
                 options={{
@@ -57,6 +59,7 @@ export default function HomeNav (props) {
                         />
                     )
                 }} 
+                initialParams={{user: props.route.params.user}}
             />
         </Tab.Navigator>
     )
