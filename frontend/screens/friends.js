@@ -19,9 +19,7 @@ export default function Friends(props) {
               onSubmitEditing={()=>{console.log('searching for',searchTerm)}}
               />
             <Text style={styles.Heading}>Workout Friends</Text>
-            <ScrollView contentContainerStyle={styles.CardContainer}
-              bounces = {false}
-              >
+            <ScrollView contentContainerStyle={styles.CardContainer}>
               <Image source={require('../../assets/calendarIcon.png')}/>
             </ScrollView>
             <View style={styles.addFriendContainer}>
