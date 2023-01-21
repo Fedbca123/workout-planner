@@ -5,7 +5,7 @@ const legs = {key: 'massage', color: 'blue', selectedDotColor: 'blue'};
 const arms = {key: 'workout', color: 'green'};
 
 export default function CalendarPage(props) {
-  //console.log("calendar", props.route.params.user)
+  //console.log("calendar", props.route.params.user) -> works
   return (
     
     <View style={styles.container}>
