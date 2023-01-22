@@ -3,6 +3,7 @@ import { Image } from 'react-native';
 import LandingPage from '../screens/landingPage';
 import Friends from '../screens/friends';
 import CalendarPage from '../screens/calendar';
+import DiscoverPage from '../screens/discover';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
@@ -61,6 +62,24 @@ export default function HomeNav (props) {
                 }} 
                 initialParams={{user: props.route.params.user}}
             />
+            <Tab.Screen name="discover" 
+                component={DiscoverPage}
+                options={{
+                    headerShown: false,
+                    tabBarLabel: 'Discover',
+                    tabBarIcon: ({color, size}) => (
+                        <Image 
+                            source={require('../../assets/discoverIcon.png')}
+                            style={{
+                                width: size,
+                                height: size,
+                            }}
+                        />
+                    )
+                }} 
+                initialParams={{user: props.route.params.user}}
+            />
+
         </Tab.Navigator>
     )
 };
