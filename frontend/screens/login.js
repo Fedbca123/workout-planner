@@ -90,7 +90,11 @@ class Login extends React.Component {
                             autoCapitalize='none'
                             ref={this.passwordRef}
                             secureTextEntry
-                            onChangeText={(text) => {this.passwordInputHandler(text)}}/>
+                            onChangeText={(text) => {this.passwordInputHandler(text)}}
+                            onSubmitEditing={()=> {
+                              this.passwordRef.current.blur()
+                              this.loginHandler()
+                            }}/>
     
                         <Button
                             title="Login"

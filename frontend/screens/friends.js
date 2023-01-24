@@ -1,4 +1,4 @@
-import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView} from 'react-native';
+import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
 import React, {useState} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
@@ -9,27 +9,35 @@ export default function Friends(props) {
 
   return  (
         <SafeAreaView style={styles.container}>
-          <KeyboardAwareScrollView contentContainerStyle={styles.container}>
+          <KeyboardAwareScrollView contentContainerStyle={styles.container}
+            bounces={false}>
             <Text style={styles.Title}>Friends</Text>
             <TextInput style={styles.inputstyle}
               placeholder="Search..."
-              returnKeyType="enter"
+              returnKeyType="go"
               onChangeText={(newText) => {setSearchTerm(newText)}}
               //make the line below do something forreal
               onSubmitEditing={()=>{console.log('searching for',searchTerm)}}
               />
             <Text style={styles.Heading}>Workout Friends</Text>
-            <ScrollView contentContainerStyle={styles.CardContainer}>
-              <Image source={require('../../assets/calendarIcon.png')}/>
+            <ScrollView contentContainerStyle={styles.CardContainer}
+              bounces={true}>
+                <Image source={require('../../assets/calendarIcon.png')}/>
             </ScrollView>
+            <View style={{borderColor: 'black', borderWidth: '1px'}}/>
+            <Text style={styles.Heading}>Add a Friend Via Email</Text>
             <View style={styles.addFriendContainer}>
-              <Text style={styles.Heading}>Add a Friend Via Email</Text>
               <TextInput style={styles.inputstyle}
                 placeholder="friend@email.com"
-                returnKeyType="enter"
+                returnKeyType="go"
                 onChangeText={(newText) => {setFriendEmail(newText)}}
-                //make the line below do something forreal
-                onSubmitEditing={()=>{console.log('adding friend',friendEmail)}}
+                value={friendEmail}
+                onSubmitEditing={()=>{
+                  // maybe we can try a quick handler here but here's an idea for how to handle the add friend functionality?
+                  // still need to actually send invitiations and set up how those come into play
+                  Alert.alert(`Sent a friend invitation to ${friendEmail}.`)
+                  setFriendEmail('')
+                }}
                 />
             </View>
           </KeyboardAwareScrollView>
@@ -44,7 +52,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         textAlign: 'left',
         paddingLeft: 20,
-        paddingVertical: 10
+        paddingVertical: 5
     },
     Heading:{
         fontFamily: 'HelveticaNeue-Bold',
@@ -52,6 +60,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         textAlign: 'left',
         paddingLeft: 20,
+        marginVertical: 5
     },
     CardContainer:{
       borderColor: 'black',
@@ -87,9 +96,9 @@ const styles = StyleSheet.create({
         alignSelf:'center'
     },
     addFriendContainer:{
-      flex:0.2,
-      borderColor: 'black',
-      borderWidth: '1px',
+      flex:0.1,
+      //borderColor: 'black',
+      //borderWidth: '1px',
       width: '95%',
       alignSelf:'center',
       marginBottom: 30
