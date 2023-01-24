@@ -41,11 +41,14 @@ class LandingPage extends React.Component{
     
     render(){
       return  (
-        <View style={styles.HeaderContainer}>
-          <Text style={styles.Text}>Hello, {this.state.firstName} {this.state.lastName}</Text>
-          <Text style={styles.Text}>You have {this.loadCurrentDayWorkoutStatus()}</Text>
-          <View>
-              <Text style={styles.HeaderText}>Create a Workout From</Text>
+        <View style={styles.container}>
+          <View style={styles.Header}>
+            <Text style={styles.HeaderText}>Hello, {this.state.firstName} {this.state.lastName}</Text>
+            <Text style={styles.HeaderText}>You have {this.loadCurrentDayWorkoutStatus()}</Text>
+          </View>
+
+          <View style={{marginTop: 30}}>
+              <Text style={styles.bodyHeader}>Create a Workout from</Text>
           </View>
           <View style={styles.CreateWorkoutCntnr}>
             <View style={styles.CreateWorkoutBttnsContainer}>
@@ -60,7 +63,7 @@ class LandingPage extends React.Component{
             </View>
           </View>
           <View style={styles.BodyContainer}>
-            <Text style={styles.HeaderText}>Your Saved Workouts</Text>
+            <Text style={styles.bodyHeader}>Your Saved Workouts</Text>
             {/* Logic to define how to load the saved workouts */}
           </View>
         </View>    
@@ -74,35 +77,27 @@ const styles = StyleSheet.create({
     HeaderText:{
         fontWeight: 'bold',
         fontSize: 20,
-        marginTop: 30,
+        alignSelf: 'center',
+        marginTop: 10,
+    },
+    HeaderContainer:{
+      alignItems: 'center'
     },
     CreateWorkoutCntnr:{
         flexDirection: 'row',
-        
-        //flex: 1,
-        //paddingVertical: 12,
-        //margin: 15,
-        //justifyContent: 'space-between',
-        //paddingHorizontal: 10,
-        //alignItems: 'center',
-        //paddingTop: 10,
-        //width: '100%'
+        alignSelf: 'center'
     },
-    HeaderContainer:{
+    container:{
         flex: 1,
-        marginTop: 10,
-        //alignItems:"center",
-        //justifyContent: "center",
-        //backgroundColor: "white",
-        //flexDirection: 'column',
-       
+        backgroundColor: 'white'
+    },
+    bodyHeader:{
+      fontSize: 18,
+      fontWeight: 'bold',
+      paddingLeft: 20
     },
     BodyContainer:{
         flex: 1,
-        //backgroundColor: "white",
-        //flexDirection: 'column',
-        //alignItems:"center",
-        //justifyContent: "center"
     },
     Text:{
         fontSize: 20,
@@ -112,24 +107,17 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     CreateWorkoutBttns:{
-        //flex: 1,
-        //margin: 10,
         color: 'black',
         fontWeight: 'bold',
         fontSize: 25,
-        //paddingTop: 10,
     },
     CreateWorkoutBttnsContainer:{
-        //flex: 1,
-         flexDirection: 'row',
+        alignItems: 'center',
         backgroundColor: '#E0F0FE',
         margin: 30,
         padding: 15,
-        
-        //paddingHorizontal: 10,
-        //alignItems: 'center',
-        // paddingTop: 10,
-        //width: '100%'
+        borderRadius: '10rem',
+        flex: 0.5,
     },
     CreateWorkoutText:{
         fontFamily: 'HelveticaNeue',
