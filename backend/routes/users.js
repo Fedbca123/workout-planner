@@ -104,7 +104,7 @@ router.route('/:id').delete((req, res) => {
 router.route('/:id').patch(async (req, res) => {
     const id = req.params.id;
     
-    const {name, friends, scheduledWorkouts, completedWorkouts, customWorkouts, } = req.body
+    const {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts, completedWorkouts, customWorkouts, customExercises} = req.body
 
     // Check if user exists
     const user = await User.findById(id);
@@ -113,14 +113,18 @@ router.route('/:id').patch(async (req, res) => {
         return res.status(400).send({Error: "User does not exist!"});
     }
     
-    console.log(user.friends);
+    //console.log(user.friends);
 
-    if (name) {user.name = name;}
+    if (firstName) {user.firstName = firstName;}
+    if (lastName) {user.lastName = lastName;}
     if (friends) {user.friends = friends;}
+    if (friendRequests) {user.friendRequests = friendRequests;}
+    if (blockedUsers) {user.blockedUsers = blockedUsers;}
     if (scheduledWorkouts) {user.scheduledWorkouts = scheduledWorkouts;}
     if (completedWorkouts) {user.completedWorkouts = completedWorkouts;}
     if (customWorkouts) {user.customWorkouts = customWorkouts;}
-
+    if (customExercises) {user.customExercises = customExercises;}
+    
     await user.save((err, newUser) => {
         if (err) return res.status(400).send(err);
         res.status(200).json(newUser);
