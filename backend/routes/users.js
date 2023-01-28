@@ -34,6 +34,13 @@ router.route('/register').post(async (req,res) =>
         lastName,
         email,
         password: hashedPassword,
+        friends: [],
+        friendRequests: [],
+        blockedUsers: [],
+        scheduledWorkouts: [],
+        completedWorkouts: [],
+        customWorkouts: [],
+        customExercises: []
     });
 
     await user.save((err, newUser) => {
@@ -60,6 +67,8 @@ router.route('/login').post(async (req, res) => {
 
     if (await bcrypt.compare(password, user.password))
     {
+        // this is when user is returned
+        // All properties held in user object
         return res.status(200).json(user);
     }
     else 
