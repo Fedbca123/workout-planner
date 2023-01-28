@@ -48,7 +48,7 @@ var userSchema = new Schema({
     scheduledWorkouts: [workoutSchema],
     completedWorkouts: [workoutSchema],
     customWorkouts: [workoutSchema],
-    customExercises: [exerciseSchema]
+    customExercises: [exerciseSchema],
 },
 {
     timestamps: true,
