@@ -40,7 +40,7 @@ router.route('/register').post(async (req,res) =>
         scheduledWorkouts: [],
         completedWorkouts: [],
         customWorkouts: [],
-        customExercises: []
+        customExercises: [],
     });
 
     await user.save((err, newUser) => {
