@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let {Workout, workoutSchema} = require('./workout.model');
+let {Exercise, exerciseSchema} = require('./exercise.model');
 
 
 var userSchema = new Schema({
@@ -36,9 +37,18 @@ var userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
+    friendRequests: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    blockedUsers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     scheduledWorkouts: [workoutSchema],
     completedWorkouts: [workoutSchema],
-    customWorkouts: [workoutSchema]
+    customWorkouts: [workoutSchema],
+    customExercises: [exerciseSchema]
 },
 {
     timestamps: true,
