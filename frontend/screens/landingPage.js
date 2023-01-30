@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     CreateWorkoutBttns:{
         color: 'black',
         fontWeight: 'bold',
-        fontSize: 25,
+        fontSize: 23,
     },
     CreateWorkoutBttnsContainer:{
         alignItems: 'center',
