@@ -43,7 +43,7 @@ class LandingPage extends React.Component{
       return  (
         <View style={styles.container}>
           <View style={styles.Header}>
-            <Text style={styles.HeaderText}>Hello, {this.state.firstName} {this.state.lastName}</Text>
+            <Text style={styles.HeaderText}>Hello {this.state.firstName}!</Text>
             <Text style={styles.HeaderText}>You have {this.loadCurrentDayWorkoutStatus()}</Text>
           </View>
 
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     CreateWorkoutBttns:{
         color: 'black',
         fontWeight: 'bold',
-        fontSize: 25,
+        fontSize: 23,
     },
     CreateWorkoutBttnsContainer:{
         alignItems: 'center',
