@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - WorkoutPlannerSpring2023
+name: Build and deploy Node.js app to Azure Web App - WorkoutPlannerAPI
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -26,6 +26,7 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+        working-directory: ./backend
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -47,10 +48,10 @@ jobs:
           name: node-app
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: 'WorkoutPlannerSpring2023'
+          app-name: 'WorkoutPlannerAPI'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_92C08A22F2A940EB87EE78AC977ED463 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_1BDB2DF3451A49CFA16618FC23AB35E3 }}
           package: .
