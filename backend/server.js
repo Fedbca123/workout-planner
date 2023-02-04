@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded());
 
-const uri = process.env.ATLAS_URI || 'mongodb+srv://user1:laQbWGwYJA2wluyK@cluster0.vxhabc2.mongodb.net/Workout_Planner?retryWrites=true&w=majority';
+const uri = process.env.ATLAS_URI;
 mongoose.connect(uri,{
   useNewUrlParser: true, useUnifiedTopology: true
 });
@@ -27,10 +27,12 @@ console.log("MongoDB database connection established successfully w/ ", uri);
 const exerciseRouter = require('./routes/exercises');
 const workoutRouter = require('./routes/workouts');
 const userRouter = require('./routes/users');
+const healthcheckRouter = require('./routes/healthcheck');
 
 app.use('/exercises', exerciseRouter);
 app.use('/workouts', workoutRouter);
 app.use('/users', userRouter);
+app.use('/healthcheck', healthcheckRouter);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
