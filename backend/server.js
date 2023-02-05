@@ -6,8 +6,6 @@ var fs = require('fs');
 var path = require('path');
 require('dotenv').config();
 
-// asdf
-
 const app = express();
 const port = process.env.PORT || 5555;
 
@@ -21,7 +19,7 @@ mongoose.connect(uri,{
 });
 const connection = mongoose.connection;
 connection.once('open', () => {
-  //console.log("MongoDB database connection established successfully w/ ", uri);
+  console.log("MongoDB database connection established successfully w/ ", uri);
 });
 
 const exerciseRouter = require('./routes/exercises');

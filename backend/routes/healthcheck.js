@@ -1,6 +1,5 @@
 const router = require('express').Router();
 
-
 router.route('/').get((req,res) => {
   // consider adding DB check  
   const healthcheck = {

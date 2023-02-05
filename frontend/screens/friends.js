@@ -1,12 +1,13 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
 import React, {useState} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {useGlobalState} from '../../GlobalState.js';
 
 export default function Friends(props) {
-  //console.log("friends", props.route.params.user) -> works
   const [searchTerm, setSearchTerm] = useState('');
   const [friendEmail, setFriendEmail] = useState('');
-
+  const [globalState, updateGlobalState] = useGlobalState();
+  console.log('user in friends:',globalState.user);
   return  (
         <SafeAreaView style={styles.container}>
           <KeyboardAwareScrollView contentContainerStyle={styles.container}
