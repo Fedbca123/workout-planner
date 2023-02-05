@@ -4,6 +4,14 @@ const asyncHandler = require('express-async-handler');
 
 let User = require('../models/user.model');
 
+function removeItem(array, val){
+  const index = array.indexOf(val);
+  if(index > -1) {
+    array.splice(index,1);
+  }
+  return array;
+}
+
 //-----POST-----//
 router.route('/register').post(async (req,res) =>
 {
@@ -140,5 +148,201 @@ router.route('/:id').patch(async (req, res) => {
     });
 });
 
+// adding workout
+// need to talk about what this looks like
+
+// user A invites user B
+router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(400).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(400).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // if userB has userA blocked, it won't go through
+  if(userB.blockedUsers.includes(userA._id)) {
+    return res.status(400).send("Blocked user");
+  }
+  // if already friends, won't do anything
+  if(userB.friends.includes(userA._id)) {
+    return res.status(400).send("Already friends");
+  }
+  // if already requested, don't do it again
+  if(userB.friendRequests.includes(userA._id)) {
+    return res.status(400).send("Already requested");
+  }
+
+  // add user A as a FR in B's list of FRs
+  userB.friendRequests.push(userA._id);
+
+  // save updated version of userB
+  await userB.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// user A accepts user B
+router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(400).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(400).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // remove B from A's friend request list
+  userA.friendRequests = removeItem(userA.friendRequests,userB._id);
+  // add them to each other's friends list
+  userA.friends.push(userB._id);
+  userB.friends.push(userA._id);
+
+  // save updated version of users
+  await userA.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+  });
+  await userB.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+  });
+
+  // report success
+  res.status(200).json({message: `${userA.firstName} and ${userB.firstName} are friends`});
+});
+
+// user A denies user B
+router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(400).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(400).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // remove B from A's friend request list
+  userA.friendRequests = removeItem(userA.friendRequests,userB._id);
+
+  // save updated version of users
+  await userA.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(newUser);
+  });
+});
+// user A unfriends B
+router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(400).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(400).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // remove from each other's lists
+  userA.friends = removeItem(userA.friends, userB._id);
+  userB.friends = removeItem(userB.friends, userA._id);
+
+  // save updated version of users
+  await userA.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+  });
+  await userB.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+  });
+
+  // report success
+  res.status(200).json({message: `${userA.firstName} and ${userB.firstName} are no longer friends`});
+});
+// user A blocks user B
+router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(400).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(400).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // if already blocked, no need to do it again
+  if(userA.blockedUsers.includes(userB._id)) {
+    return res.status(400).send(`Already blocked ${userB._id}`);
+  }
+
+  // make sure friends doesn't include B
+  userA.friends = removeItem(userA.friends, userB._id);
+  // make sure friendrequests doesn't include B
+  userA.friendRequests = removeItem(userA.friendRequests, userB._id);
+  // add B as a blocked user on A's account
+  userA.blockedUsers.push(userB._id);
+
+  // save updated version of userA
+  await userA.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// user A unblocks user B
+router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(400).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(400).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // remove B as a blocked user on A's account
+  userA.blockedUsers = removeItem(userA.blockedUsers, userB._id);
+
+  // save updated version of userA
+  await userA.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
 // TO-DO Password reset
+// not sure what to throw into this endpoint to complete this.
+// still need to get to anyways
+
 module.exports = router;
