@@ -7,7 +7,7 @@ export default function Friends(props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [friendEmail, setFriendEmail] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
-  console.log('user in friends:',globalState.user);
+  //console.log('user in friends:',globalState.user);
   return  (
         <SafeAreaView style={styles.container}>
           <KeyboardAwareScrollView contentContainerStyle={styles.container}
