@@ -14,7 +14,7 @@ import config from '../../config';
 import {useGlobalState} from '../../GlobalState.js';
 const baseUrl = config.API_URL + config.PORT + '/';
 
-export default function App(props) {
+export default function Login(props) {
 //class Login extends React.Component {
     //constructor (state and such)
     //constructor(props) {
@@ -109,10 +109,11 @@ export default function App(props) {
                 </View>
 
                 <View style={styles.buttoncontainer}>
-                    <Button
+                    
+                    {/*<Button
                         title="BACKDOOR"
                         onPress={() => backDoorHandler()}
-                        />
+                     /> */}
                     <Text style = {styles.error}> {error} </Text>
                     <TextInput style={styles.inputstyle} 
                         placeholder="Email"

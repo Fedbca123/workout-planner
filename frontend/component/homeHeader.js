@@ -3,11 +3,11 @@ import React, {useState} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../../GlobalState.js';
 
-export default function HomeHeader () {
+export default function HomeHeader (props) {
     const [globalState, updateGlobalState] = useGlobalState();
 
     const onLogout = () => {
-        
+        props.navigation.goBack();
     }
 
     return (
