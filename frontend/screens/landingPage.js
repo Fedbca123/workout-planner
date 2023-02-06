@@ -49,7 +49,6 @@ export default function LandingPage(props) {
       return  (
         <View style={styles.container}>
           <View style={styles.Header}>
-            <Text style={styles.HeaderText}>Hello {globalState.user.firstName}!</Text>
             <Text style={styles.HeaderText}>You have {loadCurrentDayWorkoutStatus()}</Text>
           </View>
 
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20,
         alignSelf: 'center',
-        marginTop: 10,
+        marginTop: 40,
     },
     HeaderContainer:{
       alignItems: 'center'

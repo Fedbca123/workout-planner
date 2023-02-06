@@ -62,7 +62,7 @@ export default function App(props) {
                 setError('');
                 updateGlobalState("user", response.data)
                 //this.props.navigation.navigate("home",{user: response.data});
-                props.navigation.navigate("home",{user: response.data});
+                props.navigation.navigate("home");
             }
         })
         .catch((e) => {
@@ -70,71 +70,95 @@ export default function App(props) {
             if (e.response) setError(e.response.data.Error);
           });
     }
-
+    const backDoorHandler = () => {
+        axios.post(baseUrl + "users/login", {
+            email: "Test@gmail.com",
+            password: "password"  
+          //email: this.state.email,
+            //password: this.state.password
+        })
+        .then((response) => {
+            if (response.status == 200)
+            {
+                //this.setState({error: ''});
+                setError('');
+                updateGlobalState("user", response.data)
+                //this.props.navigation.navigate("home",{user: response.data});
+                props.navigation.navigate("home");
+            }
+        })
+        .catch((e) => {
+            //if (e.response) this.setState({error: e.response.data.Error});
+            if (e.response) setError(e.response.data.Error);
+          });
+    }
     //render() {
-        return (
-            <ScrollView
-                bounces={false}
-                contentContainerStyle={styles.container}
-                >
-                <KeyboardAvoidingView
-                    behavior = {"position"/*Platform.OS === "ios" ? "padding" : "height"*/}
-                    keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 5}>
-                    <Image style={styles.image}
-                        source={require('../../assets/workout.png')} />
-                    <View style={styles.textcontainer}>
-                        <Text style = {styles.heading}> Welcome! </Text>
-                        <Text style = {styles.text}> You will have everything you need to reach your personal fitness goals - for free! </Text>
-                    </View>
-    
-                    <View style={styles.buttoncontainer}>
-                        <Text style = {styles.error}> {error} </Text>
+    return (
+        <ScrollView
+            bounces={false}
+            contentContainerStyle={styles.container}
+            >
+            <KeyboardAvoidingView
+                behavior = {"position"/*Platform.OS === "ios" ? "padding" : "height"*/}
+                keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 5}>
+                <Image style={styles.image}
+                    source={require('../../assets/workout.png')} />
+                <View style={styles.textcontainer}>
+                    <Text style = {styles.heading}> Welcome! </Text>
+                    <Text style = {styles.text}> You will have everything you need to reach your personal fitness goals - for free! </Text>
+                </View>
 
-                        <TextInput style={styles.inputstyle} 
-                            placeholder="Email"
-                            returnKeyType="next"
-                            onSubmitEditing={() => {passwordRef.current.focus();}}
-                            blurOnSubmit={false}
-                            keyboardType="email-address"
-                            onChangeText={(text) => emailInputHandler(text)}/>
-    
-                        <TextInput style={styles.inputstyle} 
-                            placeholder="Password"
-                            returnKeyType="go"
-                            autoCapitalize='none'
-                            ref={passwordRef}
-                            secureTextEntry
-                            onChangeText={(text) => {passwordInputHandler(text)}}
-                            onSubmitEditing={()=> {
-                              passwordRef.current.blur()
-                              loginHandler()
-                            }}/>
-    
-                        <Button
-                            title="Login"
-                            color="#10B9F1"
-                            // expecting line below to turn into authentication or page switching soon enough //
-                            onPress={() => loginHandler()}
-                            // onPress={() => {
-                            //     this.state.error = '';
-                            //     this.props.navigation.navigate("calendar");
-                            //   }}
-                            />
-    
-                        <Button 
-                            title="Create an account"
-                            color="#C4C4C4"
-                            accessibilityLabel="Create an account"
-                            onPress={() => {
-                              //this.state.error = '';
-                              setError('');
-                              //this.props.navigation.navigate("registration");
-                              props.navigation.navigate("registration");
-                            }}/>
-                    </View>
-                </KeyboardAvoidingView>
-            </ScrollView> 
-        )
+                <View style={styles.buttoncontainer}>
+                    <Button
+                        title="BACKDOOR"
+                        onPress={() => backDoorHandler()}
+                        />
+                    <Text style = {styles.error}> {error} </Text>
+                    <TextInput style={styles.inputstyle} 
+                        placeholder="Email"
+                        returnKeyType="next"
+                        onSubmitEditing={() => {passwordRef.current.focus();}}
+                        blurOnSubmit={false}
+                        keyboardType="email-address"
+                        onChangeText={(text) => emailInputHandler(text)}/>
+
+                    <TextInput style={styles.inputstyle} 
+                        placeholder="Password"
+                        returnKeyType="go"
+                        autoCapitalize='none'
+                        ref={passwordRef}
+                        secureTextEntry
+                        onChangeText={(text) => {passwordInputHandler(text)}}
+                        onSubmitEditing={()=> {
+                            passwordRef.current.blur()
+                            loginHandler()
+                        }}/>
+
+                    <Button
+                        title="Login"
+                        color="#10B9F1"
+                        // expecting line below to turn into authentication or page switching soon enough //
+                        onPress={() => loginHandler()}
+                        // onPress={() => {
+                        //     this.state.error = '';
+                        //     this.props.navigation.navigate("calendar");
+                        //   }}
+                        />
+
+                    <Button 
+                        title="Create an account"
+                        color="#C4C4C4"
+                        accessibilityLabel="Create an account"
+                        onPress={() => {
+                            //this.state.error = '';
+                            setError('');
+                            //this.props.navigation.navigate("registration");
+                            props.navigation.navigate("registration");
+                        }}/>
+                </View>
+            </KeyboardAvoidingView>
+        </ScrollView> 
+    )
     //}
 }
       
