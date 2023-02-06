@@ -38,18 +38,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   discoverBttnsCntnr:{
-    alignContent: 'center',
+    justifyContent: 'center',
     flexDirection: 'row',
   },
   discoverWorkoutsBttnsContainer:{
-    alignItems: 'center',
     backgroundColor: '#DCF1FE',
     margin: 30,
     padding: 15,
     borderRadius: '10rem',
   },
   discoverExercisesBttnsContainer:{
-    alignItems: 'center',
     backgroundColor: '#F8E1D2',
     margin: 30,
     padding: 15,
