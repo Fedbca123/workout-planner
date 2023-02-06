@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "export NODE_OPTIONS=--openssl-legacy-provider && expo start",
+    "start": "npx nodemon backend/server.js",
     "server": "nodemon backend/server.js",
     "android": "expo start --android",
     "ios": "expo start --ios",

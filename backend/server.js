@@ -19,16 +19,18 @@ mongoose.connect(uri,{
 });
 const connection = mongoose.connection;
 connection.once('open', () => {
-console.log("MongoDB database connection established successfully w/ ", uri);
+  console.log("MongoDB database connection established successfully w/ ", uri);
 });
 
 const exerciseRouter = require('./routes/exercises');
 const workoutRouter = require('./routes/workouts');
 const userRouter = require('./routes/users');
+const healthcheckRouter = require('./routes/healthcheck');
 
 app.use('/exercises', exerciseRouter);
 app.use('/workouts', workoutRouter);
 app.use('/users', userRouter);
+app.use('/healthcheck', healthcheckRouter);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());

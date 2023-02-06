@@ -69,4 +69,3 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     justifyContent: 'space-evenly',
   },
-});

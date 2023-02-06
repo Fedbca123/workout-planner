@@ -3,10 +3,13 @@ import React from 'react';
 import reactDom from 'react-dom';
 import axios from 'axios';
 import config from '../../config';
+import {useGlobalState} from '../../GlobalState.js';
+
 const baseUrl = config.API_URL + config.PORT + '/';
 
-//const LandingPage = (props) => {
-class LandingPage extends React.Component{
+export default function LandingPage(props) {
+//class LandingPage extends React.Component{
+    /*
     constructor(props){
       super(props);
       this.state={
@@ -18,17 +21,20 @@ class LandingPage extends React.Component{
       this.handleTemplatePress = this.handleTemplatePress.bind(this);
       this.loadCurrentDayWorkoutStatus = this.loadCurrentDayWorkoutStatus.bind(this);
     }
+    */
 
-    handleScratchPress(){
+    const [globalState, updateGlobalState] = useGlobalState();
+
+    const handleScratchPress = () => {
         console.log("Scratch Button Pressed");
         // Nav Link here
     }
-    handleTemplatePress(){
+    const handleTemplatePress = () => {
         console.log("Template Button Pressed");
         // Nav Link here
     }
     
-    loadCurrentDayWorkoutStatus(){
+    const loadCurrentDayWorkoutStatus = () => {
       // logic to define whether a workout exists today or not
       return "no workout scheduled today"
     }
@@ -39,12 +45,11 @@ class LandingPage extends React.Component{
     // either way this is something to consider and discuss but for now we have loaded info
     //}
     
-    render(){
+    //render(){
       return  (
         <View style={styles.container}>
           <View style={styles.Header}>
-            <Text style={styles.HeaderText}>Hello {this.state.firstName}!</Text>
-            <Text style={styles.HeaderText}>You have {this.loadCurrentDayWorkoutStatus()}</Text>
+            <Text style={styles.HeaderText}>You have {loadCurrentDayWorkoutStatus()}</Text>
           </View>
 
           <View style={{marginTop: 30}}>
@@ -52,12 +57,12 @@ class LandingPage extends React.Component{
           </View>
           <View style={styles.CreateWorkoutCntnr}>
             <View style={styles.CreateWorkoutBttnsContainer}>
-              <TouchableOpacity onPress={this.handleScratchPress}>
+              <TouchableOpacity onPress={handleScratchPress}>
                 <Text style={styles.CreateWorkoutBttns}>Scratch</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.CreateWorkoutBttnsContainer}>
-              <TouchableOpacity onPress={this.handleTemplatePress}>
+              <TouchableOpacity onPress={handleTemplatePress}>
                 <Text style={styles.CreateWorkoutBttns}>Template</Text>
               </TouchableOpacity>
             </View>
@@ -68,7 +73,7 @@ class LandingPage extends React.Component{
           </View>
         </View>    
     )
-    }
+    //}
     
     
 }
@@ -78,7 +83,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20,
         alignSelf: 'center',
-        marginTop: 10,
+        marginTop: 40,
     },
     HeaderContainer:{
       alignItems: 'center'
@@ -133,4 +138,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LandingPage; 
+//export default LandingPage; 
