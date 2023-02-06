@@ -26,7 +26,6 @@ export default function HomeNav (props) {
                         />
                     )
                 }}
-                initialParams={{user: props.route.params.user}}
             />
             <Tab.Screen name="friends" 
                 component={Friends} 
@@ -43,7 +42,6 @@ export default function HomeNav (props) {
                         />
                     )
                 }}
-                initialParams={{user: props.route.params.user}} 
               />
             <Tab.Screen name="calendar" 
                 component={CalendarPage}
@@ -60,7 +58,6 @@ export default function HomeNav (props) {
                         />
                     )
                 }} 
-                initialParams={{user: props.route.params.user}}
             />
             <Tab.Screen name="discover" 
                 component={DiscoverPage}
@@ -77,7 +74,6 @@ export default function HomeNav (props) {
                         />
                     )
                 }} 
-                initialParams={{user: props.route.params.user}}
             />
 
         </Tab.Navigator>

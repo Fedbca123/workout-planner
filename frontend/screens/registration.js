@@ -178,7 +178,7 @@ export default function Register(props) {
             //this.props.navigation.navigate("home", {user: response.data});
             updateGlobalState("user", response.data);
 
-            props.navigation.navigate("home", {user: response.data});
+            props.navigation.navigate("home");
         }
     })
     .catch((e) => {
