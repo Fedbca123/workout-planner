@@ -1,4 +1,4 @@
-import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
+import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert, TouchableOpacity } from 'react-native';
 import React, {useState} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../../GlobalState.js';
@@ -7,40 +7,57 @@ export default function Friends(props) {
   const [searchTerm, setSearchTerm] = useState('');
   const [friendEmail, setFriendEmail] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
-  //console.log('user in friends:',globalState.user);
+
+  const friends = [
+    { firstName: 'John', lastName: 'Doe', email: 'johndoe@email.com' },
+    { firstName: 'Jane', lastName: 'Doe', email: 'janedoe@email.com' },
+    { firstName: 'Jim', lastName: 'Smith', email: 'jimsmith@email.com' },
+    { firstName: 'Alex', lastName: 'Smith', email: 'jimsmith@email.com'}
+  ];
+
+  const [filteredFriends, setFilteredFriends] = useState(friends);
+
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    setFilteredFriends(
+      friends.filter((friend) => friend.email.includes(text))
+    );
+  };
+
+  const handleAddFriend = () => {
+    Alert.alert('Invitation sent', 'Your invitation has been sent to the email address', [{ text: 'OK' }]);
+  };
+
   return  (
-        <SafeAreaView style={styles.container}>
-          <KeyboardAwareScrollView contentContainerStyle={styles.container}
+    <SafeAreaView style={styles.container}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.container}
             bounces={false}>
             <Text style={styles.Title}>Friends</Text>
-            <TextInput style={styles.inputstyle}
-              placeholder="Search..."
-              returnKeyType="go"
-              onChangeText={(newText) => {setSearchTerm(newText)}}
-              //make the line below do something forreal
-              onSubmitEditing={()=>{console.log('searching for',searchTerm)}}
-              />
-            <Text style={styles.Heading}>Workout Friends</Text>
+            <TextInput 
+              style={styles.searchBar}
+              placeholder="Search by email..."
+              value={searchTerm}
+              onChangeText={handleSearch}
+            />
+            {/* <Text style={styles.Title}></Text> */}
             <ScrollView contentContainerStyle={styles.CardContainer}
               bounces={true}>
-                <Image source={require('../../assets/calendarIcon.png')}/>
-            </ScrollView>
-            <View style={{borderColor: 'black', borderWidth: '1px'}}/>
-            <Text style={styles.Heading}>Add a Friend Via Email</Text>
-            <View style={styles.addFriendContainer}>
-              <TextInput style={styles.inputstyle}
-                placeholder="friend@email.com"
-                returnKeyType="go"
-                onChangeText={(newText) => {setFriendEmail(newText)}}
-                value={friendEmail}
-                onSubmitEditing={()=>{
-                  // maybe we can try a quick handler here but here's an idea for how to handle the add friend functionality?
-                  // still need to actually send invitiations and set up how those come into play
-                  Alert.alert(`Sent a friend invitation to ${friendEmail}.`)
-                  setFriendEmail('')
-                }}
-                />
-            </View>
+        {filteredFriends.map((friend, index) => (
+          <View key={index} style={styles.card}>
+            <Text style={styles.name}>
+              {friend.firstName} {friend.lastName}
+            </Text>
+            <Text>{friend.email}</Text>
+          </View>
+        ))}
+        {filteredFriends.length === 0 && (
+          <TouchableOpacity onPress={handleAddFriend}>
+            <Text style={styles.name}>Add friend</Text>
+          </TouchableOpacity>
+
+        )}
+          </ScrollView>
+          <View style={{borderColor: 'black', borderWidth: '0px'}}/>
           </KeyboardAwareScrollView>
         </SafeAreaView>
     )
@@ -65,17 +82,39 @@ const styles = StyleSheet.create({
     },
     CardContainer:{
       borderColor: 'black',
-      borderWidth: '1px',
+      borderWidth: '0px',
       flex: 0.95,
       width: '95%',
       alignSelf: 'center'
     },
-    Card:{
-        borderRadius: 15,
-        backgroundColor: '#2B2B2B',
+    searchBar: {
+      height: 40,
+      padding: 10,
+      marginBottom: 20,
+      borderWidth: 1,
+      borderColor: '#ccc',
+
     },
-    cardContent:{
-        
+    card:{
+      backgroundColor: '#DDF2FF',
+      padding: 20,
+      marginBottom: 0,
+      shadowColor: '#000',
+      shadowOpacity: 0.2,
+      shadowRadius: 5,
+      shadowOffset: { width: 0, height: 2 },
+      elevation: 2,
+      borderRadius: 15,
+
+    },
+    name: {
+      fontSize: 18,
+      fontWeight: 'bold',
+    },
+    email: {
+      fontSize: 16,
+      color: '#999',
+      marginTop: 10,
     },
     container:{
       backgroundColor: 'white',
