@@ -150,6 +150,79 @@ router.route('/:id').patch(async (req, res) => {
 
 // adding workout
 // need to talk about what this looks like
+router.route('/:id/workouts/schedule').post(async (req,res) => {
+  const id = req.params.id;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(400).send({Error: "User does not exist!"});
+  }
+
+  // grab workout from body
+  // may need to modify data depending on how it looks
+  // also to fulfill the schema we have defined
+  const workout = req.body.workout;
+
+  // add workout to user's scheduledWorkouts section
+  user.scheduledWorkouts.push(workout);
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// remove scheduled workout from user's account
+router.route('/:id/workouts/remove').patch(async (req,res) => {
+  const id = req.params.id;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(400).send({Error: "User does not exist!"});
+  }
+
+  // grab workout from body
+  const workout = req.body.workout;
+
+  // remove workout from user's scheduledWorkouts section
+  user.scheduledWorkouts = removeItem(user.scheduledWorkouts, workout);
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// user completes a workout. Must move workout to complete
+router.route('/:id/workouts/complete').patch(async (req,res) => {
+  const id = req.params.id;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(400).send({Error: "User does not exist!"});
+  }
+
+  const workout = req.body.workout;
+  // remove anyways
+  user.scheduledWorkouts = removeItem(user.scheduledWorkouts, workout);
+  // add to completed anyways
+  user.completedWorkouts.push(workout);
+  // if recurring add in again but a week in advance
+  if(workout.recurrence){
+    var date = new Date(workout.scheduledDate);
+    date.setDate(date.getDate() + 7);
+    workout.scheduledDate = date;
+    user.scheduledWorkouts.push(workout);
+  }
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(400).send(err);
+    res.status(200).json(newUser);
+  });
+});
 
 // user A invites user B
 router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
