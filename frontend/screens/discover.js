@@ -1,71 +1,113 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { FlatList } from 'react-native-web';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions } from 'react-native';
 import {Card} from 'react-native-paper';
 
+const exerciseData = [
+  {Name: 'Squats', Sets: 2, Reps: 3},
+  {Name: 'Benchpress', Sets: 3, Reps: 5},
+  {Name: 'Lunges', Sets: 5, Reps: 5},
+  {Name: 'Deadlift', Sets: 1, Reps: 3},
+  {Name: 'Skullcrusher', Sets: 4, Reps: 3},
+];
+const workoutData = [
+  {Name: 'Arms', Exercises: 5},
+  {Name: 'Legs', Exercises: 6},
+  {Name: 'Full Body', Exercises: 11}
+];
+const numColumns = 3;
 
 class DiscoverPage extends React.Component {
+
   constructor (props)
   {
+    const [listShowing, setListShowing] = useState("");
+
     super(props);
-    this.state = {
-        exerciseList:[
-            {Name: 'Squats', Sets: 2, Reps: 3},
-            {Name: 'Benchpress', Sets: 3, Reps: 5},
-            {Name: 'Lunges', Sets: 5, Reps: 5},
-            {Name: 'Deadlift', Sets: 1, Reps: 3},
-            {Name: 'Skullcrusher', Sets: 4, Reps: 3},
-        ],
-        workoutList:[
-            {Name: 'Arms', Exercises: 5},
-            {Name: 'Legs', Exercises: 6},
-            {Name: 'Full Body', Exercises: 11}
-          ]
-    }
+    this.handleExercisePress = this.handleExercisePress.bind(this);
+    this.handleWorkoutPress = this.handleWorkoutPress.bind(this);
   }
+
+  handleExercisePress(){
+    console.log("Exercise button pressed");
+  }
+
+  handleWorkoutPress(){
+    console.log("Workout button pressed");
+  }
+
+  renderItem = ({item, index}) => {
+    return (
+      <View style={styles.item}>
+        <Text style={styles.itemText}>{item.Name}</Text>
+      </View>
+    )
+  }
+
   render() {
   return (
-    <View>
-      <View style={styles.discoveryPageHeader}>
-        <Text style={styles.discoverTitle}>Discover</Text>
-        <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
-        
-        <View style={styles.discoverBttnsCntnr}>
-          <TouchableOpacity onPress={console.log("Workouts Pressed")}>
-            <View style={styles.discoverWorkoutsBttnsContainer}>
+    <View style = {styles.page}>
+      <View style = {styles.discoverHeaderContainer}>
+        <View style={styles.discoveryPageHeader}>
+          <Text style={styles.discoverTitle}>Discover</Text>
+          <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
+          
+          <View style={styles.discoverBttnsCntnr}>
+            <TouchableOpacity onPress={() =>
+                  {
+                    this.handleWorkoutPress
+                    setListShowing(workout)
+                  }}>
+              <View style={styles.discoverWorkoutsBttnsContainer}>
                 <Text style={styles.workoutsBttnText}>Workouts</Text>
-            </View>
-          </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
 
 
-          <TouchableOpacity onPress={console.log("Exercises Pressed")}>
-            <View style={styles.discoverExercisesBttnsContainer}>
-              <Text style={styles.exercisesBttnText}>Exercises</Text>
-            </View>
-          </TouchableOpacity>
-
+            <TouchableOpacity onPress={() =>
+                  {
+                    this.handleExercisePress
+                    setListShowing(exercise)
+                  }}>
+              <View style={styles.discoverExercisesBttnsContainer}>
+                <Text style={styles.exercisesBttnText}>Exercises</Text>
+              </View>
+            </TouchableOpacity>
           </View>
-              <FlatList
-                  exerciseData = {this.state.exerciseList}
-                  renderItem = {({item}) =>
-                    <Card>
-                      <View>
-                        <Text>Exercise Name</Text>
-                        <Text>{item.Name}</Text>
-                      </View>
-                    </Card>
-                  }
-                  keyExtractor = {item=>item.Name}
-
-                />
-              {/* <StatusBar style= "auto" />*/}
-          </View>
+        </View>
+      </View>
+      
+      <View style={styles.discoverBodyContainer}>
+          {toggle &&(
+          <FlatList
+            data = {exerciseData}
+            style = {styles.boxContainer}
+            renderItem = {this.renderItem}
+            //numColumns = {numColumns}
+  
+          />)}
+          {/* <StatusBar style= "auto" />*/}
+      </View>
     </View>
-   );
+    );
   }
 }
 const styles = StyleSheet.create({
+  boxContainer:{
+    flex: 1,
+    
+  },
+   item:{
+      backgroundColor: '#4D243D',
+      alignItems: 'center',
+      justifyContent: 'center', 
+      //height: Dimensions.get('window') / numColumns,
+      flex: 1,
+      margin: 1,
+   },
+   itemText:{
+      color: "#fff"
+   },
   discoveryPageHeader:{
     backgroundColor: 'white',
   },
@@ -103,11 +145,22 @@ const styles = StyleSheet.create({
     padding: 10,
     opacity: .45,
   },
+  discoverBodyContainer:{
+    backgroundColor: 'pink',
+    height: "100%"
+   // flex: 2,
+  },
+  discoverHeaderContainer:{
+    backgroundColor: 'white',
+    //flex: 1,
+  },
+  page:{
+  },
   container: {
-    height: 700,
+  //  height: 700,
     //backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'space-evenly',
+    //alignItems: 'stretch',
+    //justifyContent: 'space-evenly',
   },
 });
 
