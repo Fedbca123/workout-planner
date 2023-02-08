@@ -148,8 +148,9 @@ router.route('/:id').patch(async (req, res) => {
     });
 });
 
-// adding workout
-// need to talk about what this looks like
+// TO - DO
+// Add workout
+// Complete Workout
 
 // user A invites user B
 router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {

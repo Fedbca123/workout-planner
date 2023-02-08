@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 export default function DiscoverPage(props) {
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.discoveryPageHeader}>
         <Text style={styles.discoverTitle}>Discover</Text>
         <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
@@ -64,10 +64,10 @@ const styles = StyleSheet.create({
     opacity: .45,
   },
   container: {
-    height: 700,
-    //backgroundColor: '#fff',
+    backgroundColor: '#fff',
     alignItems: 'stretch',
-    justifyContent: 'space-evenly',
+    flex: 1,
+    justifyContent: 'flex-start',
   },
 })
 
