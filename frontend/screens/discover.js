@@ -4,11 +4,21 @@ import { StyleSheet, Text, View, TouchableOpacity, FlatList, Alert } from 'react
 import {Card} from 'react-native-paper';
 
 const exerciseData = [
+  {Name: 'Top', Sets: 2, Reps: 3},
+  {Name: 'Benchpress', Sets: 3, Reps: 5},
+  {Name: 'Lunges', Sets: 5, Reps: 5},
+  {Name: 'Deadlift', Sets: 1, Reps: 3},
+  {Name: 'Skullcrusher', Sets: 4, Reps: 3},
   {Name: 'Squats', Sets: 2, Reps: 3},
   {Name: 'Benchpress', Sets: 3, Reps: 5},
   {Name: 'Lunges', Sets: 5, Reps: 5},
   {Name: 'Deadlift', Sets: 1, Reps: 3},
   {Name: 'Skullcrusher', Sets: 4, Reps: 3},
+  {Name: 'Squats', Sets: 2, Reps: 3},
+  {Name: 'Benchpress', Sets: 3, Reps: 5},
+  {Name: 'Lunges', Sets: 5, Reps: 5},
+  {Name: 'Deadlift', Sets: 1, Reps: 3},
+  {Name: 'Bottom', Sets: 4, Reps: 3},
 ];
 const workoutData = [
   {Name: 'Arms', Exercises: 5},
@@ -37,8 +47,7 @@ class DiscoverPage extends React.Component {
   }
 
   displayWorkoutInfo(item){
-    Alert.alert('Workout Info',[
-      {text: item.Name}])
+    Alert.alert('Workout Info')
   }
 
   renderItem = ({item, index}) => {
@@ -159,7 +168,7 @@ const styles = StyleSheet.create({
   },
   discoverBodyContainer:{
     backgroundColor: 'pink',
-    height: "100%"
+    height: "76%"
    // flex: 2,
   },
   discoverHeaderContainer:{
