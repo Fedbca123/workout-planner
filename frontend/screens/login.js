@@ -92,75 +92,70 @@ export default function Login(props) {
             if (e.response) setError(e.response.data.Error);
           });
     }
-    //render() {
-    return (
-        <ScrollView
-            bounces={false}
-            contentContainerStyle={styles.container}
-            >
-            <KeyboardAvoidingView
-                behavior = {"position"/*Platform.OS === "ios" ? "padding" : "height"*/}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 5}>
-                <Image style={styles.image}
-                    source={require('../../assets/workout.png')} />
-                <View style={styles.textcontainer}>
-                    <Text style = {styles.heading}> Welcome! </Text>
-                    <Text style = {styles.text}> You will have everything you need to reach your personal fitness goals - for free! </Text>
-                </View>
 
-                <View style={styles.buttoncontainer}>
-                    
-                    {/*<Button
-                        title="BACKDOOR"
-                        onPress={() => backDoorHandler()}
-                     /> */}
-                    <Text style = {styles.error}> {error} </Text>
-                    <TextInput style={styles.inputstyle} 
-                        placeholder="Email"
-                        returnKeyType="next"
-                        onSubmitEditing={() => {passwordRef.current.focus();}}
-                        blurOnSubmit={false}
-                        keyboardType="email-address"
-                        onChangeText={(text) => emailInputHandler(text)}/>
+    render() {
+        return (
+            <ScrollView
+                bounces={false}
+                contentContainerStyle={styles.container}
+                >
+                <KeyboardAvoidingView
+                    behavior = {"position"/*Platform.OS === "ios" ? "padding" : "height"*/}
+                    keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 5}>
+                    <Image style={styles.image}
+                        source={require('../../assets/workout.png')} />
+                    <View style={styles.textcontainer}>
+                        <Text style = {styles.heading}> Welcome! </Text>
+                        <Text style = {styles.text}> You will have everything you need to reach your personal fitness goals - for free! </Text>
+                    </View>
+    
+                    <View style={styles.buttoncontainer}>
+                        <Text style = {styles.error}> {this.state.error} </Text>
 
-                    <TextInput style={styles.inputstyle} 
-                        placeholder="Password"
-                        returnKeyType="go"
-                        autoCapitalize='none'
-                        ref={passwordRef}
-                        secureTextEntry
-                        onChangeText={(text) => {passwordInputHandler(text)}}
-                        onSubmitEditing={()=> {
-                            passwordRef.current.blur()
-                            loginHandler()
-                        }}/>
-
-                    <Button
-                        title="Login"
-                        color="#10B9F1"
-                        // expecting line below to turn into authentication or page switching soon enough //
-                        onPress={() => loginHandler()}
-                        // onPress={() => {
-                        //     this.state.error = '';
-                        //     this.props.navigation.navigate("calendar");
-                        //   }}
-                        />
-
-                    <Button 
-                        title="Create an account"
-                        color="#C4C4C4"
-                        accessibilityLabel="Create an account"
-                        onPress={() => {
-                            //this.state.error = '';
-                            setError('');
-                            //this.props.navigation.navigate("registration");
-                            props.navigation.navigate("registration");
-                        }}/>
-                </View>
-            </KeyboardAvoidingView>
-        </ScrollView> 
-    )
-    //}
+                        <TextInput style={styles.inputstyle} 
+                            placeholder="Email"
+                            returnKeyType="next"
+                            onSubmitEditing={() => {this.passwordRef.current.focus();}}
+                            blurOnSubmit={false}
+                            keyboardType="email-address"
+                            onChangeText={(text) => this.emailInputHandler(text)}/>
+    
+                        <TextInput style={styles.inputstyle} 
+                            placeholder="Password"
+                            returnKeyType="go"
+                            autoCapitalize='none'
+                            ref={this.passwordRef}
+                            secureTextEntry
+                            onChangeText={(text) => {this.passwordInputHandler(text)}}
+                            onSubmitEditing={()=> {
+                              this.passwordRef.current.blur()
+                              this.loginHandler()
+                            }}/>
+    
+                        <Button
+                            title="Login"
+                            color="#10B9F1"
+                            // expecting line below to turn into authentication or page switching soon enough //
+                            onPress={() => this.loginHandler()}
+                            // onPress={() => {
+                            //     this.state.error = '';
+                            //     this.props.navigation.navigate("calendar");
+                            //   }}
+                            />
+    
+                        <Button 
+                            title="Create an account"
+                            color="#C4C4C4"
+                            accessibilityLabel="Create an account"
+                            onPress={() => {
+                              this.state.error = '';
+                              this.props.navigation.navigate("registration");
+                            }}/>
+                    </View>
+                </KeyboardAvoidingView>
+            </ScrollView> 
+        )
+    }
 }
       
 const styles = StyleSheet.create({
@@ -221,4 +216,3 @@ const styles = StyleSheet.create({
     }
 });
       
-//export default Login;
