@@ -37,9 +37,8 @@ class DiscoverPage extends React.Component {
   }
 
   displayWorkoutInfo(item){
-    Alert.alert('Workout Info'[
-      {text: item.Name},
-      {text: "hi"}])
+    Alert.alert('Workout Info',[
+      {text: item.Name}])
   }
 
   renderItem = ({item, index}) => {
