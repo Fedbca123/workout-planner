@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {Card} from 'react-native-paper';
 
 const exerciseData = [
@@ -21,7 +21,7 @@ class DiscoverPage extends React.Component {
 
   constructor (props)
   {
-    const [listShowing, setListShowing] = useState("");
+   // const [listShowing, setListShowing] = useState("");
 
     super(props);
     this.handleExercisePress = this.handleExercisePress.bind(this);
@@ -36,11 +36,23 @@ class DiscoverPage extends React.Component {
     console.log("Workout button pressed");
   }
 
+  displayWorkoutInfo(item){
+    Alert.alert('Workout Info'[
+      {text: item.Name},
+      {text: "hi"}])
+  }
+
   renderItem = ({item, index}) => {
     return (
-      <View style={styles.item}>
-        <Text style={styles.itemText}>{item.Name}</Text>
-      </View>
+      <TouchableOpacity onPress={()=>
+      {
+        this.displayWorkoutInfo(item);
+      }}>
+        <View style={styles.item}>
+          <Text style={styles.itemText}>{item.Name}</Text>
+          <Text style={styles.itemText}>Reps: {item.Reps} Sets: {item.Sets}</Text>
+        </View>
+      </TouchableOpacity>
     )
   }
 
@@ -56,7 +68,7 @@ class DiscoverPage extends React.Component {
             <TouchableOpacity onPress={() =>
                   {
                     this.handleWorkoutPress
-                    setListShowing(workout)
+                   // setListShowing(workout)
                   }}>
               <View style={styles.discoverWorkoutsBttnsContainer}>
                 <Text style={styles.workoutsBttnText}>Workouts</Text>
@@ -67,7 +79,7 @@ class DiscoverPage extends React.Component {
             <TouchableOpacity onPress={() =>
                   {
                     this.handleExercisePress
-                    setListShowing(exercise)
+                   // setListShowing(exercise)
                   }}>
               <View style={styles.discoverExercisesBttnsContainer}>
                 <Text style={styles.exercisesBttnText}>Exercises</Text>
@@ -78,14 +90,14 @@ class DiscoverPage extends React.Component {
       </View>
       
       <View style={styles.discoverBodyContainer}>
-          {toggle &&(
+         
           <FlatList
             data = {exerciseData}
             style = {styles.boxContainer}
             renderItem = {this.renderItem}
             //numColumns = {numColumns}
   
-          />)}
+          />
           {/* <StatusBar style= "auto" />*/}
       </View>
     </View>
@@ -100,7 +112,8 @@ const styles = StyleSheet.create({
    item:{
       backgroundColor: '#4D243D',
       alignItems: 'center',
-      justifyContent: 'center', 
+      justifyContent: 'center',
+      padding: 10, 
       //height: Dimensions.get('window') / numColumns,
       flex: 1,
       margin: 1,
