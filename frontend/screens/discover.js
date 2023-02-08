@@ -1,30 +1,70 @@
 import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { FlatList } from 'react-native-web';
+import {Card} from 'react-native-paper';
 
-export default function DiscoverPage(props) {
+
+class DiscoverPage extends React.Component {
+  constructor (props)
+  {
+    super(props);
+    this.state = {
+        exerciseList:[
+            {Name: 'Squats', Sets: 2, Reps: 3},
+            {Name: 'Benchpress', Sets: 3, Reps: 5},
+            {Name: 'Lunges', Sets: 5, Reps: 5},
+            {Name: 'Deadlift', Sets: 1, Reps: 3},
+            {Name: 'Skullcrusher', Sets: 4, Reps: 3},
+        ],
+        workoutList:[
+            {Name: 'Arms', Exercises: 5},
+            {Name: 'Legs', Exercises: 6},
+            {Name: 'Full Body', Exercises: 11}
+          ]
+    }
+  }
+  render() {
   return (
     <View>
       <View style={styles.discoveryPageHeader}>
         <Text style={styles.discoverTitle}>Discover</Text>
         <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
-            <View style={styles.discoverBttnsCntnr}>
-              <View style={styles.discoverWorkoutsBttnsContainer}>
-                <TouchableOpacity onPress={console.log("Workouts Pressed")}>
-                  <Text style={styles.workoutsBttnText}>Workouts</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.discoverExercisesBttnsContainer}>
-                <TouchableOpacity onPress={console.log("Exercises Pressed")}>
-                  <Text style={styles.exercisesBttnText}>Exercises</Text>
-                </TouchableOpacity>
-              </View>
+        
+        <View style={styles.discoverBttnsCntnr}>
+          <TouchableOpacity onPress={console.log("Workouts Pressed")}>
+            <View style={styles.discoverWorkoutsBttnsContainer}>
+                <Text style={styles.workoutsBttnText}>Workouts</Text>
             </View>
-                {/* <StatusBar style= "auto" />*/}
+          </TouchableOpacity>
+
+
+          <TouchableOpacity onPress={console.log("Exercises Pressed")}>
+            <View style={styles.discoverExercisesBttnsContainer}>
+              <Text style={styles.exercisesBttnText}>Exercises</Text>
             </View>
+          </TouchableOpacity>
+
+          </View>
+              <FlatList
+                  exerciseData = {this.state.exerciseList}
+                  renderItem = {({item}) =>
+                    <Card>
+                      <View>
+                        <Text>Exercise Name</Text>
+                        <Text>{item.Name}</Text>
+                      </View>
+                    </Card>
+                  }
+                  keyExtractor = {item=>item.Name}
+
+                />
+              {/* <StatusBar style= "auto" />*/}
+          </View>
     </View>
    );
+  }
 }
-
 const styles = StyleSheet.create({
   discoveryPageHeader:{
     backgroundColor: 'white',
@@ -70,3 +110,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
   },
 });
+
+export default DiscoverPage;

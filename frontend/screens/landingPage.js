@@ -50,21 +50,25 @@ class LandingPage extends React.Component{
           <View style={{marginTop: 30}}>
               <Text style={styles.bodyHeader}>Create a Workout from</Text>
           </View>
+
           <View style={styles.CreateWorkoutCntnr}>
-            <View style={styles.CreateWorkoutBttnsContainer}>
-              <TouchableOpacity onPress={this.handleScratchPress}>
+            <TouchableOpacity onPress={this.handleScratchPress}>
+              <View style={styles.CreateWorkoutBttnsContainer}>
                 <Text style={styles.CreateWorkoutBttns}>Scratch</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.CreateWorkoutBttnsContainer}>
-              <TouchableOpacity onPress={this.handleTemplatePress}>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.handleTemplatePress}>
+              <View style={styles.CreateWorkoutBttnsContainer}>
                 <Text style={styles.CreateWorkoutBttns}>Template</Text>
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
           </View>
+
           <View style={styles.BodyContainer}>
             <Text style={styles.bodyHeader}>Your Saved Workouts</Text>
             {/* Logic to define how to load the saved workouts */}
+            <View style={styles.workoutsContainer}>
+            </View>
           </View>
         </View>    
     )
@@ -117,7 +121,7 @@ const styles = StyleSheet.create({
         margin: 30,
         padding: 15,
         borderRadius: '10rem',
-        flex: 0.5,
+        //flex: 0.5,
     },
     CreateWorkoutText:{
         fontFamily: 'HelveticaNeue',
@@ -126,6 +130,12 @@ const styles = StyleSheet.create({
         fontWeight: 'normal',
         color: '#C4C4C4',
         textAlign: 'center',
+    },
+    workoutsContainer:{
+        backgroundColor: '#D8D8D8',
+        marginTop: 5,
+        borderRadius: '15rem',
+        flex: 1,
     },
     space:{
         width: 50,
