@@ -109,37 +109,33 @@ export default function Login(props) {
                 </View>
 
                 <View style={styles.buttoncontainer}>
-                    
-                    {/*<Button
-                        title="BACKDOOR"
-                        onPress={() => backDoorHandler()}
-                     /> */}
-                    <Text style = {styles.error}> {error} </Text>
+                    <Text style = {styles.error}> {this.state.error} </Text>
+
                     <TextInput style={styles.inputstyle} 
                         placeholder="Email"
                         returnKeyType="next"
-                        onSubmitEditing={() => {passwordRef.current.focus();}}
+                        onSubmitEditing={() => {this.passwordRef.current.focus();}}
                         blurOnSubmit={false}
                         keyboardType="email-address"
-                        onChangeText={(text) => emailInputHandler(text)}/>
+                        onChangeText={(text) => this.emailInputHandler(text)}/>
 
                     <TextInput style={styles.inputstyle} 
                         placeholder="Password"
                         returnKeyType="go"
                         autoCapitalize='none'
-                        ref={passwordRef}
+                        ref={this.passwordRef}
                         secureTextEntry
-                        onChangeText={(text) => {passwordInputHandler(text)}}
+                        onChangeText={(text) => {this.passwordInputHandler(text)}}
                         onSubmitEditing={()=> {
-                            passwordRef.current.blur()
-                            loginHandler()
+                            this.passwordRef.current.blur()
+                            this.loginHandler()
                         }}/>
 
                     <Button
                         title="Login"
                         color="#10B9F1"
                         // expecting line below to turn into authentication or page switching soon enough //
-                        onPress={() => loginHandler()}
+                        onPress={() => this.loginHandler()}
                         // onPress={() => {
                         //     this.state.error = '';
                         //     this.props.navigation.navigate("calendar");
@@ -151,16 +147,13 @@ export default function Login(props) {
                         color="#C4C4C4"
                         accessibilityLabel="Create an account"
                         onPress={() => {
-                            //this.state.error = '';
-                            setError('');
-                            //this.props.navigation.navigate("registration");
-                            props.navigation.navigate("registration");
+                            this.state.error = '';
+                            this.props.navigation.navigate("registration");
                         }}/>
                 </View>
             </KeyboardAvoidingView>
         </ScrollView> 
     )
-    //}
 }
       
 const styles = StyleSheet.create({
