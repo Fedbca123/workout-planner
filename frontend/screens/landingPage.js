@@ -13,6 +13,7 @@ import reactDom from "react-dom";
 import axios from "axios";
 import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
+import { useNavigation } from "@react-navigation/native";
 
 const baseUrl = config.API_URL + config.PORT + "/";
 
