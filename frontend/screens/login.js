@@ -92,7 +92,7 @@ export default function Login(props) {
             if (e.response) setError(e.response.data.Error);
           });
     }
-    //render() {
+//render() {
     return (
         <ScrollView
             bounces={false}
@@ -154,7 +154,6 @@ export default function Login(props) {
             </KeyboardAvoidingView>
         </ScrollView> 
     )
-}
       
 const styles = StyleSheet.create({
     container: {
@@ -214,4 +213,3 @@ const styles = StyleSheet.create({
     }
 });
       
-//export default Login;
