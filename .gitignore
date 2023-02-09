@@ -7,7 +7,7 @@ npm-debug.*
 *.p12
 *.key
 *.mobileprovision
-*.orig.*
+.orig.
 web-build/
 .env
 .env.development
@@ -15,3 +15,4 @@ web-build/
 
 # macOS
 .DS_Store
+node_modules

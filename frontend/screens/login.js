@@ -110,10 +110,10 @@ export default function Login(props) {
 
                 <View style={styles.buttoncontainer}>
                     
-                    {/*<Button
+                    <Button
                         title="BACKDOOR"
                         onPress={() => backDoorHandler()}
-                     /> */}
+                     />
                     <Text style = {styles.error}> {error} </Text>
                     <TextInput style={styles.inputstyle} 
                         placeholder="Email"
