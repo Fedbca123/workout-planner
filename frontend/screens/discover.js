@@ -27,45 +27,44 @@ const workoutData = [
 ];
 const numColumns = 3;
 
-class DiscoverPage extends React.Component {
+export default function DiscoverPage(props){
 
-  constructor (props)
-  {
-   // const [listShowing, setListShowing] = useState("");
+  // constructor (props)
+  // {
+  //  // const [listShowing, setListShowing] = useState("");
 
-    super(props);
-    this.handleExercisePress = this.handleExercisePress.bind(this);
-    this.handleWorkoutPress = this.handleWorkoutPress.bind(this);
-  }
+  //   super(props);
+  //   this.handleExercisePress = this.handleExercisePress.bind(this);
+  //   this.handleWorkoutPress = this.handleWorkoutPress.bind(this);
+  // }
 
-  handleExercisePress(){
+  function handleExercisePress() {
     console.log("Exercise button pressed");
   }
 
-  handleWorkoutPress(){
+  function handleWorkoutPress() {
     console.log("Workout button pressed");
   }
 
-  displayWorkoutInfo(item){
+  function displayWorkoutInfo(item) {
     Alert.alert('Workout Info')
   }
 
-  renderItem = ({item, index}) => {
-    return (
-      <TouchableOpacity onPress={()=>
-      {
-        this.displayWorkoutInfo(item);
-      }}>
-        <View style={styles.item}>
-          <Text style={styles.itemText}>{item.Name}</Text>
-          <Text style={styles.itemText}>Reps: {item.Reps} Sets: {item.Sets}</Text>
-        </View>
-      </TouchableOpacity>
-    )
-  }
 
-  render() {
-  return (
+    // return (
+    //   <TouchableOpacity onPress={()=>
+    //   {
+    //     this.displayWorkoutInfo(item);
+    //   }}>
+    //     <View style={styles.item}>
+    //       <Text style={styles.itemText}>{item.Name}</Text>
+    //       <Text style={styles.itemText}>Reps: {item.Reps} Sets: {item.Sets}</Text>
+    //     </View>
+    //   </TouchableOpacity>
+    // )
+
+
+return (
     <View style = {styles.page}>
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
@@ -75,7 +74,7 @@ class DiscoverPage extends React.Component {
           <View style={styles.discoverBttnsCntnr}>
             <TouchableOpacity onPress={() =>
                   {
-                    this.handleWorkoutPress
+                    handleWorkoutPress();
                    // setListShowing(workout)
                   }}>
               <View style={styles.discoverWorkoutsBttnsContainer}>
@@ -86,7 +85,7 @@ class DiscoverPage extends React.Component {
 
             <TouchableOpacity onPress={() =>
                   {
-                    this.handleExercisePress
+                    handleExercisePress();
                    // setListShowing(exercise)
                   }}>
               <View style={styles.discoverExercisesBttnsContainer}>
@@ -102,7 +101,7 @@ class DiscoverPage extends React.Component {
           <FlatList
             data = {exerciseData}
             style = {styles.boxContainer}
-            renderItem = {this.renderItem}
+            renderItem = {item}
             //numColumns = {numColumns}
   
           />
@@ -110,8 +109,8 @@ class DiscoverPage extends React.Component {
       </View>
     </View>
     );
-  }
 }
+
 const styles = StyleSheet.create({
   boxContainer:{
     flex: 1,
@@ -185,4 +184,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscoverPage;
+// export default DiscoverPage;
