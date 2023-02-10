@@ -30,12 +30,7 @@ const workoutData = [
   {Name: 'Arms', id: 7, Exercises: 5},
   {Name: 'Legs', id: 8, Exercises: 6},
   {Name: 'Full Body', id: 9, Exercises: 11},
-  {Name: 'Arms', id: 10, Exercises: 5},
-  {Name: 'Legs', id: 11, Exercises: 6},
-  {Name: 'Full Body', id: 12, Exercises: 11},
-  {Name: 'Arms', id:13, Exercises: 5},
-  {Name: 'Legs', id:14, Exercises: 6},
-  {Name: 'Bottom Workout', id: 15, Exercises: 11}
+  {Name: 'Bottm Workout', id: 10, Exercises: 5},
 ];
 const numColumns = 3;
 
@@ -102,12 +97,12 @@ return (
             data = {exerciseData}
             style = {styles.boxContainer}
             renderItem = {({item}) => <TouchableOpacity onPress={()=>
-            Alert.alert(item.id, item.Name)}><Text style={styles.exerciseItems}>{item.Name}</Text></TouchableOpacity>}
+            Alert.alert(item.id, item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
           /> : <FlatList
             data = {workoutData}
             style = {styles.boxContainer}
             renderItem = {({item}) => <TouchableOpacity onPress={()=>
-            Alert.alert(item.id, item.Name)}><Text style={styles.workoutItems}>{item.Name}</Text></TouchableOpacity>}
+            Alert.alert(item.id, item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
             />}
       </View>
       {/* <View style={styles.discoverWorkoutContainer}>
