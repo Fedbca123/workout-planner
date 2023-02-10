@@ -4,68 +4,63 @@ import { StyleSheet, Text, View, TouchableOpacity, FlatList, Alert } from 'react
 import {Card} from 'react-native-paper';
 
 const exerciseData = [
-  {Name: 'Top', Sets: 2, Reps: 3},
-  {Name: 'Benchpress', Sets: 3, Reps: 5},
-  {Name: 'Lunges', Sets: 5, Reps: 5},
-  {Name: 'Deadlift', Sets: 1, Reps: 3},
-  {Name: 'Skullcrusher', Sets: 4, Reps: 3},
-  {Name: 'Squats', Sets: 2, Reps: 3},
-  {Name: 'Benchpress', Sets: 3, Reps: 5},
-  {Name: 'Lunges', Sets: 5, Reps: 5},
-  {Name: 'Deadlift', Sets: 1, Reps: 3},
-  {Name: 'Skullcrusher', Sets: 4, Reps: 3},
-  {Name: 'Squats', Sets: 2, Reps: 3},
-  {Name: 'Benchpress', Sets: 3, Reps: 5},
-  {Name: 'Lunges', Sets: 5, Reps: 5},
-  {Name: 'Deadlift', Sets: 1, Reps: 3},
-  {Name: 'Bottom', Sets: 4, Reps: 3},
+  {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
+  {Name: 'Benchpress', id: 2, Sets: 3, Reps: 5},
+  {Name: 'Lunges', id: 3, Sets: 5, Reps: 5},
+  {Name: 'Deadlift', id: 4, Sets: 1, Reps: 3},
+  {Name: 'Skullcrusher', id: 5, Sets: 4, Reps: 3},
+  {Name: 'Squats', id: 6, Sets: 2, Reps: 3},
+  {Name: 'Benchpress', id: 7, Sets: 3, Reps: 5},
+  {Name: 'Lunges', id: 8, Sets: 5, Reps: 5},
+  {Name: 'Deadlift', id: 9, Sets: 1, Reps: 3},
+  {Name: 'Skullcrusher', id: 10, Sets: 4, Reps: 3},
+  {Name: 'Squats', id: 11, Sets: 2, Reps: 3},
+  {Name: 'Benchpress', id: 12, Sets: 3, Reps: 5},
+  {Name: 'Lunges', id: 13, Sets: 5, Reps: 5},
+  {Name: 'Deadlift', id: 14, Sets: 1, Reps: 3},
+  {Name: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
 ];
 const workoutData = [
-  {Name: 'Arms', Exercises: 5},
-  {Name: 'Legs', Exercises: 6},
-  {Name: 'Full Body', Exercises: 11}
+  {Name: 'Top Workout', id: 1, Exercises: 5},
+  {Name: 'Legs', id: 2, Exercises: 6},
+  {Name: 'Full Body', id: 3, Exercises: 11},
+  {Name: 'Arms', id: 4, Exercises: 5},
+  {Name: 'Legs', id: 5, Exercises: 6},
+  {Name: 'Full Body', id: 6, Exercises: 11},
+  {Name: 'Arms', id: 7, Exercises: 5},
+  {Name: 'Legs', id: 8, Exercises: 6},
+  {Name: 'Full Body', id: 9, Exercises: 11},
+  {Name: 'Bottm Workout', id: 10, Exercises: 5},
 ];
 const numColumns = 3;
 
-class DiscoverPage extends React.Component {
+export default function DiscoverPage(props) {
 
-  constructor (props)
-  {
-   // const [listShowing, setListShowing] = useState("");
+  const [isWorkoutVisible, setWorkoutVisible] = useState(false);
+  const [isExerciseVisible, setExerciseVisible] = useState(false);
 
-    super(props);
-    this.handleExercisePress = this.handleExercisePress.bind(this);
-    this.handleWorkoutPress = this.handleWorkoutPress.bind(this);
-  }
-
-  handleExercisePress(){
+  function handleExercisePress() {
     console.log("Exercise button pressed");
   }
 
-  handleWorkoutPress(){
+  function handleWorkoutPress() {
     console.log("Workout button pressed");
   }
 
-  displayWorkoutInfo(item){
-    Alert.alert('Workout Info')
+  function showWorkout() {
+      if (!isWorkoutVisible){
+        setWorkoutVisible(true);
+        setExerciseVisible(false);
+      }
   }
-
-  renderItem = ({item, index}) => {
-    return (
-      <TouchableOpacity onPress={()=>
-      {
-        this.displayWorkoutInfo(item);
-      }}>
-        <View style={styles.item}>
-          <Text style={styles.itemText}>{item.Name}</Text>
-          <Text style={styles.itemText}>Reps: {item.Reps} Sets: {item.Sets}</Text>
-        </View>
-      </TouchableOpacity>
-    )
+  const showExercise = () => {
+      if (!isExerciseVisible) {
+        setExerciseVisible(true);
+        setWorkoutVisible(false);
   }
+}
 
-  render() {
-  return (
+return (
     <View style = {styles.page}>
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
@@ -75,19 +70,19 @@ class DiscoverPage extends React.Component {
           <View style={styles.discoverBttnsCntnr}>
             <TouchableOpacity onPress={() =>
                   {
-                    this.handleWorkoutPress
-                   // setListShowing(workout)
-                  }}>
+                    showWorkout();
+                    handleWorkoutPress();
+                  }
+                }>
               <View style={styles.discoverWorkoutsBttnsContainer}>
                 <Text style={styles.workoutsBttnText}>Workouts</Text>
               </View>
             </TouchableOpacity>
 
-
             <TouchableOpacity onPress={() =>
                   {
-                    this.handleExercisePress
-                   // setListShowing(exercise)
+                    showExercise();
+                    handleExercisePress();
                   }}>
               <View style={styles.discoverExercisesBttnsContainer}>
                 <Text style={styles.exercisesBttnText}>Exercises</Text>
@@ -97,38 +92,62 @@ class DiscoverPage extends React.Component {
         </View>
       </View>
       
-      <View style={styles.discoverBodyContainer}>
-         
-          <FlatList
+      <View style={styles.discoverExerciseContainer}>
+          {isExerciseVisible ? <FlatList
             data = {exerciseData}
             style = {styles.boxContainer}
-            renderItem = {this.renderItem}
-            //numColumns = {numColumns}
-  
-          />
-          {/* <StatusBar style= "auto" />*/}
+            renderItem = {({item}) => <TouchableOpacity onPress={()=>
+            Alert.alert(item.id, item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+          /> : <FlatList
+            data = {workoutData}
+            style = {styles.boxContainer}
+            renderItem = {({item}) => <TouchableOpacity onPress={()=>
+            Alert.alert(item.id, item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+            />}
       </View>
+      {/* <View style={styles.discoverWorkoutContainer}>
+          {isWorkoutVisible ? <FlatList
+            data = {workoutData}
+            style = {styles.boxContainer}
+            renderItem = {({item}) => <Text style={styles.workoutItems}>{item.Name}</Text>}
+  
+          /> : <FlatList
+            data = {exerciseData}
+            style = {styles.boxContainer}
+            renderItem = {({item}) => <Text style={styles.exerciseItems}>{item.Name}</Text>}
+            />
+            }
+      </View> */}
     </View>
-    );
-  }
+  )
 }
+
+
 const styles = StyleSheet.create({
   boxContainer:{
     flex: 1,
-    
   },
-   item:{
+  workoutItems:{
+    backgroundColor: '#4D243D',
+    color: "#fff",
+    justifyContent: 'center',
+    textAlign: 'center',
+    padding: 10, 
+    //height: Dimensions.get('window') / numColumns,
+    flex: 1,
+    margin: 1,
+ },
+  exerciseItems:{
       backgroundColor: '#4D243D',
-      alignItems: 'center',
+      color: "#fff",
       justifyContent: 'center',
+      textAlign: 'center',
       padding: 10, 
       //height: Dimensions.get('window') / numColumns,
       flex: 1,
       margin: 1,
    },
-   itemText:{
-      color: "#fff"
-   },
+
   discoveryPageHeader:{
     backgroundColor: 'white',
   },
@@ -166,16 +185,22 @@ const styles = StyleSheet.create({
     padding: 10,
     opacity: .45,
   },
-  discoverBodyContainer:{
+  discoverWorkoutContainer:{
     backgroundColor: 'pink',
-    height: "76%"
-   // flex: 2,
+    height: "75.5%"
+    //flex: 2,
+  },
+  discoverExerciseContainer:{
+    backgroundColor: 'pink',
+    height: "75.5%",
+    //flex: 2,
   },
   discoverHeaderContainer:{
     backgroundColor: 'white',
     //flex: 1,
   },
   page:{
+    //height: 600,
   },
   container: {
   //  height: 700,
@@ -184,5 +209,3 @@ const styles = StyleSheet.create({
     //justifyContent: 'space-evenly',
   },
 });
-
-export default DiscoverPage;
