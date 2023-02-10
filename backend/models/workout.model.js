@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-let Exercise = require('./exercise.model').schema;
+let {Exercise, exerciseSchema} = require('./exercise.model');
 
 var workoutSchema = new Schema({
   title: {
@@ -20,7 +20,7 @@ var workoutSchema = new Schema({
   image: String,
   imageId: String,
   exercises: {
-    type: [Exercise],
+    type: [exerciseSchema],
     required: false,
   },
   duration: {

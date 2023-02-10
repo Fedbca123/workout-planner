@@ -12,6 +12,14 @@ function removeItem(array, val){
   return array;
 }
 
+function removeItemByID(array, id) {
+  const indexOfObject = array.findIndex((obj) => obj._id == id);
+  if(indexOfObject > -1) {
+    array.splice(indexOfObject,1);
+  }
+  return array;
+}
+
 //-----POST-----//
 router.route('/register').post(async (req,res) =>
 {
@@ -174,8 +182,8 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
 });
 
 // remove scheduled workout from user's account
-router.route('/:id/workouts/remove').patch(async (req,res) => {
-  const id = req.params.id;
+router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
+  const {id, w_id} = req.params;
 
   const user = await User.findById(id);
   if (!user)
@@ -184,10 +192,10 @@ router.route('/:id/workouts/remove').patch(async (req,res) => {
   }
 
   // grab workout from body
-  const workout = req.body.workout;
+  //const workout = req.body.workout;
 
   // remove workout from user's scheduledWorkouts section
-  user.scheduledWorkouts = removeItem(user.scheduledWorkouts, workout);
+  user.scheduledWorkouts = removeItemByID(user.scheduledWorkouts, w_id);
 
   await user.save((err, newUser) => {
     if (err) return res.status(400).send(err);
@@ -196,8 +204,8 @@ router.route('/:id/workouts/remove').patch(async (req,res) => {
 });
 
 // user completes a workout. Must move workout to complete
-router.route('/:id/workouts/complete').patch(async (req,res) => {
-  const id = req.params.id;
+router.route('/:id/workouts/complete/:w_id').patch(async (req,res) => {
+  const {id,w_id} = req.params;
 
   const user = await User.findById(id);
   if (!user)
@@ -205,23 +213,29 @@ router.route('/:id/workouts/complete').patch(async (req,res) => {
     return res.status(400).send({Error: "User does not exist!"});
   }
 
-  const workout = req.body.workout;
+  const workout = user.scheduledWorkouts.filter(w => w._id == w_id)[0];
   // remove anyways
-  user.scheduledWorkouts = removeItem(user.scheduledWorkouts, workout);
-  // add to completed anyways
-  user.completedWorkouts.push(workout);
+  user.scheduledWorkouts = removeItemByID(user.scheduledWorkouts, w_id);
+  
   // if recurring add in again but a week in advance
   if(workout.recurrence){
-    var date = new Date(workout.scheduledDate);
+    var date = workout.scheduledDate ? new Date(workout.scheduledDate) : new Date();
     date.setDate(date.getDate() + 7);
     workout.scheduledDate = date;
     user.scheduledWorkouts.push(workout);
   }
 
+  // recurrence = false
+  workout.recurrence = false;
+  console.log(workout)
+  // add to completed anyways
+  user.completedWorkouts.push(workout);
+
   await user.save((err, newUser) => {
     if (err) return res.status(400).send(err);
     res.status(200).json(newUser);
   });
+
 });
 
 // user A invites user B
