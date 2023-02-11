@@ -8,10 +8,12 @@ import {
     KeyboardAvoidingView,
     ScrollView
   } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, {useState, useRef} from 'react';
 import axios from 'axios';
 import config from '../../config';
 import {useGlobalState} from '../../GlobalState.js';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const baseUrl = config.API_URL + config.PORT + '/';
 
 export default function Login(props) {
@@ -94,13 +96,8 @@ export default function Login(props) {
     }
     //render() {
     return (
-        <ScrollView
-            bounces={false}
-            contentContainerStyle={styles.container}
-            >
-            <KeyboardAvoidingView
-                behavior = {"position"/*Platform.OS === "ios" ? "padding" : "height"*/}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 5}>
+        <KeyboardAwareScrollView
+          extraHeight={100} contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled" bounces={false}>
                 <Image style={styles.image}
                     source={require('../../assets/workout.png')} />
                 <View style={styles.textcontainer}>
@@ -110,7 +107,7 @@ export default function Login(props) {
 
                 <View style={styles.buttoncontainer}>
                     
-                    <Button
+                <Button
                         title="BACKDOOR"
                         onPress={() => backDoorHandler()}
                      />
@@ -156,9 +153,8 @@ export default function Login(props) {
                             //this.props.navigation.navigate("registration");
                             props.navigation.navigate("registration");
                         }}/>
-                </View>
-            </KeyboardAvoidingView>
-        </ScrollView> 
+                        </View>
+        </KeyboardAwareScrollView>
     )
     //}
 }
