@@ -104,9 +104,7 @@ export default function Login(props) {
                     <Text style = {styles.heading}> Welcome! </Text>
                     <Text style = {styles.text}> You will have everything you need to reach your personal fitness goals - for free! </Text>
                 </View>
-
                 <View style={styles.buttoncontainer}>
-                    
                 <Button
                         title="BACKDOOR"
                         onPress={() => backDoorHandler()}
@@ -166,9 +164,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white'
     },
     textcontainer: {
-        flex: .8,
+        flex: .3,
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingTop: 10,
-        width: '100%'
+        width: '100%',
     },
     heading:{
         color: '#2B2B2B',
