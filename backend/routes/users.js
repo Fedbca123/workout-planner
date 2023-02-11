@@ -191,8 +191,17 @@ router.route('/:id/contact').patch(async (req, res) => {
 
   if (firstName) {user.firstName = firstName;}
   if (lastName) {user.lastName = lastName;}
-  if (email) {user.email = email;}
-  
+  if (email) {
+    // Check if email exists
+    const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+    if (emailExists)
+    {
+      return res.status(502).send({Error: "Email already exists!"});
+    }
+
+    user.email = email;
+  }
+
   await user.save((err, newUser) => {
       if (err) return res.status(499).send(err);
       res.status(200).json(newUser);
