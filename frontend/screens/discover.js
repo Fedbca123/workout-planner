@@ -97,12 +97,12 @@ return (
             data = {exerciseData}
             style = {styles.boxContainer}
             renderItem = {({item}) => <TouchableOpacity onPress={()=>
-            Alert.alert(item.id, item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+            Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
           /> : <FlatList
             data = {workoutData}
             style = {styles.boxContainer}
             renderItem = {({item}) => <TouchableOpacity onPress={()=>
-            Alert.alert(item.id, item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+            Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
             />}
       </View>
       {/* <View style={styles.discoverWorkoutContainer}>
