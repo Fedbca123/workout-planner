@@ -123,6 +123,7 @@ export default function Register(props) {
         {
             setError('');
             updateGlobalState("user", response.data);
+            // no need for friends state to render bc itll be empty on account creation
 
             props.navigation.navigate("home");
         }
