@@ -24,7 +24,10 @@ export default function LoginNav() {
 					component={Login}
 					options={{ headerShown: false }}
 				/>
-				<Stack.Screen name="home" component={HomeNav} />
+				<Stack.Screen 
+        name="home" 
+        component={HomeNav}
+        options={{ header: HomeHeader }} />
 				<Stack.Screen
 					name="chooseTemplate"
 					component={ChooseTemplate}
