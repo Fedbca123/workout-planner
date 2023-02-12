@@ -118,15 +118,9 @@ router.route('/').get(async (req, res) => {
 });
 
 router.route('/:id').get(async (req, res) => {
-    const user = await User.findById(id);
-    if (!user)
-    {
-        return res.status(498).send({Error: "User does not exist!"});
-    }
-    res.status(200).json(user);
-    /*User.findById(req.params.id)
+    User.findById(req.params.id)
     .then(user => res.json(user))
-    .catch(err => res.status(400).json('Error: ' + err))*/
+    .catch(err => res.status(400).json('Error: ' + err))
 });
 
 //-----DELETE-----//
@@ -347,6 +341,10 @@ router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
   if (!userB)
   {
     return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  if(!userA.friendRequests.includes(B_id)){
+    return res.status(400).send({Error: `${userB.firstName} ${userB.lastName} is not in ${userA.firstName}'s invites list`})
   }
 
   // remove B from A's friend request list
