@@ -41,7 +41,8 @@ export default function Login(props) {
             if (response.status == 200)
             {
                 setError('');
-                updateGlobalState("user", response.data);
+                updateGlobalState("user", response.data.user);
+                updateGlobalState("friends", response.data.friends)
                 props.navigation.navigate("home");
             }
         })
@@ -58,7 +59,8 @@ export default function Login(props) {
             if (response.status == 200)
             {
                 setError('');
-                updateGlobalState("user", response.data)
+                updateGlobalState("user", response.data.user)
+                updateGlobalState("friends", response.data.friends)
                 props.navigation.navigate("home");
             }
         })

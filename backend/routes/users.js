@@ -100,9 +100,16 @@ router.route('/login').post(async (req, res) => {
 
     if (await bcrypt.compare(password, user.password))
     {
-        // this is when user is returned
-        // All properties held in user object
-        return res.status(200).json(user);
+        var friends = [];
+
+        for (const friendID of user.friends) {
+          await User.findById(friendID)
+            .then(friend => friends.push(friend))
+            .catch(err => res.status(400).json({Error: err}))
+        }
+
+        // object ret is returned in JSON format
+        return res.status(200).json({user: user, friends: friends});
     }
     else 
     {
