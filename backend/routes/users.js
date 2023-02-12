@@ -8,6 +8,7 @@ let User = require('../models/user.model');
 Error Codes:
 200 - OK
 400 - general error (look at message for details)
+495 - email not in proper format
 496 - modification seeking to be made has already been made (look at message for details)
       (ie inviting the same user twice will fail the second time)
 497 - user attempting call is blocked by other user
@@ -192,7 +193,11 @@ router.route('/:id/contact').patch(async (req, res) => {
   if (firstName) {user.firstName = firstName;}
   if (lastName) {user.lastName = lastName;}
   if (email) {
-    // Check if email exists
+    // make sure email field matches a regex
+    if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
+      return res.status(495).send({Error: `${email} not in proper email format`});
+    }
+    // Check if email exists in DB
     const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
     if (emailExists)
     {
