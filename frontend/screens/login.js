@@ -72,6 +72,12 @@ export default function Login(props) {
                 }
                 updateGlobalState("user", response.data.user)
                 updateGlobalState("friends", response.data.friends)
+                if (response.data.isAdmin) {
+                    props.navigation.navigate("admin");
+                }
+                else {
+                    props.navigation.navigate("home");
+                }
             }
         })
         .catch((e) => {
