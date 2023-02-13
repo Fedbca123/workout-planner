@@ -49,6 +49,11 @@ var userSchema = new Schema({
     completedWorkouts: [workoutSchema],
     customWorkouts: [workoutSchema],
     customExercises: [exerciseSchema],
+    isAdmin: {
+        type: Boolean,
+        required: false,
+        default: false
+      },
 },
 {
     timestamps: true,
