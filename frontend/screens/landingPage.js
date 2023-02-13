@@ -20,6 +20,7 @@ const baseUrl = config.API_URL + config.PORT + "/";
 export default function LandingPage(props) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const navigation = useNavigation();
+
 	const handleScratchPress = () => {
 		console.log("Scratch Button Pressed");
 		// Nav Link here

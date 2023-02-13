@@ -2,7 +2,8 @@ import { useState, createContext, useContext } from "react"
 
 // The initial state, you can setup any properties initilal values here.
 const initialState = {
-    user: {}
+    user: {},
+    friends: []
 }
 
 // create the context object for delivering your state across your app.
