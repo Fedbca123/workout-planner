@@ -9,6 +9,7 @@ import { useGlobalState } from "../../GlobalState.js";
 import HomeHeader from "../component/homeHeader.js";
 import ChooseTemplate from "../screens/chooseTemplate.js";
 import DTRpicker from "../screens/dateTimeRepsPicker.js";
+import ExerciseSearch from "../screens/exerciseSearch.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,10 @@ export default function LoginNav() {
 					options={{ headerShown: false }}
 				/>
 				<Stack.Screen name="dateTimeRepsPicker" component={DTRpicker} />
+				<Stack.Screen
+					name="exerciseSearch"
+					component={ExerciseSearch}
+				/>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

@@ -22,8 +22,8 @@ export default function LandingPage(props) {
 	const navigation = useNavigation();
 
 	const handleScratchPress = () => {
-		console.log("Scratch Button Pressed");
-		// Nav Link here
+		// console.log("Scratch Button Pressed");
+		navigation.navigate("exerciseSearch");
 	};
 	const handleTemplatePress = () => {
 		// console.log("Template Button Pressed");
