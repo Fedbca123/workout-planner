@@ -30,9 +30,8 @@ const workoutData = [
   {Name: 'Arms', id: 7, Exercises: 5},
   {Name: 'Legs', id: 8, Exercises: 6},
   {Name: 'Full Body', id: 9, Exercises: 11},
-  {Name: 'Bottm Workout', id: 10, Exercises: 5},
+  {Name: 'Bottom Workout', id: 10, Exercises: 5},
 ];
-const numColumns = 3;
 
 export default function DiscoverPage(props) {
 
@@ -53,7 +52,7 @@ export default function DiscoverPage(props) {
         setExerciseVisible(false);
       }
   }
-  const showExercise = () => {
+  function showExercise() {
       if (!isExerciseVisible) {
         setExerciseVisible(true);
         setWorkoutVisible(false);
@@ -66,7 +65,6 @@ return (
         <View style={styles.discoveryPageHeader}>
           <Text style={styles.discoverTitle}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
-          
           <View style={styles.discoverBttnsCntnr}>
             <TouchableOpacity onPress={() =>
                   {
