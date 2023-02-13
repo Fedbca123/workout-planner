@@ -47,10 +47,14 @@ export default function AdminPage(props) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignContent: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
     },
     header: {
         flex: 1,
-        alignItems: 'center'
+        justifyContent: 'center'
+
     }
 });
