@@ -8,6 +8,8 @@ import {
 	SafeAreaView,
 	TextInput,
 	FlatList,
+	ScrollView,
+	Alert,
 } from "react-native";
 import React from "react";
 import reactDom from "react-dom";
@@ -16,9 +18,12 @@ import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
-// import { FlatList } from "react-native-web";
+import WorkOuts from "./workout";
+import HomeNav from "../navigation/homeNav";
 
 export default function ExerciseSearch(props) {
+	const navigation = useNavigation();
+	const [globalState, updateGlobalState] = useGlobalState();
 	const exercises = [
 		{
 			title: "Romanian Deadlift",
@@ -33,18 +38,50 @@ export default function ExerciseSearch(props) {
 			muscleGroups: ["Biceps"],
 		},
 	];
+
+	var userWorkout = [
+		{
+			title: "Your Created Workout",
+			content: [],
+		},
+	];
+
 	return (
-		<View>
+		<SafeAreaView>
 			<SearchBar placeholder="Enter exercise names or muscle groups you wish to train!"></SearchBar>
-			<Text>Saved Workouts</Text>
-			<FlatList data={exercises} />
-		</View>
+			<WorkOuts data={userWorkout} />
+			<Text>Exercises:</Text>
+			<FlatList
+				data={exercises}
+				keyExtractor={(item) => item.title}
+				renderItem={({ item }) => (
+					<View style={styles.ExerciseCard}>
+						<TouchableOpacity
+							onPress={() => {
+								userWorkout[0].content.push(item);
+								Alert.alert("Exercise Added to workout!");
+							}}
+						>
+							<Text>{item.title}</Text>
+						</TouchableOpacity>
+					</View>
+				)}
+			/>
+			<Button
+				title="Finalize Workout"
+				onPress={() => {
+					updateGlobalState("workout", userWorkout);
+					navigation.navigate("finalizeWorkout");
+				}}
+			/>
+			{/* <HomeNav /> */}
+		</SafeAreaView>
 	);
 }
 
 const styles = StyleSheet.create({
 	ExerciseCard: {
-		backgroundColor: "#DDF2FF",
+		backgroundColor: "#F1F3FA",
 		padding: 20,
 		marginBottom: 0,
 		shadowColor: "#000",

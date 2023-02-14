@@ -98,6 +98,7 @@ export default function WorkOuts({ props, data, showButton, showInput }) {
 		<SafeAreaView style={styles.collapsePill}>
 			<Accordion
 				// containerStyle={styles.Background}
+				// renderAsFlatList={true}
 				sections={data}
 				renderContent={renderContent}
 				renderHeader={renderHeader}
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
 		// backgroundColor: "#DDF2FF", //"#F1F3FA",
 		// margin: 30,
 		// padding: 15,
-		backgroundColor: "#DDF2FF",
+		backgroundColor: "#F1F3FA",
 		padding: 20,
 		marginBottom: 0,
 		shadowColor: "#000",
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
 	},
 	collapsedContent: {
 		flexDirection: "row",
-		backgroundColor: "#DDF2FF", //"#F1F3FA",
+		backgroundColor: "#F1F3FA",
 		margin: 30,
 		padding: 15,
 	},

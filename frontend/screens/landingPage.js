@@ -14,6 +14,7 @@ import axios from "axios";
 import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
+import WorkOuts from "./workout";
 
 const baseUrl = config.API_URL + config.PORT + "/";
 
@@ -33,17 +34,7 @@ export default function LandingPage(props) {
 	const loadCurrentDayWorkoutStatus = () => {
 		// logic to define whether a workout exists today or not
 		if (globalState.workoutScheduled != null) {
-			return (
-				// <SafeAreaView>
-				// 	<Text>a workout scheduled today</Text>
-				// 	{/* <WorkOuts
-				// 		data={globalState.workoutScheduled}
-				// 		showButton={false}
-				// 		showInput={false}
-				// 	/> */}
-				// </SafeAreaView>
-				"a workout scheduled today"
-			);
+			return "a workout scheduled today";
 		} else {
 			return "no workout scheduled today";
 		}
@@ -95,7 +86,8 @@ export default function LandingPage(props) {
 				</View>
 			</View>
 			<View style={styles.BodyContainer}>
-				<Text style={styles.bodyHeader}>Your Saved Workouts</Text>
+				<Text style={styles.bodyHeader}>Your Scheduled Workouts:</Text>
+				{loadTodaysWorkout()}
 				{/* Logic to define how to load the saved workouts */}
 			</View>
 		</View>
