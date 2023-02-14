@@ -74,7 +74,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 });
 
 //------UPDATE-----//
-router.route('/:id').patch(async (req,res) => {
+router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const id = req.params.id;
   const {title,description,img,exercises,location,recurrence,scheduledDate,dateOfCompletion} = req.body;
 
@@ -84,9 +84,28 @@ router.route('/:id').patch(async (req,res) => {
     return res.status(400).send({Error: `Workout ${id} does not exist!`});
   }
 
+  var image = null;
+  var imageId = null;
+  if(req.file){
+    await cloudinary.v2.uploader.upload(req.file.path,{folder: "workouts"},function(err, result) {
+      if (err)
+        return res.status(501).send({Error: err});
+      image = result.url;
+      imageId = result.public_id;
+      cloudinary.v2.uploader.destroy(workout.imageId, function(err, result) {
+        if (err)
+          console.log("There was an error deleting the workout Photo")
+        else{
+          console.log("Photo deleted");
+        }
+      });
+    });
+  }
+
   if(title) {workout.title = title;}
   if(description) {workout.description = description;}
-  if(img) {workout.img = img;}
+  if(image != null) {workout.image = image;}
+  if(imageId != null) {workout.imageId = imageId;}
   if(exercises) {workout.exercises = exercises;}
   if(location) {workout.location = location;}
   if(recurrence) {workout.recurrence = recurrence;}
@@ -97,6 +116,9 @@ router.route('/:id').patch(async (req,res) => {
     if (err) return res.status(400).send(err);
     res.status(200).json(newWorkout);
   });
+  if(req.file){
+    await unlinkAsync(req.file.path);
+ }
 });
 
 //------DELETE-----//
