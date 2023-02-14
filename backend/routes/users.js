@@ -1,7 +1,8 @@
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
-
+const cloudinary = require('../cloudinary');
+const upload = require('../middleware/uploadMiddleware');
 let User = require('../models/user.model');
 
 /*
@@ -224,9 +225,7 @@ router.route('/:id/exercises/custom/create').post(async (req,res) => {
     return res.status(498).send({Error: "User does not exist!"});
   }
 
-  // grab workout from body
-  // may need to modify data depending on how it looks
-  // also to fulfill the schema we have defined
+  // exercise mostly in body but image in upload
   const exercise = req.body.exercise;
 
   // add workout to user's scheduledWorkouts section
@@ -419,7 +418,7 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
 // edit scheduled workout from user's account
 router.route('/:id/workouts/edit/:w_id').patch(async (req,res) => {
   const {id, w_id} = req.params;
-  const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups, scheduledDate, recurrence} = req.body;
+  const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups, recurrence} = req.body;
 
   const user = await User.findById(id);
   if (!user)
@@ -438,7 +437,6 @@ router.route('/:id/workouts/edit/:w_id').patch(async (req,res) => {
       if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
       if(tags) {workout.tags = tags;}
       if(muscleGroups) {workout.muscleGroups = muscleGroups;}
-      if(scheduledDate) {workout.scheduledDate = scheduledDate;}
       if(recurrence) {workout.recurrence = recurrence;}
     }
   }
