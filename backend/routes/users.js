@@ -416,6 +416,39 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
   });
 });
 
+// edit scheduled workout from user's account
+router.route('/:id/workouts/edit/:w_id').patch(async (req,res) => {
+  const {id, w_id} = req.params;
+  const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups, scheduledDate, recurrence} = req.body;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+
+  for(const workout of user.customWorkouts){
+    if(workout._id == w_id){
+      if(title) {workout.title = title;}
+      if(description) {workout.description = description;}
+      if(exercises) {workout.exercises = exercises;}
+      if(duration) {workout.duration = duration;}
+      if(location) {workout.location = location;}
+      if(scheduledDate) {workout.scheduledDate = scheduledDate;}
+      if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
+      if(tags) {workout.tags = tags;}
+      if(muscleGroups) {workout.muscleGroups = muscleGroups;}
+      if(scheduledDate) {workout.scheduledDate = scheduledDate;}
+      if(recurrence) {workout.recurrence = recurrence;}
+    }
+  }
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
 // user completes a workout. Must move workout to complete
 router.route('/:id/workouts/complete/:w_id').patch(async (req,res) => {
   const {id,w_id} = req.params;
