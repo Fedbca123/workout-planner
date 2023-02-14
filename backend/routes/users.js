@@ -214,6 +214,84 @@ router.route('/:id/contact').patch(async (req, res) => {
   });
 });
 
+// adding custom exercise
+router.route('/:id/exercises/custom/create').post(async (req,res) => {
+  const id = req.params.id;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+
+  // grab workout from body
+  // may need to modify data depending on how it looks
+  // also to fulfill the schema we have defined
+  const exercise = req.body.workout;
+
+  // add workout to user's scheduledWorkouts section
+  user.customExercises.push(exercise);
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// removing custom exercise
+router.route('/:id/exercises/custom/remove/:e_id').patch(async (req,res) => {
+  const {id, e_id} = req.params;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+
+  // grab workout from body
+  //const workout = req.body.workout;
+
+  // remove workout from user's scheduledWorkouts section
+  user.customExercises = removeItemByID(user.customExercises, e_id);
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// editing custom exercise
+router.route('/:id/workouts/custom/edit/:e_id').patch(async (req,res)=> {
+  const {id, e_id} = req.params;
+  const {title, description, exerciseType, sets, reps, time, weight, restTime, tags, muscleGroups} = req.body;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+
+  for(const exercise of user.customExercises){
+    if(exercise._id == e_id){
+      if(title) {workout.title = title;}
+      if(description) {workout.description = description;}
+      if(exerciseType) {workout.exerciseType = exerciseType;}
+      if(sets) {workout.sets = sets;}
+      if(reps) {workout.reps = reps;}
+      if(time) {workout.time = time;}
+      if(weight) {workout.weight = weight;}
+      if(restTime) {workout.restTime = restTime;}
+      if(tags) {workout.tags = tags;}
+      if(muscleGroups) {workout.muscleGroups = muscleGroups;}
+    }
+  }
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+})
+
 // adding custom workout
 router.route('/:id/workouts/custom/schedule').post(async (req,res) => {
   const id = req.params.id;
@@ -264,6 +342,7 @@ router.route('/:id/workouts/custom/remove/:w_id').patch(async (req,res) => {
   });
 });
 
+// edit custom workout
 router.route('/:id/workouts/custom/edit/:w_id').patch(async (req,res)=> {
   const {id, w_id} = req.params;
   const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups} = req.body;
@@ -287,7 +366,7 @@ router.route('/:id/workouts/custom/edit/:w_id').patch(async (req,res)=> {
       if(muscleGroups) {workout.muscleGroups = muscleGroups;}
     }
   }
-  
+
   await user.save((err, newUser) => {
     if (err) return res.status(499).send(err);
     res.status(200).json(newUser);
