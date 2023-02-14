@@ -47,7 +47,7 @@ export default function LandingPage(props) {
 				<WorkOuts
 					data={globalState.workoutScheduled}
 					showButton={false}
-					showInput={false}
+					showInput={true}
 				/>
 			);
 		} else {

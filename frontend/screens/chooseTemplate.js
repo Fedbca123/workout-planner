@@ -28,6 +28,8 @@ export default function ChooseTemplate(props) {
 	const SECTIONS = [
 		{
 			title: "Leg Day",
+			duration:45,
+			location:"Gold's Gym",
 			content: [
 				{
 					title: "Deadlift",
@@ -70,6 +72,8 @@ export default function ChooseTemplate(props) {
 	const sections = [
 		{
 			title: "Heavy Chest Day",
+			duration:70,
+			location:"L.A. Fitness",
 			content: [
 				{
 					title: "Barbell Bench Press",
@@ -114,19 +118,7 @@ const styles = StyleSheet.create({
 		// flex: 1,
 	},
 	HeaderText: {
-		// position: "f",
-		// width: 185,
-		// height: 22,
-		// left: 20,
-		// top: 87,
-		// // fontFamily: "Inter",
-		// fontStyle: "normal",
-		// fontSize: 18,
-		// fontWeight: 700,
-		// font-family: 'Inter';
-		// font-style: normal;
-		// font-weight: 700;
-		// font-size: 18px;
-		// line-height: 22px;
+		fontSize: 20,
+    	fontWeight: 'bold',
 	},
 });

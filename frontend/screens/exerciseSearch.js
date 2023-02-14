@@ -37,11 +37,29 @@ export default function ExerciseSearch(props) {
 			title: "Preacher Curls",
 			muscleGroups: ["Biceps"],
 		},
+		{
+			title:"Lunges",
+			muscleGroups: ["Quads"],
+		},
+		{
+			title:"Skullcrushers",
+			muscleGroups:["triceps", "Upper Chest"]
+		},
+		{
+			title:"Deadman hangs",
+			muscleGroups:["forearms"]
+		},
+		{
+			title:"Barbell Front Squats",
+			muscleGroups:["Hamstrings", "glutes"]
+		}
 	];
 
 	var userWorkout = [
 		{
 			title: "Your Created Workout",
+			location:"",
+			duration:0,
 			content: [],
 		},
 	];
@@ -50,7 +68,7 @@ export default function ExerciseSearch(props) {
 		<SafeAreaView>
 			<SearchBar placeholder="Enter exercise names or muscle groups you wish to train!"></SearchBar>
 			<WorkOuts data={userWorkout} />
-			<Text>Exercises:</Text>
+			<Text style={styles.TitleText}>Exercises:</Text>
 			<FlatList
 				data={exercises}
 				keyExtractor={(item) => item.title}
@@ -62,7 +80,9 @@ export default function ExerciseSearch(props) {
 								Alert.alert("Exercise Added to workout!");
 							}}
 						>
+							{/* Image component Here */}
 							<Text>{item.title}</Text>
+							{/* Button to take user to page about info for the workout */}
 						</TouchableOpacity>
 					</View>
 				)}
@@ -74,7 +94,8 @@ export default function ExerciseSearch(props) {
 					navigation.navigate("finalizeWorkout");
 				}}
 			/>
-			{/* <HomeNav /> */}
+			{/* <HomeNav/> */}
+			
 		</SafeAreaView>
 	);
 }
@@ -91,4 +112,8 @@ const styles = StyleSheet.create({
 		elevation: 2,
 		borderRadius: 15,
 	},
+	TitleText:{
+		fontSize: 20,
+    	fontWeight: 'bold',
+	}
 });

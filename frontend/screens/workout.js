@@ -17,7 +17,7 @@ import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../../GlobalState.js";
 
-export default function WorkOuts({ props, data, showButton, showInput }) {
+export default function WorkOuts({ props, data, showButton, showInput}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const navigation = useNavigation();
@@ -35,13 +35,19 @@ export default function WorkOuts({ props, data, showButton, showInput }) {
 			return (
 				<View style={styles.collapsePill}>
 					<Text style={styles.TitleText}>{sections.title}</Text>
-					<Button
+					{/* <Button
 						onPress={() => {
 							navigation.navigate("dateTimeRepsPicker");
 							updateGlobalState("workout", data);
 						}}
 						title="+"
-					/>
+					/> */}
+					<TouchableOpacity onPress={() =>{
+						navigation.navigate("dateTimeRepsPicker");
+						updateGlobalState("workout", data);
+					}}>
+						<Text>Choose Workout</Text>
+					</TouchableOpacity>
 				</View>
 			);
 		} else {
@@ -57,28 +63,30 @@ export default function WorkOuts({ props, data, showButton, showInput }) {
 		function itemRender({ item }) {
 			if (showInput) {
 				return (
-					<View>
-						<View style={styles.collapsedContent}>
-							{/* Image Component here */}
-							<Text style={styles.text}>{item.title}</Text>
-							<TextInput
-								placeholder="sets"
-								style={styles.text}
-							></TextInput>
-							<TextInput
-								placeholder="reps"
-								style={styles.text}
-							></TextInput>
-						</View>
+					<View style={styles.collapsedContent}>
+						{/* Image Component here */}
+						<Text style={styles.text}>{item.title}</Text>
+						<TextInput
+							placeholder="sets"
+							onChangeText={(val)=>{
+								item.sets = val;
+							}}
+							style={styles.text}
+						/>
+						<TextInput
+							placeholder="reps"
+							onChangeText={(val)=>{
+								item.reps = val;
+							}}
+							style={styles.text}
+						/>
 					</View>
 				);
-			} else {
+			}else{
 				return (
-					<View>
-						<View style={styles.collapsedContent}>
-							{/* Image Component here */}
-							<Text style={styles.text}>{item.title}</Text>
-						</View>
+					<View style={styles.collapsedContent}>
+						{/* Image Component here */}
+						<Text style={styles.text}>{item.title}</Text>
 					</View>
 				);
 			}
@@ -151,6 +159,6 @@ const styles = StyleSheet.create({
 	TitleText: {
 		color: "black",
 		fontWeight: "bold",
-		fontSize: 16,
+		fontSize: 20,
 	},
 });

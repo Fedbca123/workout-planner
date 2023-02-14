@@ -23,11 +23,20 @@ import HomeNav from "../navigation/homeNav";
 
 export default function FinalizeWorkout({ props, data }) {
 	const [globalState, updateGlobalState] = useGlobalState();
+	const navigation = useNavigation();
 	return (
 		<View>
-			<Text>TEMP</Text>
-			<TextInput placeholder="TEMP"></TextInput>
-			<WorkOuts data={globalState.workout} />
+			<Text>What do you wanna name the workout?</Text>
+			<TextInput placeholder="My Leg Day Workout" onChangeText={(val)=>{globalState.workout[0].title = val}}/>
+			<Text>Where are you going to have this workout?</Text>
+			<TextInput placeholder="Planet Fitness" onChangeText={(val)=>{globalState.workout[0].location = val}}/>
+			<Text>How Long will this workout be?(in min)</Text>
+			<TextInput keyboardType="number-pad" placeholder="90 min" onChangeText={(val)=>{globalState.workout[0].duration = Number(val)}}/>
+			<WorkOuts data={globalState.workout} showInput={true}/>
+			<Button title="Add Workout" onPress={()=>{
+				updateGlobalState("workoutScheduled",globalState.workout);
+				navigation.navigate("home");
+		}}/>
 		</View>
 	);
 }
