@@ -10,6 +10,7 @@ import HomeHeader from "../component/homeHeader.js";
 import ChooseTemplate from "../screens/chooseTemplate.js";
 import DTRpicker from "../screens/dateTimeRepsPicker.js";
 import ExerciseSearch from "../screens/exerciseSearch.js";
+import Finalize from "../screens/finalizeWorkout.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,10 +27,11 @@ export default function LoginNav() {
 					component={Login}
 					options={{ headerShown: false }}
 				/>
-				<Stack.Screen 
-        name="home" 
-        component={HomeNav}
-        options={{ header: HomeHeader }} />
+				<Stack.Screen
+					name="home"
+					component={HomeNav}
+					options={{ header: HomeHeader }}
+				/>
 				<Stack.Screen
 					name="chooseTemplate"
 					component={ChooseTemplate}
@@ -39,7 +41,7 @@ export default function LoginNav() {
 					component={Register}
 					options={{ headerShown: false }}
 				/>
-        <Stack.Screen
+				<Stack.Screen
 					name="admin"
 					component={AdminPage}
 					options={{ headerShown: false }}
@@ -49,6 +51,7 @@ export default function LoginNav() {
 					name="exerciseSearch"
 					component={ExerciseSearch}
 				/>
+				<Stack.Screen name="finalizeWorkout" component={Finalize} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);
