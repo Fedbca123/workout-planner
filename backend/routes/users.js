@@ -227,7 +227,7 @@ router.route('/:id/exercises/custom/create').post(async (req,res) => {
   // grab workout from body
   // may need to modify data depending on how it looks
   // also to fulfill the schema we have defined
-  const exercise = req.body.workout;
+  const exercise = req.body.exercise;
 
   // add workout to user's scheduledWorkouts section
   user.customExercises.push(exercise);
@@ -247,9 +247,6 @@ router.route('/:id/exercises/custom/remove/:e_id').patch(async (req,res) => {
   {
     return res.status(498).send({Error: "User does not exist!"});
   }
-
-  // grab workout from body
-  //const workout = req.body.workout;
 
   // remove workout from user's scheduledWorkouts section
   user.customExercises = removeItemByID(user.customExercises, e_id);
