@@ -1,5 +1,5 @@
 const router = require('express').Router();
-let Exercise = require('../models/exercise.model');
+let { Exercise }= require('../models/exercise.model');
 const upload = require('../middleware/uploadMiddleware');
 const fs = require('fs');
 var path = require('path');
@@ -73,7 +73,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 });
 
 //------UPDATE-----//
-router.route('/:id').patch(async (req,res) => {
+router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const id = req.params.id;
   const {title,description,img,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups} = req.body;
   
@@ -83,9 +83,28 @@ router.route('/:id').patch(async (req,res) => {
       return res.status(400).send({Error: `Exercise ${id} does not exist!`});
   }
 
+  var image = null;
+  var imageId = null;
+  if(req.file){
+    await cloudinary.v2.uploader.upload(req.file.path,{folder: "exercises"},function(err, result) {
+      if (err)
+        return res.status(501).send({Error: err});
+      image = result.url;
+      imageId = result.public_id;
+      cloudinary.v2.uploader.destroy(exercise.imageId, function(err, result) {
+        if (err)
+          console.log("There was an error deleting the exercise Photo")
+        else{
+          console.log("Photo deleted");
+        }
+      });
+    });
+  }
+
   if(title) {exercise.title = title;}
   if(description) {exercise.description = description;}
-  if(img) {exercise.img = img;}
+  if(image != null) {exercise.image = image;}
+  if(imageId != null) {exercise.imageId = imageId;}
   if(exerciseType) {exercise.exerciseType = exerciseType;}
   if(sets) {exercise.sets = sets;}
   if(reps) {exercise.reps = reps;}
@@ -99,12 +118,15 @@ router.route('/:id').patch(async (req,res) => {
     if (err) return res.status(400).send(err);
     res.status(200).json(newExercise);
   });
+
+  if(req.file){
+    await unlinkAsync(req.file.path);
+  }
 });
 
 //------DELETE-----//
 router.route('/:id').delete(async (req,res) => {
   const exercise = await Exercise.findById(req.params.id);
-  console.log(exercise)
   await cloudinary.v2.uploader.destroy(exercise.imageId, function(err, result) {
     if (err)
       console.log("There was an error deleting the exercise Photo")
