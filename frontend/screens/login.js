@@ -43,7 +43,7 @@ export default function Login(props) {
 					setError("");
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
-					if (response.data.isAdmin) {
+					if (response.data.user.isAdmin) {
 						props.navigation.navigate("admin");
 					} else {
 						props.navigation.navigate("home");
@@ -65,13 +65,7 @@ export default function Login(props) {
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
 					setError("");
-					if (response.data.isAdmin) {
-						props.navigation.navigate("admin");
-					} else {
-						props.navigation.navigate("home");
-					}
-
-					if (response.data.isAdmin) {
+					if (response.data.user.isAdmin) {
 						props.navigation.navigate("admin");
 					} else {
 						props.navigation.navigate("home");
@@ -108,10 +102,10 @@ export default function Login(props) {
 						backDoorHandler("Test@gmail.com", "password")
 					}
 				/>
-				{/* <Button
-                title="ADMIN BACKDOOR"
-                onPress={() => backDoorHandler("Admin@gmail.com", "password")}
-            /> */}
+				<Button
+					title="ADMIN BACKDOOR"
+					onPress={() => backDoorHandler("Admin@gmail.com", "password")}
+            	/>
 				<Text style={styles.error}> {error} </Text>
 				<TextInput
 					style={styles.inputstyle}

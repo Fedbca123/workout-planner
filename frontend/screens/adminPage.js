@@ -21,40 +21,43 @@ const baseUrl = config.API_URL + config.PORT + '/';
 export default function AdminPage(props) {
     const [toggleValue, setToggleValue] = useState(false);
     return (
-        <View styles={styles.container}>
-            <View styles={styles.header}>
-                <Toggle
-                    styles={{marginTop: 20}}
-                    value={toggleValue}
-                    onPress={(newState) => setToggleValue(newState)}
-                    leftTitle="Exercise"
-                    rightTitle="Workout"
-                />
+        <SafeAreaView>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Toggle
+                        style={{marginTop: 20}}
+                        value={toggleValue}
+                        onPress={(newState) => setToggleValue(newState)}
+                        leftTitle="Exercise"
+                        rightTitle="Workout"
+                    />
+                </View>
+                {/* <View>
+                    <TextInput/>
+                    <TextInput/>
+                    <TextInput/>
+                    <TextInput/>
+                    <TextInput/>
+                    <TextInput/>
+                    <TextInput/>
+                    <TextInput/>
+                </View> */}
             </View>
-            {/* <View>
-                <TextInput/>
-                <TextInput/>
-                <TextInput/>
-                <TextInput/>
-                <TextInput/>
-                <TextInput/>
-                <TextInput/>
-                <TextInput/>
-            </View> */}
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignContent: 'center',
-        justifyContent: 'center',
+        alignItems: 'center',
         flexDirection: 'column',
     },
     header: {
-        flex: 1,
-        justifyContent: 'center'
+        //flex: 1,
+        marginTop: 100,
+        justifyContent: 'center',
+        alignItems: 'center'
 
     }
 });
