@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {Card} from 'react-native-paper';
+import Toggle from "react-native-toggle-element";
 
 const exerciseData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
@@ -35,8 +36,12 @@ const workoutData = [
 
 export default function DiscoverPage(props) {
 
-  const [isWorkoutVisible, setWorkoutVisible] = useState(false);
-  const [isExerciseVisible, setExerciseVisible] = useState(false);
+  // const [isWorkoutVisible, setWorkoutVisible] = useState(false);
+  // const [isExerciseVisible, setExerciseVisible] = useState(false);
+
+  const [toggleValue, setToggleValue] = useState(false);
+
+
 
   function handleExercisePress() {
     console.log("Exercise button pressed");
@@ -63,34 +68,42 @@ return (
     <View style = {styles.page}>
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
+
+
           <Text style={styles.discoverTitle}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
-          <View style={styles.discoverBttnsCntnr}>
-            <TouchableOpacity onPress={() =>
-                  {
-                    showWorkout();
-                    handleWorkoutPress();
-                  }
-                }>
-              <View style={styles.discoverWorkoutsBttnsContainer}>
-                <Text style={styles.workoutsBttnText}>Workouts</Text>
-              </View>
-            </TouchableOpacity>
+          <Toggle
+            value = {toggleValue}
+            onPress = {(newState) => setToggleValue(newState)}
+            leftTitle = "Workouts"
+            rightTitle = "Exercises"
+            />
+            {/* <View style={styles.discoverBttnsCntnr}>
+              <TouchableOpacity onPress={() =>
+                    {
+                      showWorkout();
+                      handleWorkoutPress();
+                    }
+                  }>
+                <View style={styles.discoverWorkoutsBttnsContainer}>
+                  <Text style={styles.workoutsBttnText}>Workouts</Text>
+                </View>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={() =>
-                  {
-                    showExercise();
-                    handleExercisePress();
-                  }}>
-              <View style={styles.discoverExercisesBttnsContainer}>
-                <Text style={styles.exercisesBttnText}>Exercises</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={() =>
+                    {
+                      showExercise();
+                      handleExercisePress();
+                    }}>
+                <View style={styles.discoverExercisesBttnsContainer}>
+                  <Text style={styles.exercisesBttnText}>Exercises</Text>
+                </View>
+              </TouchableOpacity> 
+            </View>  */}
         </View>
       </View>
       
-      <View style={styles.discoverExerciseContainer}>
+      {/* <View style={styles.discoverExerciseContainer}>
           {isExerciseVisible ? <FlatList
             data = {exerciseData}
             style = {styles.boxContainer}
@@ -102,7 +115,7 @@ return (
             renderItem = {({item}) => <TouchableOpacity onPress={()=>
             Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
             />}
-      </View>
+      </View> */}
       {/* <View style={styles.discoverWorkoutContainer}>
           {isWorkoutVisible ? <FlatList
             data = {workoutData}
