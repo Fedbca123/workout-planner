@@ -31,7 +31,7 @@ export default function FinalizeWorkout({ props, data }) {
 			<Text>Where are you going to have this workout?</Text>
 			<TextInput placeholder="Planet Fitness" onChangeText={(val)=>{globalState.workout[0].location = val}}/>
 			<Text>How Long will this workout be?(in min)</Text>
-			<TextInput keyboardType="number-pad" placeholder="90 min" onChangeText={(val)=>{globalState.workout[0].duration = Number(val)}}/>
+			<TextInput inputMode="numeric" placeholder="90 min" maxLength={3} onChangeText={(val)=>{globalState.workout[0].duration = Number(val)}}/>
 			<WorkOuts data={globalState.workout} showInput={true}/>
 			<Button title="Add Workout" onPress={()=>{
 				updateGlobalState("workoutScheduled",globalState.workout);
