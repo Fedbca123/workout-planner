@@ -1,7 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Alert } from 'react-native';
-import {Card} from 'react-native-paper';
+import {Button, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
+import {Card, Title} from 'react-native-paper';
+import { SearchBar } from 'react-native-elements';
+import Toggle from "react-native-toggle-element";
+import { useSafeAreaFrame } from 'react-native-safe-area-context';
 
 const exerciseData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
@@ -30,14 +33,31 @@ const workoutData = [
   {Name: 'Arms', id: 7, Exercises: 5},
   {Name: 'Legs', id: 8, Exercises: 6},
   {Name: 'Full Body', id: 9, Exercises: 11},
-  {Name: 'Bottm Workout', id: 10, Exercises: 5},
+  {Name: 'Bottom Workout', id: 10, Exercises: 5},
 ];
-const numColumns = 3;
 
 export default function DiscoverPage(props) {
 
-  const [isWorkoutVisible, setWorkoutVisible] = useState(false);
-  const [isExerciseVisible, setExerciseVisible] = useState(false);
+  // const [isWorkoutVisible, setWorkoutVisible] = useState(false);
+  // const [isExerciseVisible, setExerciseVisible] = useState(false);
+
+  const [toggleValue, setToggleValue] = useState(false);
+  const [search, setSearch] = useState("");
+
+  const updateSearch = (search) => {
+    setSearch(search);
+  }
+
+  const handleTypePress = () => {
+		console.log("Type Filter Pressed");
+	};
+
+  const handleTagPress = () => {
+		console.log("Tags Filter Pressed");
+	};
+  const handleMuscleGroupPress = () => {
+		console.log("Muscle Groups Filter Pressed");
+	};
 
   function handleExercisePress() {
     console.log("Exercise button pressed");
@@ -53,7 +73,7 @@ export default function DiscoverPage(props) {
         setExerciseVisible(false);
       }
   }
-  const showExercise = () => {
+  function showExercise() {
       if (!isExerciseVisible) {
         setExerciseVisible(true);
         setWorkoutVisible(false);
@@ -61,64 +81,92 @@ export default function DiscoverPage(props) {
 }
 
 return (
-    <View style = {styles.page}>
+    <SafeAreaView style = {styles.page}>
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
           <Text style={styles.discoverTitle}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
-          
-          <View style={styles.discoverBttnsCntnr}>
-            <TouchableOpacity onPress={() =>
-                  {
-                    showWorkout();
-                    handleWorkoutPress();
-                  }
-                }>
-              <View style={styles.discoverWorkoutsBttnsContainer}>
-                <Text style={styles.workoutsBttnText}>Workouts</Text>
+          <View style={styles.buttonsContainer}>
+            <View style={styles.toggleContainer}>
+              <Toggle 
+                value = {toggleValue}
+                onPress = {(newState) => setToggleValue(newState)}
+                disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
+                leftComponent = <Text style={styles.workoutTitle}>Workouts</Text>
+                rightComponent = <Text style={styles.exerciseTitle}>Exercises</Text>
+                trackBar={{
+                  width: 170,
+                  height: 50,
+                  //radius: 40,
+                //borderWidth: -1,
+                activeBackgroundColor: "#8EB4FA",
+                inActiveBackgroundColor: "#C38AF0"
+                }}
+                thumbButton={{
+                  width: 80,
+                  height: 50,
+                  //radius: 30,
+                  borderWidth: 1,
+                  activeBackgroundColor: "#ddff33",
+                  inActiveBackgroundColor: "#33ff9c"
+                  }}
+                />
+            </View>
+            <View style={styles.filtersContainer}>
+              <View style={styles.filterButtonContainer}>
+                <TouchableOpacity onPress={handleTypePress}>
+                  <Text style={styles.filterButton}>Types</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() =>
-                  {
-                    showExercise();
-                    handleExercisePress();
-                  }}>
-              <View style={styles.discoverExercisesBttnsContainer}>
-                <Text style={styles.exercisesBttnText}>Exercises</Text>
+              <View style={styles.filterButtonContainer}>
+                <TouchableOpacity onPress={handleMuscleGroupPress}>
+                  <Text style={styles.filterButton}>Muscle Groups</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-      
-      <View style={styles.discoverExerciseContainer}>
-          {isExerciseVisible ? <FlatList
-            data = {exerciseData}
-            style = {styles.boxContainer}
-            renderItem = {({item}) => <TouchableOpacity onPress={()=>
-            Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
-          /> : <FlatList
-            data = {workoutData}
-            style = {styles.boxContainer}
-            renderItem = {({item}) => <TouchableOpacity onPress={()=>
-            Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
-            />}
-      </View>
-      {/* <View style={styles.discoverWorkoutContainer}>
-          {isWorkoutVisible ? <FlatList
-            data = {workoutData}
-            style = {styles.boxContainer}
-            renderItem = {({item}) => <Text style={styles.workoutItems}>{item.Name}</Text>}
-  
-          /> : <FlatList
-            data = {exerciseData}
-            style = {styles.boxContainer}
-            renderItem = {({item}) => <Text style={styles.exerciseItems}>{item.Name}</Text>}
+              <View style={styles.filterButtonContainer}>
+                <TouchableOpacity onPress={handleTagPress}>
+                  <Text style={styles.filterButton}>Tags</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <SearchBar
+              placeholder="Search Here"
+              placeholderTextColor={"#363636"}
+              data 
+              lightTheme
+              round
+              onChangeText={updateSearch}
+              autoCorrect={false}
+              value={search}
+              // searchIcon = {false}
+              inputStyle={{
+                  color: "black",
+                }}
+              containerStyle = {{
+                marginTop: 5,
+                backgroundColor: "white",
+                // marginBottom: 5,
+              }}
             />
-            }
-      </View> */}
-    </View>
+          </View>
+          
+        </View> 
+      </View>
+      <View style={styles.discoverContainer}>
+              {toggleValue ? <FlatList
+              data = {exerciseData}
+              style = {styles.boxContainer}
+              renderItem = 
+              {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              /> : <FlatList
+              data = {workoutData}
+              style = {styles.boxContainer}
+              renderItem = {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              />}
+      </View>
+    </SafeAreaView>
   )
 }
 
@@ -128,8 +176,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   workoutItems:{
-    backgroundColor: '#4D243D',
-    color: "#fff",
+    backgroundColor: '#3377ff',
+    color: "#33ff9c",
     justifyContent: 'center',
     textAlign: 'center',
     padding: 10, 
@@ -138,8 +186,8 @@ const styles = StyleSheet.create({
     margin: 1,
  },
   exerciseItems:{
-      backgroundColor: '#4D243D',
-      color: "#fff",
+      backgroundColor: '#8333ff',
+      color: "#ddff33",
       justifyContent: 'center',
       textAlign: 'center',
       padding: 10, 
@@ -147,51 +195,79 @@ const styles = StyleSheet.create({
       flex: 1,
       margin: 1,
    },
+   workoutTitle:{
+      fontWeight: 'bold',
+      fontSize: 13,
+   },
+
+   exerciseTitle:{
+      fontWeight: 'bold',
+      fontSize: 13
+   },
 
   discoveryPageHeader:{
     backgroundColor: 'white',
   },
-  workoutsBttnText:{
-    color: '#12BEF6',
-    fontWeight: 'bold',
+  toggleContainer:{
+    alignItems: 'center',
+    paddingBottom: 5,
+    paddingTop: 15,
   },
-  exercisesBttnText:{
-    color: '#FA7B34',
-    fontWeight: 'bold',
+  buttonsContainer:{
+    // paddingBottom: 5
   },
-  discoverBttnsCntnr:{
-    justifyContent: 'center',
+  filtersContainer:{
     flexDirection: 'row',
+    justifyContent: 'center',
+
   },
-  discoverWorkoutsBttnsContainer:{
-    backgroundColor: '#DCF1FE',
-    margin: 30,
-    padding: 15,
-    borderRadius: '10rem',
+  filterButtonContainer:{
+    //alignItems: "center",
+    backgroundColor: "#CDCDCD",
+    borderColor: "black",
+    borderWidth: 2.5,
+    borderRadius: "15rem",
+    paddingHorizontal: 10,
+    marginHorizontal: 5
   },
-  discoverExercisesBttnsContainer:{
-    backgroundColor: '#F8E1D2',
-    margin: 30,
-    padding: 15,
-    borderRadius: '10rem',
-  },
+
+  // workoutsBttnText:{
+  //   color: '#12BEF6',
+  //   fontWeight: 'bold',
+  // },
+  // exercisesBttnText:{
+  //   color: '#FA7B34',
+  //   fontWeight: 'bold',
+  // },
+  // discoverBttnsCntnr:{
+  //   justifyContent: 'center',
+  //   flexDirection: 'row',
+  // },
+  // discoverWorkoutsBttnsContainer:{
+  //   backgroundColor: '#DCF1FE',
+  //   margin: 30,
+  //   padding: 15,
+  //   borderRadius: '10rem',
+  // },
+  // discoverExercisesBttnsContainer:{
+  //   backgroundColor: '#F8E1D2',
+  //   margin: 30,
+  //   padding: 15,
+  //   borderRadius: '10rem',
+  // },
   discoverTitle:{
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10,
-    marginLeft: 10,
+    marginTop: 5,
+    marginLeft: 10
   },
   discoverSubtitle:{
-    padding: 10,
+    marginTop: 5,
+    marginLeft: 10,
     opacity: .45,
   },
-  discoverWorkoutContainer:{
-    backgroundColor: 'pink',
-    height: "75.5%"
-    //flex: 2,
-  },
-  discoverExerciseContainer:{
-    backgroundColor: 'pink',
+  discoverContainer:{
+    backgroundColor: 'salmon',
     height: "75.5%",
     //flex: 2,
   },
