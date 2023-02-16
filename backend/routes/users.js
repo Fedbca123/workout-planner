@@ -3,7 +3,9 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const cloudinary = require('../cloudinary');
 const upload = require('../middleware/uploadMiddleware');
-let User = require('../models/user.model');
+let { User } = require('../models/user.model');
+let { Workout, workoutSchema} = require('../models/workout.model'); 
+let { Exercise, exerciseSchema } = require('../models/exercise.model');
 
 /*
 Error Codes:
@@ -132,8 +134,12 @@ router.route('/:id').get(async (req, res) => {
 });
 
 //-----DELETE-----//
-router.route('/:id').delete((req, res) => {
+router.route('/:id').delete(async (req, res) => {
     const id = req.params.id;
+
+    await Workout.deleteMany({owner: id});
+    await Exercise.deleteMany({owner: id});
+
     User.findByIdAndDelete(id, function (error, body) {
         if (error)
         {
@@ -215,159 +221,160 @@ router.route('/:id/contact').patch(async (req, res) => {
   });
 });
 
-// adding custom exercise
-router.route('/:id/exercises/custom/create').post(async (req,res) => {
-  const id = req.params.id;
+// // adding custom exercise
+// router.route('/:id/exercises/custom/create').post(async (req,res) => {
+//   const id = req.params.id;
 
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
+//   const user = await User.findById(id);
+//   if (!user)
+//   {
+//     return res.status(498).send({Error: "User does not exist!"});
+//   }
 
-  // exercise mostly in body but image in upload
-  const exercise = req.body.exercise;
+//   // exercise mostly in body but image in upload
+//   const exercise = req.body.exercise;
 
-  // add workout to user's scheduledWorkouts section
-  user.customExercises.push(exercise);
+//   // add workout to user's scheduledWorkouts section
+//   user.customExercises.push(exercise);
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
+//   await user.save((err, newUser) => {
+//     if (err) return res.status(499).send(err);
+//     res.status(200).json(newUser);
+//   });
+// });
 
 // removing custom exercise
-router.route('/:id/exercises/custom/remove/:e_id').patch(async (req,res) => {
-  const {id, e_id} = req.params;
 
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
+// router.route('/:id/exercises/custom/remove/:e_id').patch(async (req,res) => {
+//   const {id, e_id} = req.params;
 
-  // remove workout from user's scheduledWorkouts section
-  user.customExercises = removeItemByID(user.customExercises, e_id);
+//   const user = await User.findById(id);
+//   if (!user)
+//   {
+//     return res.status(498).send({Error: "User does not exist!"});
+//   }
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
+//   // remove workout from user's scheduledWorkouts section
+//   user.customExercises = removeItemByID(user.customExercises, e_id);
 
-// editing custom exercise
-router.route('/:id/workouts/custom/edit/:e_id').patch(async (req,res)=> {
-  const {id, e_id} = req.params;
-  const {title, description, exerciseType, sets, reps, time, weight, restTime, tags, muscleGroups} = req.body;
+//   await user.save((err, newUser) => {
+//     if (err) return res.status(499).send(err);
+//     res.status(200).json(newUser);
+//   });
+// });
 
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
+// // editing custom exercise
+// router.route('/:id/workouts/custom/edit/:e_id').patch(async (req,res)=> {
+//   const {id, e_id} = req.params;
+//   const {title, description, exerciseType, sets, reps, time, weight, restTime, tags, muscleGroups} = req.body;
 
-  for(const exercise of user.customExercises){
-    if(exercise._id == e_id){
-      if(title) {workout.title = title;}
-      if(description) {workout.description = description;}
-      if(exerciseType) {workout.exerciseType = exerciseType;}
-      if(sets) {workout.sets = sets;}
-      if(reps) {workout.reps = reps;}
-      if(time) {workout.time = time;}
-      if(weight) {workout.weight = weight;}
-      if(restTime) {workout.restTime = restTime;}
-      if(tags) {workout.tags = tags;}
-      if(muscleGroups) {workout.muscleGroups = muscleGroups;}
-    }
-  }
+//   const user = await User.findById(id);
+//   if (!user)
+//   {
+//     return res.status(498).send({Error: "User does not exist!"});
+//   }
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-})
+//   for(const exercise of user.customExercises){
+//     if(exercise._id == e_id){
+//       if(title) {workout.title = title;}
+//       if(description) {workout.description = description;}
+//       if(exerciseType) {workout.exerciseType = exerciseType;}
+//       if(sets) {workout.sets = sets;}
+//       if(reps) {workout.reps = reps;}
+//       if(time) {workout.time = time;}
+//       if(weight) {workout.weight = weight;}
+//       if(restTime) {workout.restTime = restTime;}
+//       if(tags) {workout.tags = tags;}
+//       if(muscleGroups) {workout.muscleGroups = muscleGroups;}
+//     }
+//   }
 
-// adding custom workout
-router.route('/:id/workouts/custom/schedule').post(async (req,res) => {
-  const id = req.params.id;
+//   await user.save((err, newUser) => {
+//     if (err) return res.status(499).send(err);
+//     res.status(200).json(newUser);
+//   });
+// })
 
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
+// // adding custom workout
+// router.route('/:id/workouts/custom/schedule').post(async (req,res) => {
+//   const id = req.params.id;
 
-  // grab workout from body
-  // may need to modify data depending on how it looks
-  // also to fulfill the schema we have defined
-  const workout = req.body.workout;
+//   const user = await User.findById(id);
+//   if (!user)
+//   {
+//     return res.status(498).send({Error: "User does not exist!"});
+//   }
 
-  // add workout to user's scheduledWorkouts section
-  user.scheduledWorkouts.push(workout);
+//   // grab workout from body
+//   // may need to modify data depending on how it looks
+//   // also to fulfill the schema we have defined
+//   const workout = req.body.workout;
 
-  workout.recurrence = false;
-  workout.scheduledDate = null;
-  user.customWorkouts.push(workout);
+//   // add workout to user's scheduledWorkouts section
+//   user.scheduledWorkouts.push(workout);
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
+//   workout.recurrence = false;
+//   workout.scheduledDate = null;
+//   user.customWorkouts.push(workout);
 
-// remove custom workout from user's account
-router.route('/:id/workouts/custom/remove/:w_id').patch(async (req,res) => {
-  const {id, w_id} = req.params;
+//   await user.save((err, newUser) => {
+//     if (err) return res.status(499).send(err);
+//     res.status(200).json(newUser);
+//   });
+// });
 
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
+// // remove custom workout from user's account
+// router.route('/:id/workouts/custom/remove/:w_id').patch(async (req,res) => {
+//   const {id, w_id} = req.params;
 
-  // grab workout from body
-  //const workout = req.body.workout;
+//   const user = await User.findById(id);
+//   if (!user)
+//   {
+//     return res.status(498).send({Error: "User does not exist!"});
+//   }
 
-  // remove workout from user's scheduledWorkouts section
-  user.customWorkouts = removeItemByID(user.customWorkouts, w_id);
+//   // grab workout from body
+//   //const workout = req.body.workout;
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
+//   // remove workout from user's scheduledWorkouts section
+//   user.customWorkouts = removeItemByID(user.customWorkouts, w_id);
 
-// edit custom workout
-router.route('/:id/workouts/custom/edit/:w_id').patch(async (req,res)=> {
-  const {id, w_id} = req.params;
-  const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups} = req.body;
+//   await user.save((err, newUser) => {
+//     if (err) return res.status(499).send(err);
+//     res.status(200).json(newUser);
+//   });
+// });
 
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
+// // edit custom workout
+// router.route('/:id/workouts/custom/edit/:w_id').patch(async (req,res)=> {
+//   const {id, w_id} = req.params;
+//   const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups} = req.body;
 
-  for(const workout of user.customWorkouts){
-    if(workout._id == w_id){
-      if(title) {workout.title = title;}
-      if(description) {workout.description = description;}
-      if(exercises) {workout.exercises = exercises;}
-      if(duration) {workout.duration = duration;}
-      if(location) {workout.location = location;}
-      if(scheduledDate) {workout.scheduledDate = scheduledDate;}
-      if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
-      if(tags) {workout.tags = tags;}
-      if(muscleGroups) {workout.muscleGroups = muscleGroups;}
-    }
-  }
+//   const user = await User.findById(id);
+//   if (!user)
+//   {
+//     return res.status(498).send({Error: "User does not exist!"});
+//   }
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-})
+//   for(const workout of user.customWorkouts){
+//     if(workout._id == w_id){
+//       if(title) {workout.title = title;}
+//       if(description) {workout.description = description;}
+//       if(exercises) {workout.exercises = exercises;}
+//       if(duration) {workout.duration = duration;}
+//       if(location) {workout.location = location;}
+//       if(scheduledDate) {workout.scheduledDate = scheduledDate;}
+//       if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
+//       if(tags) {workout.tags = tags;}
+//       if(muscleGroups) {workout.muscleGroups = muscleGroups;}
+//     }
+//   }
+
+//   await user.save((err, newUser) => {
+//     if (err) return res.status(499).send(err);
+//     res.status(200).json(newUser);
+//   });
+// })
 
 // adding workout
 router.route('/:id/workouts/schedule').post(async (req,res) => {
@@ -382,10 +389,10 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
   // grab workout from body
   // may need to modify data depending on how it looks
   // also to fulfill the schema we have defined
-  const workout = req.body.workout;
+  const workout = req.body.workoutId;
 
   // add workout to user's scheduledWorkouts section
-  user.scheduledWorkouts.push(workout);
+  user.scheduledWorkouts.push(workoutId);
 
   await user.save((err, newUser) => {
     if (err) return res.status(499).send(err);
@@ -407,7 +414,7 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
   //const workout = req.body.workout;
 
   // remove workout from user's scheduledWorkouts section
-  user.scheduledWorkouts = removeItemByID(user.scheduledWorkouts, w_id);
+  user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
 
   await user.save((err, newUser) => {
     if (err) return res.status(499).send(err);
@@ -415,37 +422,37 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
   });
 });
 
-// edit scheduled workout from user's account
-router.route('/:id/workouts/edit/:w_id').patch(async (req,res) => {
-  const {id, w_id} = req.params;
-  const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups, recurrence} = req.body;
+// // edit scheduled workout from user's account
+// router.route('/:id/workouts/edit/:w_id').patch(async (req,res) => {
+//   const {id, w_id} = req.params;
+//   const {title, description, exercises, duration, location, scheduledDate, dateOfCompletion, tags, muscleGroups, recurrence} = req.body;
 
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
+//   const user = await User.findById(id);
+//   if (!user)
+//   {
+//     return res.status(498).send({Error: "User does not exist!"});
+//   }
 
-  for(const workout of user.customWorkouts){
-    if(workout._id == w_id){
-      if(title) {workout.title = title;}
-      if(description) {workout.description = description;}
-      if(exercises) {workout.exercises = exercises;}
-      if(duration) {workout.duration = duration;}
-      if(location) {workout.location = location;}
-      if(scheduledDate) {workout.scheduledDate = scheduledDate;}
-      if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
-      if(tags) {workout.tags = tags;}
-      if(muscleGroups) {workout.muscleGroups = muscleGroups;}
-      if(recurrence) {workout.recurrence = recurrence;}
-    }
-  }
+//   for(const workout of user.customWorkouts){
+//     if(workout._id == w_id){
+//       if(title) {workout.title = title;}
+//       if(description) {workout.description = description;}
+//       if(exercises) {workout.exercises = exercises;}
+//       if(duration) {workout.duration = duration;}
+//       if(location) {workout.location = location;}
+//       if(scheduledDate) {workout.scheduledDate = scheduledDate;}
+//       if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
+//       if(tags) {workout.tags = tags;}
+//       if(muscleGroups) {workout.muscleGroups = muscleGroups;}
+//       if(recurrence) {workout.recurrence = recurrence;}
+//     }
+//   }
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
+//   await user.save((err, newUser) => {
+//     if (err) return res.status(499).send(err);
+//     res.status(200).json(newUser);
+//   });
+// });
 
 // user completes a workout. Must move workout to complete
 router.route('/:id/workouts/complete/:w_id').patch(async (req,res) => {
@@ -456,23 +463,19 @@ router.route('/:id/workouts/complete/:w_id').patch(async (req,res) => {
   {
     return res.status(498).send({Error: "User does not exist!"});
   }
+  const workout = Workout.findById(w_id);
 
-  const workout = user.scheduledWorkouts.filter(w => w._id == w_id)[0];
-  // remove anyways
-  user.scheduledWorkouts = removeItemByID(user.scheduledWorkouts, w_id);
-  
   // if recurring add in again but a week in advance
   if(workout.recurrence){
     var date = workout.scheduledDate ? new Date(workout.scheduledDate) : new Date();
     date.setDate(date.getDate() + 7);
     workout.scheduledDate = date;
-    user.scheduledWorkouts.push(workout);
+    await workout.save();
+  } else {
+    user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
   }
-
-  // recurrence = false
   workout.recurrence = false;
-  console.log(workout)
-  // add to completed anyways
+  workout.dateOfCompletion = new Date();
   user.completedWorkouts.push(workout);
 
   await user.save((err, newUser) => {

@@ -54,6 +54,10 @@ var exerciseSchema = new Schema({
   muscleGroups: {
     type: [String],
     required: false
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
 });
 

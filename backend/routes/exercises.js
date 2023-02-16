@@ -7,6 +7,15 @@ const { promisify } = require('util');
 const unlinkAsync = promisify(fs.unlink);
 const cloudinary = require('../cloudinary');
 
+//--------helper functions--------//
+function removeItem(array, val){
+  const index = array.indexOf(val);
+  if(index > -1) {
+    array.splice(index,1);
+  }
+  return array;
+}
+
 //------GET-----//
 router.route('/').get((req,res) => {
   Exercise.find()
@@ -47,6 +56,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const restTime = req.body.restTime;
   const tags = req.body.tags;
   const muscleGroups = req.body.muscleGroups;
+  const owner = req.body.owner;
 
   const newExercise = new Exercise({
     title,
@@ -60,11 +70,20 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
     weight,
     restTime,
     tags,
-    muscleGroups
+    muscleGroups,
+    owner
   })
 
   newExercise.save()
-    .then(() => res.json(newExercise))
+    .then(() => {
+      if (newExercise.owner) {
+        let user = User.findById(newExercise.owner)
+          .then(() => {
+            user.customExercises.push(newExercise._id);
+          });
+      }
+      res.json(newExercise)
+    })
     .catch(err => res.status(502).send({Error: err}));
 
   if(req.file){
@@ -75,7 +94,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 //------UPDATE-----//
 router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const id = req.params.id;
-  const {title,description,img,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups} = req.body;
+  const {title,description,img,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups, owner} = req.body;
   
   const exercise = await Exercise.findById(id);
   if (!exercise)
@@ -113,6 +132,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
   if(restTime) {exercise.restTime = restTime;}
   if(tags) {exercise.tags = tags;}
   if(muscleGroups) {exercise.muscleGroups = muscleGroups;}
+  if(owner) {exercise.owner = owner;}
 
   await exercise.save((err, newExercise)=>{
     if (err) return res.status(400).send(err);
@@ -127,6 +147,14 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
 //------DELETE-----//
 router.route('/:id').delete(async (req,res) => {
   const exercise = await Exercise.findById(req.params.id);
+  if (exercise.owner) {
+    const user = await User.findById(exercise.owner);
+    user.customExercises = removeItem(user.customExercises, exercise._id);
+    await user.save((err, newUser) => {
+      if (err) return res.status(499).send(err);
+    });
+  }
+
   await cloudinary.v2.uploader.destroy(exercise.imageId, function(err, result) {
     if (err)
       console.log("There was an error deleting the exercise Photo")
@@ -134,6 +162,7 @@ router.route('/:id').delete(async (req,res) => {
       console.log("Photo deleted");
     }
   });
+
   Exercise.findByIdAndDelete(req.params.id)
     .then(deletion => res.json(`Exercise ${deletion.title} deleted!`))
     .catch(err => res.status(400).json('Error: ' + err));

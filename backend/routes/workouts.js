@@ -73,6 +73,13 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   }
 });
 
+// router.route('/search').post(async (req, res) => {
+//   const {searchStr, tags, muscleGroups} = req.body;
+
+//   const results = Workout.find();
+
+// })
+
 //------UPDATE-----//
 router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const id = req.params.id;
