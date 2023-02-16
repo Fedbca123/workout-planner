@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Alert } from 'react-native';
+import {Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {Card} from 'react-native-paper';
 import Toggle from "react-native-toggle-element";
 
@@ -65,71 +65,54 @@ export default function DiscoverPage(props) {
 }
 
 return (
-    <View style = {styles.page}>
+    <SafeAreaView style = {styles.page}>
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
 
 
           <Text style={styles.discoverTitle}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
-          <Toggle
+          <View style={styles.toggleButton}>
+          <Toggle 
             value = {toggleValue}
             onPress = {(newState) => setToggleValue(newState)}
             leftTitle = "Workouts"
             rightTitle = "Exercises"
+                      
+              trackBar={{
+              width: 180,
+              height: 50,
+              //radius: 40,
+             borderWidth: -1,
+            }}
+          
+            thumbButton={{
+              width: 80,
+              height: 50,
+              radius: 30,
+              borderWidth: 1
+              }}
             />
-            {/* <View style={styles.discoverBttnsCntnr}>
-              <TouchableOpacity onPress={() =>
-                    {
-                      showWorkout();
-                      handleWorkoutPress();
-                    }
-                  }>
-                <View style={styles.discoverWorkoutsBttnsContainer}>
-                  <Text style={styles.workoutsBttnText}>Workouts</Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() =>
-                    {
-                      showExercise();
-                      handleExercisePress();
-                    }}>
-                <View style={styles.discoverExercisesBttnsContainer}>
-                  <Text style={styles.exercisesBttnText}>Exercises</Text>
-                </View>
-              </TouchableOpacity> 
-            </View>  */}
-        </View>
-      </View>
-      
-      {/* <View style={styles.discoverExerciseContainer}>
-          {isExerciseVisible ? <FlatList
+            
+            </View> 
+            
+            <View style={styles.discoverExerciseContainer}>
+            {toggleValue ? <FlatList
             data = {exerciseData}
             style = {styles.boxContainer}
             renderItem = {({item}) => <TouchableOpacity onPress={()=>
             Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
-          /> : <FlatList
+              /> : <FlatList
             data = {workoutData}
             style = {styles.boxContainer}
             renderItem = {({item}) => <TouchableOpacity onPress={()=>
             Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
             />}
-      </View> */}
-      {/* <View style={styles.discoverWorkoutContainer}>
-          {isWorkoutVisible ? <FlatList
-            data = {workoutData}
-            style = {styles.boxContainer}
-            renderItem = {({item}) => <Text style={styles.workoutItems}>{item.Name}</Text>}
-  
-          /> : <FlatList
-            data = {exerciseData}
-            style = {styles.boxContainer}
-            renderItem = {({item}) => <Text style={styles.exerciseItems}>{item.Name}</Text>}
-            />
-            }
-      </View> */}
-    </View>
+              </View>
+        </View>
+      </View>
+
+    </SafeAreaView>
   )
 }
 
@@ -139,8 +122,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   workoutItems:{
-    backgroundColor: '#4D243D',
-    color: "#fff",
+    backgroundColor: '#3377ff',
+    color: "#33ff9c",
     justifyContent: 'center',
     textAlign: 'center',
     padding: 10, 
@@ -149,8 +132,8 @@ const styles = StyleSheet.create({
     margin: 1,
  },
   exerciseItems:{
-      backgroundColor: '#4D243D',
-      color: "#fff",
+      backgroundColor: '#8333ff',
+      color: "#ddff33",
       justifyContent: 'center',
       textAlign: 'center',
       padding: 10, 
@@ -162,30 +145,35 @@ const styles = StyleSheet.create({
   discoveryPageHeader:{
     backgroundColor: 'white',
   },
-  workoutsBttnText:{
-    color: '#12BEF6',
-    fontWeight: 'bold',
+  toggleButton:{
+    alignItems: 'center',
+    paddingBottom: 30,
+    paddingTop: 20
   },
-  exercisesBttnText:{
-    color: '#FA7B34',
-    fontWeight: 'bold',
-  },
-  discoverBttnsCntnr:{
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  discoverWorkoutsBttnsContainer:{
-    backgroundColor: '#DCF1FE',
-    margin: 30,
-    padding: 15,
-    borderRadius: '10rem',
-  },
-  discoverExercisesBttnsContainer:{
-    backgroundColor: '#F8E1D2',
-    margin: 30,
-    padding: 15,
-    borderRadius: '10rem',
-  },
+  // workoutsBttnText:{
+  //   color: '#12BEF6',
+  //   fontWeight: 'bold',
+  // },
+  // exercisesBttnText:{
+  //   color: '#FA7B34',
+  //   fontWeight: 'bold',
+  // },
+  // discoverBttnsCntnr:{
+  //   justifyContent: 'center',
+  //   flexDirection: 'row',
+  // },
+  // discoverWorkoutsBttnsContainer:{
+  //   backgroundColor: '#DCF1FE',
+  //   margin: 30,
+  //   padding: 15,
+  //   borderRadius: '10rem',
+  // },
+  // discoverExercisesBttnsContainer:{
+  //   backgroundColor: '#F8E1D2',
+  //   margin: 30,
+  //   padding: 15,
+  //   borderRadius: '10rem',
+  // },
   discoverTitle:{
     fontSize: 20,
     fontWeight: 'bold',
@@ -196,13 +184,8 @@ const styles = StyleSheet.create({
     padding: 10,
     opacity: .45,
   },
-  discoverWorkoutContainer:{
-    backgroundColor: 'pink',
-    height: "75.5%"
-    //flex: 2,
-  },
   discoverExerciseContainer:{
-    backgroundColor: 'pink',
+    backgroundColor: 'salmon',
     height: "75.5%",
     //flex: 2,
   },

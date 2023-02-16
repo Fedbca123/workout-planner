@@ -71,7 +71,7 @@ export default function LandingPage(props) {
 
 	//render(){
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<View style={styles.Header}>
 				<Text style={styles.HeaderText}>
 					You have {loadCurrentDayWorkoutStatus()}
@@ -97,7 +97,7 @@ export default function LandingPage(props) {
 				<Text style={styles.bodyHeader}>Your Saved Workouts</Text>
 				{/* Logic to define how to load the saved workouts */}
 			</View>
-		</View>
+		</SafeAreaView>
 	);
 	//}
 }
