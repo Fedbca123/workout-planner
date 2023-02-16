@@ -34,13 +34,16 @@ export default function DateTimeRepsPicker(props) {
 	}
 
 	return (
-		<SafeAreaView>
-			<Text>When will this workout be?</Text>
+		<SafeAreaView style={styles.Background}>
+			<Text style={styles.HeaderText}>When will this workout be?</Text>
 			{/* This is where the Integration to the Calendar Page will go */}
-			<Text>Where are you going to be working out?</Text>
+			<Text style={styles.HeaderText}>Where are you going to be working out?</Text>
 			{/* Integeration with Google Maps API will be here */}
-			<Text>Will this workout be reoccurring?</Text>
+			<TextInput placeholder="Planet Fitness" onChangeText={(val)=>{globalState.workout[0].location = val}}/>
+			<Text style={styles.HeaderText}>Will this workout be reoccurring?</Text>
 			{/* Button to change it to true */}
+			<Text style={styles.HeaderText}>How long will this workout take?(in min)</Text>
+			<TextInput keyboardType="number-pad" placeholder="60 min" onChangeText={(val)=>{globalState.workout[0].duration = Number(val)}}/>
 			<Workouts
 				data={globalState.workout}
 				showButton={false}
@@ -64,5 +67,13 @@ const styles = StyleSheet.create({
 		backgroundColor: "#F1F3FA",
 		margin: 30,
 		padding: 15,
+	},
+	Background: {
+		backgroundColor: "white",
+		flex: 1,
+	},
+	HeaderText: {
+		fontSize: 16,
+    	fontWeight: 'bold',
 	},
 });

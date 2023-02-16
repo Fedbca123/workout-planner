@@ -1,56 +1,55 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
-import CalendarPicker from 'react-native-calendar-picker';
 import React, { useState } from 'react';
-
-const legs = {key: 'massage', color: 'blue', selectedDotColor: 'blue'};
-const arms = {key: 'workout', color: 'green'};
-
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
+LocaleConfig.locales['en'] = {
+  monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+  dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+};
 
-export default function CalendarPage(props) {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [events, setEvents] = useState([
-    {
-      name: 'Event 1',
-      date: new Date(2023, 1, 5),
-    },
-    {
-      name: 'Event 2',
-      date: new Date(2023, 2, 12),
-    },
-    {
-      name: 'Event 3',
-      date: new Date(2023, 2, 11),
-    },
+LocaleConfig.defaultLocale = 'en';
+
+const CalendarScreen = () => {
+  const [selectedDate, setSelectedDate] = useState('');
+  const [eventList, setEventList] = useState([
+    { date: '2023-02-11', title: 'Running', type: 'Cardio', sets: 3, recurring: true },
+    { date: '2023-02-12', title: 'Yoga', type: 'Flexibility', sets: 1, recurring: false },
+    { date: '2023-02-13', title: 'Weightlifting', type: 'Strength', sets: 5, recurring: true },
+    { date: '2023-02-14', title: 'Pilates', type: 'Core', sets: 2, recurring: false },
+    { date: '2023-02-15', title: 'Swimming', type: 'Endurance', sets: 4, recurring: true },
   ]);
 
-  const onDateChange = (date) => {
-    setSelectedDate(date);
+  const onDayPress = (day) => {
+    setSelectedDate(day.dateString);
+  };
+
+  const renderEvent = ({ item }) => {
+    if (item.date === selectedDate) {
+      return (
+        <View style={{ padding: 10 }}>
+          <Text style={{ fontWeight: 'bold' }}>{item.date}</Text>
+          <Text style={{ fontWeight: 'bold' }}>{item.title}</Text>
+          <Text>Workouts: {item.type}</Text>
+        </View>
+      );
+    }
+    return null;
   };
 
   return (
     <View style={styles.container}>
-      <CalendarPicker
-        onDateChange={onDateChange}
-        selectedDate={selectedDate}
-        events={events}
-        screenWidth={screenWidth}
+      <Calendar
+        onDayPress={onDayPress}
+        markedDates={{ [selectedDate]: { selected: true } }}
       />
-      <View style={styles.eventContainer}>
-        {events.length === 0 ? (
-          <Text style={styles.noEventsText}>No events scheduled</Text>
-        ) : (
-          events
-            .filter((event) => event.date.getDate() === selectedDate.getDate())
-            .map((event, index) => (
-              <TouchableOpacity key={index} style={styles.eventCard}>
-                <Text style={styles.eventText}>{event.name}</Text>
-              </TouchableOpacity>
-            ))
-        )}
-      </View>
+      <FlatList
+        data={eventList}
+        renderItem={renderEvent}
+        keyExtractor={(item) => item.date}
+      />
     </View>
   );
 };
@@ -58,53 +57,8 @@ export default function CalendarPage(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
-    paddingTop: 50,
-  },
-  eventContainer: {
-    flex: 1,
-    backgroundColor: '#F5FCFF',
-    paddingTop: 20,
-  },
-  eventCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    padding: 10,
-    margin: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  eventText: {
-    fontSize: 20,
-    textAlign: 'center',
-  },
+    backgroundColor: "white",
+  }
 });
 
-
-// export default function CalendarPage(props) {
-//   //console.log("calendar", props.route.params.user) -> works
-//   return (
-    
-//     <View style={styles.container}>
-
-//     <Calendar markingType = {'multi-dot'} markedDates={{
-//     '2023-01-16': {dots: [arms]},
-//     '2023-01-23': {dots: [arms, legs]}}}/>
-    
-//     <StatusBar style= "auto" />
-    
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     height: 500,
-//     backgroundColor: '#fff',
-//     alignItems: 'stretch',
-//     justifyContent: 'space-evenly',
-//   },
-// });
+export default CalendarScreen;
