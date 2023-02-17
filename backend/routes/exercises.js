@@ -9,6 +9,19 @@ const cloudinary = require('../cloudinary');
 const { User, userSchema } = require('../models/user.model');
 const config = require("../config.js");
 
+/*
+Error Codes:
+200 - OK
+400 - general error (look at message for details)
+401 - error retrieving exercise(s)
+402 - cloudinary image upload failed
+495 - saving associated user failed
+496 - error deleting exercise
+497 - error saving exercise
+498 - id provided does not exist in exercise collection
+499 - error when exercise doc was being saved in DB
+*/
+
 //--------helper functions--------//
 function removeItem(array, val){
   const index = array.indexOf(val);
@@ -22,13 +35,13 @@ function removeItem(array, val){
 router.route('/').get((req,res) => {
   Exercise.find()
     .then(exercises => res.json(exercises))
-    .catch(err => res.status(400).json('Error: ' + err));
+    .catch(err => res.status(401).json('Error: ' + err));
 });
 
 router.route('/:id').get((req, res) => {
   Exercise.findById(req.params.id)
     .then(exercise => res.json(exercise))
-    .catch(err => res.status(400).json('Error: ' + err))
+    .catch(err => res.status(401).json('Error: ' + err))
 })
 
 //-----POST-----//
@@ -42,7 +55,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   if(req.file){
     await cloudinary.v2.uploader.upload(req.file.path,{folder: "exercises"},function(err, result) {
       if (err)
-        return res.status(501).send({Error: err});
+        return res.status(402).send({Error: err});
       image = result.url;
       imageId = result.public_id;
     });
@@ -83,7 +96,9 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
       if (newExercise.owner) {
         let user = await User.findById(newExercise.owner)
         user.customExercises.push(newExercise._id);
-        await user.save();
+        await user.save((err, newUser) => {
+          if (err) return res.status(495).send(err);
+        });
       }
       res.json(newExercise);
     })
@@ -98,7 +113,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
           }
         });
       }
-      res.status(502).send({Error: err})
+      res.status(497).send({Error: err})
     });
 
   if(req.file){
@@ -114,7 +129,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const exercise = await Exercise.findById(id);
   if (!exercise)
   {
-      return res.status(400).send({Error: `Exercise ${id} does not exist!`});
+      return res.status(498).send({Error: `Exercise ${id} does not exist!`});
   }
 
   var image = null;
@@ -122,7 +137,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
   if(req.file){
     await cloudinary.v2.uploader.upload(req.file.path,{folder: "exercises"},function(err, result) {
       if (err)
-        return res.status(501).send({Error: err});
+        return res.status(402).send({Error: err});
       image = result.url;
       imageId = result.public_id;
       if (exercise.imageId != config.DEFAULTEXIMAGEID)
@@ -152,7 +167,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
   if(muscleGroups) {exercise.muscleGroups = muscleGroups;}
 
   await exercise.save((err, newExercise)=>{
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(497).send(err);
     res.status(200).json(newExercise);
   });
 
@@ -168,7 +183,7 @@ router.route('/:id').delete(async (req,res) => {
     const user = await User.findById(exercise.owner);
     user.customExercises = removeItem(user.customExercises, exercise._id);
     await user.save((err, newUser) => {
-      if (err) return res.status(499).send(err);
+      if (err) return res.status(497).send(err);
     });
   }
 
@@ -185,7 +200,7 @@ router.route('/:id').delete(async (req,res) => {
 
   Exercise.findByIdAndDelete(req.params.id)
     .then(deletion => res.json(`Exercise ${deletion.title} deleted!`))
-    .catch(err => res.status(400).json('Error: ' + err));
+    .catch(err => res.status(496).json('Error: ' + err));
 });
 
 

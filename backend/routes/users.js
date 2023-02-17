@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 Error Codes:
 200 - OK
 400 - general error (look at message for details)
+401 - error retrieving user(s)
 495 - email not in proper format
 496 - modification seeking to be made has already been made (look at message for details)
       (ie inviting the same user twice will fail the second time)
@@ -125,13 +126,13 @@ router.route('/login').post(async (req, res) => {
 router.route('/').get(async (req, res) => {
     User.find()
     .then(users => res.json(users))
-    .catch(err => res.status(400).json('Error: ' + err));
+    .catch(err => res.status(401).json('Error: ' + err));
 });
 
 router.route('/:id').get(async (req, res) => {
     User.findById(req.params.id)
     .then(user => res.json(user))
-    .catch(err => res.status(400).json('Error: ' + err))
+    .catch(err => res.status(401).json('Error: ' + err))
 });
 
 //-----DELETE-----//
