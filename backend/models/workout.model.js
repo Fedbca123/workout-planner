@@ -33,7 +33,7 @@ var workoutSchema = new Schema({
   },
   recurrence: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   scheduledDate: {
     type: Date,
@@ -55,7 +55,7 @@ var workoutSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   }
-});
+}, {timestamps: true});
 
 const Workout = mongoose.model('Workout', workoutSchema);
 

@@ -58,9 +58,9 @@ var userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Exercise'
     }],
-});
+}, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+module.exports = { User, userSchema };
 
