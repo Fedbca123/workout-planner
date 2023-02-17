@@ -9,5 +9,5 @@ else
 
 export default {
     API_URL: url,
-    PORT,
-  };
+    PORT
+};

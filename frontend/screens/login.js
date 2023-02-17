@@ -65,11 +65,7 @@ export default function Login(props) {
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
 					setError("");
-					if (response.data.user.isAdmin) {
-						props.navigation.navigate("admin");
-					} else {
-						props.navigation.navigate("home");
-					}
+					props.navigation.navigate("home");
 				}
 			})
 			.catch((e) => {
@@ -104,7 +100,7 @@ export default function Login(props) {
 				/>
 				<Button
 					title="ADMIN BACKDOOR"
-					onPress={() => backDoorHandler("Admin@gmail.com", "password")}
+					onPress={() => props.navigation.navigate("admin")}
             	/>
 				<Text style={styles.error}> {error} </Text>
 				<TextInput
