@@ -11,6 +11,19 @@ const { User, userSchema } = require('../models/user.model');
 const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const config = require("../config.js");
 
+/*
+Error Codes:
+200 - OK
+400 - general error (look at message for details)
+401 - error retrieving workout(s)
+402 - cloudinary image upload failed
+495 - saving associated user failed
+496 - error deleting workout
+497 - error saving workout
+498 - id provided does not exist in workout collection
+499 - error when workout doc was being saved in DB
+*/
+
 //--------helper functions--------//
 function removeItem(array, val){
   const index = array.indexOf(val);
@@ -24,13 +37,13 @@ function removeItem(array, val){
 router.route('/').get((req,res) => {
   Workout.find()
     .then(workouts => res.json(workouts))
-    .catch(err => res.status(400).json('Error: ' + err));
+    .catch(err => res.status(401).json('Error: ' + err));
 });
 
 router.route('/:id').get((req, res) => {
   Workout.findById(req.params.id)
     .then(workout => res.json(workout))
-    .catch(err => res.status(400).json('Error: ' + err))
+    .catch(err => res.status(401).json('Error: ' + err))
 });
 
 //-----POST-----//
@@ -44,7 +57,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   if(req.file){
     await cloudinary.v2.uploader.upload(req.file.path,{folder: "workouts"},function(err, result) {
       if (err)
-        return res.status(501).send({Error: err});
+        return res.status(402).send({Error: err});
       image = result.url;
       imageId = result.public_id;
     });
@@ -85,7 +98,9 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
       if (newWorkout.owner) {
         let user = await User.findById(newWorkout.owner)
         user.customWorkouts.push(newWorkout._id);
-        await user.save();
+        await user.save((err, newUser) => {
+          if (err) return res.status(495).send(err);
+        });
       }
       res.json(newWorkout);
     })
@@ -100,7 +115,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
           }
         });
       }
-      res.status(502).send({Error: err})
+      res.status(497).send({Error: err})
     });
 
   if(req.file){
@@ -123,7 +138,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const workout = await Workout.findById(id);
   if(!workout)
   {
-    return res.status(400).send({Error: `Workout ${id} does not exist!`});
+    return res.status(498).send({Error: `Workout ${id} does not exist!`});
   }
 
   var image = null;
@@ -131,7 +146,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
   if(req.file){
     await cloudinary.v2.uploader.upload(req.file.path,{folder: "workouts"},function(err, result) {
       if (err)
-        return res.status(501).send({Error: err});
+        return res.status(401).send({Error: err});
       image = result.url;
       imageId = result.public_id;
       if (workout.imageId != config.DEFAULTWORKIMAGEID)
@@ -158,7 +173,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
   if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
 
   await workout.save((err,newWorkout) => {
-    if (err) return res.status(400).send(err);
+    if (err) return res.status(497).send(err);
     res.status(200).json(newWorkout);
   });
   if(req.file){
@@ -173,7 +188,7 @@ router.route('/:id').delete(async (req,res) => {
     const user = await User.findById(workout.owner);
     user.customWorkouts = removeItem(user.customWorkouts, workout._id);
     await user.save((err, newUser) => {
-      if (err) return res.status(499).send(err);
+      if (err) return res.status(495).send(err);
     });
   }
 
@@ -190,7 +205,7 @@ router.route('/:id').delete(async (req,res) => {
   
   Workout.findByIdAndDelete(req.params.id)
     .then(deletion => res.json(`Workout ${deletion.title} deleted!`))
-    .catch(err => res.status(400).json('Error: ' + err));
+    .catch(err => res.status(496).json('Error: ' + err));
 });
 
 module.exports = router;
