@@ -11,6 +11,7 @@ import ChooseTemplate from "../screens/chooseTemplate.js";
 import DTRpicker from "../screens/dateTimeRepsPicker.js";
 import ExerciseSearch from "../screens/exerciseSearch.js";
 import Finalize from "../screens/finalizeWorkout.js";
+import CustomExercise from "../screens/customExercise.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -52,6 +53,7 @@ export default function LoginNav() {
 					component={ExerciseSearch}
 				/>
 				<Stack.Screen name="finalizeWorkout" component={Finalize} />
+				<Stack.Screen name="customExercise" component={CustomExercise} />
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

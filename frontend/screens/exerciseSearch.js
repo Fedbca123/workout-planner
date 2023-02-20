@@ -94,6 +94,7 @@ export default function ExerciseSearch(props) {
 					navigation.navigate("finalizeWorkout");
 				}}
 			/>
+			<Button title="Custom Exercise" onPress={() =>{navigation.navigate("customExercise");}} />
 			{/* <HomeNav/> */}
 			
 		</SafeAreaView>
