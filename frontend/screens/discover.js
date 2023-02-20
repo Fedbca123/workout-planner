@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState} from 'react';
-import {Button, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
+import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {Card, Title} from 'react-native-paper';
 import { SearchBar } from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
+import Modal from "react-native-modal";
 
 const exerciseData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
@@ -41,9 +42,32 @@ export default function DiscoverPage(props) {
   // const [isWorkoutVisible, setWorkoutVisible] = useState(false);
   // const [isExerciseVisible, setExerciseVisible] = useState(false);
 
+  // <View style={styles.filtersContainer}>
+  //   <View style={styles.filterButtonContainer}>
+  //     <TouchableOpacity onPress={handleTypePress}>
+  //       <Text style={styles.filterButton}>Types</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  //   <View style={styles.filterButtonContainer}>
+  //     <TouchableOpacity onPress={handleMuscleGroupPress}>
+  //       <Text style={styles.filterButton}>Muscle Groups</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  //   <View style={styles.filterButtonContainer}>
+  //     <TouchableOpacity onPress={handleTagPress}>
+  //       <Text style={styles.filterButton}>Tags</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // </View>
+
   const [toggleValue, setToggleValue] = useState(false);
   const [search, setSearch] = useState("");
+  const [areFiltersVisible, setFiltersVisible] = useState(false);
 
+  const toggleFiltersShowing = () =>{
+    setFiltersVisible(!areFiltersVisible);
+  }
+  
   const updateSearch = (search) => {
     setSearch(search);
   }
@@ -87,69 +111,90 @@ return (
           <Text style={styles.discoverTitle}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
           <View style={styles.buttonsContainer}>
-            <View style={styles.toggleContainer}>
-              <Toggle 
-                value = {toggleValue}
-                onPress = {(newState) => setToggleValue(newState)}
-                disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
-                leftComponent = <Text style={styles.workoutTitle}>Workouts</Text>
-                rightComponent = <Text style={styles.exerciseTitle}>Exercises</Text>
-                trackBar={{
-                  width: 170,
-                  height: 50,
-                  //radius: 40,
-                //borderWidth: -1,
-                activeBackgroundColor: "#8EB4FA",
-                inActiveBackgroundColor: "#C38AF0"
-                }}
-                thumbButton={{
-                  width: 80,
-                  height: 50,
-                  //radius: 30,
-                  borderWidth: 1,
-                  activeBackgroundColor: "#ddff33",
-                  inActiveBackgroundColor: "#33ff9c"
+            <View style={styles.toggleandfilters}>
+              <View style={styles.toggleContainer}>
+                  <Toggle
+                    value = {toggleValue}
+                    onPress = {(newState) => setToggleValue(newState)}
+                    disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
+                    leftComponent = <Text style={styles.workoutTitle}>Workouts</Text>
+                    rightComponent = <Text style={styles.exerciseTitle}>Exercises</Text>
+                    trackBar={{
+                      width: 170,
+                      height: 50,
+                      //radius: 40,
+                    //borderWidth: -1,
+                    activeBackgroundColor: "#8EB4FA",
+                    inActiveBackgroundColor: "#C38AF0"
+                    }}
+                    thumbButton={{
+                      width: 80,
+                      height: 50,
+                      //radius: 30,
+                      borderWidth: 1,
+                      activeBackgroundColor: "#ddff33",
+                      inActiveBackgroundColor: "#33ff9c"
+                      }}
+                    />
+              </View>
+              <View style={styles.filters}>
+                <TouchableOpacity onPress={toggleFiltersShowing}>
+                <View style={styles.modalContainer}></View>
+                  <Text style={styles.openText}>Open Filters</Text>
+                  <Modal 
+                    isVisible = {areFiltersVisible}
+                    coverScreen = {true}
+                    //backdropOpacity = "1"
+                    backdropColor = "gray"
+                    >
+                    <View style={styles.modalBackground}>
+                      <View style={styles.filtersContainer}>
+                        <View style={styles.filterButtonContainer}>
+                          <TouchableOpacity onPress={handleTypePress}>
+                            <Text style={styles.filterButton}>Types</Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.filterButtonContainer}>
+                          <TouchableOpacity onPress={handleMuscleGroupPress}>
+                            <Text style={styles.filterButton}>Muscle Groups</Text>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.filterButtonContainer}>
+                          <TouchableOpacity onPress={handleTagPress}>
+                            <Text style={styles.filterButton}>Tags</Text>
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                      <TouchableOpacity style={styles.modalCloseButton} onPress={toggleFiltersShowing}>
+                          <Text style={styles.closeText}>Press to Close</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </Modal>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.searchBar}>
+              <SearchBar
+                placeholder="Search Here"
+                placeholderTextColor={"#363636"}
+                data 
+                lightTheme
+                round
+                onChangeText={updateSearch}
+                autoCorrect={false}
+                value={search}
+                // searchIcon = {false}
+                inputStyle={{
+                    color: "black",
                   }}
-                />
-            </View>
-            <View style={styles.filtersContainer}>
-              <View style={styles.filterButtonContainer}>
-                <TouchableOpacity onPress={handleTypePress}>
-                  <Text style={styles.filterButton}>Types</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.filterButtonContainer}>
-                <TouchableOpacity onPress={handleMuscleGroupPress}>
-                  <Text style={styles.filterButton}>Muscle Groups</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.filterButtonContainer}>
-                <TouchableOpacity onPress={handleTagPress}>
-                  <Text style={styles.filterButton}>Tags</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <SearchBar
-              placeholder="Search Here"
-              placeholderTextColor={"#363636"}
-              data 
-              lightTheme
-              round
-              onChangeText={updateSearch}
-              autoCorrect={false}
-              value={search}
-              // searchIcon = {false}
-              inputStyle={{
-                  color: "black",
+                containerStyle = {{
+                  marginTop: 5,
+                  backgroundColor: "white",
+                  // marginBottom: 5,
                 }}
-              containerStyle = {{
-                marginTop: 5,
-                backgroundColor: "white",
-                // marginBottom: 5,
-              }}
-            />
+              />
+            </View>
           </View>
-          
         </View> 
       </View>
       <View style={styles.discoverContainer}>
@@ -174,6 +219,26 @@ return (
 const styles = StyleSheet.create({
   boxContainer:{
     flex: 1,
+  },
+  toggleandfilters:{
+    flexDirection: 'row'
+  },
+  modalCloseButton:{
+    alignItems: 'center',
+    top: 100,
+  },
+  closeText:{
+    fontWeight: 'bold',
+  },
+  openText:{
+    fontWeight: 'bold',
+    paddingTop: 30,
+    paddingLeft: 10
+  },
+  modalBackground:{
+    backgroundColor: "white",
+    height: "45%",
+    borderRadius: "15rem",
   },
   workoutItems:{
     backgroundColor: '#3377ff',
@@ -208,6 +273,10 @@ const styles = StyleSheet.create({
   discoveryPageHeader:{
     backgroundColor: 'white',
   },
+  toggleandfilters:{
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
   toggleContainer:{
     alignItems: 'center',
     paddingBottom: 5,
@@ -217,8 +286,9 @@ const styles = StyleSheet.create({
     // paddingBottom: 5
   },
   filtersContainer:{
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: "50%",
 
   },
   filterButtonContainer:{
@@ -228,7 +298,9 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderRadius: "15rem",
     paddingHorizontal: 10,
-    marginHorizontal: 5
+    marginHorizontal: 5,
+    paddingVertical: 10,
+    marginVertical: 10,
   },
 
   // workoutsBttnText:{
