@@ -8,19 +8,12 @@ export default function Friends(props) {
   const [friendEmail, setFriendEmail] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
 
-  const friends = [
-    { firstName: 'John', lastName: 'Doe', email: 'johndoe@email.com' },
-    { firstName: 'Jane', lastName: 'Doe', email: 'janedoe@email.com' },
-    { firstName: 'Jim', lastName: 'Smith', email: 'jimsmith@email.com' },
-    { firstName: 'Alex', lastName: 'Smith', email: 'jimsmith@email.com'}
-  ];
-
-  const [filteredFriends, setFilteredFriends] = useState(friends);
+  const [filteredFriends, setFilteredFriends] = useState(globalState.friends);
 
   const handleSearch = (text) => {
     setSearchTerm(text);
     setFilteredFriends(
-      friends.filter((friend) => friend.email.includes(text))
+      globalState.friends.filter((friend) => friend.email.includes(text))
     );
   };
 
