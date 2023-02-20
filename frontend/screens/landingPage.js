@@ -37,6 +37,7 @@ export default function LandingPage(props) {
 			return "a workout scheduled today";
 		} else {
 			return "no workout scheduled today";
+			//or "you are done with your workout today!"
 		}
 		return "no workout scheduled today";
 	};
