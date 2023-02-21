@@ -92,7 +92,7 @@ return (
                 value = {toggleValue}
                 onPress = {(newState) => setToggleValue(newState)}
                 disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
-                leftComponent = <Text style={styles.workoutTitle}>Workouts</Text>
+                leftComponent =  <Text style={styles.workoutTitle}>Workouts</Text>
                 rightComponent = <Text style={styles.exerciseTitle}>Exercises</Text>
                 trackBar={{
                   width: 170,
