@@ -8,6 +8,7 @@ const unlinkAsync = promisify(fs.unlink);
 const cloudinary = require('../cloudinary');
 const { User, userSchema } = require('../models/user.model');
 const config = require("../config.js");
+const mongoose = require('mongoose');
 
 /*
 Error Codes:
@@ -124,16 +125,31 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 });
 
 router.route('/search').post(async (req, res) => {
-  const {searchStr, exerciseType, muscleGroups, equipment} = req.body;
 
-  const results = Exercise.find({
-    $and: [
-      {tags: { $regex: searchStr, $options: 'i' } },
-      {muscleGroups: {$in: muscleGroups}},
-      {type: exerciseType},
-      {tags: {$in: equipment}}
-    ]}).then(workout => res.json(workout))
-    .catch(err => res.status(500).json('Error: ' + err));
+  let {searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
+
+  let filters = {};
+  filters.$or = [{owner: {$exists: false}}];
+
+  if (searchStr)
+    filters.$and.push({tags: { $regex: searchStr, $options: 'i' }});
+
+  if (exerciseTypeSrch)
+    filters.$and.push({exerciseType: exerciseTypeSrch});
+
+  if (muscleGroupsSrch)
+    filters.$and.push({muscleGroups: {$in: muscleGroupsSrch}});
+
+  if (equipmentSrch)
+    filters.$and.push({tags: {$in: equipmentSrch}});
+
+  if (ownerId) {
+    filters.$or.push({owner:  mongoose.Types.ObjectId(ownerId)});
+  }
+
+  const results = Exercise.find(filters)
+  .then(exercise => res.json(exercise))
+  .catch(err => res.status(500).json('Error: ' + err));
 });
 
 //------UPDATE-----//

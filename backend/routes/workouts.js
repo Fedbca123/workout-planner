@@ -10,6 +10,7 @@ let { Workout, workoutSchema } = require('../models/workout.model');
 const { User, userSchema } = require('../models/user.model');
 const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const config = require("../config.js");
+const mongoose = require('mongoose');
 
 /*
 Error Codes:
@@ -126,17 +127,29 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 });
 
 router.route('/search').post(async (req, res) => {
-  const {searchStr, muscleGroups, equipment} = req.body;
 
-  const results = Workout.find({
-    $and: [
-      {tags: { $regex: searchStr, $options: 'i' } },
-      {muscleGroups: {$in: muscleGroups}},
-      {tags: {$in: equipment}}
-    ]}).then(workout => res.json(workout))
-    .catch(err => res.status(500).json('Error: ' + err));
-  
+  let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
 
+  let filters = {};
+  filters.$and = [{scheduledDate: {$exists: false}}];
+  filters.$or = [{owner: {$exists: false}}];
+
+  if (searchStr)
+    filters.$and.push({tags: { $regex: searchStr, $options: 'i' }});
+
+  if (muscleGroupsSrch)
+    filters.$and.push({muscleGroups: {$in: muscleGroupsSrch}});
+
+  if (equipmentSrch)
+    filters.$and.push({tags: {$in: equipmentSrch}});
+
+  if (ownerId) {
+    filters.$or.push({owner: mongoose.Types.ObjectId(ownerId)});
+  }
+
+  Workout.find(filters)
+  .then(workout => res.json(workout))
+  .catch(err => res.status(500).json('Error: ' + err));
 });
 
 //------UPDATE-----//
