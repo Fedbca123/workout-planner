@@ -76,7 +76,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const tags = req.body.tags;
   const muscleGroups = req.body.muscleGroups;
   const owner = req.body.owner;
-  tags.push(title);
+  tags.push(title.split(' '));
 
   const newExercise = new Exercise({
     title,
@@ -131,8 +131,10 @@ router.route('/search').post(async (req, res) => {
   let filters = {};
   filters.$or = [{owner: {$exists: false}}];
 
-  if (searchStr)
-    filters.$and.push({tags: { $regex: searchStr, $options: 'i' }});
+  if (searchStr) {
+    searchArr = searchStr.split(' ');
+    filters.$and.push({tags: {$in: searchArr}});
+  }
 
   if (exerciseTypeSrch)
     filters.$and.push({exerciseType: exerciseTypeSrch});
@@ -143,9 +145,8 @@ router.route('/search').post(async (req, res) => {
   if (equipmentSrch)
     filters.$and.push({tags: {$in: equipmentSrch}});
 
-  if (ownerId) {
+  if (ownerId)
     filters.$or.push({owner:  mongoose.Types.ObjectId(ownerId)});
-  }
 
   const results = Exercise.find(filters)
   .then(exercise => res.json(exercise))

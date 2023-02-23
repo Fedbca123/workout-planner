@@ -81,7 +81,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const tags = req.body.tags;
   const muscleGroups = req.body.muscleGroups;
   const owner = req.body.owner;
-  tags.push(title);
+  tags.push(title.split(' '));
 
   const newWorkout = new Workout({
     title,
@@ -135,7 +135,12 @@ router.route('/search').post(async (req, res) => {
   filters.$or = [{owner: {$exists: false}}];
 
   if (searchStr)
-    filters.$and.push({tags: { $regex: searchStr, $options: 'i' }});
+  {
+    searchArr = searchStr.split(' ');
+    console.log(searchStr);
+    console.log(searchArr);
+    filters.$and.push({tags: { $in: searchArr}});
+  }
 
   if (muscleGroupsSrch)
     filters.$and.push({muscleGroups: {$in: muscleGroupsSrch}});
