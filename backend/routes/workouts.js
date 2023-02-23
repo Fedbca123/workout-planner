@@ -22,6 +22,7 @@ Error Codes:
 497 - error saving workout
 498 - id provided does not exist in workout collection
 499 - error when workout doc was being saved in DB
+500 - error performing search on workouts
 */
 
 //--------helper functions--------//
@@ -79,6 +80,7 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const tags = req.body.tags;
   const muscleGroups = req.body.muscleGroups;
   const owner = req.body.owner;
+  tags.push(title);
 
   const newWorkout = new Workout({
     title,
@@ -123,12 +125,19 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   }
 });
 
-// router.route('/search').post(async (req, res) => {
-//   const {searchStr, tags, muscleGroups} = req.body;
+router.route('/search').post(async (req, res) => {
+  const {searchStr, muscleGroups, equipment} = req.body;
 
-//   const results = Workout.find();
+  const results = Workout.find({
+    $and: [
+      {tags: searchStr},
+      {muscleGroups: {$in: muscleGroups}},
+      {tags: {$in: equipment}}
+    ]}).then(workout => res.json(workout))
+    .catch(err => res.status(500).json('Error: ' + err));
+  
 
-// })
+});
 
 //------UPDATE-----//
 router.route('/:id').patch(upload.single('image'), async (req,res) => {
