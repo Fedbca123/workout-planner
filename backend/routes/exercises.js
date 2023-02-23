@@ -128,7 +128,7 @@ router.route('/search').post(async (req, res) => {
 
   const results = Exercise.find({
     $and: [
-      {tags: searchStr},
+      {tags: { $regex: searchStr, $options: 'i' } },
       {muscleGroups: {$in: muscleGroups}},
       {type: exerciseType},
       {tags: {$in: equipment}}
