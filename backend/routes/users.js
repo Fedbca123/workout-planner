@@ -382,7 +382,8 @@ router.route('/:id/contact').patch(async (req, res) => {
 // adding workout
 router.route('/:id/workouts/schedule').post(async (req,res) => {
   const id = req.params.id;
-  const workoutId = req.body.workoutId;
+  const workoutId = req.body.workoutID;
+  const dateString = req.body.date;
 
   const user = await User.findById(id);
   if (!user)
@@ -391,8 +392,16 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
   }
 
   const workout = await Workout.findById(workoutId);
-  if (!workout)
+  if (!workout){
     return res.status(498).send({Error: "Workout does not exist!"});
+  }
+
+  var workoutDate;
+  if(dateString){
+    workoutDate = new Date(dateString);
+  }else if(workout.scheduledDate){
+    workoutDate = workout.scheduledDate;
+  }
 
   const newWorkout = new Workout({
     title: workout.title,
@@ -404,7 +413,8 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
     location: workout.location,
     tags: workout.tags,
     muscleGroups: workout.muscleGroups,
-    owner: workout.owner
+    owner: workout.owner,
+    scheduledDate: workoutDate
   })
 
   await newWorkout.save()
@@ -723,7 +733,6 @@ router.route('/:id/calendar/all').get(async (req,res) => {
     }
 
     users.push(friend);
-    console.log(friend)
   }
   // for all workouts in all user objects, add to returning array
   for(const userObj of users){
