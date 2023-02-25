@@ -398,6 +398,7 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
 
   var workoutDate;
   if(dateString){
+    // format of date in body "YYYY/MM/DD EST"
     workoutDate = new Date(dateString);
   }else if(workout.scheduledDate){
     workoutDate = workout.scheduledDate;
