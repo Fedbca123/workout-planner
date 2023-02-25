@@ -78,10 +78,12 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 
   const duration = req.body.duration;
   const location = req.body.location;
-  const tags = req.body.tags;
   const muscleGroups = req.body.muscleGroups;
   const owner = req.body.owner;
-  tags.push(title.split(' '));
+  
+  let tags = [];
+  tags = tags.concat(req.body.tags)
+  tags = tags.concat(title.split(' '));
 
   const newWorkout = new Workout({
     title,

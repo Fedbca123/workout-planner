@@ -15,49 +15,273 @@ import config from '../../config';
 import { useGlobalState } from '../../GlobalState.js';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toggle from "react-native-toggle-element";
+import * as ImagePicker from 'expo-image-picker';
 
 const baseUrl = config.API_URL + config.PORT + '/';
 
 export default function AdminPage(props) {
     const [toggleValue, setToggleValue] = useState(false);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [imageUri, setImageUri] = useState(null);
+    const [exercises, setExercises] = useState('');
+    const [duration, setDuration] = useState('');
+    const [location, setLocation] = useState('');
+    const [exerciseType, setExerciseType] = useState('');
+    const [sets, setSets] = useState('');
+    const [reps, setReps] = useState('');
+    const [time, setTime] = useState('');
+    const [weight, setWeight] = useState('');
+    const [restTime, setRestTime] = useState('');
+    const [tags, setTags] = useState('');
+    const [muscleGroups, setMuscleGroups] = useState('');
+    const [owner, setOwner] = useState('');
+
+    const imageSelect = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+          });
+          console.log(result)
+        console.log(result.uri)
+        return result["uri"];
+    }
+
+    const submit = () => {
+        let tagsArr = tags.split(',').map(item =>item.trim());
+        let muscleGroupsArr = muscleGroups.split(',').map(item => item.trim());
+        let exercisesArr = exercises.split(',').map(item => item.trim());
+        const formData = new FormData();
+
+        if (title)
+            formData.append('title', title);
+        if (description)
+            formData.append('description', description);
+        if (imageUri)
+        {
+            let filename = imageUri.split('/').pop();
+            let match = /\.(\w+)$/.exec(filename);
+            let type = match ? `image/${match[1]}` : `image`;
+            formData.append('image', { uri: imageUri, name: filename, type })
+        }
+        if (tags)
+        {
+            for (let i = 0; i < tagsArr.length; i++)
+                formData.append('tags[]', tagsArr[i]);
+        }
+        if (muscleGroups)
+        {
+
+            for (let j = 0; j < muscleGroupsArr.length; j++)
+                formData.append('muscleGroups[]', muscleGroupsArr[j]);
+        }
+        if (owner)
+            formData.append('owner', owner);
+
+        // Handle Exercise
+        if (!toggleValue) 
+        {
+            if (exerciseType)
+                formData.append('exerciseType', exerciseType);
+            if (sets) 
+                formData.append('sets', +sets)
+            if (reps)
+                formData.append('reps', +reps)
+            if (time)
+                formData.append('time', +time);
+            if (weight)
+                formData.append('weight', +weight)
+            if (restTime)
+                formData.append('restTime', restTime)
+              
+            axios.post(baseUrl + "exercises/add", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+			})
+			.then((response) => {
+				if (response.status == 200) {
+					console.log(response.data)
+				}
+			})
+			.catch((e) => {
+				console.log(e);
+			});
+        }
+        else // Handle Workout
+        {
+            if (exercises)
+            {
+                for (let k = 0; k < exercisesArr.length; k++)
+                    formData.append('exerciseIds[]', exercisesArr[k]);
+            }
+            if (duration)
+                formData.append('duration', duration);
+            if (location)
+                formData.append('location', location);
+
+            axios.post(baseUrl + "workouts/add", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                  }
+			})
+			.then((response) => {
+				if (response.status == 200) {
+					console.log(response.data)
+				}
+			})
+			.catch((e) => {
+				console.log(e);
+			});
+        }
+    }
+
     return (
-        <SafeAreaView>
+        <KeyboardAwareScrollView
+			extraHeight={100}
+			keyboardShouldPersistTaps="handled"
+			bounces={false}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Toggle
-                        style={{marginTop: 20}}
-                        value={toggleValue}
-                        onPress={(newState) => setToggleValue(newState)}
-                        leftTitle="Exercise"
-                        rightTitle="Workout"
-                    />
+                <Toggle 
+                    value = {toggleValue}
+                    onPress = {(newState) => setToggleValue(newState)}
+                    disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
+                    leftComponent = {< Text>Exercise</Text>}
+                    rightComponent = {<Text>Workout</Text>}
+                    trackBar={{
+                        width: 170,
+                        height: 50,
+                        //radius: 40,
+                        //borderWidth: -1,
+                    }}
+                    thumbButton={{
+                        width: 80,
+                        height: 50,
+                        //radius: 30,
+                        borderWidth: 1,
+                    }}
+                />
                 </View>
-                {/* <View>
-                    <TextInput/>
-                    <TextInput/>
-                    <TextInput/>
-                    <TextInput/>
-                    <TextInput/>
-                    <TextInput/>
-                    <TextInput/>
-                    <TextInput/>
-                </View> */}
+
+                <View style={styles.inputContainer}>
+
+                    <TextInput style={styles.inputfield}
+                    placeholder="title"
+                    onChangeText={(text) => setTitle(text)}/>
+
+                    <TextInput style={styles.inputfield}
+                    placeholder="description"
+                    onChangeText={(text) => setDescription(text)}/>
+
+                    { imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
+                    { !imageUri && <Button title = "Choose File"
+                    onPress={async () => {
+                        setImageUri(await imageSelect());
+                    }}/> }
+                    { imageUri && <Button title = "Clear"
+                    onPress={async () => {
+                        setImageUri(null);
+                    }}/>}
+
+                    { !toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="exerciseType"
+                    onChangeText={(text) => setExerciseType(text)}/> }
+
+                    {!toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="sets"
+                    onChangeText={(text) => setSets(text)}/>}
+
+                    {!toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="reps"
+                    onChangeText={(text) => setReps(text)}/>}
+
+                    {!toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="time"
+                    onChangeText={(text) => setTime(text)}/>}
+
+                    {!toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="weight"
+                    onChangeText={(text) => setWeight(text)}/>}
+
+                    {!toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="restTime"
+                    onChangeText={(text) => setRestTime(text)}/>}
+
+                    {toggleValue && <TextInput style={styles.inputfield}
+                    placeholder={"exercises - List of ObjecId's \nseperate by comma"}
+                    multiline = {true}
+                    numberOfLines = {4}
+                    minHeight = {80}
+                    maxHeight = {80}
+                    onChangeText={(text) => setExercises(text)}/>}
+
+                    {toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="duration"
+                    onChangeText={(text) => setDuration(text)}/>}
+
+                    {toggleValue && <TextInput style={styles.inputfield}
+                    placeholder="location"
+                    onChangeText={(text) => setLocation(text)}/>}
+                    
+                    <TextInput style={styles.inputfield}
+                    multiline = {true}
+                    numberOfLines = {4}
+                    minHeight = {80}
+                    maxHeight = {80}
+                    placeholder = {"Tags - Seperate By Comma"}
+                    onChangeText = {(text) => setTags(text)} />
+
+                    <TextInput style={styles.inputfield}
+                    multiline = {true}
+                    numberOfLines = {4}
+                    minHeight = {80}
+                    maxHeight = {80}
+                    placeholder= {"Muscle Groups - Seperate By Comma"}
+                    onChangeText = {(text) => setMuscleGroups(text)}/>
+
+                    <TextInput style={styles.inputfield}
+                    placeholder= {"Owner (Public if empty)"}
+                    onChangeText = {(text) => setOwner(text)}/>
+
+                    <View style={styles.submitButtonContainerStyle}>
+                        <Button 
+                        color = "black"
+                        title = "Submit"
+                        onPress={() => submit()}/>
+                    </View>
+                </View>
             </View>
-        </SafeAreaView>
+        </KeyboardAwareScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         alignItems: 'center',
-        flexDirection: 'column',
+        marginTop: 70
     },
     header: {
-        //flex: 1,
-        marginTop: 100,
-        justifyContent: 'center',
-        alignItems: 'center'
-
+    },
+    inputContainer: {
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 10
+    },
+    inputfield: {
+		borderWidth: 1,
+		borderColor: "#C4C4C4",
+		width: "70%",
+		padding: 8,
+		marginVertical: 2,
+    },
+    submitButtonContainerStyle: {
+        marginTop: 20,
+        marginBottom: 70,
+        backgroundColor: 'lightgray',
+        borderWidth: 1,
+        width: '30%'
     }
 });
