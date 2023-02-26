@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
@@ -15,13 +15,31 @@ LocaleConfig.defaultLocale = 'en';
 const CalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [eventList, setEventList] = useState([
-    { date: '2023-02-11', title: 'Running', type: 'Cardio', sets: 3, recurring: true },
-    { date: '2023-02-12', title: 'Yoga', type: 'Flexibility', sets: 1, recurring: false },
-    { date: '2023-02-13', title: 'Weightlifting', type: 'Strength', sets: 5, recurring: true },
-    { date: '2023-02-14', title: 'Pilates', type: 'Core', sets: 2, recurring: false },
-    { date: '2023-02-15', title: 'Swimming', type: 'Endurance', sets: 4, recurring: true },
+    { date: '2023-02-26', title: 'Running', type: 'Cardio', sets: 3, recurring: true },
+    { date: '2023-02-27', title: 'Yoga', type: 'Flexibility', sets: 1, recurring: false },
+    { date: '2023-02-28', title: 'Weightlifting', type: 'Strength', sets: 5, recurring: true },
+    { date: '2023-02-29', title: 'Pilates', type: 'Core', sets: 2, recurring: false },
+    { date: '2023-03-01', title: 'Swimming', type: 'Endurance', sets: 4, recurring: true },
   ]);
 
+  const [friendEventList, setFriendEventList] = useState([
+    { date: '2023-02-12', title: 'Soccer', type: 'Cardio', friendName: 'John' },
+    { date: '2023-02-14', title: 'Basketball', type: 'Cardio', friendName: 'Mary' },
+  ]);
+
+  const eventsByDate = {};
+  eventList.forEach((event) => {
+    if (!eventsByDate[event.date]) {
+      eventsByDate[event.date] = [];
+    }
+    eventsByDate[event.date].push(event);
+  });
+
+  const markedDates = {};
+  Object.keys(eventsByDate).forEach((date) => {
+    markedDates[date] = { dots: [{ color: '#24C8FE' }] };
+  });
+  
   const onDayPress = (day) => {
     setSelectedDate(day.dateString);
   };
@@ -33,6 +51,7 @@ const CalendarScreen = () => {
           <Text style={{ fontWeight: 'bold' }}>{item.date}</Text>
           <Text style={{ fontWeight: 'bold' }}>{item.title}</Text>
           <Text>Workouts: {item.type}</Text>
+
         </View>
       );
     }
@@ -43,7 +62,10 @@ const CalendarScreen = () => {
     <View style={styles.container}>
       <Calendar
         onDayPress={onDayPress}
-        markedDates={{ [selectedDate]: { selected: true } }}
+        markedDates={{
+          ...markedDates,
+          [selectedDate]: { selected: true },
+        }}
       />
       <FlatList
         data={eventList}
@@ -53,6 +75,7 @@ const CalendarScreen = () => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
