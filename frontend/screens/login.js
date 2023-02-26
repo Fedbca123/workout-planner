@@ -4,20 +4,35 @@ import {
 	Text,
 	Image,
 	View,
-	TextInput,
-	KeyboardAvoidingView,
-	ScrollView,
+	//TextInput,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { TouchableOpacity } from "react-native-gesture-handler";
-//import { Entypo } from "@expo/vector-icons";
+import {TextInput} from 'react-native-paper';
 
 const baseUrl = config.API_URL + config.PORT + "/";
+
+/*<Button
+					title="BACKDOOR"
+					onPress={() =>
+						backDoorHandler("Test@gmail.com", "password")
+					}
+				/>
+				<Button
+					title="ADMIN BACKDOOR"
+					onPress={() => props.navigation.navigate("admin")}
+            	/>
+
+				{/* this was added by Alice for the start workout screens, will move in the future }
+				<Button
+					title="START WORKOUT BUTTON"
+					onPress={() => props.navigation.navigate("start")}
+            	/>
+				{/* code will break at the end to home bc name can't be rendered}	
+          */
 
 export default function Login(props) {
 	const [email, setEmail] = useState("");
@@ -95,27 +110,14 @@ export default function Login(props) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
+      
 			<View style={styles.buttoncontainer}>
-				<Button
-					title="BACKDOOR"
-					onPress={() =>
-						backDoorHandler("Test@gmail.com", "password")
-					}
-				/>
-				<Button
-					title="ADMIN BACKDOOR"
-					onPress={() => props.navigation.navigate("admin")}
-            	/>
-
-				{/* this was added by Alice for the start workout screens, will move in the future */}
-				<Button
-					title="START WORKOUT BUTTON"
-					onPress={() => props.navigation.navigate("start")}
-            	/>
-				{/* code will break at the end to home bc name can't be rendered*/}	
-
 				<Text style={styles.error}> {error} </Text>
-				<TextInput
+				
+        <TextInput
+          mode='outlined'
+          outlineColor="black"
+          activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
 					placeholder="Email"
 					returnKeyType="next"
@@ -126,13 +128,18 @@ export default function Login(props) {
 					keyboardType="email-address"
 					onChangeText={(text) => emailInputHandler(text)}
 				/>
+        
 				<TextInput
+          mode='outlined'
+          outlineColor="black"
+          activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
 					placeholder="Password"
 					returnKeyType="go"
 					autoCapitalize="none"
 					ref={passwordRef}
 					secureTextEntry={showPassword}
+          value={password}
 					onChangeText={(text) => {
 						passwordInputHandler(text);
 					}}
@@ -140,15 +147,16 @@ export default function Login(props) {
 						passwordRef.current.blur();
 						loginHandler();
 					}}
-				/>
-        {/*<TouchableOpacity onPress={setShowPassword(!showPassword)}>
-          {showPassword ?
-            <Entypo name="eye" size={24} color = "black" />
+          right={showPassword ? 
+            <TextInput.Icon icon="eye" onPress={()=>setShowPassword(!showPassword)}/>
             :
-            <Entypo name="eye-with-line" size={24} color = "black" />
+            <TextInput.Icon icon="eye-off" onPress={()=>setShowPassword(!showPassword)}/>
           }
-        </TouchableOpacity>
-        */}
+          left={<TextInput.Icon />}
+				/>
+        </View>
+
+        <View style={{flex:1, marginTop: 50}}>
 				<Button
 					title="Login"
 					color="#10B9F1"
@@ -163,7 +171,7 @@ export default function Login(props) {
 						props.navigation.navigate("registration");
 					}}
 				/>
-			</View>
+        </View>
 		</KeyboardAwareScrollView>
 	);
 }
@@ -178,7 +186,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 	},
 	textcontainer: {
-		flex: 0.3,
+		flex: 0.5,
 		alignSelf: "center",
 		alignItems: "center",
 		justifyContent: "center",
@@ -188,6 +196,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		paddingTop: 10,
+    marginBottom: 10,
 		width: "100%",
 	},
 	heading: {
@@ -213,12 +222,12 @@ const styles = StyleSheet.create({
 		backgroundColor: "#10B9F1",
 	},
 	inputstyle: {
+    display: 'inline-block',
 		textAlign: "center",
-		borderWidth: 1,
-		borderColor: "#C4C4C4",
 		width: "70%",
 		padding: 8,
 		marginVertical: 2,
+    justifyContent: 'center',
 	},
 	error: {
 		textAlign: "center",
