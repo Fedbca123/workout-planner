@@ -10,6 +10,7 @@ let { Workout, workoutSchema } = require('../models/workout.model');
 const { User, userSchema } = require('../models/user.model');
 const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const config = require("../config.js");
+const mongoose = require('mongoose');
 
 /*
 Error Codes:
@@ -22,6 +23,7 @@ Error Codes:
 497 - error saving workout
 498 - id provided does not exist in workout collection
 499 - error when workout doc was being saved in DB
+500 - error performing search on workouts
 */
 
 //--------helper functions--------//
@@ -76,9 +78,12 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 
   const duration = req.body.duration;
   const location = req.body.location;
-  const tags = req.body.tags;
   const muscleGroups = req.body.muscleGroups;
   const owner = req.body.owner;
+  
+  let tags = [];
+  tags = tags.concat(req.body.tags)
+  tags = tags.concat(title.split(' '));
 
   const newWorkout = new Workout({
     title,
@@ -123,12 +128,36 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   }
 });
 
-// router.route('/search').post(async (req, res) => {
-//   const {searchStr, tags, muscleGroups} = req.body;
+router.route('/search').post(async (req, res) => {
 
-//   const results = Workout.find();
+  let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
 
-// })
+  let filters = {};
+  filters.$and = [{scheduledDate: {$exists: false}}];
+  filters.$or = [{owner: {$exists: false}}];
+
+  if (searchStr)
+  {
+    searchArr = searchStr.split(' ');
+    console.log(searchStr);
+    console.log(searchArr);
+    filters.$and.push({tags: { $in: searchArr}});
+  }
+
+  if (muscleGroupsSrch)
+    filters.$and.push({muscleGroups: {$in: muscleGroupsSrch}});
+
+  if (equipmentSrch)
+    filters.$and.push({tags: {$in: equipmentSrch}});
+
+  if (ownerId) {
+    filters.$or.push({owner: mongoose.Types.ObjectId(ownerId)});
+  }
+
+  Workout.find(filters)
+  .then(workout => res.json(workout))
+  .catch(err => res.status(500).json('Error: ' + err));
+});
 
 //------UPDATE-----//
 router.route('/:id').patch(upload.single('image'), async (req,res) => {

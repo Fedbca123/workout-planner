@@ -13,6 +13,7 @@ Error Codes:
 200 - OK
 400 - general error (look at message for details)
 401 - error retrieving user(s)
+494 - workout id not found in db
 495 - email not in proper format
 496 - modification seeking to be made has already been made (look at message for details)
       (ie inviting the same user twice will fail the second time)
@@ -381,7 +382,8 @@ router.route('/:id/contact').patch(async (req, res) => {
 // adding workout
 router.route('/:id/workouts/schedule').post(async (req,res) => {
   const id = req.params.id;
-  const workoutId = req.body.workoutId;
+  const workoutId = req.body.workoutID;
+  const dateString = req.body.date;
 
   const user = await User.findById(id);
   if (!user)
@@ -390,8 +392,17 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
   }
 
   const workout = await Workout.findById(workoutId);
-  if (!workout)
+  if (!workout){
     return res.status(498).send({Error: "Workout does not exist!"});
+  }
+
+  var workoutDate;
+  if(dateString){
+    // format of date in body "YYYY/MM/DD EST"
+    workoutDate = new Date(dateString);
+  }else if(workout.scheduledDate){
+    workoutDate = workout.scheduledDate;
+  }
 
   const newWorkout = new Workout({
     title: workout.title,
@@ -403,7 +414,8 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
     location: workout.location,
     tags: workout.tags,
     muscleGroups: workout.muscleGroups,
-    owner: workout.owner
+    owner: workout.owner,
+    scheduledDate: workoutDate
   })
 
   await newWorkout.save()
@@ -700,6 +712,78 @@ router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
     res.status(200).json(newUser);
   });
 });
+
+// endpoint to get all scheduled workouts of user and friends nicely
+router.route('/:id/calendar/all').get(async (req,res) => {
+  const id = req.params.id;
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+  // declaring arrays
+  let users = [];
+  users.push(user);
+  let completed = [];
+  let scheduled = [];
+  // get all user objects into array
+  for(const friendID of user.friends){
+    const friend  = await User.findById(friendID);
+    if (!friend) {
+      return res.status(498).send({Error: `Friend ${friendID} does not exist!`});
+    }
+
+    users.push(friend);
+  }
+  // for all workouts in all user objects, add to returning array
+  for(const userObj of users){
+    // for all scheduled workouts
+    for(const workoutID of userObj.scheduledWorkouts){
+      const workoutObj = await Workout.findById(workoutID)
+      
+      if (!workoutObj) {
+        return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
+      }
+
+      const workout = {
+        title: workoutObj.title,
+        description: workoutObj.description,
+        image: workoutObj.image,
+        imageID: workoutObj.imageID,
+        exercises: workoutObj.exercises,
+        duration: workoutObj.duration,
+        location: workoutObj.location,
+        recurrence: workoutObj.recurrence,
+        scheduledDate: workoutObj.scheduledDate,
+        owner: userObj.firstName + " " + userObj.lastName
+      }
+
+      scheduled.push(workout);
+    }
+    // for all completed workouts
+    for(const workoutObj of userObj.completedWorkouts){
+      const workout = {
+        title: workoutObj.title,
+        description: workoutObj.description,
+        image: workoutObj.image,
+        imageID: workoutObj.imageID,
+        exercises: workoutObj.exercises,
+        duration: workoutObj.duration,
+        location: workoutObj.location,
+        recurrence: workoutObj.recurrence,
+        dateOfCompletion: workoutObj.dateOfCompletion,
+        owner: userObj.firstName + " " + userObj.lastName
+      }
+
+      scheduled.push(workout);
+    }
+  }
+
+  res.status(200).json({
+    completed: completed,
+    scheduled: scheduled
+  });
+})
 
 // TO-DO Password reset
 // not sure what to throw into this endpoint to complete this.

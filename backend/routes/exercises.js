@@ -8,6 +8,7 @@ const unlinkAsync = promisify(fs.unlink);
 const cloudinary = require('../cloudinary');
 const { User, userSchema } = require('../models/user.model');
 const config = require("../config.js");
+const mongoose = require('mongoose');
 
 /*
 Error Codes:
@@ -20,6 +21,7 @@ Error Codes:
 497 - error saving exercise
 498 - id provided does not exist in exercise collection
 499 - error when exercise doc was being saved in DB
+500 - error performing search on exercises
 */
 
 //--------helper functions--------//
@@ -71,9 +73,12 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const time = req.body.time;
   const weight = req.body.weight;
   const restTime = req.body.restTime;
-  const tags = req.body.tags;
   const muscleGroups = req.body.muscleGroups;
   const owner = req.body.owner;
+
+  let tags = [];
+  tags = tags.concat(req.body.tags)
+  tags = tags.concat(title.split(' '));
 
   const newExercise = new Exercise({
     title,
@@ -119,6 +124,35 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   if(req.file){
     await unlinkAsync(req.file.path);
   }
+});
+
+router.route('/search').post(async (req, res) => {
+
+  let {searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
+
+  let filters = {};
+  filters.$or = [{owner: {$exists: false}}];
+
+  if (searchStr) {
+    searchArr = searchStr.split(' ');
+    filters.$and.push({tags: {$in: searchArr}});
+  }
+
+  if (exerciseTypeSrch)
+    filters.$and.push({exerciseType: exerciseTypeSrch});
+
+  if (muscleGroupsSrch)
+    filters.$and.push({muscleGroups: {$in: muscleGroupsSrch}});
+
+  if (equipmentSrch)
+    filters.$and.push({tags: {$in: equipmentSrch}});
+
+  if (ownerId)
+    filters.$or.push({owner:  mongoose.Types.ObjectId(ownerId)});
+
+  const results = Exercise.find(filters)
+  .then(exercise => res.json(exercise))
+  .catch(err => res.status(500).json('Error: ' + err));
 });
 
 //------UPDATE-----//
