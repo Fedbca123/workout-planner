@@ -41,7 +41,7 @@ export default function Login(props) {
   const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
-  const [pwFocus, setPWFocus] = useState(false);
+  //const [pwFocus, setPWFocus] = useState(false);
 
 	// functions
   const emailInputHandler = (enteredEmail) => {
@@ -146,7 +146,7 @@ export default function Login(props) {
 						passwordRef.current.focus();
 					}}
           right={email != "" ? <TextInput.Icon /> : null}
-          left={email != "" ? <TextInput.Icon /> : null}
+          //left={email != "" ? <TextInput.Icon /> : null}
 					blurOnSubmit={false}
 					keyboardType="email-address"
 					onChangeText={(text) => emailInputHandler(text)}
@@ -162,8 +162,8 @@ export default function Login(props) {
 					returnKeyType="go"
 					autoCapitalize="none"
 					ref={passwordRef}
-          onFocus={()=>setPWFocus(true)}
-          onBlur={()=>setPWFocus(false)}
+          //onFocus={()=>setPWFocus(true)}
+          //onBlur={()=>setPWFocus(false)}
 					secureTextEntry={showPassword}
           value={password}
 					onChangeText={(text) => {
@@ -178,9 +178,7 @@ export default function Login(props) {
             :
             <TextInput.Icon icon="eye-off" onPress={()=>setShowPassword(!showPassword)}/>
           }
-          left={
-            password != "" || pwFocus ? <TextInput.Icon /> : null
-          }
+          //left={password != "" || pwFocus ? <TextInput.Icon /> : null}
 				/>
         </View>
 
@@ -251,7 +249,7 @@ const styles = StyleSheet.create({
 	},
 	inputstyle: {
     display: 'inline-block',
-		textAlign: "center",
+		//textAlign: "center",
 		width: "70%",
 		padding: 8,
 		marginVertical: 2,

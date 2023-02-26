@@ -332,13 +332,13 @@ const styles = StyleSheet.create({
       color: 'white'
   },
   inputstyle:{
-      textAlign: 'auto',
+      //textAlign: 'center',
       //borderWidth: 1,
       //borderColor: '#C4C4C4',
       width: '70%',
       padding:8,
       marginVertical:5,
-      fontSize:12
+      fontSize:16
   },
   inputerrorstyle:{
     textAlign: 'center',
