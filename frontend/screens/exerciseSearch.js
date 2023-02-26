@@ -65,7 +65,8 @@ export default function ExerciseSearch(props) {
 	];
 
 	return (
-		<SafeAreaView>
+		<SafeAreaView onLayout={loadWorkout()}>
+			{/* {loadWorkout()} */}
 			<SearchBar placeholder="Enter exercise names or muscle groups you wish to train!"></SearchBar>
 			<WorkOuts data={userWorkout} />
 			<Text style={styles.TitleText}>Exercises:</Text>
@@ -94,7 +95,10 @@ export default function ExerciseSearch(props) {
 					navigation.navigate("finalizeWorkout");
 				}}
 			/>
-			<Button title="Custom Exercise" onPress={() =>{navigation.navigate("customExercise");}} />
+			<Button title="Custom Exercise" onPress={() => {
+				updateGlobalState("workout", userWorkout);
+				navigation.navigate("customExercise");
+			}} />
 			{/* <HomeNav/> */}
 			
 		</SafeAreaView>
