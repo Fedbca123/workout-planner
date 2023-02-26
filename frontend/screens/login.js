@@ -14,17 +14,21 @@ import axios from "axios";
 import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TouchableOpacity } from "react-native-gesture-handler";
+//import { Entypo } from "@expo/vector-icons";
+
 const baseUrl = config.API_URL + config.PORT + "/";
 
 export default function Login(props) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
 
 	// functions
-	const emailInputHandler = (enteredEmail) => {
+  const emailInputHandler = (enteredEmail) => {
 		setEmail(enteredEmail);
 	};
 
@@ -128,7 +132,7 @@ export default function Login(props) {
 					returnKeyType="go"
 					autoCapitalize="none"
 					ref={passwordRef}
-					secureTextEntry
+					secureTextEntry={showPassword}
 					onChangeText={(text) => {
 						passwordInputHandler(text);
 					}}
@@ -137,6 +141,14 @@ export default function Login(props) {
 						loginHandler();
 					}}
 				/>
+        {/*<TouchableOpacity onPress={setShowPassword(!showPassword)}>
+          {showPassword ?
+            <Entypo name="eye" size={24} color = "black" />
+            :
+            <Entypo name="eye-with-line" size={24} color = "black" />
+          }
+        </TouchableOpacity>
+        */}
 				<Button
 					title="Login"
 					color="#10B9F1"
