@@ -78,7 +78,8 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 
   let tags = [];
   tags = tags.concat(req.body.tags)
-  tags = tags.concat(title.split(' '));
+  if (title)
+    tags = tags.concat(title.split(' '));
 
   const newExercise = new Exercise({
     title,
