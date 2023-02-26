@@ -205,6 +205,7 @@ export default function Register(props) {
             <Text style={styles.text}>Email Address</Text>
             <TextInput style={styles.inputstyle} 
             mode="outlined"
+            multiline={false}
             dense={true}
             activeOutlineColor='#10B9F1'
             outlineColor={emailError == true ? '#fb9357' : '#C4C4C4'}
@@ -227,7 +228,7 @@ export default function Register(props) {
               :
               <TextInput.Icon icon="eye-off" onPress={()=>setShowPW1(!showPW1)} />
             }
-            left={<TextInput.Icon />}
+            
             returnKeyType="next"
             autoCapitalize='none'
             ref={passwordRef}
@@ -247,7 +248,7 @@ export default function Register(props) {
               :
               <TextInput.Icon icon="eye-off" onPress={()=>setShowPW2(!showPW2)} />
             }
-            left={<TextInput.Icon />}
+            
             returnKeyType="done"
             autoCapitalize='none'
             ref={passwordConfRef}
@@ -331,13 +332,13 @@ const styles = StyleSheet.create({
       color: 'white'
   },
   inputstyle:{
-      textAlign: 'center',
+      textAlign: 'auto',
       //borderWidth: 1,
       //borderColor: '#C4C4C4',
       width: '70%',
       padding:8,
       marginVertical:5,
-      borderRadius: '10rem'
+      fontSize:12
   },
   inputerrorstyle:{
     textAlign: 'center',

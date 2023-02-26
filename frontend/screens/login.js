@@ -41,6 +41,7 @@ export default function Login(props) {
   const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
+  const [pwFocus, setPWFocus] = useState(false);
 
 	// functions
   const emailInputHandler = (enteredEmail) => {
@@ -110,6 +111,25 @@ export default function Login(props) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
+      {/*
+        <Button
+        title="BACKDOOR"
+        onPress={() =>
+          backDoorHandler("Test@gmail.com", "password")
+        }
+      />
+      <Button
+        title="ADMIN BACKDOOR"
+        onPress={() => props.navigation.navigate("admin")}
+            />
+
+       {/*this was added by Alice for the start workout screens, will move in the future}
+      <Button
+        title="START WORKOUT BUTTON"
+        onPress={() => props.navigation.navigate("start")}
+            />
+      {/*code will break at the end to home bc name can't be rendered}
+      */}
       
 			<View style={styles.buttoncontainer}>
 				<Text style={styles.error}> {error} </Text>
@@ -119,11 +139,14 @@ export default function Login(props) {
           outlineColor="black"
           activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
-					placeholder="Email"
+					placeholder="username@server.com"
+          label="Email"
 					returnKeyType="next"
 					onSubmitEditing={() => {
 						passwordRef.current.focus();
 					}}
+          right={email != "" ? <TextInput.Icon /> : null}
+          left={email != "" ? <TextInput.Icon /> : null}
 					blurOnSubmit={false}
 					keyboardType="email-address"
 					onChangeText={(text) => emailInputHandler(text)}
@@ -134,10 +157,13 @@ export default function Login(props) {
           outlineColor="black"
           activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
-					placeholder="Password"
+					label="Password"
+          placeholder="***"
 					returnKeyType="go"
 					autoCapitalize="none"
 					ref={passwordRef}
+          onFocus={()=>setPWFocus(true)}
+          onBlur={()=>setPWFocus(false)}
 					secureTextEntry={showPassword}
           value={password}
 					onChangeText={(text) => {
@@ -152,7 +178,9 @@ export default function Login(props) {
             :
             <TextInput.Icon icon="eye-off" onPress={()=>setShowPassword(!showPassword)}/>
           }
-          left={<TextInput.Icon />}
+          left={
+            password != "" || pwFocus ? <TextInput.Icon /> : null
+          }
 				/>
         </View>
 
