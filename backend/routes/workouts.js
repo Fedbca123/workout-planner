@@ -71,9 +71,12 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 
   const exerciseIds = req.body.exerciseIds;
   const exercises = [];
-  for (let i = 0; i < exerciseIds.length; i++)
+  if (exerciseIds)
   {
-    exercises.push(await Exercise.findById(exerciseIds[i]));
+    for (let i = 0; i < exerciseIds.length; i++)
+    {
+      exercises.push(await Exercise.findById(exerciseIds[i]));
+    }
   }
 
   const duration = req.body.duration;
@@ -83,7 +86,8 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   
   let tags = [];
   tags = tags.concat(req.body.tags)
-  tags = tags.concat(title.split(' '));
+  if (title)
+    tags = tags.concat(title.split(' '));
 
   const newWorkout = new Workout({
     title,
