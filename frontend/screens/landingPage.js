@@ -138,9 +138,9 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		backgroundColor: "#E0F0FE",
 		margin: 30,
-		padding: 15,
+		padding: 25,
 		borderRadius: "10rem",
-		flex: 0.5,
+		flex: 1,
 	},
 	CreateWorkoutText: {
 		fontFamily: "HelveticaNeue",

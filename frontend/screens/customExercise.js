@@ -31,7 +31,7 @@ export default function CustomExercise(props) {
 		description:"",
 		muscleGroups: [],
 		exerciseType: [],
-		image: "",
+		image: null,
 		imageId: "",
 	};
 
@@ -87,9 +87,18 @@ export default function CustomExercise(props) {
 			<Text style={styles.TitleText}>What muscle groups does this workout train?</Text>
 			{/* Gonna wait till how muscle groups are finalized as an array to display of them to select. */}
 			<Text style={styles.TitleText}>Upload an image demonstrating the exercise if possible.</Text>
-			<Button  title="Choose an Image" onPress={() => {
+			{/* <Button  title="Choose an Image" onPress={() => {
 				getPhotoForExercise();
-			}}/>
+			}}/> */}
+			{ exercise.image && <Image source={{ uri: exercise.image}} style={{ width: 200, height: 200 }} />}
+                    { !exercise.image && <Button title = "Choose An Image"
+				onPress={() => {
+					getPhotoForExercise();
+				}}/> }
+                    { exercise.image && <Button title = "Clear"
+                    onPress={async () => {
+                        exercise.image = null;
+                    }}/>}
 			<Text style={styles.TitleText}>What equipment does this exercise possibly use?</Text>
 			{/* Gotta wait till we change tags to equipment and see how it's structured in the backend before using it. */}
 			<Button title="Create Exercise" onPress={() => { createExercise(); }} />
