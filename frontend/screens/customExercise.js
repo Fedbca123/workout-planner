@@ -10,8 +10,10 @@ import {
 	FlatList,
 	ScrollView,
 	Alert,
+	Modal,
+	Pressable
 } from "react-native";
-import React from "react";
+import React, {useState, useRef} from "react";
 import reactDom from "react-dom";
 import axios from "axios";
 import config from "../../config";
@@ -26,6 +28,7 @@ export default function CustomExercise(props) {
 
 	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
+	const [modalVisible, setModalVisible] = useState(false);
 	const exercise = {
 		title:"",
 		description:"",
@@ -34,6 +37,7 @@ export default function CustomExercise(props) {
 		image: null,
 		imageId: "",
 	};
+	const [imageUri, setImageUri] = useState(null);
 
 	function createExercise(){
 		if(exercise.title == ""){
@@ -57,7 +61,8 @@ export default function CustomExercise(props) {
 		});
 
 		if (!result.cancelled) {
-			exercise.image = result.uri;
+			setImageUri(result["uri"]);
+			return result["uri"];
 		}
 	}
 
@@ -70,12 +75,33 @@ export default function CustomExercise(props) {
 		});
 
 		if (!result.cancelled) {
-			exercise.image = result.uri;
+			setImageUri(result["uri"]);
+			return result["uri"];
 		}
 	}
 
 	function picChooser() {
-		
+		return (
+			<Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Hello World!</Text>
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>Hide Modal</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
+		)
 	}
 
     return(
@@ -83,21 +109,22 @@ export default function CustomExercise(props) {
 			<Text style={styles.TitleText}>What is the name of the exercise?</Text>
 			<TextInput style={styles.TextInputBox} onChange={(text) => {exercise.title = text}}/>
 			<Text style={styles.TitleText}>Can you give a description of the exercise?</Text>
-			<TextInput style={styles.TextInputBox} onChange={(text) => {exercise.description = text}}/>
+			<TextInput style={styles.TextInputBox} onChange={(text) => { exercise.description = text }} />
 			<Text style={styles.TitleText}>What muscle groups does this workout train?</Text>
 			{/* Gonna wait till how muscle groups are finalized as an array to display of them to select. */}
 			<Text style={styles.TitleText}>Upload an image demonstrating the exercise if possible.</Text>
 			{/* <Button  title="Choose an Image" onPress={() => {
 				getPhotoForExercise();
 			}}/> */}
-			{ exercise.image && <Image source={{ uri: exercise.image}} style={{ width: 200, height: 200 }} />}
-                    { !exercise.image && <Button title = "Choose An Image"
-				onPress={() => {
-					getPhotoForExercise();
-				}}/> }
-                    { exercise.image && <Button title = "Clear"
+			{ imageUri && <Image source={{ uri: imageUri }} style={styles.ImageStyle} />}
+                    { !imageUri && <Button title = "Choose File"
                     onPress={async () => {
-                        exercise.image = null;
+						setImageUri(await getPhotoForExercise());
+						// picChooser();
+					}} />}
+                    { imageUri && <Button title = "Clear"
+                    onPress={async () => {
+                        setImageUri(null);
                     }}/>}
 			<Text style={styles.TitleText}>What equipment does this exercise possibly use?</Text>
 			{/* Gotta wait till we change tags to equipment and see how it's structured in the backend before using it. */}
@@ -129,5 +156,14 @@ const styles = StyleSheet.create({
 		margin: 10,
 		padding: 15,
 		borderRadius: "10rem",
-	}
+	},
+	ImageStyle: {
+		width: 200,
+		height: 150,
+		borderRadius: "10rem",
+		position: "relative",
+		justifyContent: "center",
+		right:-100,
+		// flex: .30,
+	},
 })
