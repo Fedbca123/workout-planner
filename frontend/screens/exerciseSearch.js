@@ -55,20 +55,10 @@ export default function ExerciseSearch(props) {
 		}
 	];
 
-	var userWorkout = [
-		{
-			title: "Your Created Workout",
-			location:"",
-			duration:0,
-			content: [],
-		},
-	];
-
 	return (
-		<SafeAreaView onLayout={loadWorkout()}>
-			{/* {loadWorkout()} */}
+		<SafeAreaView >
 			<SearchBar placeholder="Enter exercise names or muscle groups you wish to train!"></SearchBar>
-			<WorkOuts data={userWorkout} />
+			<WorkOuts data={globalState.workout} />
 			<Text style={styles.TitleText}>Exercises:</Text>
 			<FlatList
 				data={exercises}
@@ -77,7 +67,7 @@ export default function ExerciseSearch(props) {
 					<View style={styles.ExerciseCard}>
 						<TouchableOpacity
 							onPress={() => {
-								userWorkout[0].content.push(item);
+								globalState.workout[0].content.push(item);
 								Alert.alert("Exercise Added to workout!");
 							}}
 						>
@@ -91,12 +81,12 @@ export default function ExerciseSearch(props) {
 			<Button
 				title="Finalize Workout"
 				onPress={() => {
-					updateGlobalState("workout", userWorkout);
+					// updateGlobalState("workout", userWorkout);
 					navigation.navigate("finalizeWorkout");
 				}}
 			/>
 			<Button title="Custom Exercise" onPress={() => {
-				updateGlobalState("workout", userWorkout);
+				// updateGlobalState("workout", userWorkout);
 				navigation.navigate("customExercise");
 			}} />
 			{/* <HomeNav/> */}

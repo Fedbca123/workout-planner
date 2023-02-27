@@ -75,14 +75,14 @@ export default function LandingPage(props) {
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>
 			<View style={styles.CreateWorkoutCntnr}>
-				<View style={styles.CreateWorkoutBttnsContainer}>
+				{/* <View style={styles.CreateWorkoutBttnsContainer}>
 					<TouchableOpacity onPress={handleScratchPress}>
 						<Text style={styles.CreateWorkoutBttns}>Scratch</Text>
 					</TouchableOpacity>
-				</View>
+				</View> */}
 				<View style={styles.CreateWorkoutBttnsContainer}>
 					<TouchableOpacity onPress={handleTemplatePress}>
-						<Text style={styles.CreateWorkoutBttns}>Template</Text>
+						<Text style={styles.CreateWorkoutBttns}>Add A Workout</Text>
 					</TouchableOpacity>
 				</View>
 			</View>

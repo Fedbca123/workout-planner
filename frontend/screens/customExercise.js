@@ -20,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
 import HomeNav from "../navigation/homeNav";
+import * as ImagePicker from "expo-image-picker";
 
 export default function CustomExercise(props) {
 
@@ -29,7 +30,9 @@ export default function CustomExercise(props) {
 		title:"",
 		description:"",
 		muscleGroups: [],
-		exerciseType:[],
+		exerciseType: [],
+		image: "",
+		imageId: "",
 	};
 
 	function createExercise(){
@@ -45,32 +48,77 @@ export default function CustomExercise(props) {
 		}
 	}
 
-	const options = {
-		mediaType: 'photo',
+	const getPhotoForExercise = async() =>{
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [4, 3],
+			quality: 1,
+		});
 
+		if (!result.cancelled) {
+			exercise.image = result.uri;
+		}
 	}
 
+	const takePhotoForExercise = async() =>{
+		let result = await ImagePicker.launchCameraAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			allowsEditing: true,
+			aspect: [4, 3],
+			quality: 1,
+		});
 
-	function getPhotoForExercise() {
+		if (!result.cancelled) {
+			exercise.image = result.uri;
+		}
+	}
+
+	function picChooser() {
 		
 	}
 
     return(
-		<View>
-			<Text>What is the name of the exercise?</Text>
-			<TextInput onChange={(text) => {exercise.title = text}}/>
-			<Text>Can you give a description of the exercise?</Text>
-			<TextInput onChange={(text) => {exercise.description = text}}/>
-			<Text>What muscle groups does this workout train?</Text>
+		<View style={styles.container}>
+			<Text style={styles.TitleText}>What is the name of the exercise?</Text>
+			<TextInput style={styles.TextInputBox} onChange={(text) => {exercise.title = text}}/>
+			<Text style={styles.TitleText}>Can you give a description of the exercise?</Text>
+			<TextInput style={styles.TextInputBox} onChange={(text) => {exercise.description = text}}/>
+			<Text style={styles.TitleText}>What muscle groups does this workout train?</Text>
 			{/* Gonna wait till how muscle groups are finalized as an array to display of them to select. */}
-			<Text>Upload an image demonstrating the exercise if possible.</Text>
-			<Button title="Choose an Image" onPress={() => {
-				
+			<Text style={styles.TitleText}>Upload an image demonstrating the exercise if possible.</Text>
+			<Button  title="Choose an Image" onPress={() => {
+				getPhotoForExercise();
 			}}/>
-			<Text>What equipment does this exercise possibly use?</Text>
+			<Text style={styles.TitleText}>What equipment does this exercise possibly use?</Text>
 			{/* Gotta wait till we change tags to equipment and see how it's structured in the backend before using it. */}
 			<Button title="Create Exercise" onPress={() => { createExercise(); }} />
 			
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	TitleText:{
+		fontSize: 20,
+    	fontWeight: 'bold',
+	},
+	TextInputBox: {
+		backgroundColor: "#F1F3FA",
+		margin: 10,
+		padding: 15,
+		borderRadius: "20rem",
+		// flex: 0.5,
+		// shadowOpacity: 2
+	},
+	container: {
+		flex: 1,
+		backgroundColor: "white",
+	},
+	buttonStyle: {
+		backgroundColor: "#F1F3FA",
+		margin: 10,
+		padding: 15,
+		borderRadius: "10rem",
+	}
+})
