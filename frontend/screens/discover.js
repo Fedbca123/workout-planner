@@ -1,11 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {Card, Title} from 'react-native-paper';
 import { SearchBar } from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
+import config from "../../config";
+import axios from "axios";
+import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
+
+const filters = [
+  {label: 'Item 1', value: '1'},
+  {label: 'Item 2', value: '2'},
+  {label: 'Item 3', value: '3'},
+  {label: 'Item 4', value: '4'},
+  {label: 'Item 5', value: '5'},
+  {label: 'Item 6', value: '6'},
+  {label: 'Item 7', value: '7'},
+  {label: 'Item 8', value: '8'},
+];
+
+//const [dropdown, setDropdown] = useState();
+//const [selected, setSelected] = useState();
+
+const _rendorItem = item => {
+  return (
+    <View>
+      <Text>{item.label}</Text>
+    </View>
+  )
+}
 
 const exerciseData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
@@ -64,6 +89,11 @@ export default function DiscoverPage(props) {
   const [search, setSearch] = useState("");
   const [areFiltersVisible, setFiltersVisible] = useState(false);
 
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  const baseUrl = config.API_URL + config.PORT + "/";
+
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
   }
@@ -82,6 +112,73 @@ export default function DiscoverPage(props) {
   const handleMuscleGroupPress = () => {
 		console.log("Muscle Groups Filter Pressed");
 	};
+
+  const WorkoutsList = [
+		{
+			title: "Leg Day",
+			duration:45,
+			location:"Gold's Gym",
+			content: [
+				{
+					title: "Deadlift",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 10,
+				},
+				{
+					title: "Front Squats",
+					ExerciseType: "SETSXREPS",
+					sets: 4,
+					reps: 12,
+				},
+				{
+					title: "Calf Raises",
+					ExerciseType: "AMRAP",
+					time: 60000,
+				},
+				{
+					title: "Bulgarian Split Squats",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 10,
+				},
+				{
+					title: "Leg Press",
+					ExerciseType: "SETSXREPS",
+					sets: 4,
+					reps: 12,
+				},
+				{
+					title: "Lunges",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 15,
+				},
+			],
+		},
+	];
+  
+  // function getWorkouts(){
+  //   axios.get(baseUrl + "/").then((response) => {
+	// 		if (response.status === 200) {
+	// 			return <Workouts data={response.data} />;
+	// 		}
+	// 	});  
+  // }
+
+  // function getExercises(){
+
+  // }
+
+  useEffect(() => {
+    axios.get('https://reactnative.dev/movies.json')
+      .then(({ data }) => {
+        console.log("defaultApp -> data", data.movies)
+        setData(data.movies)
+      })
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
 
   function handleExercisePress() {
     console.log("Exercise button pressed");
@@ -151,17 +248,32 @@ return (
                       <View style={styles.filtersContainer}>
                         <View style={styles.filterButtonContainer}>
                           <TouchableOpacity onPress={handleTypePress}>
-                            <Text style={styles.filterButton}>Types</Text>
+                            <Text style={styles.filterButton}>Equipment</Text>
                           </TouchableOpacity>
+                          {/* <MultiSelect
+                            style = {styles.dropdown}
+                            data = {filters}
+                            labelField = "label"
+                            valueField= "value"
+                            label = "MultiSelect"
+                            placeholder = "Pick me"
+                            search
+                            value = {selected}
+                            onChange = {item => {
+                              setSelected(item);
+                              console.log('selected', item);
+                            }}
+                            renderItem = {item => _rendorItem(item)}
+                          /> */}
                         </View>
                         <View style={styles.filterButtonContainer}>
                           <TouchableOpacity onPress={handleMuscleGroupPress}>
                             <Text style={styles.filterButton}>Muscle Groups</Text>
                           </TouchableOpacity>
                         </View>
-                        <View style={styles.filterButtonContainer}>
+                        <View style={toggleValue ? styles.filterButtonContainer : styles.hidden}>
                           <TouchableOpacity onPress={handleTagPress}>
-                            <Text style={styles.filterButton}>Tags</Text>
+                            <Text style={styles.filterButton}>Type</Text>
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -198,6 +310,21 @@ return (
         </View> 
       </View>
       <View style={styles.discoverContainer}>
+              {isLoading ? <FlatList
+              data = {data}
+              style = {styles.boxContainer}
+              renderItem = 
+              {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              /> : <FlatList
+              data = {data}
+              style = {styles.boxContainer}
+              renderItem = {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              />}
+      </View>
+
+      {/* <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
               data = {exerciseData}
               style = {styles.boxContainer}
@@ -210,7 +337,7 @@ return (
               renderItem = {({item}) => <TouchableOpacity onPress={()=>
               Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
               />}
-      </View>
+      </View> */}
     </SafeAreaView>
   )
 }
@@ -287,7 +414,7 @@ const styles = StyleSheet.create({
   },
   filtersContainer:{
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'left',
     height: "50%",
 
   },
@@ -301,6 +428,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     paddingVertical: 10,
     marginVertical: 10,
+  },
+
+  hidden:{
+    opacity: 0,
   },
 
   // workoutsBttnText:{
