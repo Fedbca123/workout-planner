@@ -65,11 +65,7 @@ export default function Login(props) {
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
 					setError("");
-					if (response.data.user.isAdmin) {
-						props.navigation.navigate("admin");
-					} else {
-						props.navigation.navigate("home");
-					}
+					props.navigation.navigate("home");
 				}
 			})
 			.catch((e) => {
@@ -104,8 +100,16 @@ export default function Login(props) {
 				/>
 				<Button
 					title="ADMIN BACKDOOR"
-					onPress={() => backDoorHandler("Admin@gmail.com", "password")}
+					onPress={() => props.navigation.navigate("admin")}
             	/>
+
+				{/* this was added by Alice for the start workout screens, will move in the future */}
+				<Button
+					title="START WORKOUT BUTTON"
+					onPress={() => props.navigation.navigate("start")}
+            	/>
+				{/* code will break at the end to home bc name can't be rendered*/}	
+
 				<Text style={styles.error}> {error} </Text>
 				<TextInput
 					style={styles.inputstyle}

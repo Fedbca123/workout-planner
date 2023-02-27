@@ -33,7 +33,7 @@ var workoutSchema = new Schema({
   },
   recurrence: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   scheduledDate: {
     type: Date,
@@ -50,8 +50,12 @@ var workoutSchema = new Schema({
   muscleGroups: {
     type: [String],
     required: false
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
-});
+}, {timestamps: true});
 
 const Workout = mongoose.model('Workout', workoutSchema);
 

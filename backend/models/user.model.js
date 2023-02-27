@@ -45,21 +45,22 @@ var userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
-    scheduledWorkouts: [workoutSchema],
+    scheduledWorkouts: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Workout'
+    }],
     completedWorkouts: [workoutSchema],
-    customWorkouts: [workoutSchema],
-    customExercises: [exerciseSchema],
-    isAdmin: {
-        type: Boolean,
-        required: false,
-        default: false
-      },
-},
-{
-    timestamps: true,
-});
+    customWorkouts: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Workout'
+    }],
+    customExercises: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Exercise'
+    }],
+}, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+module.exports = { User, userSchema };
 
