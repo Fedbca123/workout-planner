@@ -4,27 +4,47 @@ import {
 	Text,
 	Image,
 	View,
-	TextInput,
-	KeyboardAvoidingView,
-	ScrollView,
+	//TextInput,
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {TextInput} from 'react-native-paper';
+
 const baseUrl = config.API_URL + config.PORT + "/";
+
+/*<Button
+					title="BACKDOOR"
+					onPress={() =>
+						backDoorHandler("Test@gmail.com", "password")
+					}
+				/>
+				<Button
+					title="ADMIN BACKDOOR"
+					onPress={() => props.navigation.navigate("admin")}
+            	/>
+
+				{/* this was added by Alice for the start workout screens, will move in the future }
+				<Button
+					title="START WORKOUT BUTTON"
+					onPress={() => props.navigation.navigate("start")}
+            	/>
+				{/* code will break at the end to home bc name can't be rendered}	
+          */
 
 export default function Login(props) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
+  //const [pwFocus, setPWFocus] = useState(false);
 
 	// functions
-	const emailInputHandler = (enteredEmail) => {
+  const emailInputHandler = (enteredEmail) => {
 		setEmail(enteredEmail);
 	};
 
@@ -91,44 +111,63 @@ export default function Login(props) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
+      {/*
+        <Button
+        title="BACKDOOR"
+        onPress={() =>
+          backDoorHandler("Test@gmail.com", "password")
+        }
+      />
+      <Button
+        title="ADMIN BACKDOOR"
+        onPress={() => props.navigation.navigate("admin")}
+            />
+
+       {/*this was added by Alice for the start workout screens, will move in the future}
+      <Button
+        title="START WORKOUT BUTTON"
+        onPress={() => props.navigation.navigate("start")}
+            />
+      {/*code will break at the end to home bc name can't be rendered}
+      */}
+      
 			<View style={styles.buttoncontainer}>
-				<Button
-					title="BACKDOOR"
-					onPress={() =>
-						backDoorHandler("Test@gmail.com", "password")
-					}
-				/>
-				<Button
-					title="ADMIN BACKDOOR"
-					onPress={() => props.navigation.navigate("admin")}
-            	/>
-
-				{/* this was added by Alice for the start workout screens, will move in the future */}
-				<Button
-					title="START WORKOUT BUTTON"
-					onPress={() => props.navigation.navigate("start")}
-            	/>
-				{/* code will break at the end to home bc name can't be rendered*/}	
-
 				<Text style={styles.error}> {error} </Text>
-				<TextInput
+				
+        <TextInput
+          mode='outlined'
+          outlineColor="black"
+          activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
-					placeholder="Email"
+          theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
+					placeholder="username@server.com"
+          label="Email"
 					returnKeyType="next"
 					onSubmitEditing={() => {
 						passwordRef.current.focus();
 					}}
+          right={email != "" ? <TextInput.Icon /> : null}
+          //left={email != "" ? <TextInput.Icon /> : null}
 					blurOnSubmit={false}
 					keyboardType="email-address"
 					onChangeText={(text) => emailInputHandler(text)}
 				/>
+        
 				<TextInput
+          mode='outlined'
+          outlineColor="black"
+          activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
-					placeholder="Password"
+          theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
+					label="Password"
+          placeholder="***"
 					returnKeyType="go"
 					autoCapitalize="none"
 					ref={passwordRef}
-					secureTextEntry
+          //onFocus={()=>setPWFocus(true)}
+          //onBlur={()=>setPWFocus(false)}
+					secureTextEntry={showPassword}
+          value={password}
 					onChangeText={(text) => {
 						passwordInputHandler(text);
 					}}
@@ -136,7 +175,16 @@ export default function Login(props) {
 						passwordRef.current.blur();
 						loginHandler();
 					}}
+          right={showPassword ? 
+            <TextInput.Icon icon="eye" onPress={()=>setShowPassword(!showPassword)}/>
+            :
+            <TextInput.Icon icon="eye-off" onPress={()=>setShowPassword(!showPassword)}/>
+          }
+          //left={password != "" || pwFocus ? <TextInput.Icon /> : null}
 				/>
+        </View>
+
+        <View style={{flex:1, marginTop: 50}}>
 				<Button
 					title="Login"
 					color="#10B9F1"
@@ -151,7 +199,7 @@ export default function Login(props) {
 						props.navigation.navigate("registration");
 					}}
 				/>
-			</View>
+        </View>
 		</KeyboardAwareScrollView>
 	);
 }
@@ -166,7 +214,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 	},
 	textcontainer: {
-		flex: 0.3,
+		flex: 0.5,
 		alignSelf: "center",
 		alignItems: "center",
 		justifyContent: "center",
@@ -176,6 +224,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		alignItems: "center",
 		paddingTop: 10,
+    marginBottom: 10,
 		width: "100%",
 	},
 	heading: {
@@ -195,18 +244,18 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		top: 0,
-		marginBottom: 0,
+		marginBottom: 10,
 	},
 	login: {
 		backgroundColor: "#10B9F1",
 	},
 	inputstyle: {
-		textAlign: "center",
-		borderWidth: 1,
-		borderColor: "#C4C4C4",
+    display: 'inline-block',
+		//textAlign: "center",
 		width: "70%",
 		padding: 8,
 		marginVertical: 2,
+    justifyContent: 'center',
 	},
 	error: {
 		textAlign: "center",
