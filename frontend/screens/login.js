@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		top: 0,
-		marginBottom: 0,
+		marginBottom: 10,
 	},
 	login: {
 		backgroundColor: "#10B9F1",
