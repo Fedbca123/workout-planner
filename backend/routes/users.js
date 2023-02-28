@@ -755,7 +755,8 @@ router.route('/:id/calendar/all').get(async (req,res) => {
         location: workoutObj.location,
         recurrence: workoutObj.recurrence,
         scheduledDate: workoutObj.scheduledDate,
-        owner: userObj.firstName + " " + userObj.lastName
+        ownerName: userObj.firstName + " " + userObj.lastName,
+        ownerEmail: userObj.email
       }
 
       scheduled.push(workout);
@@ -772,7 +773,8 @@ router.route('/:id/calendar/all').get(async (req,res) => {
         location: workoutObj.location,
         recurrence: workoutObj.recurrence,
         dateOfCompletion: workoutObj.dateOfCompletion,
-        owner: userObj.firstName + " " + userObj.lastName
+        ownerName: userObj.firstName + " " + userObj.lastName,
+        ownerEmail: userObj.email
       }
 
       scheduled.push(workout);
