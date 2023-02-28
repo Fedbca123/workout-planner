@@ -139,6 +139,7 @@ export default function Login(props) {
           outlineColor="black"
           activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
+          theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
 					placeholder="username@server.com"
           label="Email"
 					returnKeyType="next"
@@ -157,6 +158,7 @@ export default function Login(props) {
           outlineColor="black"
           activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
+          theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
 					label="Password"
           placeholder="***"
 					returnKeyType="go"

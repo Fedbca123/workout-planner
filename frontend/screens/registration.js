@@ -178,7 +178,9 @@ export default function Register(props) {
           <Text style={styles.heading} >Tell us a little about yourself</Text>
           <View style={styles.form}>
             <Text style={styles.text}>First Name</Text>
-            <TextInput style={styles.inputstyle} 
+            <TextInput
+            style={styles.inputstyle} 
+            theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
             mode="outlined"
             dense={true}
             activeOutlineColor='#10B9F1'
@@ -191,7 +193,9 @@ export default function Register(props) {
             onChangeText={(text)=> setFirstName(text)}/>
             
             <Text style={styles.text}>Last Name</Text>
-            <TextInput style={styles.inputstyle} 
+            <TextInput
+            style={styles.inputstyle}
+            theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }} 
             mode="outlined"
             dense={true}
             activeOutlineColor='#10B9F1'
@@ -203,7 +207,9 @@ export default function Register(props) {
             onChangeText={(text)=>setLastName(text)}/>
 
             <Text style={styles.text}>Email Address</Text>
-            <TextInput style={styles.inputstyle} 
+            <TextInput 
+            style={styles.inputstyle} 
+            theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
             mode="outlined"
             multiline={false}
             dense={true}
@@ -216,7 +222,9 @@ export default function Register(props) {
             onChangeText={(text)=> setEmail(text)}/>
 
             <Text style={styles.text}>Password</Text>
-            <TextInput style={styles.inputstyle} 
+            <TextInput
+            style={styles.inputstyle} 
+            theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
             mode="outlined"
             dense={true}
             activeOutlineColor='#10B9F1'
@@ -236,7 +244,9 @@ export default function Register(props) {
             onChangeText={(text)=> setPassword(text)}/>
 
             <Text style={styles.text}>Confirm Password</Text>
-            <TextInput style={styles.inputstyle} 
+            <TextInput 
+            style={styles.inputstyle} 
+            theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
             mode="outlined"
             dense={true}
             activeOutlineColor='#10B9F1'
