@@ -6,7 +6,8 @@ import {
     View, 
     TextInput,
     KeyboardAvoidingView,
-    ScrollView
+    ScrollView,
+    Alert,
   } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, {useState, useRef} from 'react';
@@ -50,9 +51,9 @@ export default function AdminPage(props) {
     }
 
     const submit = () => {
-        let tagsArr = tags.split(',').map(item =>item.trim());
-        let muscleGroupsArr = muscleGroups.split(',').map(item => item.trim());
-        let exercisesArr = exercises.split(',').map(item => item.trim());
+        let tagsArr = [];
+        let muscleGroupsArr = [];
+        let exercisesArr = [];
         const formData = new FormData();
 
         if (title)
@@ -68,12 +69,13 @@ export default function AdminPage(props) {
         }
         if (tags)
         {
+            tagsArr = tags.split(',').map(item =>item.trim());
             for (let i = 0; i < tagsArr.length; i++)
                 formData.append('tags[]', tagsArr[i]);
         }
         if (muscleGroups)
         {
-
+            muscleGroupsArr = muscleGroups.split(',').map(item => item.trim());
             for (let j = 0; j < muscleGroupsArr.length; j++)
                 formData.append('muscleGroups[]', muscleGroupsArr[j]);
         }
@@ -103,10 +105,16 @@ export default function AdminPage(props) {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-					console.log(response.data)
+					console.log(response.data);
+                    Alert.alert('Success!', 'Exercise created', [
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    ]);
 				}
 			})
 			.catch((e) => {
+                Alert.alert('Error!', 'Exercise not created', [
+                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ]);
 				console.log(e);
 			});
         }
@@ -114,6 +122,7 @@ export default function AdminPage(props) {
         {
             if (exercises)
             {
+                exercisesArr = exercises.split(',').map(item => item.trim());
                 for (let k = 0; k < exercisesArr.length; k++)
                     formData.append('exerciseIds[]', exercisesArr[k]);
             }
@@ -129,10 +138,16 @@ export default function AdminPage(props) {
 			})
 			.then((response) => {
 				if (response.status == 200) {
+                    Alert.alert('Success!', 'Exercise created', [
+                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    ]);
 					console.log(response.data)
 				}
 			})
 			.catch((e) => {
+                Alert.alert('Error!', 'Workout not created', [
+                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ]);
 				console.log(e);
 			});
         }
@@ -187,7 +202,7 @@ export default function AdminPage(props) {
                     }}/>}
 
                     { !toggleValue && <TextInput style={styles.inputfield}
-                    placeholder="exerciseType"
+                    placeholder="AMRAP, SETSXREPS, or CARDIO"
                     onChangeText={(text) => setExerciseType(text)}/> }
 
                     {!toggleValue && <TextInput style={styles.inputfield}
