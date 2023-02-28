@@ -5,7 +5,8 @@ const exercises = [
   // this image I used is not open source and we should not keep it for the future
   { title: 'Pec Fly', type: 'AMRAP', time: 60000, image: require('../../assets/pecfly.png')},
   { title: 'Decline Barbell Bench Press', type: 'SETXREPS', sets: 3, reps: 8, image: require('../../assets/declinebarbellbenchpress.jpeg') },
-  { title: 'Incline Dumbbell Press', type: 'SETXREPS', sets: 5, reps: 9, image: require('../../assets/inclinedumbbellpress.jpeg')}
+  { title: 'Incline Dumbbell Press', type: 'SETXREPS', sets: 5, reps: 9, image: require('../../assets/inclinedumbbellpress.jpeg')},
+  { title: 'Climbing Session', type: 'CARDIO', time: 80000, image: require('../../assets/climbing.png') },
 ];
 
 const StartWorkout = (props) => {
