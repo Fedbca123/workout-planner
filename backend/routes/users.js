@@ -44,6 +44,11 @@ function removeItemByID(array, id) {
 }
 
 //-----POST-----//
+
+// Register user
+// req.body = { firstName, lastName, email, password }
+// (POST) http://(baseUrl)/users/register
+// returns { newUser }
 router.route('/register').post(async (req,res) =>
 {
     const { firstName, lastName, email, password } = req.body;
@@ -88,6 +93,10 @@ router.route('/register').post(async (req,res) =>
     })
 });
 
+// Login user
+// req.body = { email, password }
+// (POST) http://(baseUrl)/users/login
+// returns { user: user, friends: [{ user.friends }] }
 router.route('/login').post(async (req, res) => {
 
     const { email, password } = req.body;
@@ -124,12 +133,20 @@ router.route('/login').post(async (req, res) => {
 });
 
 //-----GET-----//
+
+// Get all users
+// (GET) http://(baseUrl)/users/
+// returns [{ users }]
 router.route('/').get(async (req, res) => {
     User.find()
     .then(users => res.json(users))
     .catch(err => res.status(401).json('Error: ' + err));
 });
 
+// Get user by id
+// req.params = { id }
+// (GET) http://(baseUrl)/users/:id
+// returns { user }
 router.route('/:id').get(async (req, res) => {
     User.findById(req.params.id)
     .then(user => res.json(user))
@@ -137,6 +154,11 @@ router.route('/:id').get(async (req, res) => {
 });
 
 //-----DELETE-----//
+
+// Delete user by id
+// req.params = { id }
+// (DELETE) http://(baseUrl)/users/:id
+// returns { Deleted: user.email }
 router.route('/:id').delete(async (req, res) => {
     const id = req.params.id;
 
@@ -160,6 +182,13 @@ router.route('/:id').delete(async (req, res) => {
 });
 
 //------UPDATE-----//
+
+// Update user by id (Use Update contact info instead!)
+// req.params = { id }
+// req.body = {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts,
+//            completedWorkouts, customWorkouts, customExercises}
+// (PATCH) http://(baseUrl)/users/:id
+// returns { newUser }
 router.route('/:id').patch(async (req, res) => {
     const id = req.params.id;
     
@@ -188,7 +217,12 @@ router.route('/:id').patch(async (req, res) => {
     });
 });
 
-// update user contact info like firstName, lastName, and email
+
+// Update contact info ( firstName, lastName, and email)
+// req.params = { id }
+// req.body = { firstName, lastName, email }
+// (PATCH) http://(baseUrl)/users/:id/contact
+// returns { newuser }
 router.route('/:id/contact').patch(async (req, res) => {
   const id = req.params.id;
   
@@ -224,6 +258,427 @@ router.route('/:id/contact').patch(async (req, res) => {
   });
 });
 
+// Schedule a workout
+// req.params = { userId }
+// req.body = { workoutId, date }
+// (PATCH) http://(baseUrl)/users/:id/workouts/schedule
+// returns { newuser }
+router.route('/:id/workouts/schedule').post(async (req,res) => {
+  const id = req.params.id;
+  const workoutId = req.body.workoutID;
+  const dateString = req.body.date;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+
+  const workout = await Workout.findById(workoutId);
+  if (!workout){
+    return res.status(498).send({Error: "Workout does not exist!"});
+  }
+
+  var workoutDate;
+  if(dateString){
+    // format of date in body "YYYY/MM/DD EST"
+    workoutDate = new Date(dateString);
+  }else if(workout.scheduledDate){
+    workoutDate = workout.scheduledDate;
+  }
+
+  const newWorkout = new Workout({
+    title: workout.title,
+    description: workout.description,
+    image: workout.image,
+    imageId: workout.imageId,
+    exercises: workout.exercises,
+    duration: workout.duration,
+    location: workout.location,
+    tags: workout.tags,
+    muscleGroups: workout.muscleGroups,
+    owner: workout.owner,
+    scheduledDate: workoutDate
+  })
+
+  await newWorkout.save()
+  .then(async () => {
+    user.scheduledWorkouts.push(newWorkout._id);
+  })
+  
+  await user.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// Remove a scheduled workout
+// req.params = { userId, workoutId }
+// (PATCH) http://(baseUrl)/users/:id/workouts/remove/w:id
+// returns { newuser }
+router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
+  const {id, w_id} = req.params;
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+
+  // grab workout from body
+  //const workout = req.body.workout;
+
+  // remove workout from user's scheduledWorkouts section
+  user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
+  Workout.findByIdAndDelete(w_id)
+    .catch(err => res.status(400).json('Error: ' + err));
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+
+// Complete a workout
+// req.params = { userId }
+// req.body = { workoutId }
+// (PATCH) http://(baseUrl)/users/:id/workouts/complete
+// returns { newuser }
+router.route('/:id/workouts/complete').patch(async (req,res) => {
+  const id = req.params.id;
+  const w_id = req.body.workoutId;
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+
+  const workout = await Workout.findById(w_id);
+
+  // if recurring add in again but a week in advance
+  if(workout.recurrence){
+    var date = workout.scheduledDate ? new Date(workout.scheduledDate) : new Date();
+    date.setDate(date.getDate() + 7);
+    workout.scheduledDate = date;
+    await workout.save();
+  } else {
+    Workout.findByIdAndDelete(w_id)
+    .catch(err => res.status(400).json('Error: ' + err));
+    user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
+  }
+  workout.recurrence = false;
+  workout.dateOfCompletion = new Date();
+  user.completedWorkouts.push(workout);
+
+  await user.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+
+});
+
+// User A Sends friend request to user B
+// req.params = { userId_A, userId_B }
+// (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
+// returns { newuserB }
+router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // if userB has userA blocked, it won't go through
+  if(userB.blockedUsers.includes(userA._id)) {
+    return res.status(497).send("Blocked user");
+  }
+  // if already friends, won't do anything
+  if(userB.friends.includes(userA._id)) {
+    return res.status(496).send("Already friends");
+  }
+  // if already requested, don't do it again
+  if(userB.friendRequests.includes(userA._id)) {
+    return res.status(496).send("Already requested");
+  }
+
+  // add user A as a FR in B's list of FRs
+  userB.friendRequests.push(userA._id);
+
+  // save updated version of userB
+  await userB.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// User A accepts friend request form user B
+// req.params = { userId_A, userId_B }
+// (PATCH) http://(baseUrl)/users/:A_id/invites/accept/:B_id
+// returns { message: `${userA.firstName} and ${userB.firstName} are friends` }
+router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  if(!userA.friendRequests.includes(B_id)){
+    return res.status(400).send({Error: `${userB.firstName} ${userB.lastName} is not in ${userA.firstName}'s invites list`})
+  }
+
+  // remove B from A's friend request list
+  userA.friendRequests = removeItem(userA.friendRequests,userB._id);
+  // add them to each other's friends list
+  userA.friends.push(userB._id);
+  userB.friends.push(userA._id);
+
+  // save updated version of users
+  await userA.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+  });
+  await userB.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+  });
+
+  // report success
+  res.status(200).json({message: `${userA.firstName} and ${userB.firstName} are friends`});
+});
+
+// User A rejects friend request from user B
+// req.params = { userId_A, userId_B }
+// (PATCH) http://(baseUrl)/users/:A_id/invites/reject/:B_id
+// returns { newuserA }
+router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // remove B from A's friend request list
+  userA.friendRequests = removeItem(userA.friendRequests,userB._id);
+
+  // save updated version of users
+  await userA.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// User A removes friend user B
+// req.params = { userId_A, userId_B }
+// (PATCH) http://(baseUrl)/users/:A_id/friends/remove/:B_id
+// returns { message: `${userA.firstName} and ${userB.firstName} are no longer friends` }
+router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // remove from each other's lists
+  userA.friends = removeItem(userA.friends, userB._id);
+  userB.friends = removeItem(userB.friends, userA._id);
+
+  // save updated version of users
+  await userA.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+  });
+  await userB.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+  });
+
+  // report success
+  res.status(200).json({message: `${userA.firstName} and ${userB.firstName} are no longer friends`});
+});
+
+// User A blocks user B
+// req.params = { userId_A, userId_B }
+// (PATCH) http://(baseUrl)/users/:A_id/blocked/add/:B_id
+// returns { newuserA }
+router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // if already blocked, no need to do it again
+  if(userA.blockedUsers.includes(userB._id)) {
+    return res.status(497).send(`Already blocked ${userB._id}`);
+  }
+
+  // make sure friends doesn't include B
+  userA.friends = removeItem(userA.friends, userB._id);
+  // make sure friendrequests doesn't include B
+  userA.friendRequests = removeItem(userA.friendRequests, userB._id);
+  // add B as a blocked user on A's account
+  userA.blockedUsers.push(userB._id);
+
+  // save updated version of userA
+  await userA.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// User A unblocks user B
+// req.params = { userId_A, userId_B }
+// (PATCH) http://(baseUrl)/users/:A_id/blocked/remove/:B_id
+// returns { newuserA }
+router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // remove B as a blocked user on A's account
+  userA.blockedUsers = removeItem(userA.blockedUsers, userB._id);
+
+  // save updated version of userA
+  await userA.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+
+// Get all scheduled workouts of user and friends nicely
+// req.params = { userId }
+// (PATCH) http://(baseUrl)/users/:id/calendar/all
+// returns { completed: [{workouts }], scheduled: [{ workouts }]}
+router.route('/:id/calendar/all').get(async (req,res) => {
+  const id = req.params.id;
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+  // declaring arrays
+  let users = [];
+  users.push(user);
+  let completed = [];
+  let scheduled = [];
+  // get all user objects into array
+  for(const friendID of user.friends){
+    const friend  = await User.findById(friendID);
+    if (!friend) {
+      return res.status(498).send({Error: `Friend ${friendID} does not exist!`});
+    }
+
+    users.push(friend);
+  }
+  // for all workouts in all user objects, add to returning array
+  for(const userObj of users){
+    // for all scheduled workouts
+    for(const workoutID of userObj.scheduledWorkouts){
+      const workoutObj = await Workout.findById(workoutID)
+      
+      if (!workoutObj) {
+        return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
+      }
+
+      const workout = {
+        title: workoutObj.title,
+        description: workoutObj.description,
+        image: workoutObj.image,
+        imageID: workoutObj.imageID,
+        exercises: workoutObj.exercises,
+        duration: workoutObj.duration,
+        location: workoutObj.location,
+        recurrence: workoutObj.recurrence,
+        scheduledDate: workoutObj.scheduledDate,
+        ownerName: userObj.firstName + " " + userObj.lastName,
+        ownerEmail: userObj.email
+      }
+
+      scheduled.push(workout);
+    }
+    // for all completed workouts
+    for(const workoutObj of userObj.completedWorkouts){
+      const workout = {
+        title: workoutObj.title,
+        description: workoutObj.description,
+        image: workoutObj.image,
+        imageID: workoutObj.imageID,
+        exercises: workoutObj.exercises,
+        duration: workoutObj.duration,
+        location: workoutObj.location,
+        recurrence: workoutObj.recurrence,
+        dateOfCompletion: workoutObj.dateOfCompletion,
+        ownerName: userObj.firstName + " " + userObj.lastName,
+        ownerEmail: userObj.email
+      }
+
+      scheduled.push(workout);
+    }
+  }
+
+  res.status(200).json({
+    completed: completed,
+    scheduled: scheduled
+  });
+})
+
+// TO-DO Password reset
+// not sure what to throw into this endpoint to complete this.
+// still need to get to anyways
+
+module.exports = router;
+
+
+/* ----- GRAVEYARD ------ */
+
+/*
 // adding custom exercise
 // router.route('/:id/exercises/custom/create').post(async (req,res) => {
 //   const id = req.params.id;
@@ -378,81 +833,6 @@ router.route('/:id/contact').patch(async (req, res) => {
 //     res.status(200).json(newUser);
 //   });
 // })
-
-// adding workout
-router.route('/:id/workouts/schedule').post(async (req,res) => {
-  const id = req.params.id;
-  const workoutId = req.body.workoutID;
-  const dateString = req.body.date;
-
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
-
-  const workout = await Workout.findById(workoutId);
-  if (!workout){
-    return res.status(498).send({Error: "Workout does not exist!"});
-  }
-
-  var workoutDate;
-  if(dateString){
-    // format of date in body "YYYY/MM/DD EST"
-    workoutDate = new Date(dateString);
-  }else if(workout.scheduledDate){
-    workoutDate = workout.scheduledDate;
-  }
-
-  const newWorkout = new Workout({
-    title: workout.title,
-    description: workout.description,
-    image: workout.image,
-    imageId: workout.imageId,
-    exercises: workout.exercises,
-    duration: workout.duration,
-    location: workout.location,
-    tags: workout.tags,
-    muscleGroups: workout.muscleGroups,
-    owner: workout.owner,
-    scheduledDate: workoutDate
-  })
-
-  await newWorkout.save()
-  .then(async () => {
-    user.scheduledWorkouts.push(newWorkout._id);
-  })
-  
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
-
-// remove scheduled workout from user's account
-router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
-  const {id, w_id} = req.params;
-
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
-
-  // grab workout from body
-  //const workout = req.body.workout;
-
-  // remove workout from user's scheduledWorkouts section
-  user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
-  Workout.findByIdAndDelete(w_id)
-    .catch(err => res.status(400).json('Error: ' + err));
-
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
-
 // edit scheduled workout from user's account
 // router.route('/:id/workouts/edit/:w_id').patch(async (req,res) => {
 //   const {id, w_id} = req.params;
@@ -483,312 +863,4 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
 //     if (err) return res.status(499).send(err);
 //     res.status(200).json(newUser);
 //   });
-// });
-
-// user completes a workout. Must move workout to complete
-router.route('/:id/workouts/complete').patch(async (req,res) => {
-  const id = req.params.id;
-  const w_id = req.body.workoutId;
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
-
-  const workout = await Workout.findById(w_id);
-
-  // if recurring add in again but a week in advance
-  if(workout.recurrence){
-    var date = workout.scheduledDate ? new Date(workout.scheduledDate) : new Date();
-    date.setDate(date.getDate() + 7);
-    workout.scheduledDate = date;
-    await workout.save();
-  } else {
-    Workout.findByIdAndDelete(w_id)
-    .catch(err => res.status(400).json('Error: ' + err));
-    user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
-  }
-  workout.recurrence = false;
-  workout.dateOfCompletion = new Date();
-  user.completedWorkouts.push(workout);
-
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-
-});
-
-// user A invites user B
-router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
-  // get id's from url
-  const {A_id, B_id} = req.params;
-  // ensure users exist w/ ids
-  const userA = await User.findById(A_id);
-  if (!userA)
-  {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
-  }
-  const userB = await User.findById(B_id);
-  if (!userB)
-  {
-    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
-  }
-
-  // if userB has userA blocked, it won't go through
-  if(userB.blockedUsers.includes(userA._id)) {
-    return res.status(497).send("Blocked user");
-  }
-  // if already friends, won't do anything
-  if(userB.friends.includes(userA._id)) {
-    return res.status(496).send("Already friends");
-  }
-  // if already requested, don't do it again
-  if(userB.friendRequests.includes(userA._id)) {
-    return res.status(496).send("Already requested");
-  }
-
-  // add user A as a FR in B's list of FRs
-  userB.friendRequests.push(userA._id);
-
-  // save updated version of userB
-  await userB.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
-
-// user A accepts user B
-router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
-  // get id's from url
-  const {A_id, B_id} = req.params;
-  // ensure users exist w/ ids
-  const userA = await User.findById(A_id);
-  if (!userA)
-  {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
-  }
-  const userB = await User.findById(B_id);
-  if (!userB)
-  {
-    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
-  }
-
-  if(!userA.friendRequests.includes(B_id)){
-    return res.status(400).send({Error: `${userB.firstName} ${userB.lastName} is not in ${userA.firstName}'s invites list`})
-  }
-
-  // remove B from A's friend request list
-  userA.friendRequests = removeItem(userA.friendRequests,userB._id);
-  // add them to each other's friends list
-  userA.friends.push(userB._id);
-  userB.friends.push(userA._id);
-
-  // save updated version of users
-  await userA.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-  });
-  await userB.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-  });
-
-  // report success
-  res.status(200).json({message: `${userA.firstName} and ${userB.firstName} are friends`});
-});
-
-// user A denies user B
-router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
-  // get id's from url
-  const {A_id, B_id} = req.params;
-  // ensure users exist w/ ids
-  const userA = await User.findById(A_id);
-  if (!userA)
-  {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
-  }
-  const userB = await User.findById(B_id);
-  if (!userB)
-  {
-    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
-  }
-
-  // remove B from A's friend request list
-  userA.friendRequests = removeItem(userA.friendRequests,userB._id);
-
-  // save updated version of users
-  await userA.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
-// user A unfriends B
-router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
-  // get id's from url
-  const {A_id, B_id} = req.params;
-  // ensure users exist w/ ids
-  const userA = await User.findById(A_id);
-  if (!userA)
-  {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
-  }
-  const userB = await User.findById(B_id);
-  if (!userB)
-  {
-    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
-  }
-
-  // remove from each other's lists
-  userA.friends = removeItem(userA.friends, userB._id);
-  userB.friends = removeItem(userB.friends, userA._id);
-
-  // save updated version of users
-  await userA.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-  });
-  await userB.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-  });
-
-  // report success
-  res.status(200).json({message: `${userA.firstName} and ${userB.firstName} are no longer friends`});
-});
-// user A blocks user B
-router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
-  // get id's from url
-  const {A_id, B_id} = req.params;
-  // ensure users exist w/ ids
-  const userA = await User.findById(A_id);
-  if (!userA)
-  {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
-  }
-  const userB = await User.findById(B_id);
-  if (!userB)
-  {
-    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
-  }
-
-  // if already blocked, no need to do it again
-  if(userA.blockedUsers.includes(userB._id)) {
-    return res.status(497).send(`Already blocked ${userB._id}`);
-  }
-
-  // make sure friends doesn't include B
-  userA.friends = removeItem(userA.friends, userB._id);
-  // make sure friendrequests doesn't include B
-  userA.friendRequests = removeItem(userA.friendRequests, userB._id);
-  // add B as a blocked user on A's account
-  userA.blockedUsers.push(userB._id);
-
-  // save updated version of userA
-  await userA.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
-
-// user A unblocks user B
-router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
-  // get id's from url
-  const {A_id, B_id} = req.params;
-  // ensure users exist w/ ids
-  const userA = await User.findById(A_id);
-  if (!userA)
-  {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
-  }
-  const userB = await User.findById(B_id);
-  if (!userB)
-  {
-    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
-  }
-
-  // remove B as a blocked user on A's account
-  userA.blockedUsers = removeItem(userA.blockedUsers, userB._id);
-
-  // save updated version of userA
-  await userA.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
-
-// endpoint to get all scheduled workouts of user and friends nicely
-router.route('/:id/calendar/all').get(async (req,res) => {
-  const id = req.params.id;
-  const user = await User.findById(id);
-  if (!user)
-  {
-    return res.status(498).send({Error: "User does not exist!"});
-  }
-  // declaring arrays
-  let users = [];
-  users.push(user);
-  let completed = [];
-  let scheduled = [];
-  // get all user objects into array
-  for(const friendID of user.friends){
-    const friend  = await User.findById(friendID);
-    if (!friend) {
-      return res.status(498).send({Error: `Friend ${friendID} does not exist!`});
-    }
-
-    users.push(friend);
-  }
-  // for all workouts in all user objects, add to returning array
-  for(const userObj of users){
-    // for all scheduled workouts
-    for(const workoutID of userObj.scheduledWorkouts){
-      const workoutObj = await Workout.findById(workoutID)
-      
-      if (!workoutObj) {
-        return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
-      }
-
-      const workout = {
-        title: workoutObj.title,
-        description: workoutObj.description,
-        image: workoutObj.image,
-        imageID: workoutObj.imageID,
-        exercises: workoutObj.exercises,
-        duration: workoutObj.duration,
-        location: workoutObj.location,
-        recurrence: workoutObj.recurrence,
-        scheduledDate: workoutObj.scheduledDate,
-        ownerName: userObj.firstName + " " + userObj.lastName,
-        ownerEmail: userObj.email
-      }
-
-      scheduled.push(workout);
-    }
-    // for all completed workouts
-    for(const workoutObj of userObj.completedWorkouts){
-      const workout = {
-        title: workoutObj.title,
-        description: workoutObj.description,
-        image: workoutObj.image,
-        imageID: workoutObj.imageID,
-        exercises: workoutObj.exercises,
-        duration: workoutObj.duration,
-        location: workoutObj.location,
-        recurrence: workoutObj.recurrence,
-        dateOfCompletion: workoutObj.dateOfCompletion,
-        ownerName: userObj.firstName + " " + userObj.lastName,
-        ownerEmail: userObj.email
-      }
-
-      scheduled.push(workout);
-    }
-  }
-
-  res.status(200).json({
-    completed: completed,
-    scheduled: scheduled
-  });
-})
-
-// TO-DO Password reset
-// not sure what to throw into this endpoint to complete this.
-// still need to get to anyways
-
-module.exports = router;
+// }); */
