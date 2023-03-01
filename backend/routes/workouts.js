@@ -40,6 +40,8 @@ function removeItem(array, val){
 // Get all workouts
 // (GET) http://(baseUrl)/workouts/
 // returns [{ workouts }]
+//! NEED TO SECURE THIS. NO LONGER SAFE IF ALL
+//! USERS STORE PERSONAL STUFF IN THIS COLLECTION
 router.route('/').get((req,res) => {
   Workout.find()
     .then(workouts => res.json(workouts))
@@ -50,6 +52,7 @@ router.route('/').get((req,res) => {
 // req.params = { workoutId }
 // (GET) http://(baseUrl)/workouts/:id
 // returns { workout }
+//! SECURE THIS ENDPOINT SOME WAY OR WIPE IT OUT
 router.route('/:id').get((req, res) => {
   Workout.findById(req.params.id)
     .then(workout => res.json(workout))
@@ -63,6 +66,7 @@ router.route('/:id').get((req, res) => {
 // req.file = { image }
 // (POST) http://(baseUrl)/workouts/add
 // returns { newWorkout }
+//! SECURE OR REMOVE. NEEDED FOR COLLECTION POPULATION
 router.route('/add').post(upload.single('image'),async (req,res) => {
   // gather information to add workout into database
   const title = req.body.title;
@@ -150,12 +154,13 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 // req.body = { searchStr, muscleGroupsSrch, equipmentSrch, ownerId }
 // (GET) http://(baseUrl)/workouts/search
 // returns [{ workouts }]
+//! AUTHORIZE TO MAKE SURE THE REQUEST IS BY OWNER OF ID (?) 
 router.route('/search').post(async (req, res) => {
-
   let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
 
   let filters = {};
   filters.$and = [{scheduledDate: {$exists: false}}];
+  //!DOES THIS ALLOW FOR USERS TO RETURN ITEMS THAT ARE PUBLIC AND THEIR OWN?
   filters.$or = [{owner: {$exists: false}}];
 
   if (searchStr)
@@ -189,6 +194,7 @@ router.route('/search').post(async (req, res) => {
 // req.file = { image }
 // (PATCH) http://(baseUrl)/workouts/:id
 // returns { newWorkout }
+//! NEED TO ADD JWT AUTH CHECK TO MAKE SURE THEY OWN THE OBJECT THEY ARE TRYING TO MOD
 router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const id = req.params.id;
   const {title,description,img,exercises,location,recurrence,scheduledDate,dateOfCompletion,owner} = req.body;
@@ -245,6 +251,7 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
 // req.params { id }
 // (DELETE) http://(baseUrl)/workouts/:id
 // returns `Workout ${deletion.title} deleted!`
+//! NEED TO ADD JWT AUTH CHECK TO MAKE SURE THEY OWN THE OBJECT THEY ARE TRYING TO DELETE
 router.route('/:id').delete(async (req,res) => {
   const workout = await Workout.findById(req.params.id);
   if (workout.owner) {

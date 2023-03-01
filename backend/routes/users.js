@@ -49,6 +49,8 @@ function removeItemByID(array, id) {
 // req.body = { firstName, lastName, email, password }
 // (POST) http://(baseUrl)/users/register
 // returns { newUser }
+
+//  !!  NEEDS TO RETURN JWT TOKEN !!
 router.route('/register').post(async (req,res) =>
 {
     const { firstName, lastName, email, password } = req.body;
@@ -97,6 +99,8 @@ router.route('/register').post(async (req,res) =>
 // req.body = { email, password }
 // (POST) http://(baseUrl)/users/login
 // returns { user: user, friends: [{ user.friends }] }
+
+//  !!  NEEDS TO RETURN JWT TOKEN !!
 router.route('/login').post(async (req, res) => {
 
     const { email, password } = req.body;
@@ -137,6 +141,8 @@ router.route('/login').post(async (req, res) => {
 // Get all users
 // (GET) http://(baseUrl)/users/
 // returns [{ users }]
+
+//  !!  NEED TO HANDLE IN SECURE WAY TO MAKE SURE ALMOST NO ONE CAN ACCESS THIS OR REMOVE IT !!
 router.route('/').get(async (req, res) => {
     User.find()
     .then(users => res.json(users))
@@ -147,6 +153,8 @@ router.route('/').get(async (req, res) => {
 // req.params = { id }
 // (GET) http://(baseUrl)/users/:id
 // returns { user }
+
+//  !!  NEEDS TO SECURE THIS FROM ANYONE BEING ABLE TO CALL IT !!
 router.route('/:id').get(async (req, res) => {
     User.findById(req.params.id)
     .then(user => res.json(user))
@@ -159,6 +167,8 @@ router.route('/:id').get(async (req, res) => {
 // req.params = { id }
 // (DELETE) http://(baseUrl)/users/:id
 // returns { Deleted: user.email }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id').delete(async (req, res) => {
     const id = req.params.id;
 
@@ -189,6 +199,8 @@ router.route('/:id').delete(async (req, res) => {
 //            completedWorkouts, customWorkouts, customExercises}
 // (PATCH) http://(baseUrl)/users/:id
 // returns { newUser }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id').patch(async (req, res) => {
     const id = req.params.id;
     
@@ -223,6 +235,8 @@ router.route('/:id').patch(async (req, res) => {
 // req.body = { firstName, lastName, email }
 // (PATCH) http://(baseUrl)/users/:id/contact
 // returns { newuser }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/contact').patch(async (req, res) => {
   const id = req.params.id;
   
@@ -263,6 +277,8 @@ router.route('/:id/contact').patch(async (req, res) => {
 // req.body = { workoutId, date }
 // (PATCH) http://(baseUrl)/users/:id/workouts/schedule
 // returns { newuser }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/workouts/schedule').post(async (req,res) => {
   const id = req.params.id;
   const workoutId = req.body.workoutID;
@@ -316,6 +332,8 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
 // req.params = { userId, workoutId }
 // (PATCH) http://(baseUrl)/users/:id/workouts/remove/w:id
 // returns { newuser }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
   const {id, w_id} = req.params;
 
@@ -345,6 +363,8 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
 // req.body = { workoutId }
 // (PATCH) http://(baseUrl)/users/:id/workouts/complete
 // returns { newuser }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/workouts/complete').patch(async (req,res) => {
   const id = req.params.id;
   const w_id = req.body.workoutId;
@@ -382,6 +402,8 @@ router.route('/:id/workouts/complete').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
 // returns { newuserB }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -424,6 +446,8 @@ router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/accept/:B_id
 // returns { message: `${userA.firstName} and ${userB.firstName} are friends` }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -465,6 +489,8 @@ router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/reject/:B_id
 // returns { newuserA }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -494,6 +520,8 @@ router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/friends/remove/:B_id
 // returns { message: `${userA.firstName} and ${userB.firstName} are no longer friends` }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -529,6 +557,8 @@ router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/blocked/add/:B_id
 // returns { newuserA }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -567,6 +597,8 @@ router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/blocked/remove/:B_id
 // returns { newuserA }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -596,6 +628,8 @@ router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
 // req.params = { userId }
 // (PATCH) http://(baseUrl)/users/:id/calendar/all
 // returns { completed: [{workouts }], scheduled: [{ workouts }]}
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/calendar/all').get(async (req,res) => {
   const id = req.params.id;
   const user = await User.findById(id);
@@ -677,7 +711,8 @@ module.exports = router;
 
 
 /* ----- GRAVEYARD ------ */
-
+/*          X X           */
+/*           O            */
 /*
 // adding custom exercise
 // router.route('/:id/exercises/custom/create').post(async (req,res) => {
