@@ -8,29 +8,45 @@ import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
 import config from "../../config";
 import axios from "axios";
-import {Dropdown, MultiSelect} from 'react-native-element-dropdown';
+import SelectBox from 'react-native-multi-selectbox';
+import {xorBy} from 'lodash';
 
-const filters = [
-  {label: 'Item 1', value: '1'},
-  {label: 'Item 2', value: '2'},
-  {label: 'Item 3', value: '3'},
-  {label: 'Item 4', value: '4'},
-  {label: 'Item 5', value: '5'},
-  {label: 'Item 6', value: '6'},
-  {label: 'Item 7', value: '7'},
-  {label: 'Item 8', value: '8'},
+const equipmentFilters = [
+  {item: 'None', id: '1'},
+  {item: 'Dumbbells', id: '2'},
+  {item: 'Barbell', id: '3'},
+  {item: 'Kettle Bell', id: '4'},
+  {item: 'Bench', id: '5'},
+  {item: 'Machine', id: '6'},
+  {item: 'Resistance Bands', id: '7'},
+  {item: 'Cables', id: '8'},
+  {item: 'Pull-Up Bar', id: '9'},
 ];
 
-//const [dropdown, setDropdown] = useState();
-//const [selected, setSelected] = useState();
+const muscleGroupsFilters = [
+  {item: 'Upper Body', id: '1'},
+  {item: 'Lower Body', id: '2'},
+  {item: 'Full Body', id: '3'},
+  {item: 'Abs', id: '4'},
+  {item: 'Shoulders', id: '5'},
+  {item: 'Triceps', id: '6'},
+  {item: 'Biceps', id: '7'},
+  {item: 'Chest', id: '8'},
+  {item: 'Back', id: '9'},
+  {item: 'Hamstring', id: '10'},
+  {item: 'Quads', id: '11'}, // Quadriceps?
+  {item: 'Calves', id: '12'},
+  {item: 'Glutes', id: '13'},
+  {item: 'Forearms', id: '14'},
+  {item: 'Arms', id: '15'},
+  {item: 'Legs', id: '16'},
+];
 
-const _rendorItem = item => {
-  return (
-    <View>
-      <Text>{item.label}</Text>
-    </View>
-  )
-}
+const typeFilters = [
+  {item: 'Cardio', id: '1'},
+  {item: 'SETSXREPS', id: '2'},
+  {item: 'AMRAP', id: '3'}
+];
 
 const exerciseData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
@@ -64,30 +80,13 @@ const workoutData = [
 
 export default function DiscoverPage(props) {
 
-  // const [isWorkoutVisible, setWorkoutVisible] = useState(false);
-  // const [isExerciseVisible, setExerciseVisible] = useState(false);
-
-  // <View style={styles.filtersContainer}>
-  //   <View style={styles.filterButtonContainer}>
-  //     <TouchableOpacity onPress={handleTypePress}>
-  //       <Text style={styles.filterButton}>Types</Text>
-  //     </TouchableOpacity>
-  //   </View>
-  //   <View style={styles.filterButtonContainer}>
-  //     <TouchableOpacity onPress={handleMuscleGroupPress}>
-  //       <Text style={styles.filterButton}>Muscle Groups</Text>
-  //     </TouchableOpacity>
-  //   </View>
-  //   <View style={styles.filterButtonContainer}>
-  //     <TouchableOpacity onPress={handleTagPress}>
-  //       <Text style={styles.filterButton}>Tags</Text>
-  //     </TouchableOpacity>
-  //   </View>
-  // </View>
-
   const [toggleValue, setToggleValue] = useState(false);
   const [search, setSearch] = useState("");
   const [areFiltersVisible, setFiltersVisible] = useState(false);
+  const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
+  const [selectedMuscleGroupsFilter, setMuscleGroupsFilter] = useState([]);
+  const [selectedTypeFilter, setTypeFilter] = useState([]);
+  const [isAFilterExpanded, closeExpandedFilters] = useState(false);
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -106,12 +105,9 @@ export default function DiscoverPage(props) {
 		console.log("Type Filter Pressed");
 	};
 
-  const handleTagPress = () => {
-		console.log("Tags Filter Pressed");
-	};
-  const handleMuscleGroupPress = () => {
-		console.log("Muscle Groups Filter Pressed");
-	};
+  const closeOtherFilters = () => {
+    
+  }
 
   const WorkoutsList = [
 		{
@@ -170,15 +166,27 @@ export default function DiscoverPage(props) {
 
   // }
 
-  useEffect(() => {
-    axios.get('https://reactnative.dev/movies.json')
-      .then(({ data }) => {
-        console.log("defaultApp -> data", data.movies)
-        setData(data.movies)
-      })
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
-  }, []);
+  // useEffect(() => {
+  //   axios.get('https://reactnative.dev/movies.json')
+  //     .then(({ data }) => {
+  //       console.log("defaultApp -> data", data.movies)
+  //       setData(data.movies)
+  //     })
+  //     .catch((error) => console.error(error))
+  //     .finally(() => setLoading(false));
+  // }, []);
+
+  function onMultiChangeEquipment() {
+    return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
+  }
+  function onMultiChangeMuscleGroups() {
+    return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
+  }
+  function onMultiChangeType() {
+    return (item) => setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'))
+  }
+
+
 
   function handleExercisePress() {
     console.log("Exercise button pressed");
@@ -237,50 +245,89 @@ return (
               <View style={styles.filters}>
                 <TouchableOpacity onPress={toggleFiltersShowing}>
                 <View style={styles.modalContainer}></View>
-                  <Text style={styles.openText}>Open Filters</Text>
+                <Text style={styles.openText}>Open Filters</Text>
                   <Modal 
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
                     //backdropOpacity = "1"
                     backdropColor = "gray"
+                    presentationStyle='fullScreen'
+                    transparent={false}
                     >
-                    <View style={styles.modalBackground}>
-                      <View style={styles.filtersContainer}>
-                        <View style={styles.filterButtonContainer}>
-                          <TouchableOpacity onPress={handleTypePress}>
-                            <Text style={styles.filterButton}>Equipment</Text>
-                          </TouchableOpacity>
-                          {/* <MultiSelect
-                            style = {styles.dropdown}
-                            data = {filters}
-                            labelField = "label"
-                            valueField= "value"
-                            label = "MultiSelect"
-                            placeholder = "Pick me"
-                            search
-                            value = {selected}
-                            onChange = {item => {
-                              setSelected(item);
-                              console.log('selected', item);
-                            }}
-                            renderItem = {item => _rendorItem(item)}
-                          /> */}
+                    <SafeAreaView style={styles.modalBackground}>
+                      <SafeAreaView style={styles.filtersContainer}>
+                        <SafeAreaView style={styles.filterButtonContainer}>
+                        {/* <Text style={styles.filterLabels}>Select Equipments</Text> */}
+                          <SelectBox
+                            label="Equipment"
+                            labelStyle={styles.filterLabels}
+                            inputPlaceholder = "Show & Hide Equipment"
+                            listEmptyText='No Equipment Found'
+                            searchInputProps = {{placeholder: "Search..."}}
+                            inputFilterStyle={styles.filterSearch}
+                            arrowIconColor = '#000000'
+                            multiOptionContainerStyle = {styles.selectedFilterContainers}
+                            multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                            
+                            searchIconColor = "#000"
+                            toggleIconColor = "#2193BC"
+
+                            options = {equipmentFilters}
+                            optionsLabelStyle = {styles.filterOptions}
+                            
+                            selectedValues = {selectedEquipmentFilter}
+                            onMultiSelect = {onMultiChangeEquipment()}
+                            onTapClose = {onMultiChangeEquipment()}
+                            isMulti
+                          />
+                        </SafeAreaView>
+                        <SafeAreaView style={styles.filterButtonContainer}>
+                          {/* <Text style={styles.filterLabels}>Select Muscle Groups</Text> */}
+                          <SelectBox
+                            label="Muscle Groups"
+                            labelStyle={styles.filterLabels}
+                            inputPlaceholder = "Add one or more Muscle Groups"
+                            listEmptyText='No Muscle Groups Found'
+                            searchInputProps = {{placeholder: "Search..."}}
+                            multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                            multiOptionContainerStyle = {styles.selectedFilterContainers}
+                            options = {muscleGroupsFilters}
+                            optionsLabelStyle = {styles.filterOptions}
+                            arrowIconColor = '#000'
+
+                            searchIconColor = "#000"
+                            toggleIconColor = "#2193BC"
+                            
+                            selectedValues = {selectedMuscleGroupsFilter}
+                            onMultiSelect = {onMultiChangeMuscleGroups()}
+                            onTapClose = {onMultiChangeMuscleGroups()}
+                            isMulti
+                          />
+                        </SafeAreaView>
+                        <View style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
+                          {/* <Text style={styles.filterLabels}>Select Exercise Types</Text> */}
+                          <SelectBox
+                            label="Exercise Types"
+                            inputPlaceholder = "Show/Hide Types"
+                            labelStyle = {styles.filterLabels}
+                            options = {typeFilters}
+                            optionsLabelStyle = {styles.filterOptions}
+                            hideInputFilter = 'true'
+
+                            toggleIconColor = "#2193BC"
+                            arrowIconColor = '#000'
+                            
+                            selectedValues = {selectedTypeFilter}
+                            onMultiSelect = {onMultiChangeType()}
+                            onTapClose = {onMultiChangeType()}
+                            isMulti
+                          />
                         </View>
-                        <View style={styles.filterButtonContainer}>
-                          <TouchableOpacity onPress={handleMuscleGroupPress}>
-                            <Text style={styles.filterButton}>Muscle Groups</Text>
-                          </TouchableOpacity>
-                        </View>
-                        <View style={toggleValue ? styles.filterButtonContainer : styles.hidden}>
-                          <TouchableOpacity onPress={handleTagPress}>
-                            <Text style={styles.filterButton}>Type</Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
+                      </SafeAreaView>
                       <TouchableOpacity style={styles.modalCloseButton} onPress={toggleFiltersShowing}>
-                          <Text style={styles.closeText}>Press to Close</Text>
+                          <Text style={styles.closeText}>Close</Text>
                       </TouchableOpacity>
-                    </View>
+                    </SafeAreaView>
                   </Modal>
                 </TouchableOpacity>
               </View>
@@ -310,14 +357,14 @@ return (
         </View> 
       </View>
       <View style={styles.discoverContainer}>
-              {isLoading ? <FlatList
-              data = {data}
+              {toggleValue ? <FlatList
+              data = {exerciseData}
               style = {styles.boxContainer}
               renderItem = 
               {({item}) => <TouchableOpacity onPress={()=>
               Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
               /> : <FlatList
-              data = {data}
+              data = {workoutData}
               style = {styles.boxContainer}
               renderItem = {({item}) => <TouchableOpacity onPress={()=>
               Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
@@ -352,10 +399,15 @@ const styles = StyleSheet.create({
   },
   modalCloseButton:{
     alignItems: 'center',
-    top: 100,
+    bottom: -350,
+    // right: -170,
+    // backgroundColor: 'gray',
   },
   closeText:{
     fontWeight: 'bold',
+    backgroundColor: 'black',
+    color: 'white',
+    fontSize: 30,
   },
   openText:{
     fontWeight: 'bold',
@@ -364,8 +416,33 @@ const styles = StyleSheet.create({
   },
   modalBackground:{
     backgroundColor: "white",
-    height: "45%",
+    //height: "90%",
     borderRadius: "15rem",
+    flex: 1
+  },
+  filterOptions:{
+    color: '#000',
+  },
+
+  selectedFilterLabels: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+
+  selectedFilterContainers:{
+    // backgroundColor: '#4bccdd',
+    backgroundColor: '#2193BC'
+    
+  },
+  filterSearch:{
+    //backgroundColor: 'pink'
+  },
+
+  filterLabels:{
+    fontWeight: '500',
+    fontSize: 20,
+    color: 'black',
   },
   workoutItems:{
     backgroundColor: '#3377ff',
@@ -413,8 +490,8 @@ const styles = StyleSheet.create({
     // paddingBottom: 5
   },
   filtersContainer:{
-    flexDirection: 'column',
-    alignItems: 'left',
+    //flexDirection: 'column',
+    //alignItems: 'left',
     height: "50%",
 
   },
