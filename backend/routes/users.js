@@ -13,6 +13,7 @@ Error Codes:
 200 - OK
 400 - general error (look at message for details)
 401 - error retrieving user(s)
+403 - Failed to authenticate
 494 - workout id not found in db
 495 - email not in proper format
 496 - modification seeking to be made has already been made (look at message for details)

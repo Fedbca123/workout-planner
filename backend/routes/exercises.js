@@ -16,6 +16,7 @@ Error Codes:
 400 - general error (look at message for details)
 401 - error retrieving exercise(s)
 402 - cloudinary image upload failed
+403 - Failed to authenticate
 495 - saving associated user failed
 496 - error deleting exercise
 497 - error saving exercise
