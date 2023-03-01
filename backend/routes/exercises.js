@@ -34,12 +34,20 @@ function removeItem(array, val){
 }
 
 //------GET-----//
+
+// Gets all exercises
+// (GET) http://(baseUrl)/exercises/
+// returns [{ exercises }]
 router.route('/').get((req,res) => {
   Exercise.find()
     .then(exercises => res.json(exercises))
     .catch(err => res.status(401).json('Error: ' + err));
 });
 
+// Gets specific exercise by id
+// req.params = {id}
+// (GET) http://(baseUrl)/exercises/:id
+// returns { exercise }
 router.route('/:id').get((req, res) => {
   Exercise.findById(req.params.id)
     .then(exercise => res.json(exercise))
@@ -47,6 +55,13 @@ router.route('/:id').get((req, res) => {
 })
 
 //-----POST-----//
+
+// Add an exercise
+// req.body = { title, description, exerciseType, sets, reps, time, weight, restTime,
+//            tags, muscleGroups, owner }
+// req.file = { image }
+// (POST) http://(baseUrl)/exercises/add
+// returns { newExercise }
 router.route('/add').post(upload.single('image'),async (req,res) => {
   // gather information to add exercise into database
   const title = req.body.title;
@@ -127,6 +142,10 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   }
 });
 
+// Search exercises
+// req.body = { searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId }
+// (POST) http://(baseUrl)/exercises/search
+// returns [{ exercises }]
 router.route('/search').post(async (req, res) => {
 
   let {searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
@@ -152,11 +171,19 @@ router.route('/search').post(async (req, res) => {
     filters.$or.push({owner:  mongoose.Types.ObjectId(ownerId)});
 
   const results = Exercise.find(filters)
-  .then(exercise => res.json(exercise))
+  .then(exercises => res.json(exercises))
   .catch(err => res.status(500).json('Error: ' + err));
 });
 
 //------UPDATE-----//
+
+// Update exercise by Id
+// req.params = { id }
+// req.body = { title, description, img, exerciseType, sets, reps, time, weight, restTime, 
+//              tags, muscleGroups, owner }
+// req.file = { image }
+// (PATCH) http://(baseUrl)/exercises/:id
+// returns { newExercise }
 router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const id = req.params.id;
   const {title,description,img,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups, owner} = req.body;
@@ -212,6 +239,11 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
 });
 
 //------DELETE-----//
+
+// Delete exercise by Id
+// req.params = { id }
+// (DELETE) http://(baseUrl)/exercises/:id
+// returns `Exercise ${exercise.title} deleeted!`
 router.route('/:id').delete(async (req,res) => {
   const exercise = await Exercise.findById(req.params.id);
   if (exercise.owner) {

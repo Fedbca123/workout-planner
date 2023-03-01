@@ -41,6 +41,15 @@ export default function Friends(props) {
               {friend.firstName} {friend.lastName}
             </Text>
             <Text>{friend.email}</Text>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.iconButton}>
+                  {/* add onpress handle whatever the action is here */}
+                  <Text style={styles.buttonText}>Delete</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.iconButton}>
+                  <Text style={styles.buttonText}>Block</Text>
+                </TouchableOpacity>
+                </View>
           </View>
         ))}
         {filteredFriends.length === 0 && (
@@ -135,6 +144,16 @@ const styles = StyleSheet.create({
       width: '95%',
       alignSelf:'center',
       marginBottom: 30
-    }
-
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
+    iconButton: {
+      backgroundColor: '#F7F7F7',
+      borderRadius: 50,
+      padding: 10,
+      marginLeft: 10,
+    },
 });

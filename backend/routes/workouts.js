@@ -36,12 +36,20 @@ function removeItem(array, val){
 }
 
 //------GET-----//
+
+// Get all workouts
+// (GET) http://(baseUrl)/workouts/
+// returns [{ workouts }]
 router.route('/').get((req,res) => {
   Workout.find()
     .then(workouts => res.json(workouts))
     .catch(err => res.status(401).json('Error: ' + err));
 });
 
+// Get workout by id
+// req.params = { workoutId }
+// (GET) http://(baseUrl)/workouts/:id
+// returns { workout }
 router.route('/:id').get((req, res) => {
   Workout.findById(req.params.id)
     .then(workout => res.json(workout))
@@ -49,6 +57,12 @@ router.route('/:id').get((req, res) => {
 });
 
 //-----POST-----//
+
+// Create workout
+// req.body = { title, description, exerciseIds, duration, location, tags, muscleGroups, owner }
+// req.file = { image }
+// (POST) http://(baseUrl)/workouts/add
+// returns { newWorkout }
 router.route('/add').post(upload.single('image'),async (req,res) => {
   // gather information to add workout into database
   const title = req.body.title;
@@ -132,6 +146,10 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   }
 });
 
+// Search workouts
+// req.body = { searchStr, muscleGroupsSrch, equipmentSrch, ownerId }
+// (GET) http://(baseUrl)/workouts/search
+// returns [{ workouts }]
 router.route('/search').post(async (req, res) => {
 
   let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
@@ -164,6 +182,13 @@ router.route('/search').post(async (req, res) => {
 });
 
 //------UPDATE-----//
+
+// Update workout
+// req.body = { title,description,img,exercises,location,recurrence,scheduledDate,
+//            dateOfCompletion,owner }
+// req.file = { image }
+// (PATCH) http://(baseUrl)/workouts/:id
+// returns { newWorkout }
 router.route('/:id').patch(upload.single('image'), async (req,res) => {
   const id = req.params.id;
   const {title,description,img,exercises,location,recurrence,scheduledDate,dateOfCompletion,owner} = req.body;
@@ -215,6 +240,11 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
 });
 
 //------DELETE-----//
+
+// Delete workout
+// req.params { id }
+// (DELETE) http://(baseUrl)/workouts/:id
+// returns `Workout ${deletion.title} deleted!`
 router.route('/:id').delete(async (req,res) => {
   const workout = await Workout.findById(req.params.id);
   if (workout.owner) {
