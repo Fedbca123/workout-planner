@@ -96,27 +96,29 @@ export default function CustomExercise(props) {
 	}
 
 	function picChooser() {
-		return (
-			<Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Hello World!</Text>
-            <Pressable
-              style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-		)
+
+	//	I commented this out until I get the camera to work and then will make the modal for the user to choose to either take a picture or choose from gallery.
+	// 	return (
+	// 		<Modal
+    //     animationType="slide"
+    //     transparent={true}
+    //     visible={modalVisible}
+    //     onRequestClose={() => {
+    //       Alert.alert('Modal has been closed.');
+    //       setModalVisible(!modalVisible);
+    //     }}>
+    //     <View style={styles.centeredView}>
+    //       <View style={styles.modalView}>
+    //         <Text style={styles.modalText}>Hello World!</Text>
+    //         <Pressable
+    //           style={[styles.button, styles.buttonClose]}
+    //           onPress={() => setModalVisible(!modalVisible)}>
+    //           <Text style={styles.textStyle}>Hide Modal</Text>
+    //         </Pressable>
+    //       </View>
+    //     </View>
+    //   </Modal>
+		// )
 	}
 
     return(
@@ -134,8 +136,8 @@ export default function CustomExercise(props) {
 			{ imageUri && <Image source={{ uri: imageUri }} style={styles.ImageStyle} />}
                     { !imageUri && <Button title = "Choose File"
                     onPress={async () => {
-						// setImageUri(await getPhotoForExercise());
-						setImageUri(await takePhotoForExercise());
+						setImageUri(await getPhotoForExercise());
+						// setImageUri(await takePhotoForExercise());
 						// picChooser();
 					}} />}
                     { imageUri && <Button title = "Clear"
