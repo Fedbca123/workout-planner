@@ -111,13 +111,15 @@ export default function Login(props) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
-      {/*
-        <Button
+			
+			{/* <Button
         title="BACKDOOR"
         onPress={() =>
           backDoorHandler("Test@gmail.com", "password")
         }
-      />
+      /> */}
+      {/*
+        
       <Button
         title="ADMIN BACKDOOR"
         onPress={() => props.navigation.navigate("admin")}

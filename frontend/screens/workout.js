@@ -43,7 +43,7 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 						title="+"
 					/> */}
 					<TouchableOpacity onPress={() =>{
-						navigation.navigate("dateTimeRepsPicker");
+						navigation.navigate("exerciseSearch");
 						updateGlobalState("workout", data);
 					}}>
 						<Text>Choose Workout</Text>
