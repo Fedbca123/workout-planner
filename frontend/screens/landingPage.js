@@ -74,14 +74,9 @@ export default function LandingPage(props) {
 			<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>
-			<View style={styles.CreateWorkoutCntnr}>
-				{/* <View style={styles.CreateWorkoutBttnsContainer}>
-					<TouchableOpacity onPress={handleScratchPress}>
-						<Text style={styles.CreateWorkoutBttns}>Scratch</Text>
-					</TouchableOpacity>
-				</View> */}
-				<View style={styles.CreateWorkoutBttnsContainer}>
-					<TouchableOpacity onPress={handleTemplatePress}>
+			<View style={styles.CreateWorkoutCntnr}>	
+				<View>
+					<TouchableOpacity onPress={handleTemplatePress} style={styles.CreateWorkoutBttnsContainer}>
 						<Text style={styles.CreateWorkoutBttns}>Add A Workout</Text>
 					</TouchableOpacity>
 				</View>
@@ -140,7 +135,9 @@ const styles = StyleSheet.create({
 		margin: 30,
 		padding: 25,
 		borderRadius: "10rem",
-		flex: 1,
+		// flex: 2,
+		width: 350,
+		height:82
 	},
 	CreateWorkoutText: {
 		fontFamily: "HelveticaNeue",
@@ -149,6 +146,9 @@ const styles = StyleSheet.create({
 		fontWeight: "normal",
 		color: "#C4C4C4",
 		textAlign: "center",
+		position: "absolute",
+		// justifyContent:"center"
+		// left: 300
 	},
 	space: {
 		width: 50,

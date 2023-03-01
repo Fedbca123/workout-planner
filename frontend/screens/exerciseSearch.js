@@ -11,7 +11,7 @@ import {
 	ScrollView,
 	Alert,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import reactDom from "react-dom";
 import axios from "axios";
 import config from "../../config";
@@ -20,6 +20,8 @@ import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
 import HomeNav from "../navigation/homeNav";
+
+const baseUrl = config.API_URL + config.PORT + '/';
 
 export default function ExerciseSearch(props) {
 	const navigation = useNavigation();
@@ -55,13 +57,28 @@ export default function ExerciseSearch(props) {
 		}
 	];
 
+	function loadExercises() {
+
+		// console.log(globalState.user._id);
+		axios.post(baseUrl + "exercises/search", {
+			ownerId: globalState.user._id
+		}).then((response) => {
+			if (response.status == 200) {
+				return response.data.exercises;
+			}
+		}).catch((e) => {
+			console.log(e);
+			// Alert.alert(e);
+		})
+	}
+
 	return (
 		<SafeAreaView >
 			<SearchBar placeholder="Enter exercise names or muscle groups you wish to train!"></SearchBar>
 			<WorkOuts data={globalState.workout} />
 			<Text style={styles.TitleText}>Exercises:</Text>
 			<FlatList
-				data={exercises}
+				data={loadExercises()}
 				keyExtractor={(item) => item.title}
 				renderItem={({ item }) => (
 					<View style={styles.ExerciseCard}>
@@ -69,8 +86,17 @@ export default function ExerciseSearch(props) {
 							onPress={() => {
 								globalState.workout[0].content.push(item);
 								Alert.alert("Exercise Added to workout!");
+								
 							}}
 						>
+						{/* <TouchableOpacity onPress={useEffect(() => {
+						  	globalState.workout[0].content.push(item);
+							Alert.alert("Exercise Added to workout!");
+						  return () => {
+							<WorkOuts data={globalState.workout} />
+						  }
+						}, [globalState.workout[0].content.length])
+						}> */}
 							{/* Image component Here */}
 							<Text>{item.title}</Text>
 							{/* Button to take user to page about info for the workout */}
