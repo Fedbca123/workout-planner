@@ -112,12 +112,12 @@ export default function Login(props) {
 				</Text>
 			</View>
 			
-			<Button
+			{/* <Button
         title="BACKDOOR"
         onPress={() =>
           backDoorHandler("Test@gmail.com", "password")
         }
-      />
+      /> */}
       {/*
         
       <Button
