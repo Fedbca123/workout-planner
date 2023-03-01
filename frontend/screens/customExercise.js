@@ -11,7 +11,8 @@ import {
 	ScrollView,
 	Alert,
 	Modal,
-	Pressable
+	Pressable,
+	
 } from "react-native";
 import React, {useState, useRef} from "react";
 import reactDom from "react-dom";
@@ -28,7 +29,9 @@ export default function CustomExercise(props) {
 
 	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
-	const [modalVisible, setModalVisible] = useState(false);
+	// const [modalVisible, setModalVisible] = useState(false);
+	const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions(ImagePicker.PermissionStatus.UNDETERMINED);
+	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
 	const exercise = {
 		title:"",
 		description:"",
@@ -66,18 +69,30 @@ export default function CustomExercise(props) {
 		}
 	}
 
-	const takePhotoForExercise = async() =>{
-		let result = await ImagePicker.launchCameraAsync({
+	const takePhotoForExercise = async () => {
+
+		await requestCameraPermission(ImagePicker.requestCameraPermissionsAsync);
+		// await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+		console.log(cameraStatus.status);
+
+		if (cameraStatus.granted === false) {
+			Alert.alert("You need to go to settings to allow camera access");
+		} else {
+			let result = await ImagePicker.launchCameraAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,
 			allowsEditing: true,
 			aspect: [4, 3],
 			quality: 1,
-		});
+			});
 
-		if (!result.cancelled) {
-			setImageUri(result["uri"]);
-			return result["uri"];
+			if (!result.cancelled) {
+				setImageUri(result["uri"]);
+				return result["uri"];
+			}
 		}
+		
+		
 	}
 
 	function picChooser() {
@@ -119,7 +134,8 @@ export default function CustomExercise(props) {
 			{ imageUri && <Image source={{ uri: imageUri }} style={styles.ImageStyle} />}
                     { !imageUri && <Button title = "Choose File"
                     onPress={async () => {
-						setImageUri(await getPhotoForExercise());
+						// setImageUri(await getPhotoForExercise());
+						setImageUri(await takePhotoForExercise());
 						// picChooser();
 					}} />}
                     { imageUri && <Button title = "Clear"
