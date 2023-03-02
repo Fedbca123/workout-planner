@@ -10,6 +10,7 @@ import config from "../../config";
 import axios from "axios";
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
+import { RFC_2822 } from 'moment';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -304,7 +305,7 @@ return (
                             isMulti
                           />
                         </SafeAreaView>
-                        <View style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
+                        <SafeAreaView style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
                           {/* <Text style={styles.filterLabels}>Select Exercise Types</Text> */}
                           <SelectBox
                             label="Exercise Types"
@@ -313,19 +314,23 @@ return (
                             options = {typeFilters}
                             optionsLabelStyle = {styles.filterOptions}
                             hideInputFilter = 'true'
-
+                            //containerStyle={{backgroundColor:"black"}}
                             toggleIconColor = "#2193BC"
                             arrowIconColor = '#000'
                             
+                            multiOptionsLabelStyle={styles.selectedFilterLabels}
+                            multiOptionContainerStyle={styles.selectedFilterContainers}
                             selectedValues = {selectedTypeFilter}
                             onMultiSelect = {onMultiChangeType()}
                             onTapClose = {onMultiChangeType()}
                             isMulti
                           />
-                        </View>
+                        </SafeAreaView>
                       </SafeAreaView>
                       <TouchableOpacity style={styles.modalCloseButton} onPress={toggleFiltersShowing}>
-                          <Text style={styles.closeText}>Close</Text>
+                        <View style={styles.closeButtonContainer}>
+                              <Text style={styles.closeText}>Close</Text>
+                        </View>
                       </TouchableOpacity>
                     </SafeAreaView>
                   </Modal>
@@ -336,7 +341,7 @@ return (
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
-                data 
+                data={exerciseData} 
                 lightTheme
                 round
                 onChangeText={updateSearch}
@@ -399,15 +404,37 @@ const styles = StyleSheet.create({
   },
   modalCloseButton:{
     alignItems: 'center',
-    bottom: -350,
+    // bottom: -375,
+    //width: "50%",
+    // justifyContent: 'center',
+    // alignContent:'center',
+    //width:"100%",
+    //borderColor: "black"
     // right: -170,
     // backgroundColor: 'gray',
   },
+  closeButtonContainer:{
+    backgroundColor: 'white',
+    borderColor: "black",
+    overflow: 'hidden',
+    borderWidth: 3,
+    borderRadius: "20rem",
+    bottom: -375,
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginHorizontal: 1,
+    width: "35%",
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+
   closeText:{
     fontWeight: 'bold',
-    backgroundColor: 'black',
-    color: 'white',
+    color: 'black',
     fontSize: 30,
+    paddingHorizontal: 8,
+    borderRadius: "20rem",
+    
   },
   openText:{
     fontWeight: 'bold',
@@ -441,7 +468,7 @@ const styles = StyleSheet.create({
 
   filterLabels:{
     fontWeight: '500',
-    fontSize: 20,
+    fontSize: 18,
     color: 'black',
   },
   workoutItems:{
@@ -499,12 +526,12 @@ const styles = StyleSheet.create({
     //alignItems: "center",
     backgroundColor: "#CDCDCD",
     borderColor: "black",
-    borderWidth: 2.5,
-    borderRadius: "15rem",
+    borderWidth: 1.5,
+    borderRadius: "20rem",
     paddingHorizontal: 10,
     marginHorizontal: 5,
-    paddingVertical: 10,
-    marginVertical: 10,
+    paddingVertical: 5,
+    marginVertical: 5,
   },
 
   hidden:{
