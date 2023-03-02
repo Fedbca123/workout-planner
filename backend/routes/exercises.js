@@ -17,6 +17,7 @@ Error Codes:
 401 - error retrieving exercise(s)
 402 - cloudinary image upload failed
 403 - Failed to authenticate
+405 - No Token Provided
 495 - saving associated user failed
 496 - error deleting exercise
 497 - error saving exercise
@@ -34,28 +35,7 @@ function removeItem(array, val){
   return array;
 }
 
-//------GET-----//
-
-// Gets all exercises
-// (GET) http://(baseUrl)/exercises/
-// returns [{ exercises }]
-//! SECURE SO THAT NOT EVERYONE CAN GET EVERYONE'S CUSTOM EXERCISES
-router.route('/').get((req,res) => {
-  Exercise.find()
-    .then(exercises => res.json(exercises))
-    .catch(err => res.status(401).json('Error: ' + err));
-});
-
-// Gets specific exercise by id
-// req.params = {id}
-// (GET) http://(baseUrl)/exercises/:id
-// returns { exercise }
-//! SECURE THROUGH JWT TO SEE IF THEY OWN IT OR IF ITS PUBLIC
-router.route('/:id').get((req, res) => {
-  Exercise.findById(req.params.id)
-    .then(exercise => res.json(exercise))
-    .catch(err => res.status(401).json('Error: ' + err))
-})
+//-----GET-----//
 
 //-----POST-----//
 
@@ -277,5 +257,32 @@ router.route('/:id').delete(async (req,res) => {
     .catch(err => res.status(496).json('Error: ' + err));
 });
 
-
 module.exports = router;
+
+
+/* ----- GraveYard ----- */
+
+/*
+// Gets all exercises
+// (GET) http://(baseUrl)/exercises/
+// returns [{ exercises }]
+//! SECURE SO THAT NOT EVERYONE CAN GET EVERYONE'S CUSTOM EXERCISES
+router.route('/').get((req,res) => {
+  Exercise.find()
+    .then(exercises => res.json(exercises))
+    .catch(err => res.status(401).json('Error: ' + err));
+});
+
+// Gets specific exercise by id
+// req.params = {id}
+// (GET) http://(baseUrl)/exercises/:id
+// returns { exercise }
+//! SECURE THROUGH JWT TO SEE IF THEY OWN IT OR IF ITS PUBLIC
+router.route('/:id').get((req, res) => {
+  Exercise.findById(req.params.id)
+    .then(exercise => res.json(exercise))
+    .catch(err => res.status(401).json('Error: ' + err))
+})
+
+
+*/

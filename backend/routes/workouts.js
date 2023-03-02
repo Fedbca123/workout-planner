@@ -19,6 +19,7 @@ Error Codes:
 401 - error retrieving workout(s)
 402 - cloudinary image upload failed
 403 - Failed to authenticate
+405 - No Token Provided
 495 - saving associated user failed
 496 - error deleting workout
 497 - error saving workout
@@ -37,28 +38,6 @@ function removeItem(array, val){
 }
 
 //------GET-----//
-
-// Get all workouts
-// (GET) http://(baseUrl)/workouts/
-// returns [{ workouts }]
-//! NEED TO SECURE THIS. NO LONGER SAFE IF ALL
-//! USERS STORE PERSONAL STUFF IN THIS COLLECTION
-router.route('/').get((req,res) => {
-  Workout.find()
-    .then(workouts => res.json(workouts))
-    .catch(err => res.status(401).json('Error: ' + err));
-});
-
-// Get workout by id
-// req.params = { workoutId }
-// (GET) http://(baseUrl)/workouts/:id
-// returns { workout }
-//! SECURE THIS ENDPOINT SOME WAY OR WIPE IT OUT
-router.route('/:id').get((req, res) => {
-  Workout.findById(req.params.id)
-    .then(workout => res.json(workout))
-    .catch(err => res.status(401).json('Error: ' + err))
-});
 
 //-----POST-----//
 
@@ -280,3 +259,31 @@ router.route('/:id').delete(async (req,res) => {
 });
 
 module.exports = router;
+
+/* ----- GraveYard ----- */
+
+/*
+// Get all workouts
+// (GET) http://(baseUrl)/workouts/
+// returns [{ workouts }]
+//! NEED TO SECURE THIS. NO LONGER SAFE IF ALL
+//! USERS STORE PERSONAL STUFF IN THIS COLLECTION
+router.route('/').get((req,res) => {
+  Workout.find()
+    .then(workouts => res.json(workouts))
+    .catch(err => res.status(401).json('Error: ' + err));
+});
+
+// Get workout by id
+// req.params = { workoutId }
+// (GET) http://(baseUrl)/workouts/:id
+// returns { workout }
+//! SECURE THIS ENDPOINT SOME WAY OR WIPE IT OUT
+router.route('/:id').get((req, res) => {
+  Workout.findById(req.params.id)
+    .then(workout => res.json(workout))
+    .catch(err => res.status(401).json('Error: ' + err))
+});
+
+
+*/

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
@@ -7,6 +9,8 @@ const { User, userSchema } = require('../models/user.model');
 const { Workout, workoutSchema} = require('../models/workout.model'); 
 const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const authenticateToken = require('../middleware/authenticateToken.js');
 
 /*
 Error Codes:
@@ -14,6 +18,7 @@ Error Codes:
 400 - general error (look at message for details)
 401 - error retrieving user(s)
 403 - Failed to authenticate
+405 - No Token Provided
 494 - workout id not found in db
 495 - email not in proper format
 496 - modification seeking to be made has already been made (look at message for details)
@@ -127,9 +132,13 @@ router.route('/login').post(async (req, res) => {
             .then(friend => friends.push(friend))
             .catch(err => res.status(400).json({Error: err}))
         }
+        const authToken = jwt.sign(user.toObject(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m"});
+        const refreshToken = jwt.sign(user.toObject(), process.env.REFRESH_TOKEN_SECRET)
 
+        user.friends = friends;
+        user.password = null;
         // object ret is returned in JSON format
-        return res.status(200).json({user: user, friends: friends});
+        return res.status(200).json({authToken, refreshToken, user: user});
     }
     else 
     {
@@ -139,29 +148,6 @@ router.route('/login').post(async (req, res) => {
 
 //-----GET-----//
 
-// Get all users
-// (GET) http://(baseUrl)/users/
-// returns [{ users }]
-
-//  !!  NEED TO HANDLE IN SECURE WAY TO MAKE SURE ALMOST NO ONE CAN ACCESS THIS OR REMOVE IT !!
-router.route('/').get(async (req, res) => {
-    User.find()
-    .then(users => res.json(users))
-    .catch(err => res.status(401).json('Error: ' + err));
-});
-
-// Get user by id
-// req.params = { id }
-// (GET) http://(baseUrl)/users/:id
-// returns { user }
-
-//  !!  NEEDS TO SECURE THIS FROM ANYONE BEING ABLE TO CALL IT !!
-router.route('/:id').get(async (req, res) => {
-    User.findById(req.params.id)
-    .then(user => res.json(user))
-    .catch(err => res.status(401).json('Error: ' + err))
-});
-
 //-----DELETE-----//
 
 // Delete user by id
@@ -170,8 +156,13 @@ router.route('/:id').get(async (req, res) => {
 // returns { Deleted: user.email }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id').delete(async (req, res) => {
+router.route('/:id').delete(authenticateToken, async (req, res) => {
     const id = req.params.id;
+
+    if (req.user._id != id)
+    {
+      return res.sendStatus(403);
+    }
 
     await Workout.deleteMany({owner: id});
     await Exercise.deleteMany({owner: id});
@@ -193,43 +184,6 @@ router.route('/:id').delete(async (req, res) => {
 });
 
 //------UPDATE-----//
-
-// Update user by id (Use Update contact info instead!)
-// req.params = { id }
-// req.body = {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts,
-//            completedWorkouts, customWorkouts, customExercises}
-// (PATCH) http://(baseUrl)/users/:id
-// returns { newUser }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id').patch(async (req, res) => {
-    const id = req.params.id;
-    
-    const {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts, completedWorkouts, customWorkouts, customExercises} = req.body
-
-    // Check if user exists
-    const user = await User.findById(id);
-    if (!user)
-    {
-        return res.status(498).send({Error: "User does not exist!"});
-    }
-
-    if (firstName) {user.firstName = firstName;}
-    if (lastName) {user.lastName = lastName;}
-    if (friends) {user.friends = friends;}
-    if (friendRequests) {user.friendRequests = friendRequests;}
-    if (blockedUsers) {user.blockedUsers = blockedUsers;}
-    if (scheduledWorkouts) {user.scheduledWorkouts = scheduledWorkouts;}
-    if (completedWorkouts) {user.completedWorkouts = completedWorkouts;}
-    if (customWorkouts) {user.customWorkouts = customWorkouts;}
-    if (customExercises) {user.customExercises = customExercises;}
-    
-    await user.save((err, newUser) => {
-        if (err) return res.status(499).send(err);
-        res.status(200).json(newUser);
-    });
-});
-
 
 // Update contact info ( firstName, lastName, and email)
 // req.params = { id }
@@ -715,6 +669,66 @@ module.exports = router;
 /*          X X           */
 /*           O            */
 /*
+
+// Update user by id (Use Update contact info instead!)
+// req.params = { id }
+// req.body = {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts,
+//            completedWorkouts, customWorkouts, customExercises}
+// (PATCH) http://(baseUrl)/users/:id
+// returns { newUser }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
+router.route('/:id').patch(async (req, res) => {
+    const id = req.params.id;
+    
+    const {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts, completedWorkouts, customWorkouts, customExercises} = req.body
+
+    // Check if user exists
+    const user = await User.findById(id);
+    if (!user)
+    {
+        return res.status(498).send({Error: "User does not exist!"});
+    }
+
+    if (firstName) {user.firstName = firstName;}
+    if (lastName) {user.lastName = lastName;}
+    if (friends) {user.friends = friends;}
+    if (friendRequests) {user.friendRequests = friendRequests;}
+    if (blockedUsers) {user.blockedUsers = blockedUsers;}
+    if (scheduledWorkouts) {user.scheduledWorkouts = scheduledWorkouts;}
+    if (completedWorkouts) {user.completedWorkouts = completedWorkouts;}
+    if (customWorkouts) {user.customWorkouts = customWorkouts;}
+    if (customExercises) {user.customExercises = customExercises;}
+    
+    await user.save((err, newUser) => {
+        if (err) return res.status(499).send(err);
+        res.status(200).json(newUser);
+    });
+});
+
+// Get user by id
+// req.params = { id }
+// (GET) http://(baseUrl)/users/:id
+// returns { user }
+
+//  !!  NEEDS TO SECURE THIS FROM ANYONE BEING ABLE TO CALL IT !!
+router.route('/:id').get(async (req, res) => {
+    User.findById(req.params.id)
+    .then(user => res.json(user))
+    .catch(err => res.status(401).json('Error: ' + err))
+});
+
+// Get all users
+// (GET) http://(baseUrl)/users/
+// returns [{ users }]
+
+//  !!  NEED TO HANDLE IN SECURE WAY TO MAKE SURE ALMOST NO ONE CAN ACCESS THIS OR REMOVE IT !!
+router.route('/').get(async (req, res) => {
+    User.find()
+    .then(users => res.json(users))
+    .catch(err => res.status(401).json('Error: ' + err));
+});
+
 // adding custom exercise
 // router.route('/:id/exercises/custom/create').post(async (req,res) => {
 //   const id = req.params.id;
