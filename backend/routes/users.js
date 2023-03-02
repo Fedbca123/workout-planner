@@ -55,8 +55,6 @@ function removeItemByID(array, id) {
 // req.body = { firstName, lastName, email, password }
 // (POST) http://(baseUrl)/users/register
 // returns { newUser }
-
-//  !!  NEEDS TO RETURN JWT TOKEN !!
 router.route('/register').post(async (req,res) =>
 {
     const { firstName, lastName, email, password } = req.body;
@@ -95,9 +93,15 @@ router.route('/register').post(async (req,res) =>
         customExercises: [],
     });
 
+
+
     await user.save((err, newUser) => {
         if (err) return res.status(499).send(err);
-        res.status(200).json(newUser);
+        const authToken = jwt.sign(newUser.toObject(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m"});
+        const refreshToken = jwt.sign(newUser.toObject(), process.env.REFRESH_TOKEN_SECRET);
+        user.password = null;
+
+        return res.status(200).json({authToken, refreshToken, user: newUser});
     })
 });
 
@@ -105,8 +109,6 @@ router.route('/register').post(async (req,res) =>
 // req.body = { email, password }
 // (POST) http://(baseUrl)/users/login
 // returns { user: user, friends: [{ user.friends }] }
-
-//  !!  NEEDS TO RETURN JWT TOKEN !!
 router.route('/login').post(async (req, res) => {
 
     const { email, password } = req.body;
@@ -137,7 +139,7 @@ router.route('/login').post(async (req, res) => {
 
         user.friends = friends;
         user.password = null;
-        // object ret is returned in JSON format
+        
         return res.status(200).json({authToken, refreshToken, user: user});
     }
     else 
@@ -154,8 +156,6 @@ router.route('/login').post(async (req, res) => {
 // req.params = { id }
 // (DELETE) http://(baseUrl)/users/:id
 // returns { Deleted: user.email }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id').delete(authenticateToken, async (req, res) => {
     const id = req.params.id;
 
@@ -190,11 +190,14 @@ router.route('/:id').delete(authenticateToken, async (req, res) => {
 // req.body = { firstName, lastName, email }
 // (PATCH) http://(baseUrl)/users/:id/contact
 // returns { newuser }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id/contact').patch(async (req, res) => {
+router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
   const id = req.params.id;
-  
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const {firstName, lastName,email} = req.body
 
   // Check if user exists
@@ -234,8 +237,14 @@ router.route('/:id/contact').patch(async (req, res) => {
 // returns { newuser }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id/workouts/schedule').post(async (req,res) => {
+router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) => {
   const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const workoutId = req.body.workoutID;
   const dateString = req.body.date;
 
@@ -289,8 +298,13 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
 // returns { newuser }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
+router.route('/:id/workouts/remove/:w_id').patch(authenticateToken,async (req,res) => {
   const {id, w_id} = req.params;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
 
   const user = await User.findById(id);
   if (!user)
@@ -320,8 +334,14 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
 // returns { newuser }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id/workouts/complete').patch(async (req,res) => {
+router.route('/:id/workouts/complete').patch(authenticateToken,async (req,res) => {
   const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const w_id = req.body.workoutId;
   const user = await User.findById(id);
   if (!user)
@@ -359,9 +379,15 @@ router.route('/:id/workouts/complete').patch(async (req,res) => {
 // returns { newuserB }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
-router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
+router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -403,9 +429,15 @@ router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
 // returns { message: `${userA.firstName} and ${userB.firstName} are friends` }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
-router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
+router.route('/:A_id/invites/accept/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -446,9 +478,15 @@ router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
 // returns { newuserA }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
-router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
+router.route('/:A_id/invites/reject/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -477,9 +515,15 @@ router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
 // returns { message: `${userA.firstName} and ${userB.firstName} are no longer friends` }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
-router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
+router.route('/:A_id/friends/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -514,9 +558,15 @@ router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
 // returns { newuserA }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
-router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
+router.route('/:A_id/blocked/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -554,9 +604,15 @@ router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
 // returns { newuserA }
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
-router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
+router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -585,8 +641,14 @@ router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
 // returns { completed: [{workouts }], scheduled: [{ workouts }]}
 
 //  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id/calendar/all').get(async (req,res) => {
+router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
   const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const user = await User.findById(id);
   if (!user)
   {
