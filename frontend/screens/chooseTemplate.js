@@ -13,11 +13,14 @@ import React from "react";
 import reactDom, { render } from "react-dom";
 import Workouts from "./workout.js";
 import { useNavigation } from "@react-navigation/native";
+import { useGlobalState } from "../../GlobalState.js";
 import config from "../../config";
 import axios from "axios";
 const baseUrl = config.API_URL + config.PORT + "/";
 
 export default function ChooseTemplate(props) {
+	const navigation = useNavigation();
+	const [globalState, updateGlobalState] = useGlobalState();
 	function loadWorkouts() {
 		axios.get(baseUrl + "/").then((response) => {
 			if (response.status === 200) {
@@ -101,13 +104,25 @@ export default function ChooseTemplate(props) {
 			],
 		},
 	];
+	const noTemplate = [
+		{
+			title: "Your Workout",
+			duration: 60,
+			location: "",
+			content:[]
+		}
+	]
 
 	return (
 		<SafeAreaView style={styles.Background}>
 			<Text style={styles.HeaderText}>Your Saved Workouts</Text>
 			<Workouts data={SECTIONS} showButton={true} showInput={false} />
-			<Text styles={styles.HeaderText}>Workout Templates</Text>
+			<Text style={styles.HeaderText}>Workout Templates</Text>
 			<Workouts data={sections} showButton={true} showInput={false} />
+			<Button title="Create from Scratch" onPress={() => {
+				updateGlobalState("workout",noTemplate)
+				navigation.navigate("exerciseSearch");
+			}} />
 		</SafeAreaView>
 	);
 }
@@ -115,7 +130,7 @@ export default function ChooseTemplate(props) {
 const styles = StyleSheet.create({
 	Background: {
 		backgroundColor: "white",
-		// flex: 1,
+		flex: 1,
 	},
 	HeaderText: {
 		fontSize: 20,
