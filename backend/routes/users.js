@@ -156,8 +156,6 @@ router.route('/login').post(async (req, res) => {
 // req.params = { id }
 // (DELETE) http://(baseUrl)/users/:id
 // returns { Deleted: user.email }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id').delete(authenticateToken, async (req, res) => {
     const id = req.params.id;
 
@@ -192,8 +190,6 @@ router.route('/:id').delete(authenticateToken, async (req, res) => {
 // req.body = { firstName, lastName, email }
 // (PATCH) http://(baseUrl)/users/:id/contact
 // returns { newuser }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
   const id = req.params.id;
 
