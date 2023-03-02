@@ -9,6 +9,8 @@ const cloudinary = require('../cloudinary');
 const { User, userSchema } = require('../models/user.model');
 const config = require("../config.js");
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const authenticateToken = require('../middleware/authenticateToken.js');
 
 /*
 Error Codes:
@@ -18,6 +20,7 @@ Error Codes:
 402 - cloudinary image upload failed
 403 - Failed to authenticate
 405 - No Token Provided
+494 - User does not have authorization
 495 - saving associated user failed
 496 - error deleting exercise
 497 - error saving exercise
@@ -40,16 +43,22 @@ function removeItem(array, val){
 //-----POST-----//
 
 // Add an exercise
+// header.authorization = Bearer "AccessToken"
 // req.body = { title, description, exerciseType, sets, reps, time, weight, restTime,
 //            tags, muscleGroups, owner }
 // req.file = { image }
 // (POST) http://(baseUrl)/exercises/add
 // returns { newExercise }
-//! SECURE SO THAT ADMINS CAN USE THIS FOR POPULATION ONLY
-router.route('/add').post(upload.single('image'),async (req,res) => {
+router.route('/add').post(authenticateToken, upload.single('image'),async (req,res) => {
   // gather information to add exercise into database
   const title = req.body.title;
   const description = req.body.description;
+  const owner = req.body.owner;
+
+  if (!req.user.isAdmin || owner != req.user._id)
+  {
+    return res.sendStatus(494);
+  }
 
   var image = null;
   var imageId = null;
@@ -73,7 +82,6 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const weight = req.body.weight;
   const restTime = req.body.restTime;
   const muscleGroups = req.body.muscleGroups;
-  const owner = req.body.owner;
 
   let tags = [];
   tags = tags.concat(req.body.tags)
@@ -127,13 +135,18 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 });
 
 // Search exercises
+// header.authorization = Bearer "AccessToken"
 // req.body = { searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId }
 // (POST) http://(baseUrl)/exercises/search
 // returns [{ exercises }]
-//! AUTHORIZE TO MAKE SURE THE REQUEST IS BY OWNER OF ID (?) 
-router.route('/search').post(async (req, res) => {
+router.route('/search').post(authenticateToken, async (req, res) => {
 
   let {searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
+
+  if ((ownerId && req.user._id != ownerId) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
+  }
 
   let filters = {};
   filters.$or = [{owner: {$exists: false}}];
@@ -163,17 +176,22 @@ router.route('/search').post(async (req, res) => {
 //------UPDATE-----//
 
 // Update exercise by Id
+// header.authorization = Bearer "AccessToken"
 // req.params = { id }
-// req.body = { title, description, img, exerciseType, sets, reps, time, weight, restTime, 
-//              tags, muscleGroups, owner }
+// req.body = { title, description, exerciseType, sets, reps, time, weight, restTime, 
+//              tags, muscleGroups }
 // req.file = { image }
 // (PATCH) http://(baseUrl)/exercises/:id
 // returns { newExercise }
-//! NEED TO ADD JWT AUTH CHECK TO MAKE SURE THEY OWN THE OBJECT THEY ARE TRYING TO MOD
-router.route('/:id').patch(upload.single('image'), async (req,res) => {
+router.route('/:id').patch(authenticateToken, upload.single('image'), async (req,res) => {
   const id = req.params.id;
-  const {title,description,img,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups, owner} = req.body;
+  const {title,description,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups} = req.body;
   
+  if (id != req.user._id)
+  {
+    return res.sendStatus(494);
+  }
+
   const exercise = await Exercise.findById(id);
   if (!exercise)
   {
@@ -227,12 +245,18 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
 //------DELETE-----//
 
 // Delete exercise by Id
+// header.authorization = Bearer "AccessToken"
 // req.params = { id }
 // (DELETE) http://(baseUrl)/exercises/:id
 // returns `Exercise ${exercise.title} deleeted!`
-//! NEED TO ADD JWT AUTH CHECK TO MAKE SURE THEY OWN THE OBJECT THEY ARE TRYING TO DELETE
-router.route('/:id').delete(async (req,res) => {
+router.route('/:id').delete(authenticateToken, async (req,res) => {
   const exercise = await Exercise.findById(req.params.id);
+
+  if (req.params.id != req.user._id)
+  {
+    return res.sendStatus(494);
+  }
+
   if (exercise.owner) {
     const user = await User.findById(exercise.owner);
     user.customExercises = removeItem(user.customExercises, exercise._id);
