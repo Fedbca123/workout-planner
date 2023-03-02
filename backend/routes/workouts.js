@@ -249,7 +249,7 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
 // req.params { id }
 // (DELETE) http://(baseUrl)/workouts/:id
 // returns `Workout ${deletion.title} deleted!`
-router.route('/:id').delete(async (req,res) => {
+router.route('/:id').delete(authenticateToken, async (req,res) => {
   const workout = await Workout.findById(req.params.id);
 
   if ((workout.owner && workout.owner != req.user._id) && !req.user.isAdmin)
