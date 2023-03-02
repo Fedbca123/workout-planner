@@ -1,10 +1,53 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
-import {Button, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {Card, Title} from 'react-native-paper';
 import { SearchBar } from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
+import Modal from "react-native-modal";
+import config from "../../config";
+import axios from "axios";
+import SelectBox from 'react-native-multi-selectbox';
+import {xorBy} from 'lodash';
+import { RFC_2822 } from 'moment';
+
+const equipmentFilters = [
+  {item: 'None', id: '1'},
+  {item: 'Dumbbells', id: '2'},
+  {item: 'Barbell', id: '3'},
+  {item: 'Kettle Bell', id: '4'},
+  {item: 'Bench', id: '5'},
+  {item: 'Machine', id: '6'},
+  {item: 'Resistance Bands', id: '7'},
+  {item: 'Cables', id: '8'},
+  {item: 'Pull-Up Bar', id: '9'},
+];
+
+const muscleGroupsFilters = [
+  {item: 'Upper Body', id: '1'},
+  {item: 'Lower Body', id: '2'},
+  {item: 'Full Body', id: '3'},
+  {item: 'Abs', id: '4'},
+  {item: 'Shoulders', id: '5'},
+  {item: 'Triceps', id: '6'},
+  {item: 'Biceps', id: '7'},
+  {item: 'Chest', id: '8'},
+  {item: 'Back', id: '9'},
+  {item: 'Hamstring', id: '10'},
+  {item: 'Quads', id: '11'}, // Quadriceps?
+  {item: 'Calves', id: '12'},
+  {item: 'Glutes', id: '13'},
+  {item: 'Forearms', id: '14'},
+  {item: 'Arms', id: '15'},
+  {item: 'Legs', id: '16'},
+];
+
+const typeFilters = [
+  {item: 'Cardio', id: '1'},
+  {item: 'SETSXREPS', id: '2'},
+  {item: 'AMRAP', id: '3'}
+];
 
 const exerciseData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
@@ -38,12 +81,23 @@ const workoutData = [
 
 export default function DiscoverPage(props) {
 
-  // const [isWorkoutVisible, setWorkoutVisible] = useState(false);
-  // const [isExerciseVisible, setExerciseVisible] = useState(false);
-
   const [toggleValue, setToggleValue] = useState(false);
   const [search, setSearch] = useState("");
+  const [areFiltersVisible, setFiltersVisible] = useState(false);
+  const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
+  const [selectedMuscleGroupsFilter, setMuscleGroupsFilter] = useState([]);
+  const [selectedTypeFilter, setTypeFilter] = useState([]);
+  const [isAFilterExpanded, closeExpandedFilters] = useState(false);
 
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  const baseUrl = config.API_URL + config.PORT + "/";
+
+  const toggleFiltersShowing = () =>{
+    setFiltersVisible(!areFiltersVisible);
+  }
+  
   const updateSearch = (search) => {
     setSearch(search);
   }
@@ -52,12 +106,88 @@ export default function DiscoverPage(props) {
 		console.log("Type Filter Pressed");
 	};
 
-  const handleTagPress = () => {
-		console.log("Tags Filter Pressed");
-	};
-  const handleMuscleGroupPress = () => {
-		console.log("Muscle Groups Filter Pressed");
-	};
+  const closeOtherFilters = () => {
+    
+  }
+
+  const WorkoutsList = [
+		{
+			title: "Leg Day",
+			duration:45,
+			location:"Gold's Gym",
+			content: [
+				{
+					title: "Deadlift",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 10,
+				},
+				{
+					title: "Front Squats",
+					ExerciseType: "SETSXREPS",
+					sets: 4,
+					reps: 12,
+				},
+				{
+					title: "Calf Raises",
+					ExerciseType: "AMRAP",
+					time: 60000,
+				},
+				{
+					title: "Bulgarian Split Squats",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 10,
+				},
+				{
+					title: "Leg Press",
+					ExerciseType: "SETSXREPS",
+					sets: 4,
+					reps: 12,
+				},
+				{
+					title: "Lunges",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 15,
+				},
+			],
+		},
+	];
+  
+  // function getWorkouts(){
+  //   axios.get(baseUrl + "/").then((response) => {
+	// 		if (response.status === 200) {
+	// 			return <Workouts data={response.data} />;
+	// 		}
+	// 	});  
+  // }
+
+  // function getExercises(){
+
+  // }
+
+  // useEffect(() => {
+  //   axios.get('https://reactnative.dev/movies.json')
+  //     .then(({ data }) => {
+  //       console.log("defaultApp -> data", data.movies)
+  //       setData(data.movies)
+  //     })
+  //     .catch((error) => console.error(error))
+  //     .finally(() => setLoading(false));
+  // }, []);
+
+  function onMultiChangeEquipment() {
+    return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
+  }
+  function onMultiChangeMuscleGroups() {
+    return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
+  }
+  function onMultiChangeType() {
+    return (item) => setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'))
+  }
+
+
 
   function handleExercisePress() {
     console.log("Exercise button pressed");
@@ -87,69 +217,148 @@ return (
           <Text style={styles.discoverTitle}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
           <View style={styles.buttonsContainer}>
-            <View style={styles.toggleContainer}>
-              <Toggle 
-                value = {toggleValue}
-                onPress = {(newState) => setToggleValue(newState)}
-                disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
-                leftComponent =  <Text style={styles.workoutTitle}>Workouts</Text>
-                rightComponent = <Text style={styles.exerciseTitle}>Exercises</Text>
-                trackBar={{
-                  width: 170,
-                  height: 50,
-                  //radius: 40,
-                //borderWidth: -1,
-                activeBackgroundColor: "#8EB4FA",
-                inActiveBackgroundColor: "#C38AF0"
-                }}
-                thumbButton={{
-                  width: 80,
-                  height: 50,
-                  //radius: 30,
-                  borderWidth: 1,
-                  activeBackgroundColor: "#ddff33",
-                  inActiveBackgroundColor: "#33ff9c"
+            <View style={styles.toggleandfilters}>
+              <View style={styles.toggleContainer}>
+                  <Toggle
+                    value = {toggleValue}
+                    onPress = {(newState) => setToggleValue(newState)}
+                    disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
+                    leftComponent = <Text style={styles.workoutTitle}>Workouts</Text>
+                    rightComponent = <Text style={styles.exerciseTitle}>Exercises</Text>
+                    trackBar={{
+                      width: 170,
+                      height: 50,
+                      //radius: 40,
+                    //borderWidth: -1,
+                    activeBackgroundColor: "#8EB4FA",
+                    inActiveBackgroundColor: "#C38AF0"
+                    }}
+                    thumbButton={{
+                      width: 80,
+                      height: 50,
+                      //radius: 30,
+                      borderWidth: 1,
+                      activeBackgroundColor: "#ddff33",
+                      inActiveBackgroundColor: "#33ff9c"
+                      }}
+                    />
+              </View>
+              <View style={styles.filters}>
+                <TouchableOpacity onPress={toggleFiltersShowing}>
+                <View style={styles.modalContainer}></View>
+                <Text style={styles.openText}>Open Filters</Text>
+                  <Modal 
+                    isVisible = {areFiltersVisible}
+                    coverScreen = {true}
+                    //backdropOpacity = "1"
+                    backdropColor = "gray"
+                    presentationStyle='fullScreen'
+                    transparent={false}
+                    >
+                    <SafeAreaView style={styles.modalBackground}>
+                      <SafeAreaView style={styles.filtersContainer}>
+                        <SafeAreaView style={styles.filterButtonContainer}>
+                        {/* <Text style={styles.filterLabels}>Select Equipments</Text> */}
+                          <SelectBox
+                            label="Equipment"
+                            labelStyle={styles.filterLabels}
+                            inputPlaceholder = "Show & Hide Equipment"
+                            listEmptyText='No Equipment Found'
+                            searchInputProps = {{placeholder: "Search..."}}
+                            inputFilterStyle={styles.filterSearch}
+                            arrowIconColor = '#000000'
+                            multiOptionContainerStyle = {styles.selectedFilterContainers}
+                            multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                            
+                            searchIconColor = "#000"
+                            toggleIconColor = "#2193BC"
+
+                            options = {equipmentFilters}
+                            optionsLabelStyle = {styles.filterOptions}
+                            
+                            selectedValues = {selectedEquipmentFilter}
+                            onMultiSelect = {onMultiChangeEquipment()}
+                            onTapClose = {onMultiChangeEquipment()}
+                            isMulti
+                          />
+                        </SafeAreaView>
+                        <SafeAreaView style={styles.filterButtonContainer}>
+                          {/* <Text style={styles.filterLabels}>Select Muscle Groups</Text> */}
+                          <SelectBox
+                            label="Muscle Groups"
+                            labelStyle={styles.filterLabels}
+                            inputPlaceholder = "Add one or more Muscle Groups"
+                            listEmptyText='No Muscle Groups Found'
+                            searchInputProps = {{placeholder: "Search..."}}
+                            multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                            multiOptionContainerStyle = {styles.selectedFilterContainers}
+                            options = {muscleGroupsFilters}
+                            optionsLabelStyle = {styles.filterOptions}
+                            arrowIconColor = '#000'
+
+                            searchIconColor = "#000"
+                            toggleIconColor = "#2193BC"
+                            
+                            selectedValues = {selectedMuscleGroupsFilter}
+                            onMultiSelect = {onMultiChangeMuscleGroups()}
+                            onTapClose = {onMultiChangeMuscleGroups()}
+                            isMulti
+                          />
+                        </SafeAreaView>
+                        <SafeAreaView style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
+                          {/* <Text style={styles.filterLabels}>Select Exercise Types</Text> */}
+                          <SelectBox
+                            label="Exercise Types"
+                            inputPlaceholder = "Show/Hide Types"
+                            labelStyle = {styles.filterLabels}
+                            options = {typeFilters}
+                            optionsLabelStyle = {styles.filterOptions}
+                            hideInputFilter = 'true'
+                            //containerStyle={{backgroundColor:"black"}}
+                            toggleIconColor = "#2193BC"
+                            arrowIconColor = '#000'
+                            
+                            multiOptionsLabelStyle={styles.selectedFilterLabels}
+                            multiOptionContainerStyle={styles.selectedFilterContainers}
+                            selectedValues = {selectedTypeFilter}
+                            onMultiSelect = {onMultiChangeType()}
+                            onTapClose = {onMultiChangeType()}
+                            isMulti
+                          />
+                        </SafeAreaView>
+                      </SafeAreaView>
+                      <TouchableOpacity style={styles.modalCloseButton} onPress={toggleFiltersShowing}>
+                        <View style={styles.closeButtonContainer}>
+                              <Text style={styles.closeText}>Close</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </SafeAreaView>
+                  </Modal>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={styles.searchBar}>
+              <SearchBar
+                placeholder="Search Here"
+                placeholderTextColor={"#363636"}
+                data={exerciseData} 
+                lightTheme
+                round
+                onChangeText={updateSearch}
+                autoCorrect={false}
+                value={search}
+                // searchIcon = {false}
+                inputStyle={{
+                    color: "black",
                   }}
-                />
-            </View>
-            <View style={styles.filtersContainer}>
-              <View style={styles.filterButtonContainer}>
-                <TouchableOpacity onPress={handleTypePress}>
-                  <Text style={styles.filterButton}>Types</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.filterButtonContainer}>
-                <TouchableOpacity onPress={handleMuscleGroupPress}>
-                  <Text style={styles.filterButton}>Muscle Groups</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.filterButtonContainer}>
-                <TouchableOpacity onPress={handleTagPress}>
-                  <Text style={styles.filterButton}>Tags</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            <SearchBar
-              placeholder="Search Here"
-              placeholderTextColor={"#363636"}
-              data 
-              lightTheme
-              round
-              onChangeText={updateSearch}
-              autoCorrect={false}
-              value={search}
-              // searchIcon = {false}
-              inputStyle={{
-                  color: "black",
+                containerStyle = {{
+                  marginTop: 5,
+                  backgroundColor: "white",
+                  // marginBottom: 5,
                 }}
-              containerStyle = {{
-                marginTop: 5,
-                backgroundColor: "white",
-                // marginBottom: 5,
-              }}
-            />
+              />
+            </View>
           </View>
-          
         </View> 
       </View>
       <View style={styles.discoverContainer}>
@@ -166,6 +375,21 @@ return (
               Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
               />}
       </View>
+
+      {/* <View style={styles.discoverContainer}>
+              {toggleValue ? <FlatList
+              data = {exerciseData}
+              style = {styles.boxContainer}
+              renderItem = 
+              {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              /> : <FlatList
+              data = {workoutData}
+              style = {styles.boxContainer}
+              renderItem = {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              />}
+      </View> */}
     </SafeAreaView>
   )
 }
@@ -174,6 +398,78 @@ return (
 const styles = StyleSheet.create({
   boxContainer:{
     flex: 1,
+  },
+  toggleandfilters:{
+    flexDirection: 'row'
+  },
+  modalCloseButton:{
+    alignItems: 'center',
+    // bottom: -375,
+    //width: "50%",
+    // justifyContent: 'center',
+    // alignContent:'center',
+    //width:"100%",
+    //borderColor: "black"
+    // right: -170,
+    // backgroundColor: 'gray',
+  },
+  closeButtonContainer:{
+    backgroundColor: 'white',
+    borderColor: "black",
+    overflow: 'hidden',
+    borderWidth: 3,
+    borderRadius: "20rem",
+    bottom: -375,
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginHorizontal: 1,
+    width: "35%",
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+
+  closeText:{
+    fontWeight: 'bold',
+    color: 'black',
+    fontSize: 30,
+    paddingHorizontal: 8,
+    borderRadius: "20rem",
+    
+  },
+  openText:{
+    fontWeight: 'bold',
+    paddingTop: 30,
+    paddingLeft: 10
+  },
+  modalBackground:{
+    backgroundColor: "white",
+    //height: "90%",
+    borderRadius: "15rem",
+    flex: 1
+  },
+  filterOptions:{
+    color: '#000',
+  },
+
+  selectedFilterLabels: {
+    color: 'black',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+
+  selectedFilterContainers:{
+    // backgroundColor: '#4bccdd',
+    backgroundColor: '#2193BC'
+    
+  },
+  filterSearch:{
+    //backgroundColor: 'pink'
+  },
+
+  filterLabels:{
+    fontWeight: '500',
+    fontSize: 18,
+    color: 'black',
   },
   workoutItems:{
     backgroundColor: '#3377ff',
@@ -208,6 +504,10 @@ const styles = StyleSheet.create({
   discoveryPageHeader:{
     backgroundColor: 'white',
   },
+  toggleandfilters:{
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
   toggleContainer:{
     alignItems: 'center',
     paddingBottom: 5,
@@ -217,18 +517,25 @@ const styles = StyleSheet.create({
     // paddingBottom: 5
   },
   filtersContainer:{
-    flexDirection: 'row',
-    justifyContent: 'center',
+    //flexDirection: 'column',
+    //alignItems: 'left',
+    height: "50%",
 
   },
   filterButtonContainer:{
     //alignItems: "center",
     backgroundColor: "#CDCDCD",
     borderColor: "black",
-    borderWidth: 2.5,
-    borderRadius: "15rem",
+    borderWidth: 1.5,
+    borderRadius: "20rem",
     paddingHorizontal: 10,
-    marginHorizontal: 5
+    marginHorizontal: 5,
+    paddingVertical: 5,
+    marginVertical: 5,
+  },
+
+  hidden:{
+    opacity: 0,
   },
 
   // workoutsBttnText:{
