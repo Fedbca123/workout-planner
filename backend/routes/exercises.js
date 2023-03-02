@@ -55,7 +55,7 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
   const description = req.body.description;
   const owner = req.body.owner;
 
-  if (!req.user.isAdmin || owner != req.user._id)
+  if ((owner && req.user._id != owner) && !req.user.isAdmin)
   {
     return res.sendStatus(494);
   }

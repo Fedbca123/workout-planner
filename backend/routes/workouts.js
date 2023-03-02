@@ -55,11 +55,7 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
   const description = req.body.description;
   const owner = req.body.owner;
 
-  // was previously || but and makes sense I think
-  // if user is not admin && not the right user then fail
-  // not all users are admins
-  // plus admin page only worked when I did this lol
-  if (!req.user.isAdmin && owner != req.user._id)
+  if ((owner && req.user._id != owner) && !req.user.isAdmin)
   {
     return res.sendStatus(494);
   }
@@ -193,7 +189,7 @@ router.route('/search').post(authenticateToken, async (req, res) => {
 // returns { newWorkout }
 router.route('/:id').patch(authenticateToken, upload.single('image'), async (req,res) => {
   const id = req.params.id;
-  const {title,description,img,exercises,location,recurrence,scheduledDate,dateOfCompletion,owner} = req.body;
+  const {title,description,exercises,location,recurrence,scheduledDate,dateOfCompletion} = req.body;
 
   const workout = await Workout.findById(id);
   if(!workout)
