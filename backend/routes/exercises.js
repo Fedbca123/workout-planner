@@ -187,15 +187,15 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
   const id = req.params.id;
   const {title,description,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups} = req.body;
   
-  if (id != req.user._id)
-  {
-    return res.sendStatus(494);
-  }
-
   const exercise = await Exercise.findById(id);
   if (!exercise)
   {
       return res.status(498).send({Error: `Exercise ${id} does not exist!`});
+  }
+
+  if ((exercise.owner && exercise.owner != req.user._id) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
   }
 
   var image = null;
@@ -252,7 +252,7 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
 router.route('/:id').delete(authenticateToken, async (req,res) => {
   const exercise = await Exercise.findById(req.params.id);
 
-  if (req.params.id != req.user._id)
+  if ((exercise.owner && exercise.owner != req.user._id) && !req.user.isAdmin)
   {
     return res.sendStatus(494);
   }
