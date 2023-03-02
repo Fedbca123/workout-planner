@@ -17,7 +17,7 @@ import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../../GlobalState.js";
 
-export default function WorkOuts({ props, data, showButton, showInput}) {
+export default function WorkOuts({ data, showButton, showInput}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const navigation = useNavigation();
