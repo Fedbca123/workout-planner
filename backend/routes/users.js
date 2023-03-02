@@ -156,6 +156,10 @@ router.route('/login').post(async (req, res) => {
 // req.params = { id }
 // (DELETE) http://(baseUrl)/users/:id
 // returns { Deleted: user.email }
+
+//! Need to add more to delete. This should wipe all things asssociated to the user
+//! from exercises to workouts to cloudinary images
+
 router.route('/:id').delete(authenticateToken, async (req, res) => {
     const id = req.params.id;
 
