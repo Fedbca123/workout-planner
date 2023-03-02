@@ -55,18 +55,26 @@ export default function CustomExercise(props) {
 		}
 	}
 
-	const getPhotoForExercise = async() =>{
-		let result = await ImagePicker.launchImageLibraryAsync({
-			mediaTypes: ImagePicker.MediaTypeOptions.Images,
-			allowsEditing: true,
-			aspect: [4, 3],
-			quality: 1,
-		});
+	const getPhotoForExercise = async () => {
 
-		if (!result.cancelled) {
-			setImageUri(result["uri"]);
-			return result["uri"];
+		await requestPhotoLibraryPermission(ImagePicker.requestMediaLibraryPermissionsAsync);
+
+		if (photoStatus.granted === false) {
+			Alert.alert("You need to go to settings to allow Photo Gallery access");
+		} else {
+			let result = await ImagePicker.launchImageLibraryAsync({
+				mediaTypes: ImagePicker.MediaTypeOptions.Images,
+				allowsEditing: true,
+				aspect: [4, 3],
+				quality: 1,
+			});
+
+			if (!result.cancelled) {
+				setImageUri(result["uri"]);
+				return result["uri"];
+			}
 		}
+		
 	}
 
 	const takePhotoForExercise = async () => {

@@ -11,7 +11,7 @@ import {
 	ScrollView,
 	Alert,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import reactDom from "react-dom";
 import axios from "axios";
 import config from "../../config";
@@ -26,49 +26,54 @@ const baseUrl = config.API_URL + config.PORT + '/';
 export default function ExerciseSearch(props) {
 	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
-	const exercises = [
-		{
-			title: "Romanian Deadlift",
-			muscleGroups: ["Hamstrings", "Lower Back", "Glutes"],
-		},
-		{
-			title: "Barbell Bench Press",
-			muscleGroups: ["Chest", "triceps", "shoulders"],
-		},
-		{
-			title: "Preacher Curls",
-			muscleGroups: ["Biceps"],
-		},
-		{
-			title:"Lunges",
-			muscleGroups: ["Quads"],
-		},
-		{
-			title:"Skullcrushers",
-			muscleGroups:["triceps", "Upper Chest"]
-		},
-		{
-			title:"Deadman hangs",
-			muscleGroups:["forearms"]
-		},
-		{
-			title:"Barbell Front Squats",
-			muscleGroups:["Hamstrings", "glutes"]
-		}
-	];
+	// const exercises = [
+	// 	{
+	// 		title: "Romanian Deadlift",
+	// 		muscleGroups: ["Hamstrings", "Lower Back", "Glutes"],
+	// 	},
+	// 	{
+	// 		title: "Barbell Bench Press",
+	// 		muscleGroups: ["Chest", "triceps", "shoulders"],
+	// 	},
+	// 	{
+	// 		title: "Preacher Curls",
+	// 		muscleGroups: ["Biceps"],
+	// 	},
+	// 	{
+	// 		title:"Lunges",
+	// 		muscleGroups: ["Quads"],
+	// 	},
+	// 	{
+	// 		title:"Skullcrushers",
+	// 		muscleGroups:["triceps", "Upper Chest"]
+	// 	},
+	// 	{
+	// 		title:"Deadman hangs",
+	// 		muscleGroups:["forearms"]
+	// 	},
+	// 	{
+	// 		title:"Barbell Front Squats",
+	// 		muscleGroups:["Hamstrings", "glutes"]
+	// 	}
+	// ];
+	const [exercises, updateExercises] = useState([]);
+	const [loading, isLoading] = useState(true);
 
-	function loadExercises() {
+	const loadExercises = async () => {
 
 		// console.log(globalState.user._id);
 		axios.post(baseUrl + "exercises/search", {
 			ownerId: globalState.user._id
 		}).then((response) => {
+			console.log(response.data);
 			if (response.status == 200) {
-				return response.data.exercises;
+				updateExercises(response.data);
+				isLoading(false);
+			} else {
+				console.log(response.status);
 			}
 		}).catch((e) => {
 			console.log(e);
-			// Alert.alert(e);
 		})
 	}
 
@@ -78,7 +83,10 @@ export default function ExerciseSearch(props) {
 			<WorkOuts data={globalState.workout} />
 			<Text style={styles.TitleText}>Exercises:</Text>
 			<FlatList
-				data={loadExercises()}
+				data={useEffect(() => {
+					loadExercises();
+				}, [])}
+				// data={await loadExercises()}
 				keyExtractor={(item) => item.title}
 				renderItem={({ item }) => (
 					<View style={styles.ExerciseCard}>
