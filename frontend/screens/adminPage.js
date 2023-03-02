@@ -37,6 +37,7 @@ export default function AdminPage(props) {
     const [tags, setTags] = useState('');
     const [muscleGroups, setMuscleGroups] = useState('');
     const [owner, setOwner] = useState('');
+    const [globalState, updateGlobalState] = useGlobalState();
 
     const imageSelect = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -133,8 +134,9 @@ export default function AdminPage(props) {
 
             axios.post(baseUrl + "workouts/add", formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': `BEARER ${globalState.authToken}`
+                  },
 			})
 			.then((response) => {
 				if (response.status == 200) {

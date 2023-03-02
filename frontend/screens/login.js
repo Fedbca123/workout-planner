@@ -65,6 +65,7 @@ export default function Login(props) {
 				if (response.status == 200) {
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
+          updateGlobalState("authToken", response.data.authToken);
 					setError("");
 					if (response.data.user.isAdmin)
 						props.navigation.navigate("admin");

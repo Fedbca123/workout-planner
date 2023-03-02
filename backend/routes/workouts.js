@@ -55,7 +55,11 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
   const description = req.body.description;
   const owner = req.body.owner;
 
-  if (!req.user.isAdmin || owner != req.user._id)
+  // was previously || but and makes sense I think
+  // if user is not admin && not the right user then fail
+  // not all users are admins
+  // plus admin page only worked when I did this lol
+  if (!req.user.isAdmin && owner != req.user._id)
   {
     return res.sendStatus(494);
   }

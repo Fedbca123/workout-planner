@@ -240,7 +240,8 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
 // (PATCH) http://(baseUrl)/users/:id/workouts/schedule
 // returns { newuser }
 
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
+// do we need a scheduling endpoint for one that is just being made?
+
 router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) => {
   const id = req.params.id;
 
@@ -300,8 +301,6 @@ router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) =>
 // req.params = { userId, workoutId }
 // (PATCH) http://(baseUrl)/users/:id/workouts/remove/w:id
 // returns { newuser }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/workouts/remove/:w_id').patch(authenticateToken,async (req,res) => {
   const {id, w_id} = req.params;
 
@@ -336,17 +335,15 @@ router.route('/:id/workouts/remove/:w_id').patch(authenticateToken,async (req,re
 // req.body = { workoutId }
 // (PATCH) http://(baseUrl)/users/:id/workouts/complete
 // returns { newuser }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
-router.route('/:id/workouts/complete').patch(authenticateToken,async (req,res) => {
+router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,res) => {
   const id = req.params.id;
+  const w_id = req.params.w_id;
 
   if (req.user._id != id)
   {
     return res.sendStatus(403);
   }
 
-  const w_id = req.body.workoutId;
   const user = await User.findById(id);
   if (!user)
   {
@@ -381,8 +378,6 @@ router.route('/:id/workouts/complete').patch(authenticateToken,async (req,res) =
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
 // returns { newuserB }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -431,8 +426,6 @@ router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/accept/:B_id
 // returns { message: `${userA.firstName} and ${userB.firstName} are friends` }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/invites/accept/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -480,8 +473,6 @@ router.route('/:A_id/invites/accept/:B_id').patch(authenticateToken, async (req,
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/reject/:B_id
 // returns { newuserA }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/invites/reject/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -517,8 +508,6 @@ router.route('/:A_id/invites/reject/:B_id').patch(authenticateToken, async (req,
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/friends/remove/:B_id
 // returns { message: `${userA.firstName} and ${userB.firstName} are no longer friends` }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/friends/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -560,8 +549,6 @@ router.route('/:A_id/friends/remove/:B_id').patch(authenticateToken, async (req,
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/blocked/add/:B_id
 // returns { newuserA }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/blocked/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -606,8 +593,6 @@ router.route('/:A_id/blocked/add/:B_id').patch(authenticateToken, async (req,res
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/blocked/remove/:B_id
 // returns { newuserA }
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO A_ID SO ITS SAME USER !!
 router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -643,8 +628,6 @@ router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,
 // req.params = { userId }
 // (PATCH) http://(baseUrl)/users/:id/calendar/all
 // returns { completed: [{workouts }], scheduled: [{ workouts }]}
-
-//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
 router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
   const id = req.params.id;
 
@@ -676,7 +659,7 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
   for(const userObj of users){
     // for all scheduled workouts
     for(const workoutID of userObj.scheduledWorkouts){
-      const workoutObj = await Workout.findById(workoutID)
+      const workoutObj = await Workout.findById(workoutID);
       
       if (!workoutObj) {
         return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
@@ -714,7 +697,7 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
         ownerEmail: userObj.email
       }
 
-      scheduled.push(workout);
+      completed.push(workout);
     }
   }
 
