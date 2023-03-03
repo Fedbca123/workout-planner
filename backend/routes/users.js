@@ -34,6 +34,7 @@ Error Codes:
 401 - error retrieving user(s)
 403 - Failed to authenticate
 405 - No Token Provided
+493 - email provided not in DB
 494 - workout id not found in db
 495 - email not in proper format
 496 - modification seeking to be made has already been made (look at message for details)
@@ -427,15 +428,15 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
 router.route('/:id/friends/all').get(authenticateToken, async(req,res)=>{
   const id = req.params.id;
 
-  if (req.user._id != A_id)
+  if (req.user._id != id)
   {
     return res.sendStatus(403);
   }
 
-  const userA = await User.findById(A_id);
-  if (!userA)
+  const user = await User.findById(id);
+  if (!user)
   {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+    return res.status(498).send({Error: `User (${id}) does not exist!`});
   }
 
   const friends = [];
@@ -464,15 +465,15 @@ router.route('/:id/friends/all').get(authenticateToken, async(req,res)=>{
 router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
   const id = req.params.id;
 
-  if (req.user._id != A_id)
+  if (req.user._id != id)
   {
     return res.sendStatus(403);
   }
 
-  const userA = await User.findById(A_id);
-  if (!userA)
+  const user = await User.findById(id);
+  if (!user)
   {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+    return res.status(498).send({Error: `User (${id}) does not exist!`});
   }
 
   const invites = [];
@@ -501,15 +502,15 @@ router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
 router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
   const id = req.params.id;
 
-  if (req.user._id != A_id)
+  if (req.user._id != id)
   {
     return res.sendStatus(403);
   }
 
-  const userA = await User.findById(A_id);
-  if (!userA)
+  const user = await User.findById(id);
+  if (!user)
   {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+    return res.status(498).send({Error: `User (${id}) does not exist!`});
   }
 
   const blockedUsers = [];
@@ -554,7 +555,7 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
   const userB = await User.findOne({email: friendEmail});
   if (!userb)
   {
-    return res.status(498).send({Error: `User with email ${friendEmail} does not exist!`});
+    return res.status(493).send({Error: `User with email ${friendEmail} does not exist!`});
   }
 
   // if userB has userA blocked, it won't go through
