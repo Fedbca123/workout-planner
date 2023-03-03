@@ -146,7 +146,8 @@ export default function Register(props) {
         if (response.status == 200)
         {
             setError('');
-            updateGlobalState("user", response.data);
+            updateGlobalState("user", response.data.user);
+            updateGlobalState("JWT", response.data.authToken)
             // no need for friends state to render bc itll be empty on account creation
 
             props.navigation.navigate("home");

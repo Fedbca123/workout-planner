@@ -44,6 +44,7 @@ export default function Login(props) {
 					setError("");
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
+          updateGlobalState("JWT", response.data.authToken);
 					if (response.data.user.isAdmin) {
 						props.navigation.navigate("admin");
 					} else {

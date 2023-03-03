@@ -12,6 +12,21 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../middleware/authenticateToken.js');
 
+/* 
+ADDING JWT TO YOUR AXIOS CALLS w/ Nestor :) :
+1) import { useGlobalState } from "../../GlobalState.js";
+2) set 'const [globalState, updateGlobalState] = useGlobalState(); ' in your component
+3) when making a call do something along the lines of:
+    axios.post(http://(baseUrl)/endpointPath,
+      {body of the call},
+      {headers: {
+        'Content-Type': 'multipart/form-data',
+        'authorization': `BEARER ${globalState.authToken}`
+        }
+      }
+    );
+*/
+
 /*
 Error Codes:
 200 - OK
@@ -154,10 +169,6 @@ router.route('/login').post(async (req, res) => {
 // req.params = { id }
 // (DELETE) http://(baseUrl)/users/:id
 // returns { Deleted: user.email }
-
-//! Need to add more to delete. This should wipe all things asssociated to the user
-//! from exercises to workouts to cloudinary images
-
 router.route('/:id').delete(authenticateToken, async (req, res) => {
     const id = req.params.id;
 
