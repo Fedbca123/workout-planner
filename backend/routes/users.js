@@ -97,11 +97,10 @@ router.route('/register').post(async (req,res) =>
 
     await user.save((err, newUser) => {
         if (err) return res.status(499).send(err);
-        const authToken = jwt.sign(newUser.toObject(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m"});
-        const refreshToken = jwt.sign(newUser.toObject(), process.env.REFRESH_TOKEN_SECRET);
+        const authToken = jwt.sign(newUser.toObject(), process.env.ACCESS_TOKEN_SECRET);
         user.password = null;
 
-        return res.status(200).json({authToken, refreshToken, user: newUser});
+        return res.status(200).json({authToken, user: newUser});
     })
 });
 
@@ -134,13 +133,12 @@ router.route('/login').post(async (req, res) => {
             .then(friend => friends.push(friend))
             .catch(err => res.status(400).json({Error: err}))
         }
-        const authToken = jwt.sign(user.toObject(), process.env.ACCESS_TOKEN_SECRET, { expiresIn: "30m"});
-        const refreshToken = jwt.sign(user.toObject(), process.env.REFRESH_TOKEN_SECRET)
+        const authToken = jwt.sign(user.toObject(), process.env.ACCESS_TOKEN_SECRET);
 
         user.friends = friends;
         user.password = null;
         
-        return res.status(200).json({authToken, refreshToken, user: user});
+        return res.status(200).json({authToken, user: user});
     }
     else 
     {
