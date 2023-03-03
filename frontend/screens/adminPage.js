@@ -101,7 +101,8 @@ export default function AdminPage(props) {
               
             axios.post(baseUrl + "exercises/add", formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': `BEARER ${globalState.authToken}`
                   }
 			})
 			.then((response) => {

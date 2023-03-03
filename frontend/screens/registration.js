@@ -121,8 +121,10 @@ export default function Register(props) {
         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
         tempError += '- Passwords do not match!\n';
     }
+    // doesn't accept special characters
     else if(!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password))
     {
+        console.log(password)
         setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
         tempError += '- Passwords must be at least 8 characters\nand have at least one uppercase letter,\none lowercase letter, and one number.';

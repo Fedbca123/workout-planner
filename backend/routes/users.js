@@ -189,9 +189,9 @@ router.route('/:id').delete(authenticateToken, async (req, res) => {
     const exercises = await Exercise.find({owner:id});
 
     for(const w of workouts){
-      if (workout.imageId != config.DEFAULTWORKIMAGEID)
+      if (w.imageId != config.DEFAULTWORKIMAGEID)
       {
-        await cloudinary.v2.uploader.destroy(workout.imageId, function(err, result) {
+        await cloudinary.v2.uploader.destroy(w.imageId, function(err, result) {
           if (err)
             console.log("There was an error deleting the workout Photo")
           else{
@@ -202,9 +202,9 @@ router.route('/:id').delete(authenticateToken, async (req, res) => {
     }
 
     for(const e of exercises){
-      if (exercise.imageId != config.DEFAULTEXIMAGEID) 
+      if (e.imageId != config.DEFAULTEXIMAGEID) 
       {
-        await cloudinary.v2.uploader.destroy(exercise.imageId, function(err, result) {
+        await cloudinary.v2.uploader.destroy(e.imageId, function(err, result) {
           if (err)
             console.log("There was an error deleting the exercise Photo")
           else{
