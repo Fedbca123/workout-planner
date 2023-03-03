@@ -710,9 +710,10 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
     }
   }
 
+  const workouts = [...completed, ...scheduled];
+
   res.status(200).json({
-    completed: completed,
-    scheduled: scheduled
+    workouts: workouts
   });
 })
 
