@@ -462,6 +462,30 @@ router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
   {
     return res.sendStatus(403);
   }
+
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+
+  const invites = [];
+
+  for(const friendID of user.friendRequests){
+    const friend  = await User.findById(friendID);
+    if (!friend) {
+      return res.status(498).send({Error: `Friend ${friendID} does not exist!`});
+    }
+
+    friend.password = null;
+    friend.friends = null;
+    friend.friendRequests = null;
+    friend.blockedUsers = null;
+
+    invites.push(friend);
+  }
+
+  res.status(200).json({friendInvites: invites});
 });
 
 // user gets all blocked users
@@ -472,6 +496,30 @@ router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
   {
     return res.sendStatus(403);
   }
+
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+
+  const blockedUsers = [];
+
+  for(const userID of user.blockedUsers){
+    const blockedUser = await User.findById(userID);
+    if (!blockedUser) {
+      return res.status(498).send({Error: `Friend ${userID} does not exist!`});
+    }
+
+    blockedUser.password = null;
+    blockedUser.friends = null;
+    blockedUser.friendRequests = null;
+    blockedUser.blockedUsers = null;
+
+    blockedUsers.push(blockedUser);
+  }
+
+  res.status(200).json({blockedUsers: blockedUsers});
 });
 
 // User A Sends friend request to user B
