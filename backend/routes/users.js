@@ -177,6 +177,43 @@ router.route('/:id').delete(authenticateToken, async (req, res) => {
       return res.sendStatus(403);
     }
 
+    // Check if user exists
+    const user = await User.findById(id);
+    if (!user)
+    {
+        return res.status(498).send({Error: "User does not exist!"});
+    }
+
+    // for all workouts and Exercises with owner being id, delete the cloudinary image
+    const workouts = await Workout.find({owner:id});
+    const exercises = await Exercise.find({owner:id});
+
+    for(const w of workouts){
+      if (w.imageId != config.DEFAULTWORKIMAGEID)
+      {
+        await cloudinary.v2.uploader.destroy(w.imageId, function(err, result) {
+          if (err)
+            console.log("There was an error deleting the workout Photo")
+          else{
+            console.log("Photo deleted");
+          }
+        });
+      }
+    }
+
+    for(const e of exercises){
+      if (e.imageId != config.DEFAULTEXIMAGEID) 
+      {
+        await cloudinary.v2.uploader.destroy(e.imageId, function(err, result) {
+          if (err)
+            console.log("There was an error deleting the exercise Photo")
+          else{
+            console.log("Photo deleted");
+          }
+        });
+      } 
+    }
+
     await Workout.deleteMany({owner: id});
     await Exercise.deleteMany({owner: id});
 
