@@ -121,8 +121,8 @@ export default function Register(props) {
         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
         tempError += '- Passwords do not match!\n';
     }
-    // doesn't accept special characters
-    else if(!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password))
+    // original Regex /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ doesn't accept special characters
+    else if(!/^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z!@#$%^&*()]*$/.test(password))
     {
         console.log(password)
         setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
