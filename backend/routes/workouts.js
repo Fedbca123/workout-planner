@@ -152,7 +152,6 @@ router.route('/search').post(authenticateToken, async (req, res) => {
 
   let filters = {};
   filters.$and = [{scheduledDate: {$exists: false}}];
-  //!DOES THIS ALLOW FOR USERS TO RETURN ITEMS THAT ARE PUBLIC AND THEIR OWN?
   filters.$or = [{owner: {$exists: false}}];
 
   if (searchStr)
