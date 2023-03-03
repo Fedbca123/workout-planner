@@ -421,6 +421,9 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
 });
 
 // user gets all their friends
+// req.params = {id}
+// (GET) http://(baseUrl)/users/:id/friends/all
+// returns { [ {friend Schemas but not encrypted password or friends} ] }
 router.route('/:id/friends/all').get(authenticateToken, async(req,res)=>{
   const id = req.params.id;
 
@@ -455,6 +458,9 @@ router.route('/:id/friends/all').get(authenticateToken, async(req,res)=>{
 });
 
 // user gets all their friend requests
+// req.params = {id}
+// (GET) http://(baseUrl)/users/:id/invites/all
+// returns { [{user Schemas but not encrypted password or friends}] }
 router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
   const id = req.params.id;
 
@@ -489,6 +495,9 @@ router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
 });
 
 // user gets all blocked users
+// req.params = {id}
+// (GET) http://(baseUrl)/users/:id/blocked/all
+// returns { [{user Schemas but not encrypted password or friends}] }
 router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
   const id = req.params.id;
 
@@ -527,7 +536,6 @@ router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
 // (POST) http://(baseUrl)/users/:A_id/invites/add/
 // Body {email: user_B_Email}
 // returns { newuserB }
-//! more like this one. Make it easy to pick who it is, email is unique
 router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
   const id = req.params.id;
   const friendEmail = req.body.email;
@@ -573,10 +581,12 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
 
 });
 
+/*
 // User A Sends friend request to user B
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
 // returns { newuserB }
+
 router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
@@ -620,6 +630,7 @@ router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res
     res.status(200).json(newUser);
   });
 });
+*/
 
 // User A accepts friend request form user B
 // req.params = { userId_A, userId_B }
