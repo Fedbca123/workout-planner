@@ -527,6 +527,7 @@ router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
 // (POST) http://(baseUrl)/users/:A_id/invites/add/
 // Body {email: user_B_Email}
 // returns { newuserB }
+//! more like this one. Make it easy to pick who it is, email is unique
 router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
   const id = req.params.id;
   const friendEmail = req.body.email;
