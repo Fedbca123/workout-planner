@@ -142,13 +142,14 @@ router.route('/login').post(async (req, res) => {
 
     if (await bcrypt.compare(password, user.password))
     {
+        // turn friend IDs into full on friend objects
         var friends = [];
-
         for (const friendID of user.friends) {
           await User.findById(friendID)
             .then(friend => friends.push(friend))
             .catch(err => res.status(400).json({Error: err}))
         }
+        // sign JWT for return
         const authToken = jwt.sign(user.toObject(), process.env.ACCESS_TOKEN_SECRET);
 
         user.friends = friends;
@@ -538,10 +539,10 @@ router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
 // Body {email: user_B_Email}
 // returns { newuserB }
 router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
-  const id = req.params.id;
+  const A_id = req.params.id;
   const friendEmail = req.body.email;
 
-  if (req.user._id != id)
+  if (req.user._id != A_id)
   {
     return res.sendStatus(403);
   }
@@ -553,7 +554,7 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
   }
 
   const userB = await User.findOne({email: friendEmail});
-  if (!userb)
+  if (!userB)
   {
     return res.status(493).send({Error: `User with email ${friendEmail} does not exist!`});
   }
