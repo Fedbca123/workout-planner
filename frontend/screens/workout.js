@@ -113,6 +113,9 @@ export default function WorkOuts({ data, showButton, showInput}) {
 				// renderSectionTitle={renderSectionTitle}
 				activeSections={activeSections}
 				onChange={setActiveSections}
+				// keyExtractor={(item) => {
+				// 	updateGlobalState("workout", item);
+				// }}
 			/>
 		</SafeAreaView>
 	);

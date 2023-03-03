@@ -9,7 +9,7 @@ import {
 	TextInput,
 	FlatList,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
 import Workouts from "./workout.js";
 import { useNavigation } from "@react-navigation/native";
@@ -21,13 +21,30 @@ const baseUrl = config.API_URL + config.PORT + "/";
 export default function ChooseTemplate(props) {
 	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
+	const [workouts, updateWorkouts] = useState([]);
 	function loadWorkouts() {
-		axios.get(baseUrl + "/").then((response) => {
-			if (response.status === 200) {
-				return <Workouts data={response.data} />;
+
+		axios.post(baseUrl + "workouts/search", {
+			ownerId: globalState.user._id
+		}).then((response) => {
+			console.log(response.data);
+			if (response.status == 200) {
+				console.log(response.data[0].exercises);
+
+				updateWorkouts(response.data.splice(0, response.data.length));
+			} else {
+				console.log(response.status);
 			}
+		}).catch((e) => {
+			console.log(e);
 		});
+
 	}
+
+	useEffect(() => {
+		loadWorkouts();
+	}, []);
+
 	const SECTIONS = [
 		{
 			title: "Leg Day",
@@ -113,14 +130,21 @@ export default function ChooseTemplate(props) {
 		}
 	]
 
+	function renderWorkouts() {
+		for (let i = 0; i < workouts.length; i++){
+
+		}
+	}
+
 	return (
 		<SafeAreaView style={styles.Background}>
 			<Text style={styles.HeaderText}>Your Saved Workouts</Text>
 			<Workouts data={SECTIONS} showButton={true} showInput={false} />
 			<Text style={styles.HeaderText}>Workout Templates</Text>
-			<Workouts data={sections} showButton={true} showInput={false} />
+			{/* {renderWorkouts()} */}
+			<Workouts data={workouts} showButton={true} showInput={false} />
 			<Button title="Create from Scratch" onPress={() => {
-				updateGlobalState("workout",noTemplate)
+				updateGlobalState("workout", noTemplate);
 				navigation.navigate("exerciseSearch");
 			}} />
 		</SafeAreaView>

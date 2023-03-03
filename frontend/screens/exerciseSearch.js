@@ -46,7 +46,7 @@ export default function ExerciseSearch(props) {
 
 	useEffect(() => {
 		loadExercises();
-	}, [])
+	}, []);
 
 	useEffect(() => {
 		
