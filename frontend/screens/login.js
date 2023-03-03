@@ -15,25 +15,6 @@ import {TextInput} from 'react-native-paper';
 
 const baseUrl = config.API_URL + config.PORT + "/";
 
-/*<Button
-					title="BACKDOOR"
-					onPress={() =>
-						backDoorHandler("Test@gmail.com", "password")
-					}
-				/>
-				<Button
-					title="ADMIN BACKDOOR"
-					onPress={() => props.navigation.navigate("admin")}
-            	/>
-
-				{/* this was added by Alice for the start workout screens, will move in the future }
-				<Button
-					title="START WORKOUT BUTTON"
-					onPress={() => props.navigation.navigate("start")}
-            	/>
-				{/* code will break at the end to home bc name can't be rendered}	
-          */
-
 export default function Login(props) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
@@ -63,6 +44,7 @@ export default function Login(props) {
 					setError("");
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
+          updateGlobalState("JWT", response.data.authToken);
 					if (response.data.user.isAdmin) {
 						props.navigation.navigate("admin");
 					} else {
@@ -84,8 +66,12 @@ export default function Login(props) {
 				if (response.status == 200) {
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
+          updateGlobalState("authToken", response.data.authToken);
 					setError("");
-					props.navigation.navigate("home");
+					if (response.data.user.isAdmin)
+						props.navigation.navigate("admin");
+					else
+						props.navigation.navigate("home");
 				}
 			})
 			.catch((e) => {
@@ -111,27 +97,21 @@ export default function Login(props) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
-      {/*
+      
         <Button
         title="BACKDOOR"
         onPress={() =>
-          backDoorHandler("Test@gmail.com", "password")
-        }
-      /> */}
-      {/*
-        
+          backDoorHandler("Test@gmail.com", "password")}/>
       <Button
         title="ADMIN BACKDOOR"
-        onPress={() => props.navigation.navigate("admin")}
-            />
+        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>
 
-       {/*this was added by Alice for the start workout screens, will move in the future}
-      <Button
+      {/* <Button
         title="START WORKOUT BUTTON"
         onPress={() => props.navigation.navigate("start")}
             />
-      {/*code will break at the end to home bc name can't be rendered}
-      */}
+       */}
+     
       
 			<View style={styles.buttoncontainer}>
 				<Text style={styles.error}> {error} </Text>

@@ -9,6 +9,8 @@ const cloudinary = require('../cloudinary');
 const { User, userSchema } = require('../models/user.model');
 const config = require("../config.js");
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const authenticateToken = require('../middleware/authenticateToken.js');
 
 /*
 Error Codes:
@@ -16,6 +18,9 @@ Error Codes:
 400 - general error (look at message for details)
 401 - error retrieving exercise(s)
 402 - cloudinary image upload failed
+403 - Failed to authenticate
+405 - No Token Provided
+494 - User does not have authorization
 495 - saving associated user failed
 496 - error deleting exercise
 497 - error saving exercise
@@ -33,39 +38,27 @@ function removeItem(array, val){
   return array;
 }
 
-//------GET-----//
-
-// Gets all exercises
-// (GET) http://(baseUrl)/exercises/
-// returns [{ exercises }]
-router.route('/').get((req,res) => {
-  Exercise.find()
-    .then(exercises => res.json(exercises))
-    .catch(err => res.status(401).json('Error: ' + err));
-});
-
-// Gets specific exercise by id
-// req.params = {id}
-// (GET) http://(baseUrl)/exercises/:id
-// returns { exercise }
-router.route('/:id').get((req, res) => {
-  Exercise.findById(req.params.id)
-    .then(exercise => res.json(exercise))
-    .catch(err => res.status(401).json('Error: ' + err))
-})
+//-----GET-----//
 
 //-----POST-----//
 
 // Add an exercise
+// header.authorization = Bearer "AccessToken"
 // req.body = { title, description, exerciseType, sets, reps, time, weight, restTime,
 //            tags, muscleGroups, owner }
 // req.file = { image }
 // (POST) http://(baseUrl)/exercises/add
 // returns { newExercise }
-router.route('/add').post(upload.single('image'),async (req,res) => {
+router.route('/add').post(authenticateToken, upload.single('image'),async (req,res) => {
   // gather information to add exercise into database
   const title = req.body.title;
   const description = req.body.description;
+  const owner = req.body.owner;
+
+  if ((owner && req.user._id != owner) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
+  }
 
   var image = null;
   var imageId = null;
@@ -89,7 +82,6 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const weight = req.body.weight;
   const restTime = req.body.restTime;
   const muscleGroups = req.body.muscleGroups;
-  const owner = req.body.owner;
 
   let tags = [];
   tags = tags.concat(req.body.tags)
@@ -143,12 +135,18 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 });
 
 // Search exercises
+// header.authorization = Bearer "AccessToken"
 // req.body = { searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId }
 // (POST) http://(baseUrl)/exercises/search
 // returns [{ exercises }]
-router.route('/search').post(async (req, res) => {
+router.route('/search').post(authenticateToken, async (req, res) => {
 
   let {searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
+
+  if ((ownerId && req.user._id != ownerId) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
+  }
 
   let filters = {};
   filters.$or = [{owner: {$exists: false}}];
@@ -178,20 +176,26 @@ router.route('/search').post(async (req, res) => {
 //------UPDATE-----//
 
 // Update exercise by Id
+// header.authorization = Bearer "AccessToken"
 // req.params = { id }
-// req.body = { title, description, img, exerciseType, sets, reps, time, weight, restTime, 
-//              tags, muscleGroups, owner }
+// req.body = { title, description, exerciseType, sets, reps, time, weight, restTime, 
+//              tags, muscleGroups }
 // req.file = { image }
 // (PATCH) http://(baseUrl)/exercises/:id
 // returns { newExercise }
-router.route('/:id').patch(upload.single('image'), async (req,res) => {
+router.route('/:id').patch(authenticateToken, upload.single('image'), async (req,res) => {
   const id = req.params.id;
-  const {title,description,img,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups, owner} = req.body;
+  const {title,description,exerciseType,sets,reps,time,weight,restTime, tags, muscleGroups} = req.body;
   
   const exercise = await Exercise.findById(id);
   if (!exercise)
   {
       return res.status(498).send({Error: `Exercise ${id} does not exist!`});
+  }
+
+  if ((exercise.owner && exercise.owner != req.user._id) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
   }
 
   var image = null;
@@ -241,11 +245,18 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
 //------DELETE-----//
 
 // Delete exercise by Id
+// header.authorization = Bearer "AccessToken"
 // req.params = { id }
 // (DELETE) http://(baseUrl)/exercises/:id
 // returns `Exercise ${exercise.title} deleeted!`
-router.route('/:id').delete(async (req,res) => {
+router.route('/:id').delete(authenticateToken, async (req,res) => {
   const exercise = await Exercise.findById(req.params.id);
+
+  if ((exercise.owner && exercise.owner != req.user._id) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
+  }
+
   if (exercise.owner) {
     const user = await User.findById(exercise.owner);
     user.customExercises = removeItem(user.customExercises, exercise._id);
@@ -270,5 +281,32 @@ router.route('/:id').delete(async (req,res) => {
     .catch(err => res.status(496).json('Error: ' + err));
 });
 
-
 module.exports = router;
+
+
+/* ----- GraveYard ----- */
+
+/*
+// Gets all exercises
+// (GET) http://(baseUrl)/exercises/
+// returns [{ exercises }]
+//! SECURE SO THAT NOT EVERYONE CAN GET EVERYONE'S CUSTOM EXERCISES
+router.route('/').get((req,res) => {
+  Exercise.find()
+    .then(exercises => res.json(exercises))
+    .catch(err => res.status(401).json('Error: ' + err));
+});
+
+// Gets specific exercise by id
+// req.params = {id}
+// (GET) http://(baseUrl)/exercises/:id
+// returns { exercise }
+//! SECURE THROUGH JWT TO SEE IF THEY OWN IT OR IF ITS PUBLIC
+router.route('/:id').get((req, res) => {
+  Exercise.findById(req.params.id)
+    .then(exercise => res.json(exercise))
+    .catch(err => res.status(401).json('Error: ' + err))
+})
+
+
+*/

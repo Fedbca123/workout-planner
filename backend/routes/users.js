@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
@@ -7,12 +9,31 @@ const { User, userSchema } = require('../models/user.model');
 const { Workout, workoutSchema} = require('../models/workout.model'); 
 const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
+const authenticateToken = require('../middleware/authenticateToken.js');
+
+/* 
+ADDING JWT TO YOUR AXIOS CALLS w/ Nestor :) :
+1) import { useGlobalState } from "../../GlobalState.js";
+2) set 'const [globalState, updateGlobalState] = useGlobalState(); ' in your component
+3) when making a call do something along the lines of:
+    axios.post(http://(baseUrl)/endpointPath,
+      {body of the call},
+      {headers: {
+        'Content-Type': 'multipart/form-data',
+        'authorization': `BEARER ${globalState.authToken}`
+        }
+      }
+    );
+*/
 
 /*
 Error Codes:
 200 - OK
 400 - general error (look at message for details)
 401 - error retrieving user(s)
+403 - Failed to authenticate
+405 - No Token Provided
 494 - workout id not found in db
 495 - email not in proper format
 496 - modification seeking to be made has already been made (look at message for details)
@@ -87,9 +108,14 @@ router.route('/register').post(async (req,res) =>
         customExercises: [],
     });
 
+
+
     await user.save((err, newUser) => {
         if (err) return res.status(499).send(err);
-        res.status(200).json(newUser);
+        const authToken = jwt.sign(newUser.toObject(), process.env.ACCESS_TOKEN_SECRET);
+        user.password = null;
+
+        return res.status(200).json({authToken, user: newUser});
     })
 });
 
@@ -122,9 +148,12 @@ router.route('/login').post(async (req, res) => {
             .then(friend => friends.push(friend))
             .catch(err => res.status(400).json({Error: err}))
         }
+        const authToken = jwt.sign(user.toObject(), process.env.ACCESS_TOKEN_SECRET);
 
-        // object ret is returned in JSON format
-        return res.status(200).json({user: user, friends: friends});
+        user.friends = friends;
+        user.password = null;
+        
+        return res.status(200).json({authToken, user: user});
     }
     else 
     {
@@ -134,33 +163,19 @@ router.route('/login').post(async (req, res) => {
 
 //-----GET-----//
 
-// Get all users
-// (GET) http://(baseUrl)/users/
-// returns [{ users }]
-router.route('/').get(async (req, res) => {
-    User.find()
-    .then(users => res.json(users))
-    .catch(err => res.status(401).json('Error: ' + err));
-});
-
-// Get user by id
-// req.params = { id }
-// (GET) http://(baseUrl)/users/:id
-// returns { user }
-router.route('/:id').get(async (req, res) => {
-    User.findById(req.params.id)
-    .then(user => res.json(user))
-    .catch(err => res.status(401).json('Error: ' + err))
-});
-
 //-----DELETE-----//
 
 // Delete user by id
 // req.params = { id }
 // (DELETE) http://(baseUrl)/users/:id
 // returns { Deleted: user.email }
-router.route('/:id').delete(async (req, res) => {
+router.route('/:id').delete(authenticateToken, async (req, res) => {
     const id = req.params.id;
+
+    if (req.user._id != id)
+    {
+      return res.sendStatus(403);
+    }
 
     await Workout.deleteMany({owner: id});
     await Exercise.deleteMany({owner: id});
@@ -183,49 +198,19 @@ router.route('/:id').delete(async (req, res) => {
 
 //------UPDATE-----//
 
-// Update user by id (Use Update contact info instead!)
-// req.params = { id }
-// req.body = {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts,
-//            completedWorkouts, customWorkouts, customExercises}
-// (PATCH) http://(baseUrl)/users/:id
-// returns { newUser }
-router.route('/:id').patch(async (req, res) => {
-    const id = req.params.id;
-    
-    const {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts, completedWorkouts, customWorkouts, customExercises} = req.body
-
-    // Check if user exists
-    const user = await User.findById(id);
-    if (!user)
-    {
-        return res.status(498).send({Error: "User does not exist!"});
-    }
-
-    if (firstName) {user.firstName = firstName;}
-    if (lastName) {user.lastName = lastName;}
-    if (friends) {user.friends = friends;}
-    if (friendRequests) {user.friendRequests = friendRequests;}
-    if (blockedUsers) {user.blockedUsers = blockedUsers;}
-    if (scheduledWorkouts) {user.scheduledWorkouts = scheduledWorkouts;}
-    if (completedWorkouts) {user.completedWorkouts = completedWorkouts;}
-    if (customWorkouts) {user.customWorkouts = customWorkouts;}
-    if (customExercises) {user.customExercises = customExercises;}
-    
-    await user.save((err, newUser) => {
-        if (err) return res.status(499).send(err);
-        res.status(200).json(newUser);
-    });
-});
-
-
 // Update contact info ( firstName, lastName, and email)
 // req.params = { id }
 // req.body = { firstName, lastName, email }
 // (PATCH) http://(baseUrl)/users/:id/contact
 // returns { newuser }
-router.route('/:id/contact').patch(async (req, res) => {
+router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
   const id = req.params.id;
-  
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const {firstName, lastName,email} = req.body
 
   // Check if user exists
@@ -263,8 +248,17 @@ router.route('/:id/contact').patch(async (req, res) => {
 // req.body = { workoutId, date }
 // (PATCH) http://(baseUrl)/users/:id/workouts/schedule
 // returns { newuser }
-router.route('/:id/workouts/schedule').post(async (req,res) => {
+
+// do we need a scheduling endpoint for one that is just being made?
+
+router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) => {
   const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const workoutId = req.body.workoutID;
   const dateString = req.body.date;
 
@@ -316,8 +310,13 @@ router.route('/:id/workouts/schedule').post(async (req,res) => {
 // req.params = { userId, workoutId }
 // (PATCH) http://(baseUrl)/users/:id/workouts/remove/w:id
 // returns { newuser }
-router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
+router.route('/:id/workouts/remove/:w_id').patch(authenticateToken,async (req,res) => {
   const {id, w_id} = req.params;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
 
   const user = await User.findById(id);
   if (!user)
@@ -345,9 +344,15 @@ router.route('/:id/workouts/remove/:w_id').patch(async (req,res) => {
 // req.body = { workoutId }
 // (PATCH) http://(baseUrl)/users/:id/workouts/complete
 // returns { newuser }
-router.route('/:id/workouts/complete').patch(async (req,res) => {
+router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,res) => {
   const id = req.params.id;
-  const w_id = req.body.workoutId;
+  const w_id = req.params.w_id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const user = await User.findById(id);
   if (!user)
   {
@@ -382,9 +387,15 @@ router.route('/:id/workouts/complete').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
 // returns { newuserB }
-router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
+router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -424,9 +435,15 @@ router.route('/:A_id/invites/add/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/accept/:B_id
 // returns { message: `${userA.firstName} and ${userB.firstName} are friends` }
-router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
+router.route('/:A_id/invites/accept/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -465,9 +482,15 @@ router.route('/:A_id/invites/accept/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/reject/:B_id
 // returns { newuserA }
-router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
+router.route('/:A_id/invites/reject/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -494,9 +517,15 @@ router.route('/:A_id/invites/reject/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/friends/remove/:B_id
 // returns { message: `${userA.firstName} and ${userB.firstName} are no longer friends` }
-router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
+router.route('/:A_id/friends/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -529,9 +558,15 @@ router.route('/:A_id/friends/remove/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/blocked/add/:B_id
 // returns { newuserA }
-router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
+router.route('/:A_id/blocked/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -567,9 +602,15 @@ router.route('/:A_id/blocked/add/:B_id').patch(async (req,res) => {
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/blocked/remove/:B_id
 // returns { newuserA }
-router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
+router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
   const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
   // ensure users exist w/ ids
   const userA = await User.findById(A_id);
   if (!userA)
@@ -596,8 +637,14 @@ router.route('/:A_id/blocked/remove/:B_id').patch(async (req,res) => {
 // req.params = { userId }
 // (PATCH) http://(baseUrl)/users/:id/calendar/all
 // returns { completed: [{workouts }], scheduled: [{ workouts }]}
-router.route('/:id/calendar/all').get(async (req,res) => {
+router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
   const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
   const user = await User.findById(id);
   if (!user)
   {
@@ -621,7 +668,7 @@ router.route('/:id/calendar/all').get(async (req,res) => {
   for(const userObj of users){
     // for all scheduled workouts
     for(const workoutID of userObj.scheduledWorkouts){
-      const workoutObj = await Workout.findById(workoutID)
+      const workoutObj = await Workout.findById(workoutID);
       
       if (!workoutObj) {
         return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
@@ -659,7 +706,7 @@ router.route('/:id/calendar/all').get(async (req,res) => {
         ownerEmail: userObj.email
       }
 
-      scheduled.push(workout);
+      completed.push(workout);
     }
   }
 
@@ -678,8 +725,69 @@ module.exports = router;
 
 
 /* ----- GRAVEYARD ------ */
-
+/*          X X           */
+/*           O            */
 /*
+
+// Update user by id (Use Update contact info instead!)
+// req.params = { id }
+// req.body = {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts,
+//            completedWorkouts, customWorkouts, customExercises}
+// (PATCH) http://(baseUrl)/users/:id
+// returns { newUser }
+
+//  !!  NEEDS JWT AUTHORIZATION REMEMBER TO COMPARE TO ID SO ITS SAME USER !!
+router.route('/:id').patch(async (req, res) => {
+    const id = req.params.id;
+    
+    const {firstName, lastName,friends, friendRequests, blockedUsers, scheduledWorkouts, completedWorkouts, customWorkouts, customExercises} = req.body
+
+    // Check if user exists
+    const user = await User.findById(id);
+    if (!user)
+    {
+        return res.status(498).send({Error: "User does not exist!"});
+    }
+
+    if (firstName) {user.firstName = firstName;}
+    if (lastName) {user.lastName = lastName;}
+    if (friends) {user.friends = friends;}
+    if (friendRequests) {user.friendRequests = friendRequests;}
+    if (blockedUsers) {user.blockedUsers = blockedUsers;}
+    if (scheduledWorkouts) {user.scheduledWorkouts = scheduledWorkouts;}
+    if (completedWorkouts) {user.completedWorkouts = completedWorkouts;}
+    if (customWorkouts) {user.customWorkouts = customWorkouts;}
+    if (customExercises) {user.customExercises = customExercises;}
+    
+    await user.save((err, newUser) => {
+        if (err) return res.status(499).send(err);
+        res.status(200).json(newUser);
+    });
+});
+
+// Get user by id
+// req.params = { id }
+// (GET) http://(baseUrl)/users/:id
+// returns { user }
+
+//  !!  NEEDS TO SECURE THIS FROM ANYONE BEING ABLE TO CALL IT !!
+router.route('/:id').get(async (req, res) => {
+    User.findById(req.params.id)
+    .then(user => res.json(user))
+    .catch(err => res.status(401).json('Error: ' + err))
+});
+
+// Get all users
+// (GET) http://(baseUrl)/users/
+// returns [{ users }]
+
+//  !!  NEED TO HANDLE IN SECURE WAY TO MAKE SURE ALMOST NO ONE CAN ACCESS THIS OR REMOVE IT !!
+router.route('/').get(async (req, res) => {
+    User.find()
+    .then(users => res.json(users))
+    .catch(err => res.status(401).json('Error: ' + err));
+});
+
 // adding custom exercise
 // router.route('/:id/exercises/custom/create').post(async (req,res) => {
 //   const id = req.params.id;
