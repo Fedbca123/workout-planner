@@ -420,6 +420,110 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
 
 });
 
+// user gets all their friends
+router.route('/:id/friends/all').get(authenticateToken, async(req,res)=>{
+  const id = req.params.id;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+
+  const friends = [];
+
+  for(const friendID of user.friends){
+    const friend  = await User.findById(friendID);
+    if (!friend) {
+      return res.status(498).send({Error: `Friend ${friendID} does not exist!`});
+    }
+
+    friend.password = null;
+    friend.friends = null;
+    friend.friendRequests = null;
+    friend.blockedUsers = null;
+
+    friends.push(friend);
+  }
+
+  res.status(200).json({friends: friends});
+});
+
+// user gets all their friend requests
+router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
+  const id = req.params.id;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+});
+
+// user gets all blocked users
+router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
+  const id = req.params.id;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+});
+
+// User A Sends friend request to user B
+// req.params = {id}
+// (POST) http://(baseUrl)/users/:A_id/invites/add/
+// Body {email: user_B_Email}
+// returns { newuserB }
+router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
+  const id = req.params.id;
+  const friendEmail = req.body.email;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+
+  const userB = await User.findOne({email: friendEmail});
+  if (!userb)
+  {
+    return res.status(498).send({Error: `User with email ${friendEmail} does not exist!`});
+  }
+
+  // if userB has userA blocked, it won't go through
+  if(userB.blockedUsers.includes(userA._id)) {
+    return res.status(497).send("Blocked user");
+  }
+  // if already friends, won't do anything
+  if(userB.friends.includes(userA._id)) {
+    return res.status(496).send("Already friends");
+  }
+  // if already requested, don't do it again
+  if(userB.friendRequests.includes(userA._id)) {
+    return res.status(496).send("Already requested");
+  }
+
+  // add user A as a FR in B's list of FRs
+  userB.friendRequests.push(userA._id);
+
+  // save updated version of userB
+  await userB.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+
+});
+
 // User A Sends friend request to user B
 // req.params = { userId_A, userId_B }
 // (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
