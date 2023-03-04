@@ -30,6 +30,6 @@ API_Instance.post("workouts/add", bodyData, {
 
 To test endpoints in Postman:
 1. Consider which environment you will be testing, dev or prod (localhost or hosted API)
-2. Look at API_URL environment variable in the associated env file
+2. Look at API_URL environment variable in the associated env file (env.production or env.development)
 3. Combine the API_URL with the PORT if it is localhost (API_URL <= API_URL + :PORT)
 4. Full url is now API_URL/path_to_endpoint (ie to login, it would be API_URL/users/login)
