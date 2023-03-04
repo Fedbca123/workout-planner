@@ -30,14 +30,12 @@ export default function Login(props) {
 	};
 
 	const loginHandler = () => {
-    console.log(process.env.API_URL);
 		API_Instance
 			.post("users/login", {
 				email: email,
 				password: password,
 			})
 			.then((response) => {
-        console.log('success!')
 				if (response.status == 200) {
 					setError("");
 					updateGlobalState("user", response.data.user);
