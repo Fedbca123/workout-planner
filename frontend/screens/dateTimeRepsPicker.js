@@ -13,17 +13,15 @@ import React from "react";
 import Workouts from "./workout.js";
 import { useGlobalState } from "../../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
-import config from "../../config";
-import axios from "axios";
-const baseUrl = config.API_URL + config.PORT + "/";
+import API_Instance from "../../backend/axios_instance.js";
 
 export default function DateTimeRepsPicker(props) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const navigation = useNavigation();
 
 	function addWorkoutToUser(workout) {
-		axios
-			.post(baseUrl + "/:" + globalState.user.id, {
+		API_Instance
+			.post("/:" + globalState.user.id, {
 				scheduledWorkouts: globalState.workout,
 			})
 			.then((response) => {

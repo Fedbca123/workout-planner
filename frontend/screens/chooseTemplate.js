@@ -14,15 +14,13 @@ import reactDom, { render } from "react-dom";
 import Workouts from "./workout.js";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../../GlobalState.js";
-import config from "../../config";
-import axios from "axios";
-const baseUrl = config.API_URL + config.PORT + "/";
+import API_Instance from "../../backend/axios_instance.js"
 
 export default function ChooseTemplate(props) {
 	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
 	function loadWorkouts() {
-		axios.get(baseUrl + "/").then((response) => {
+		API_Instance.get("/").then((response) => {
 			if (response.status === 200) {
 				return <Workouts data={response.data} />;
 			}

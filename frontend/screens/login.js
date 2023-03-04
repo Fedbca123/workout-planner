@@ -8,12 +8,9 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState, useRef } from "react";
-import axios from "axios";
-import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
 import {TextInput} from 'react-native-paper';
-
-const baseUrl = config.API_URL + config.PORT + "/";
+import API_Instance from "../../backend/axios_instance";
 
 export default function Login(props) {
 	const [email, setEmail] = useState("");
@@ -22,7 +19,6 @@ export default function Login(props) {
   const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
-  //const [pwFocus, setPWFocus] = useState(false);
 
 	// functions
   const emailInputHandler = (enteredEmail) => {
@@ -34,17 +30,19 @@ export default function Login(props) {
 	};
 
 	const loginHandler = () => {
-		axios
-			.post(baseUrl + "users/login", {
+    console.log(process.env.API_URL);
+		API_Instance
+			.post("users/login", {
 				email: email,
 				password: password,
 			})
 			.then((response) => {
+        console.log('success!')
 				if (response.status == 200) {
 					setError("");
 					updateGlobalState("user", response.data.user);
 					updateGlobalState("friends", response.data.friends);
-          updateGlobalState("JWT", response.data.authToken);
+          updateGlobalState("authToken", response.data.authToken);
 					if (response.data.user.isAdmin) {
 						props.navigation.navigate("admin");
 					} else {
@@ -57,8 +55,8 @@ export default function Login(props) {
 			});
 	};
 	const backDoorHandler = (e, p) => {
-		axios
-			.post(baseUrl + "users/login", {
+		API_Instance
+			.post("users/login", {
 				email: e,
 				password: p,
 			})
