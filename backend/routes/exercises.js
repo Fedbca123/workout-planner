@@ -47,7 +47,7 @@ function removeItem(array, val){
 // req.body = { title, description, exerciseType, sets, reps, time, weight, restTime,
 //            tags, muscleGroups, owner }
 // req.file = { image }
-// (POST) http://(baseUrl)/exercises/add
+// (POST) API_Instance.post("exercises/add")
 // returns { newExercise }
 router.route('/add').post(authenticateToken, upload.single('image'),async (req,res) => {
   // gather information to add exercise into database
@@ -137,7 +137,7 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
 // Search exercises
 // header.authorization = Bearer "AccessToken"
 // req.body = { searchStr, exerciseTypeSrch, muscleGroupsSrch, equipmentSrch, ownerId }
-// (POST) http://(baseUrl)/exercises/search
+// (GET) API_Instance.post("exercises/search")
 // returns [{ exercises }]
 router.route('/search').post(authenticateToken, async (req, res) => {
 
@@ -181,7 +181,7 @@ router.route('/search').post(authenticateToken, async (req, res) => {
 // req.body = { title, description, exerciseType, sets, reps, time, weight, restTime, 
 //              tags, muscleGroups }
 // req.file = { image }
-// (PATCH) http://(baseUrl)/exercises/:id
+// (PATCH) API_Instance.patch("exercises/{$id}")
 // returns { newExercise }
 router.route('/:id').patch(authenticateToken, upload.single('image'), async (req,res) => {
   const id = req.params.id;
@@ -247,7 +247,7 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
 // Delete exercise by Id
 // header.authorization = Bearer "AccessToken"
 // req.params = { id }
-// (DELETE) http://(baseUrl)/exercises/:id
+// (DELETE) API_Instance.delete("exercises/{$id}")
 // returns `Exercise ${exercise.title} deleeted!`
 router.route('/:id').delete(authenticateToken, async (req,res) => {
   const exercise = await Exercise.findById(req.params.id);

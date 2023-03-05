@@ -17,7 +17,7 @@ ADDING JWT TO YOUR AXIOS CALLS w/ Nestor :) :
 1) import { useGlobalState } from "../../GlobalState.js";
 2) set 'const [globalState, updateGlobalState] = useGlobalState(); ' in your component
 3) when making a call do something along the lines of:
-    axios.post(http://(baseUrl)/endpointPath,
+    API_instance.post(endpointPath,
       {body of the call},
       {headers: {
         'Content-Type': 'multipart/form-data',
@@ -69,7 +69,7 @@ function removeItemByID(array, id) {
 
 // Register user
 // req.body = { firstName, lastName, email, password }
-// (POST) http://(baseUrl)/users/register
+// (POST) API_Instance.post("users/register")
 // returns { newUser }
 router.route('/register').post(async (req,res) =>
 {
@@ -122,7 +122,7 @@ router.route('/register').post(async (req,res) =>
 
 // Login user
 // req.body = { email, password }
-// (POST) http://(baseUrl)/users/login
+// (POST) API_Instance.post("users/login")
 // returns { user: user, friends: [{ user.friends }] }
 router.route('/login').post(async (req, res) => {
 
@@ -169,7 +169,7 @@ router.route('/login').post(async (req, res) => {
 
 // Delete user by id
 // req.params = { id }
-// (DELETE) http://(baseUrl)/users/:id
+// (DELETE) API_Instance.delete("users/${id}")
 // returns { Deleted: user.email }
 router.route('/:id').delete(authenticateToken, async (req, res) => {
     const id = req.params.id;
@@ -240,7 +240,7 @@ router.route('/:id').delete(authenticateToken, async (req, res) => {
 // Update contact info ( firstName, lastName, and email)
 // req.params = { id }
 // req.body = { firstName, lastName, email }
-// (PATCH) http://(baseUrl)/users/:id/contact
+// (PATCH) API_Instance.patch("users/{$id}/contact")
 // returns { newuser }
 router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
   const id = req.params.id;
@@ -285,11 +285,8 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
 // Schedule a workout
 // req.params = { userId }
 // req.body = { workoutId, date }
-// (PATCH) http://(baseUrl)/users/:id/workouts/schedule
+// (PATCH) API_Instance.post("users/{$id}/workouts/schedule")
 // returns { newuser }
-
-// do we need a scheduling endpoint for one that is just being made?
-
 router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) => {
   const id = req.params.id;
 
@@ -347,7 +344,7 @@ router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) =>
 
 // Remove a scheduled workout
 // req.params = { userId, workoutId }
-// (PATCH) http://(baseUrl)/users/:id/workouts/remove/w:id
+// (PATCH) API_Instance.patch("users/{$id}/workouts/remove/${w:id}")
 // returns { newuser }
 router.route('/:id/workouts/remove/:w_id').patch(authenticateToken,async (req,res) => {
   const {id, w_id} = req.params;
@@ -381,7 +378,7 @@ router.route('/:id/workouts/remove/:w_id').patch(authenticateToken,async (req,re
 // Complete a workout
 // req.params = { userId }
 // req.body = { workoutId }
-// (PATCH) http://(baseUrl)/users/:id/workouts/complete
+// (PATCH) API_Instance.patch("users/{$id}/workouts/complete/${w:id}")
 // returns { newuser }
 router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,res) => {
   const id = req.params.id;
@@ -424,7 +421,7 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
 
 // user gets all their friends
 // req.params = {id}
-// (GET) http://(baseUrl)/users/:id/friends/all
+// (GET) API_Instance.get("users/{$id}/friends/all")
 // returns { [ {friend Schemas but not encrypted password or friends} ] }
 router.route('/:id/friends/all').get(authenticateToken, async(req,res)=>{
   const id = req.params.id;
@@ -461,7 +458,7 @@ router.route('/:id/friends/all').get(authenticateToken, async(req,res)=>{
 
 // user gets all their friend requests
 // req.params = {id}
-// (GET) http://(baseUrl)/users/:id/invites/all
+// (GET) API_Instance.get("users/{$id}/invites/all")
 // returns { [{user Schemas but not encrypted password or friends}] }
 router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
   const id = req.params.id;
@@ -498,7 +495,7 @@ router.route('/:id/invites/all').get(authenticateToken, async (req,res)=>{
 
 // user gets all blocked users
 // req.params = {id}
-// (GET) http://(baseUrl)/users/:id/blocked/all
+// (GET) API_Instance.get("users/{$id}/blocked/all")
 // returns { [{user Schemas but not encrypted password or friends}] }
 router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
   const id = req.params.id;
@@ -535,7 +532,7 @@ router.route('/:id/blocked/all').get(authenticateToken, async (req,res)=>{
 
 // User A Sends friend request to user B
 // req.params = {id}
-// (POST) http://(baseUrl)/users/:A_id/invites/add/
+// (POST) API_Instance.post("users/{$current_user_id}/invites/add")
 // Body {email: user_B_Email}
 // returns { newuserB }
 router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
@@ -636,7 +633,7 @@ router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res
 
 // User A accepts friend request form user B
 // req.params = { userId_A, userId_B }
-// (PATCH) http://(baseUrl)/users/:A_id/invites/accept/:B_id
+// (PATCH) API_Instance.patch("users/{$current_user_id}/invites/accept/${accepted_user_id}")
 // returns { message: `${userA.firstName} and ${userB.firstName} are friends` }
 router.route('/:A_id/invites/accept/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
@@ -683,7 +680,7 @@ router.route('/:A_id/invites/accept/:B_id').patch(authenticateToken, async (req,
 
 // User A rejects friend request from user B
 // req.params = { userId_A, userId_B }
-// (PATCH) http://(baseUrl)/users/:A_id/invites/reject/:B_id
+// (PATCH) API_Instance.patch("users/{$current_user_id}/invites/reject/${rejected_user_id}")
 // returns { newuserA }
 router.route('/:A_id/invites/reject/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
@@ -718,7 +715,7 @@ router.route('/:A_id/invites/reject/:B_id').patch(authenticateToken, async (req,
 
 // User A removes friend user B
 // req.params = { userId_A, userId_B }
-// (PATCH) http://(baseUrl)/users/:A_id/friends/remove/:B_id
+// (PATCH) API_Instance.patch("users/{$current_user_id}/friends/remove/${friend_object_id}")
 // returns { message: `${userA.firstName} and ${userB.firstName} are no longer friends` }
 router.route('/:A_id/friends/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
@@ -759,7 +756,7 @@ router.route('/:A_id/friends/remove/:B_id').patch(authenticateToken, async (req,
 
 // User A blocks user B
 // req.params = { userId_A, userId_B }
-// (PATCH) http://(baseUrl)/users/:A_id/blocked/add/:B_id
+// (PATCH) API_Instance.patch("users/{$current_user_id}/blocked/add/${blocked_user_id}")
 // returns { newuserA }
 router.route('/:A_id/blocked/add/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
@@ -803,7 +800,7 @@ router.route('/:A_id/blocked/add/:B_id').patch(authenticateToken, async (req,res
 
 // User A unblocks user B
 // req.params = { userId_A, userId_B }
-// (PATCH) http://(baseUrl)/users/:A_id/blocked/remove/:B_id
+// (PATCH) API_Instance.patch("users/{$current_user_id}/blocked/remove/${blocked_user_id}")
 // returns { newuserA }
 router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,res) => {
   // get id's from url
@@ -838,7 +835,7 @@ router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,
 
 // Get all scheduled workouts of user and friends nicely
 // req.params = { userId }
-// (PATCH) http://(baseUrl)/users/:id/calendar/all
+// (Get) API_Instance.get("users/${id}/calendar/all")
 // returns { completed: [{workouts }], scheduled: [{ workouts }]}
 router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
   const id = req.params.id;

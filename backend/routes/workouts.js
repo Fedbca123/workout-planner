@@ -47,7 +47,7 @@ function removeItem(array, val){
 // header.authorization = Bearer "AccessToken"
 // req.body = { title, description, exerciseIds, duration, location, tags, muscleGroups, owner }
 // req.file = { image }
-// (POST) http://(baseUrl)/workouts/add
+// (POST) API_Instance.post("workouts/add")
 // returns { newWorkout }
 router.route('/add').post(authenticateToken, upload.single('image'),async (req,res) => {
   // gather information to add workout into database
@@ -140,7 +140,7 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
 // Search workouts
 // header.authorization = Bearer "AccessToken"
 // req.body = { searchStr, muscleGroupsSrch, equipmentSrch, ownerId }
-// (GET) http://(baseUrl)/workouts/search
+// (GET) API_Instance.post("workouts/search")
 // returns [{ workouts }]
 router.route('/search').post(authenticateToken, async (req, res) => {
   let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
@@ -184,7 +184,7 @@ router.route('/search').post(authenticateToken, async (req, res) => {
 // req.body = { title,description,img,exercises,location,recurrence,scheduledDate,
 //            dateOfCompletion,owner }
 // req.file = { image }
-// (PATCH) http://(baseUrl)/workouts/:id
+// (PATCH) API_Instance.patch("workouts/{$id}")
 // returns { newWorkout }
 router.route('/:id').patch(authenticateToken, upload.single('image'), async (req,res) => {
   const id = req.params.id;
@@ -246,7 +246,7 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
 // Delete workout
 // header.authorization = Bearer "AccessToken"
 // req.params { id }
-// (DELETE) http://(baseUrl)/workouts/:id
+// (DELETE) API_Instance.delete("workouts/{$id}")
 // returns `Workout ${deletion.title} deleted!`
 router.route('/:id').delete(authenticateToken, async (req,res) => {
   const workout = await Workout.findById(req.params.id);
