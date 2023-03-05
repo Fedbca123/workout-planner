@@ -1,13 +1,12 @@
-import { ENV, API_URL, PORT } from "@env";
 import Constants from "expo-constants";
 
 const { manifest } = Constants;
-if (ENV == 'production')
-    url = API_URL;
+
+if (process.env.ENV === 'production')
+    url = process.env.API_URL;
 else
-    url = `http://${manifest.debuggerHost.split(':').shift()}:`;
+    url = `http://${manifest.debuggerHost.split(':').shift()}:${process.env.PORT}`;
 
 export default {
-    API_URL: url,
-    PORT
+    API_URL: url
 };
