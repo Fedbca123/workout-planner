@@ -2,17 +2,15 @@ import React from "react";
 import Login from "../screens/login.js";
 import Register from "../screens/registration.js";
 import AdminPage from "../screens/adminPage.js";
-import HomeNav from "./homeNav.js";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useGlobalState } from "../../GlobalState.js";
-import HomeHeader from "../component/homeHeader.js";
 import ChooseTemplate from "../screens/chooseTemplate.js";
-import DTRpicker from "../screens/dateTimeRepsPicker.js";
 import ExerciseSearch from "../screens/exerciseSearch.js";
 import Finalize from "../screens/finalizeWorkout.js";
 import startWorkout from "../screens/startWorkout.js";
 import CustomExercise from "../screens/customExercise.js";
+import DrawerNav from "../navigation/drawerNavigation.js"
 
 const Stack = createNativeStackNavigator();
 
@@ -31,12 +29,13 @@ export default function LoginNav() {
 				/>
 				<Stack.Screen
 					name="home"
-					component={HomeNav}
-					options={{ header: HomeHeader }}
+					component={DrawerNav}
+					options={{ headerShown: false }}
 				/>
 				<Stack.Screen
 					name="chooseTemplate"
 					component={ChooseTemplate}
+					options={{ headerShown: false }}
 				/>
 				<Stack.Screen
 					name="registration"
@@ -53,7 +52,6 @@ export default function LoginNav() {
 					component={startWorkout}
 					options={{ headerShown: false }}
 				/>
-				<Stack.Screen name="dateTimeRepsPicker" component={DTRpicker} />
 				<Stack.Screen
 					name="exerciseSearch"
 					component={ExerciseSearch}

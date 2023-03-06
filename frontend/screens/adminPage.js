@@ -13,8 +13,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import React, {useState, useRef} from 'react';
 import axios from 'axios';
 import config from '../../config';
-import { useGlobalState } from '../../GlobalState.js';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Toggle from "react-native-toggle-element";
 import * as ImagePicker from 'expo-image-picker';
 
@@ -109,13 +107,13 @@ export default function AdminPage(props) {
 				if (response.status == 200) {
 					console.log(response.data);
                     Alert.alert('Success!', 'Exercise created', [
-                        {text: 'OK', onPress: () => console.log('OK Pressed')},
+                        {text: 'OK', onPress: () => {}},
                     ]);
 				}
 			})
 			.catch((e) => {
                 Alert.alert('Error!', 'Exercise not created', [
-                    {text: 'OK', onPress: () => console.log('OK Pressed')},
+                    {text: 'OK', onPress: () => {}},
                 ]);
 				console.log(e);
 			});
