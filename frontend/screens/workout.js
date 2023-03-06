@@ -33,15 +33,10 @@ export default function WorkOuts({ data, showButton, showInput}) {
 	function renderHeader(sections) {
 		if (showButton) {
 			return (
-				<View style={styles.collapsePill}>
+				<View >
+					<Image source={sections.image} style={styles.ImageStyle} />
 					<Text style={styles.TitleText}>{sections.title}</Text>
-					{/* <Button
-						onPress={() => {
-							navigation.navigate("dateTimeRepsPicker");
-							updateGlobalState("workout", data);
-						}}
-						title="+"
-					/> */}
+					
 					<TouchableOpacity onPress={() =>{
 						navigation.navigate("exerciseSearch");
 						updateGlobalState("workout", data);
@@ -52,7 +47,8 @@ export default function WorkOuts({ data, showButton, showInput}) {
 			);
 		} else {
 			return (
-				<View style={styles.collapsePill}>
+				<View>
+					<Image source={sections.image} style={styles.ImageStyle} />
 					<Text style={styles.TitleText}>{sections.title}</Text>
 				</View>
 			);
@@ -63,7 +59,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 		function itemRender({ item }) {
 			if (showInput) {
 				return (
-					<View style={styles.collapsedContent}>
+					<View>
 						{/* Image Component here */}
 						<Text style={styles.text}>{item.title}</Text>
 						<TextInput
@@ -84,8 +80,9 @@ export default function WorkOuts({ data, showButton, showInput}) {
 				);
 			}else{
 				return (
-					<View style={styles.collapsedContent}>
+					<View >
 						{/* Image Component here */}
+						<Image source={item.image} style={styles.ImageStyle} />
 						<Text style={styles.text}>{item.title}</Text>
 					</View>
 				);
@@ -94,7 +91,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 
 		return (
 			<View>
-				<FlatList data={section.content} renderItem={itemRender} />
+				<FlatList data={section.exercises} renderItem={itemRender} />
 			</View>
 			// <View style={styles.content}>
 			//     <Text>{section.content}</Text>
@@ -103,7 +100,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 	}
 
 	return (
-		<SafeAreaView style={styles.collapsePill}>
+		<SafeAreaView >
 			<Accordion
 				// containerStyle={styles.Background}
 				// renderAsFlatList={true}
@@ -116,6 +113,8 @@ export default function WorkOuts({ data, showButton, showInput}) {
 				// keyExtractor={(item) => {
 				// 	updateGlobalState("workout", item);
 				// }}
+				sectionContainerStyle={styles.collapsePill}
+				containerStyle={styles.collapsedContent}
 			/>
 		</SafeAreaView>
 	);
@@ -123,19 +122,18 @@ export default function WorkOuts({ data, showButton, showInput}) {
 
 const styles = StyleSheet.create({
 	collapsePill: {
-		// flexDirection: "row",
-		// backgroundColor: "#DDF2FF", //"#F1F3FA",
-		// margin: 30,
-		// padding: 15,
+		margin: 10,
+		padding: 15,
 		backgroundColor: "#F1F3FA",
 		padding: 20,
-		marginBottom: 0,
 		shadowColor: "#000",
 		shadowOpacity: 0.2,
 		shadowRadius: 5,
 		shadowOffset: { width: 0, height: 2 },
-		elevation: 2,
-		borderRadius: 15,
+		// elevation: 2,
+		borderRadius: "20rem",
+		width: 390,
+		left:-40,
 	},
 	text: {
 		color: "black",
@@ -154,14 +152,27 @@ const styles = StyleSheet.create({
 		backgroundColor: "#E5E5E5",
 	},
 	collapsedContent: {
-		flexDirection: "row",
-		backgroundColor: "#F1F3FA",
+		// flexDirection: "row",
+		// backgroundColor: "#F1F3FA",
 		margin: 30,
 		padding: 15,
+		borderRadius:"30rem",
 	},
 	TitleText: {
 		color: "black",
 		fontWeight: "bold",
 		fontSize: 20,
 	},
+	ImageStyle:{
+		height: 75,
+		width: 75,
+		borderWidth: 1,
+		borderRadius: "20rem",
+	},
+	ExerciseText: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		left: 10,
+		textAlignVertical: "bottom",
+	}
 });

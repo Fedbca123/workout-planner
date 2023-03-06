@@ -64,18 +64,18 @@ export default function ExerciseSearch(props) {
 				data={exercises}
 				keyExtractor={(item) => item.title}
 				renderItem={({ item }) => (
-					<View style={styles.ExerciseCard}>
-						<TouchableOpacity
+					<View >
+						<TouchableOpacity style={styles.ExerciseCard}
 							onPress={() => {
 								let workout = [...globalState.workout];
-								workout[0].content.push(item);
+								workout[0].exercises.push(item);
 								updateGlobalState("workout", workout);
 								Alert.alert("Exercise Added to workout!");
 								
 							}}
 						>
-							<Image source={{uri: item.image}} />
-							<Text>{item.title}</Text>
+							<Image source={{ uri: item.image }} style={styles.ImageStyle} />
+							<Text style={styles.ExerciseText}>{item.title}</Text>
 							{/* Button to take user to page about info for the workout */}
 						</TouchableOpacity>
 					</View>
@@ -108,13 +108,29 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 2 },
 		elevation: 2,
 		borderRadius: 15,
+		flexDirection: "row",
+		// flexDirection: "row",
+		alignItems: "center"
 	},
 	TitleText:{
 		fontSize: 20,
-    	fontWeight: 'bold',
+		fontWeight: 'bold',
+		// justifyContent:"flex-start"
 	},
 	ImageStyle:{
-		height: 100,
-		width:100,
+		height: 75,
+		width: 75,
+		// flex: 0.5,
+		borderWidth: 1,
+		borderRadius:"100rem"
+	},
+	ExerciseText: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		left: 10,
+		// top: 30,
+		// marginVertical: "auto"
+		textAlignVertical: "bottom",
+		// flex:0.5
 	}
 });
