@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 30,
     paddingHorizontal: 8,
-    borderRadius: "20rem",
+    //borderRadius: "20rem",
     
   },
   openText:{
