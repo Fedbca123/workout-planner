@@ -34,6 +34,7 @@ export default function ChooseTemplate(props) {
 				// console.log(response.data[0].exercises);
 				// console.log(response.data.length);
 				updateWorkouts(response.data.splice(0, response.data.length));
+				console.log(workouts);
 
 			} else {
 				console.log(response.status);
