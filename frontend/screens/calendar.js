@@ -13,6 +13,14 @@ LocaleConfig.locales['en'] = {
 LocaleConfig.defaultLocale = 'en';
 
 const CalendarScreen = () => {
+  
+//   useEffect(() => {
+//     fetch('(Get) API_Instance.get("users/${id}/calendar/all')
+//       .then((response) => response.json())
+//       .then((data) => setWorkouts(data.workouts))
+//       .catch((error) => console.error(error));
+//   }, []);
+  
   const [selectedDate, setSelectedDate] = useState('');
   const [eventList, setEventList] = useState([
     { date: '2023-03-16', title: 'Running', type: 'Cardio', sets: 3, recurring: true },
