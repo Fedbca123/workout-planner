@@ -6,57 +6,8 @@ import API_Instance from "../../backend/axios_instance";
 
 // import { Menu, MenuItem } from 'react-native-material-menu';
 // const [filteredFriends, setFilteredFriends] = useState(globalState.friends);
-// const handleBlockFriend = async (current_user_id, friend_object_id, accessToken) => {
-  //   try {
-  //     const response = await fetch(`/users/${current_user_id}/blocked/add/${friend_object_id}`, {
-  //       method: 'PATCH',
-  //       headers: {
-  //         'Authorization': `Bearer ${accessToken}`,
-  //       },
-  //     });
-  //     const data = await response.json();
-  //     console.log(data); // output: the updated userA object
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-   // const handleDeleteFriend = async (current_user_id, friend_object_id, accessToken) => {
-  //   try {
-  //     const response = await fetch(`/users/${current_user_id}/friends/remove/${friend_object_id}`, {
-  //       method: 'PATCH',
-  //       headers: {
-  //         'Authorization': `Bearer ${accessToken}`,
-  //       },
-  //     });
-  //   const data = await response.json();
-  //   console.log(data.message); // output: `${userA.firstName} and ${userB.firstName} are no longer friends`
-  //   } catch (error) {
-  //     console.error(error);
-  // }
-// const addFriendRequest = async (A_id, B_id) => {
-  //   const url = `API_Instance.post("users/{$current_user_id}/invites/add")`;
-  
-  //   try {
-  //     const response = await fetch(url, { method: 'PATCH' });
-  //     const data = await response.json();
-  
-  //     console.log(data);
-  //     Alert.alert('Friend request sent!');
-  //   } catch (error) {
-  //     if (error.status === 497) {
-  //       Alert.alert('Blocked user');
-  //     } else if (error.status === 496 && error.message === 'Already friends') {
-  //       Alert.alert('Already friends');
-  //     } else if (error.status === 496 && error.message === 'Already requested') {
-  //       Alert.alert('Already requested');
-  //     } else if (error.status === 498) {
-  //       Alert.alert(`User ${error.message} does not exist`);
-  //     } else {
-  //       Alert.alert('An unknown error occurred');
-  //     }
-  //   }
-  // };
-  //Graveyard
+   
+  //Alice Graveyard :) 
   // const [visible, setVisible] = useState(false);
 
   // const [menuVisible, setMenuVisible] = useState(false);
@@ -73,13 +24,10 @@ import API_Instance from "../../backend/axios_instance";
   
 
 export default function Friends() {
-    //NEW 
+
   const [filteredFriends, setFilteredFriends] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  // const [friendEmail, setFriendEmail] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
-
-
   
   const handleSearch = (text) => {
     setSearchTerm(text);
@@ -90,14 +38,72 @@ export default function Friends() {
   };
   
   const handleDeleteFriend = () => {
+    // const handleDeleteFriend = async (current_user_id, friend_object_id, accessToken) => {
+  //   try {
+  //     const response = await fetch(`/users/${current_user_id}/friends/remove/${friend_object_id}`, {
+  //       method: 'PATCH',
+  //       headers: {
+  //         'Authorization': `Bearer ${accessToken}`,
+  //       },
+  //     });
+  //   const data = await response.json();
+  //   console.log(data.message); // output: `${userA.firstName} and ${userB.firstName} are no longer friends`
+  //   } catch (error) {
+  //     console.error(error);
+  // }
+  
     Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
   };
 
   const handleBlockFriend = () => {
+
+    // const handleBlockFriend = async (current_user_id, friend_object_id, accessToken) => {
+      //   try {
+      //     const response = await fetch(`/users/${current_user_id}/blocked/add/${friend_object_id}`, {
+      //       method: 'PATCH',
+      //       headers: {
+      //         'Authorization': `Bearer ${accessToken}`,
+      //       },
+      //     });
+      //     const data = await response.json();
+      //     console.log(data); // output: the updated userA object
+      //   } catch (error) {
+      //     console.error(error);
+      //   }
+      // };
     Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
   };
 
   const handleAddFriend = () => {
+    
+    // const addFriendRequest = async (B_id) => {
+    //   API_Instance
+    //   .get(`users/${globalState.user._id}/friends/all`, {
+    //     headers: {
+    //       authorization: `Bearer ${globalState.authToken}`,
+    //     },
+		// 	})
+    //     try {
+    //       const response = await fetch(url, { method: 'PATCH' });
+    //       const data = await response.json();
+      
+    //       console.log(data);
+    //       Alert.alert('Friend request sent!');
+    //     } catch (error) {
+    //       if (error.status === 497) {
+    //         Alert.alert('Blocked user');
+    //       } else if (error.status === 496 && error.message === 'Already friends') {
+    //         Alert.alert('Already friends');
+    //       } else if (error.status === 496 && error.message === 'Already requested') {
+    //         Alert.alert('Already requested');
+    //       } else if (error.status === 498) {
+    //         Alert.alert(`User ${error.message} does not exist`);
+    //       } else {
+    //         Alert.alert('An unknown error occurred');
+    //       }
+    //     }
+    // };
+
     Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
   };
 
@@ -111,8 +117,7 @@ export default function Friends() {
 			})
       .then((response) => {
         console.log(response.data.friends);
-        globalState.friends = response.data.friends;
-        setFilteredFriends(globalState.friends);
+        setFilteredFriends(response.data.friends);
       })
       .catch((error) => {
         console.error(error);
@@ -144,17 +149,24 @@ export default function Friends() {
             ) : (
             filteredFriends.map((friend) => (
               <View key={friend._id} style={styles.card}>
-                <Text style={styles.name}>
-                {friend.firstName} {friend.lastName}</Text>
-                <Text>{friend.email}</Text>
-              <Button
-                title="Block"
-                onPress={() => handleBlockFriend(friend._id)}
-              />
-              <Button
-                title="Delete"
-                onPress={() => handleDeleteFriend(friend._id)}
-              />
+
+                <View style={styles.info}>
+                  <Text style={styles.name}>
+                  {friend.firstName} {friend.lastName}</Text>
+                  <Text>{friend.email}</Text>
+                </View>
+
+                <View style={styles.buttons}>
+                  <Button style = {styles.buttonlook}
+                    title="Block"
+                    onPress={() => handleBlockFriend(friend._id)}
+                  />
+                  <Button style = {styles.buttonslook}
+                    title="Delete"
+                    onPress={() => handleDeleteFriend(friend._id)}
+                  />
+                 </View>
+
               </View>
               ))
             )}
@@ -222,16 +234,9 @@ const styles = StyleSheet.create({
       shadowOffset: { width: 0, height: 2 },
       elevation: 2,
       borderRadius: 15,
-    },
-    newcard:{
-      backgroundColor: '#DDF2FF',
-      padding: 0,
-      marginBottom: 0,
-      // shadowColor: '#000',
-      // shadowOpacity: 0.2,
-      // shadowRadius: 5,
-      // shadowOffset: { width: 0, height: 2 },
-      borderRadius: 0,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     },
     name: {
       fontSize: 18,
@@ -267,7 +272,7 @@ const styles = StyleSheet.create({
       alignSelf:'center',
       marginBottom: 30
     },
-    buttonContainer: {
+    buttons: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-end',
@@ -282,6 +287,9 @@ const styles = StyleSheet.create({
     addFriend: {
       padding: 10,
       alignContent: 'center',
+    },
+    info: {
+      alignContent: 'left',
     },
 });
 
