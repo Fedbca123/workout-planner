@@ -120,34 +120,34 @@ export default function Friends(props) {
               bounces={true}>
 
 
-        {filteredFriends.length > 0 ? ( 
-          filteredFriends.map((friend, index) => (
-            <View key={index} style={styles.card}>
-              <View key={index} style={styles.newcard}>
-              <Menu visible={menuVisible} anchor={
-                <TouchableOpacity onPress={showMenu} style={{ position: 'absolute', right: 0, top: 5}}>
-                <Image source={require('../../assets/menu.png')} style={{ width: 20, height: 20 }} />
-                </TouchableOpacity>
-              } onRequestClose={hideMenu}>
-                <MenuItem onPress={handleBlockFriend}>Block Friend</MenuItem>
-                <MenuItem onPress={handleDeleteFriend}>Delete Friend</MenuItem>
-              </Menu>
-              </View>
-              <Text style={styles.name}>
-                {friend.firstName} {friend.lastName}
-              </Text>
-              <Text>{friend.email}</Text>
-            </View>
-          ))
-        ) : (
-          <>
-          {searchTerm.length == 0 ? (
-          <Text style={styles.Normal}>No friend added {'\n'}To add a friend search by their email address</Text>
-          ) : ( 
-            <Text style={styles.name}> </Text>
-            )}
-          </>
-        )}
+//         {filteredFriends.length > 0 ? ( 
+//           filteredFriends.map((friend, index) => (
+//             <View key={index} style={styles.card}>
+//               <View key={index} style={styles.newcard}>
+//               <Menu visible={menuVisible} anchor={
+//                 <TouchableOpacity onPress={showMenu} style={{ position: 'absolute', right: 0, top: 5}}>
+//                 <Image source={require('../../assets/menu.png')} style={{ width: 20, height: 20 }} />
+//                 </TouchableOpacity>
+//               } onRequestClose={hideMenu}>
+//                 <MenuItem onPress={handleBlockFriend}>Block Friend</MenuItem>
+//                 <MenuItem onPress={handleDeleteFriend}>Delete Friend</MenuItem>
+//               </Menu>
+//               </View>
+//               <Text style={styles.name}>
+//                 {friend.firstName} {friend.lastName}
+//               </Text>
+//               <Text>{friend.email}</Text>
+//             </View>
+//           ))
+//         ) : (
+//           <>
+//           {searchTerm.length == 0 ? (
+//           <Text style={styles.Normal}>No friend added {'\n'}To add a friend search by their email address</Text>
+//           ) : ( 
+//             <Text style={styles.name}> </Text>
+//             )}
+//           </>
+//         )}
 
         {filteredFriends.length === 0 && searchTerm.length != 0 &&(
           <TouchableOpacity  style={styles.iconButton} onPress={handleAddFriend}>
