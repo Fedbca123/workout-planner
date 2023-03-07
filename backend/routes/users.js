@@ -973,7 +973,7 @@ router.route('/:id/exercises/custom/all').get(authenticateToken, async (req,res)
   let exercises = [];
   // get all workout objects into array
   for(const exerciseID of user.customExercises){
-    const exercise  = await Workout.findById(exerciseID);
+    const exercise  = await Exercise.findById(exerciseID);
     if (!exercise) {
       return res.status(492).send({Error: `Exercise ${exerciseID} does not exist!`});
     }
