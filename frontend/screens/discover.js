@@ -7,7 +7,7 @@ import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
 import config from "../../config";
-import axios from "axios";
+import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
 import { RFC_2822 } from 'moment';

@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import React, {useState, useRef} from "react";
 import reactDom from "react-dom";
-import axios from "axios";
+import API_Instance from "../../backend/axios_instance";
 import config from "../../config";
 import { useGlobalState } from "../../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";

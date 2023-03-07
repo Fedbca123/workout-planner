@@ -7,13 +7,10 @@ import {
   Pressable } from 'react-native';
 import React, {useState, useRef} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import axios from 'axios';
-import config from '../../config';
+import API_Instance from '../../backend/axios_instance';
 import {useGlobalState} from '../../GlobalState.js';
 import {TextInput} from 'react-native-paper';
 
-const baserUrl = config.API_URL + config.PORT + '/';
-const allGood = true;
 
 export default function Register(props) {
   // defining state
@@ -138,7 +135,7 @@ export default function Register(props) {
       setError('');
     }
 
-    axios.post(baserUrl + 'users/register', {
+    API_Instance.post('users/register', {
         firstName: firstName,
         lastName: lastName,
         email: email,

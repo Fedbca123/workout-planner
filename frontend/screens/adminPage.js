@@ -11,7 +11,7 @@ import {
   } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, {useState, useRef} from 'react';
-import axios from 'axios';
+import API_Instance from '../../backend/axios_instance';
 import config from '../../config';
 import Toggle from "react-native-toggle-element";
 import * as ImagePicker from 'expo-image-picker';
@@ -97,7 +97,7 @@ export default function AdminPage(props) {
             if (restTime)
                 formData.append('restTime', restTime)
               
-            axios.post(baseUrl + "exercises/add", formData, {
+            API_Instance.post("exercises/add", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'authorization': `BEARER ${globalState.authToken}`
@@ -131,7 +131,7 @@ export default function AdminPage(props) {
             if (location)
                 formData.append('location', location);
 
-            axios.post(baseUrl + "workouts/add", formData, {
+            API_Instance.post("workouts/add", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'authorization': `BEARER ${globalState.authToken}`
