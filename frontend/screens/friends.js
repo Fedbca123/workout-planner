@@ -6,8 +6,6 @@ import API_Instance from "../../backend/axios_instance";
 
 // import { Menu, MenuItem } from 'react-native-material-menu';
 // const [filteredFriends, setFilteredFriends] = useState(globalState.friends);
-   
-  //Alice Graveyard :) 
   // const [visible, setVisible] = useState(false);
 
   // const [menuVisible, setMenuVisible] = useState(false);
@@ -37,96 +35,136 @@ export default function Friends() {
     setFilteredFriends(filtered);
   };
   
-  const handleDeleteFriend = () => {
-    // const handleDeleteFriend = async (current_user_id, friend_object_id, accessToken) => {
-  //   try {
-  //     const response = await fetch(`/users/${current_user_id}/friends/remove/${friend_object_id}`, {
-  //       method: 'PATCH',
-  //       headers: {
-  //         'Authorization': `Bearer ${accessToken}`,
-  //       },
-  //     });
-  //   const data = await response.json();
-  //   console.log(data.message); // output: `${userA.firstName} and ${userB.firstName} are no longer friends`
-  //   } catch (error) {
-  //     console.error(error);
-  // }
-  
-    Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
+  const handleDeleteFriend = (deleteFriendID) => {
+    const deleteID = deleteFriendID;
+    console.log(deleteID);
+    const sendDeleteFriend = async () => {
+      API_Instance
+      .patch(`users/${globalState.user._id}/friends/remove/$${deleteID}`, null, {
+        headers: {
+          Authorization : `Bearer ${globalState.authToken}`,
+        },
+      })
+      .then((response) => {
+				if (response.status == 200) {
+					console.log(response.data);
+          Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
+				}
+			})
+			.catch((error) => {
+        if (error.status === 498) {
+          Alert.alert(`User ${error.message} does not exist`);
+        } else {
+          console.error(error);
+          Alert.alert('An unknown error occurred');
+        }
+			});
+    };
+
+    sendDeleteFriend();
+    fetchFriends();
   };
 
-  const handleBlockFriend = () => {
+  const handleBlockFriend = (blockedFriendID) => {
+    const blockID = blockedFriendID;
+    // console.log(block);
+    const sendBlockFriend = async () => {
+      API_Instance
+      .patch(`users/${globalState.user._id}/blocked/add/${blockID}`, null, {
+        headers: {
+          Authorization : `Bearer ${globalState.authToken}`,
+        },
+      })
+      .then((response) => {
+				if (response.status == 200) {
+					console.log(response.data);
+          Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
+				}
+			})
+			.catch((error) => {
+        if (error.status === 497) {
+          Alert.alert('Blocked user');
+        } else if (error.status === 498) {
+          Alert.alert(`User ${error.message} does not exist`);
+        } else {
+          console.error(error);
+          Alert.alert('An unknown error occurred');
+        }
+			});
+    };
 
-    // const handleBlockFriend = async (current_user_id, friend_object_id, accessToken) => {
-      //   try {
-      //     const response = await fetch(`/users/${current_user_id}/blocked/add/${friend_object_id}`, {
-      //       method: 'PATCH',
-      //       headers: {
-      //         'Authorization': `Bearer ${accessToken}`,
-      //       },
-      //     });
-      //     const data = await response.json();
-      //     console.log(data); // output: the updated userA object
-      //   } catch (error) {
-      //     console.error(error);
-      //   }
-      // };
-    Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
+    sendBlockFriend();
+    fetchFriends();
   };
 
+  // This is working smile :)
   const handleAddFriend = () => {
-    
-    // const addFriendRequest = async (B_id) => {
-    //   API_Instance
-    //   .get(`users/${globalState.user._id}/friends/all`, {
-    //     headers: {
-    //       authorization: `Bearer ${globalState.authToken}`,
-    //     },
-		// 	})
-    //     try {
-    //       const response = await fetch(url, { method: 'PATCH' });
-    //       const data = await response.json();
-      
-    //       console.log(data);
-    //       Alert.alert('Friend request sent!');
-    //     } catch (error) {
-    //       if (error.status === 497) {
-    //         Alert.alert('Blocked user');
-    //       } else if (error.status === 496 && error.message === 'Already friends') {
-    //         Alert.alert('Already friends');
-    //       } else if (error.status === 496 && error.message === 'Already requested') {
-    //         Alert.alert('Already requested');
-    //       } else if (error.status === 498) {
-    //         Alert.alert(`User ${error.message} does not exist`);
-    //       } else {
-    //         Alert.alert('An unknown error occurred');
-    //       }
-    //     }
-    // };
-
-    Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
+    const email = searchTerm;
+    const addFriendRequest = async () => {
+      API_Instance
+      .post(`users/${globalState.user._id}/invites/add`, {
+        email: email
+      }, {
+        headers: {
+          'authorization': `Bearer ${globalState.authToken}`,
+        },
+      })
+      .then((response) => {
+				if (response.status == 200) {
+					console.log(response.data);
+          Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
+				}
+        if (response.status == 496) {
+					console.log(response.data);
+          Alert.alert('Already requested');
+				}
+			})
+			.catch((error) => {
+        console.log("Error is", error)
+        console.log("Error status", error.status)
+        if (error.response.status === 497) {
+          Alert.alert('This user is blocked by you');
+        } else if (error.response.status === 496) {
+          Alert.alert('Already requested');
+        }  else if (error.response.status === 498) {
+          Alert.alert(`User ${error.message} does not exist`);
+        } else if (error.response.status === 493) {
+          Alert.alert('This email does not have a workout account');
+        } else {
+          console.error(error.response.status);
+          Alert.alert('An unknown error occurred');
+        }
+			});
+    };
+    addFriendRequest();
+  };
+  
+  // This is working smile :)
+  const fetchFriends = async () => {
+    API_Instance
+    .get(`users/${globalState.user._id}/friends/all`, {
+      headers: {
+        'authorization': `Bearer ${globalState.authToken}`,
+      },
+    })
+    .then((response) => {
+      // console.log(response.data.friends);
+      setFilteredFriends(response.data.friends);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   };
 
   useEffect(() => {
-    const fetchFriends = async () => {
-      API_Instance
-      .get(`users/${globalState.user._id}/friends/all`, {
-        headers: {
-          authorization: `Bearer ${globalState.authToken}`,
-        },
-			})
-      .then((response) => {
-        console.log(response.data.friends);
-        setFilteredFriends(response.data.friends);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    };
-
-  fetchFriends();
-
+    fetchFriends();
   }, []);
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      fetchFriends();
+    }
+  }, [searchTerm]);
 
   return  (
     <SafeAreaView style={styles.container}>
@@ -144,26 +182,28 @@ export default function Friends() {
             <ScrollView contentContainerStyle={styles.CardContainer} bounces={true}>
 
             <View >
-            {filteredFriends.length === 0 ? (
-              <Text>Search for a friend</Text>
+            {filteredFriends.length === 0 && searchTerm.length === 0? (
+              <Text>You have no friends added! Search by email to add a friend </Text>
             ) : (
             filteredFriends.map((friend) => (
               <View key={friend._id} style={styles.card}>
 
+                {/* left side */}
                 <View style={styles.info}>
                   <Text style={styles.name}>
                   {friend.firstName} {friend.lastName}</Text>
-                  <Text>{friend.email}</Text>
+                  <Text>{friend.email.toLowerCase()}</Text>
                 </View>
 
+                {/* right side */}
                 <View style={styles.buttons}>
-                  <Button style = {styles.buttonlook}
-                    title="Block"
-                    onPress={() => handleBlockFriend(friend._id)}
-                  />
                   <Button style = {styles.buttonslook}
                     title="Delete"
                     onPress={() => handleDeleteFriend(friend._id)}
+                  />
+                  <Button style = {styles.buttonlook}
+                    title="Block"
+                    onPress={() => handleBlockFriend(friend._id)}
                   />
                  </View>
 
@@ -174,7 +214,7 @@ export default function Friends() {
 
         {filteredFriends.length === 0 && searchTerm.length != 0 &&(
           <TouchableOpacity  style={styles.iconButton} onPress={handleAddFriend}>
-                  <Text style={styles.addFriend}>Add friend: {searchTerm.toLowerCase()}</Text>
+                  <Text style={styles.addFriend}>Add friend <Text style={styles.searchTerm}>{searchTerm.toLowerCase()}</Text></Text>
           </TouchableOpacity>
         )}
 
@@ -291,5 +331,8 @@ const styles = StyleSheet.create({
     info: {
       alignContent: 'left',
     },
+    searchTerm:{
+      color: '#FA7B34',
+    }
 });
 
