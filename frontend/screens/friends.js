@@ -1,38 +1,12 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert, TouchableOpacity } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../../GlobalState.js';
-import { Menu, MenuItem } from 'react-native-material-menu';
+import API_Instance from "../../backend/axios_instance";
 
-export default function Friends(props) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [friendEmail, setFriendEmail] = useState('');
-  const [globalState, updateGlobalState] = useGlobalState();
-
-  const [filteredFriends, setFilteredFriends] = useState(globalState.friends);
-
-  const handleSearch = (text) => {
-    setSearchTerm(text);
-    setFilteredFriends(
-      globalState.friends.filter((friend) => friend.email.includes(text))
-    );
-  };
-
-  const [visible, setVisible] = useState(false);
-
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  let menu = null;
-
-  const showMenu = () => {
-    setMenuVisible(true);
-  };
-
-  const hideMenu = () => {
-    setMenuVisible(false);
-  };
-
-  // const handleBlockFriend = async (current_user_id, friend_object_id, accessToken) => {
+// import { Menu, MenuItem } from 'react-native-material-menu';
+// const [filteredFriends, setFilteredFriends] = useState(globalState.friends);
+// const handleBlockFriend = async (current_user_id, friend_object_id, accessToken) => {
   //   try {
   //     const response = await fetch(`/users/${current_user_id}/blocked/add/${friend_object_id}`, {
   //       method: 'PATCH',
@@ -46,14 +20,7 @@ export default function Friends(props) {
   //     console.error(error);
   //   }
   // };
-
-  const handleBlockFriend = () => {
-    Alert.alert('Blocked', 'Your friend has been blocked', [{ text: 'OK' }]);
-    hideMenu();
-  };
-
-
-  // const handleDeleteFriend = async (current_user_id, friend_object_id, accessToken) => {
+   // const handleDeleteFriend = async (current_user_id, friend_object_id, accessToken) => {
   //   try {
   //     const response = await fetch(`/users/${current_user_id}/friends/remove/${friend_object_id}`, {
   //       method: 'PATCH',
@@ -66,20 +33,7 @@ export default function Friends(props) {
   //   } catch (error) {
   //     console.error(error);
   // }
-
-  const handleDeleteFriend = () => {
-    
-    Alert.alert('Deleted', 'Your friend has been deleted', [{ text: 'OK' }]);
-    hideMenu();
-  };
-
-  
-  const handleAddFriend = () => {
-    hideMenu();
-    Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
-  };
-
-  // const addFriendRequest = async (A_id, B_id) => {
+// const addFriendRequest = async (A_id, B_id) => {
   //   const url = `API_Instance.post("users/{$current_user_id}/invites/add")`;
   
   //   try {
@@ -102,7 +56,68 @@ export default function Friends(props) {
   //     }
   //   }
   // };
+  //Graveyard
+  // const [visible, setVisible] = useState(false);
+
+  // const [menuVisible, setMenuVisible] = useState(false);
+
+  // let menu = null;
+
+  // const showMenu = () => {
+  //   setMenuVisible(true);
+  // };
+
+  // const hideMenu = () => {
+  //   setMenuVisible(false);
+  // };
   
+
+export default function Friends({userId, token}) {
+    //NEW 
+  const [filteredFriends, setFilteredFriends] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  // const [friendEmail, setFriendEmail] = useState('');
+  const [globalState, updateGlobalState] = useGlobalState();
+
+
+  
+  const handleSearch = (text) => {
+    setSearchTerm(text);
+    const filtered = filteredFriends.filter((friend) =>
+      friend.email.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredFriends(filtered);
+  };
+  
+  const handleDeleteFriend = () => {
+    Alert.alert('Deleted', 'Your friend has been deleted', [{ text: 'OK' }]);
+  };
+
+  const handleAddFriend = () => {
+    Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
+  };
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      API_Instance
+      .get('users/${globalState.user._id}/friends/all', {
+        headers: {
+          Authorization: `Bearer ${globalState.authToken}`,
+        },
+			})
+      .then((response) => {
+        console.log(response.data.friends);
+        setFilteredFriends(response.data.friends);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    };
+
+  fetchFriends();
+
+  }, []);
+
   return  (
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView contentContainerStyle={styles.container}
@@ -115,39 +130,28 @@ export default function Friends(props) {
               value={searchTerm}
               onChangeText={handleSearch}
             />
-            {/* <Text style={styles.Title}></Text> */}
-            <ScrollView contentContainerStyle={styles.CardContainer}
-              bounces={true}>
+            
+            <ScrollView contentContainerStyle={styles.CardContainer} bounces={true}>
 
-
-{/* //         {filteredFriends.length > 0 ? ( 
-//           filteredFriends.map((friend, index) => (
-//             <View key={index} style={styles.card}>
-//               <View key={index} style={styles.newcard}>
-//               <Menu visible={menuVisible} anchor={
-//                 <TouchableOpacity onPress={showMenu} style={{ position: 'absolute', right: 0, top: 5}}>
-//                 <Image source={require('../../assets/menu.png')} style={{ width: 20, height: 20 }} />
-//                 </TouchableOpacity>
-//               } onRequestClose={hideMenu}>
-//                 <MenuItem onPress={handleBlockFriend}>Block Friend</MenuItem>
-//                 <MenuItem onPress={handleDeleteFriend}>Delete Friend</MenuItem>
-//               </Menu>
-//               </View>
-//               <Text style={styles.name}>
-//                 {friend.firstName} {friend.lastName}
-//               </Text>
-//               <Text>{friend.email}</Text>
-//             </View>
-//           ))
-//         ) : (
-//           <>
-//           {searchTerm.length == 0 ? (
-//           <Text style={styles.Normal}>No friend added {'\n'}To add a friend search by their email address</Text>
-//           ) : ( 
-//             <Text style={styles.name}> </Text>
-//             )}
-//           </>
-//         )} */}
+            <View>
+            {filteredFriends.length === 0 ? (
+              <Text>Search for a friend</Text>
+            ) : (
+            filteredFriends.map((friend) => (
+              <View key={friend._id}>
+                <Text>{friend.firstName} {friend.lastName}</Text>
+              <Button
+                title="Block"
+                onPress={() => handleBlockFriend(friend._id)}
+              />
+              <Button
+                title="Delete"
+                onPress={() => handleDeleteFriend(friend._id)}
+              />
+              </View>
+              ))
+            )}
+            </View>
 
         {filteredFriends.length === 0 && searchTerm.length != 0 &&(
           <TouchableOpacity  style={styles.iconButton} onPress={handleAddFriend}>
