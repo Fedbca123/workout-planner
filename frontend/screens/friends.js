@@ -72,7 +72,7 @@ import API_Instance from "../../backend/axios_instance";
   // };
   
 
-export default function Friends({userId, token}) {
+export default function Friends() {
     //NEW 
   const [filteredFriends, setFilteredFriends] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -90,7 +90,11 @@ export default function Friends({userId, token}) {
   };
   
   const handleDeleteFriend = () => {
-    Alert.alert('Deleted', 'Your friend has been deleted', [{ text: 'OK' }]);
+    Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
+  };
+
+  const handleBlockFriend = () => {
+    Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
   };
 
   const handleAddFriend = () => {
@@ -100,14 +104,15 @@ export default function Friends({userId, token}) {
   useEffect(() => {
     const fetchFriends = async () => {
       API_Instance
-      .get('users/${globalState.user._id}/friends/all', {
+      .get(`users/${globalState.user._id}/friends/all`, {
         headers: {
-          Authorization: `Bearer ${globalState.authToken}`,
+          authorization: `Bearer ${globalState.authToken}`,
         },
 			})
       .then((response) => {
         console.log(response.data.friends);
-        setFilteredFriends(response.data.friends);
+        globalState.friends = response.data.friends;
+        setFilteredFriends(globalState.friends);
       })
       .catch((error) => {
         console.error(error);
@@ -133,13 +138,15 @@ export default function Friends({userId, token}) {
             
             <ScrollView contentContainerStyle={styles.CardContainer} bounces={true}>
 
-            <View>
+            <View >
             {filteredFriends.length === 0 ? (
               <Text>Search for a friend</Text>
             ) : (
             filteredFriends.map((friend) => (
-              <View key={friend._id}>
-                <Text>{friend.firstName} {friend.lastName}</Text>
+              <View key={friend._id} style={styles.card}>
+                <Text style={styles.name}>
+                {friend.firstName} {friend.lastName}</Text>
+                <Text>{friend.email}</Text>
               <Button
                 title="Block"
                 onPress={() => handleBlockFriend(friend._id)}
