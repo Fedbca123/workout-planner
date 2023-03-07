@@ -7,10 +7,11 @@ import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
 // import config from "../../backend/config";
-// import API_Instance from '../../backend/axios_instance';
+//import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
 import { RFC_2822 } from 'moment';
+import { useWindowDimensions } from 'react-native';
 
 // const baseUrl = config.API_URL + config.PORT + '/';
 // const router = require('express').Router();
@@ -21,7 +22,6 @@ import { RFC_2822 } from 'moment';
 //     .then(exercises => res.json(exercises))
 //     .catch(err => res.status(401).json('Error: ' + err));
 // });
-
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -46,7 +46,7 @@ const muscleGroupsFilters = [
   {item: 'Chest', id: '8'},
   {item: 'Back', id: '9'},
   {item: 'Hamstring', id: '10'},
-  {item: 'Quads', id: '11'}, // Quadriceps?
+  {item: 'Quads', id: '11'},
   {item: 'Calves', id: '12'},
   {item: 'Glutes', id: '13'},
   {item: 'Forearms', id: '14'},
@@ -104,6 +104,10 @@ export default function DiscoverPage(props) {
   const [data, setData] = useState([]);
 
   // const baseUrl = config.API_URL + config.PORT + "/";
+
+  // const windowWidth = useWindowDimensions().width;
+  // const windowHeight = useWindowDimensions().height;
+  const {height, width} = useWindowDimensions();
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
@@ -415,8 +419,13 @@ const styles = StyleSheet.create({
   },
   modalCloseButton:{
     alignItems: 'center',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignContent: 'center',
+    bottom: "2%",
+    width: "100%"
     // bottom: -375,
-    //width: "50%",
+    // width: "90%",
     // justifyContent: 'center',
     // alignContent:'center',
     //width:"100%",
@@ -430,11 +439,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 3,
     borderRadius: "20rem",
-    bottom: -375,
+    // bottom: -375,
     alignItems: 'center',
     paddingHorizontal: 10,
     marginHorizontal: 1,
-    width: "35%",
+    //width: "35%",
     justifyContent: 'center',
     alignContent: 'center',
   },
@@ -460,6 +469,7 @@ const styles = StyleSheet.create({
   },
   filterOptions:{
     color: '#000',
+    flex: 3,
   },
 
   selectedFilterLabels: {
