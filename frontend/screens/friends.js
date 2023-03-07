@@ -120,7 +120,7 @@ export default function Friends(props) {
               bounces={true}>
 
 
-//         {filteredFriends.length > 0 ? ( 
+{/* //         {filteredFriends.length > 0 ? ( 
 //           filteredFriends.map((friend, index) => (
 //             <View key={index} style={styles.card}>
 //               <View key={index} style={styles.newcard}>
@@ -147,7 +147,7 @@ export default function Friends(props) {
 //             <Text style={styles.name}> </Text>
 //             )}
 //           </>
-//         )}
+//         )} */}
 
         {filteredFriends.length === 0 && searchTerm.length != 0 &&(
           <TouchableOpacity  style={styles.iconButton} onPress={handleAddFriend}>
