@@ -433,7 +433,8 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 30,
     paddingHorizontal: 8,
-    borderRadius: 20,    
+    borderRadius: 20,
+    
   },
   openText:{
     fontWeight: 'bold',

@@ -14,7 +14,7 @@ import {
 import React, { useEffect, useState } from "react";
 import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
@@ -88,11 +88,12 @@ export default function ExerciseSearch(props) {
 			<Button
 				title="Finalize Workout"
 				onPress={() => {
-					navigation.navigate("finalizeWorkout");
+					navigation.push("finalizeWorkout");
+					
 				}}
 			/>
 			<Button title="Custom Exercise" onPress={() => {
-				navigation.navigate("customExercise");
+				navigation.push("customExercise");
 			}} />
 			{/* <HomeNav/> */}
 			
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
 		width: 75,
 		// flex: 0.5,
 		borderWidth: 1,
-		borderRadius:"100rem"
+		borderRadius:100
 	},
 	ExerciseText: {
 		fontSize: 20,

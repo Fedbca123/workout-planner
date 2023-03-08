@@ -15,7 +15,7 @@ import reactDom from "react-dom";
 import Collapsible from "react-native-collapsible";
 import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 
 export default function WorkOuts({ data, showButton, showInput}) {
 	const [globalState, updateGlobalState] = useGlobalState();

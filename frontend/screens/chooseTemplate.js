@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
 import Workouts from "./workout.js";
 import { useNavigation } from "@react-navigation/native";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header } from "react-native-elements";
 
@@ -70,7 +70,7 @@ export default function ChooseTemplate(props) {
 				<Workouts data={workouts} showButton={true} showInput={false} />
 			<Button title="Create from Scratch" onPress={() => {
 				updateGlobalState("workout", noTemplate);
-				navigation.navigate("exerciseSearch");
+				navigation.push("exerciseSearch");
 			}} />
 		</SafeAreaView>
 	);

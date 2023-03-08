@@ -10,7 +10,7 @@ const initialState = {
 const GlobalContext = createContext(null)
 
 // custom component to provide the state to your app
-export const GlobalState = props => {
+export const GlobalState = (props) => {
   // declare the GlobalState
   const [globalState, setGlobalState] = useState({})
 

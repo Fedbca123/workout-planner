@@ -1,24 +1,27 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
-import React, {useState} from 'react';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import {useGlobalState} from '../../GlobalState.js';
-import DrawerNav from '../navigation/drawerNavigation.js';
+import React from 'react';
+import {useGlobalState} from '../GlobalState.js';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function HomeHeader (props) {
     const [globalState, updateGlobalState] = useGlobalState();
 
-    const onLogout = () => {
-        props.navigation.goBack();
-    }
-
     return (
-        <View styles= {styles.container}>
+        <View style= {styles.container}>
             <View style={styles.buttonContainer}>
-                <Button
-                    style = {styles.button}
-                    title = "Logout"
-                    onPress={() => onLogout()}
-                />
+                <TouchableOpacity
+                onPress={() => {props.navigation.openDrawer()}}>
+                    {/* <Button
+                        style = {styles.button}
+                        title = "Logout"
+                        Icon = ""
+                        onPress={() => onLogout()}
+                    /> */}
+                    <Image
+                        source={require('../../assets/menu-burger.png')}
+                        style={styles.ImageIconStyle}
+                    />
+                </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.text}>Hello {globalState.user.firstName}!</Text>
@@ -29,15 +32,15 @@ export default function HomeHeader (props) {
 
 const styles = StyleSheet.create({
     container: {
-        height: 100,
-        marginTop: 30,
+        height: 110,
+        backgroundColor: "white",
     },
     buttonContainer: {
-        alignContent: 'flex-start',
-        height: 37,
-        alignItems: 'flex-start',
-        marginLeft: 10,
-        marginTop: 40
+        height: 30,
+        width: 40,
+        marginLeft: 20,
+        marginTop: 50,
+        backgroundColor: "white"
     },
     textContainer: {
     },
@@ -47,5 +50,9 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 20,
         textAlign: 'center'
+    },
+    ImageIconStyle: {
+        width: 30,
+        height: 30
     }
 });
