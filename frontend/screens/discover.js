@@ -10,8 +10,6 @@ import Modal from "react-native-modal";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
-import { RFC_2822 } from 'moment';
-import { userInfo } from 'os';
 import { GlobalState, useGlobalState } from '../../GlobalState.js';
 
 // const baseUrl = config.API_URL + config.PORT + '/';
