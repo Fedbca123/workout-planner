@@ -4,7 +4,8 @@ import {
   Text,
   View,
   //TextInput,
-  Pressable } from 'react-native';
+  Pressable,
+  Alert      } from 'react-native';
 import React, {useState, useRef} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import API_Instance from '../../backend/axios_instance';
@@ -135,35 +136,45 @@ export default function Register(props) {
       setError('');
     }
 
-    API_Instance.post('users/register', {
+    API_Instance.post('users/emailVerification/send/to',
+      {
         firstName: firstName,
         lastName: lastName,
         email: email,
         password: password
-    })
-    .then((response) => {
-        if (response.status == 200)
-        {
-            setError('');
-            updateGlobalState("user", response.data.user);
-            updateGlobalState("JWT", response.data.authToken)
-            // no need for friends state to render bc itll be empty on account creation
+      });
 
-            props.navigation.navigate("home");
-        }
-    })
-    .catch((e) => {
-        if (e.response) setError(e.response.data.Error)
-        if (e.response.status == 501)
-        {
-            setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
-            setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
-        }
-        else if(e.response.status == 502)
-        {
-            setEmailError(true)//emailRef.current.setNativeProps({style: styles.inputerrorstyle});
-        }
-    });
+    Alert.alert(`Verify your account through the link sent to ${email} and return to login through the app!`);
+      
+    // API_Instance.post('users/register', {
+    //     firstName: firstName,
+    //     lastName: lastName,
+    //     email: email,
+    //     password: password
+    // })
+    // .then((response) => {
+    //     if (response.status == 200)
+    //     {
+    //         setError('');
+    //         updateGlobalState("user", response.data.user);
+    //         updateGlobalState("JWT", response.data.authToken)
+    //         // no need for friends state to render bc itll be empty on account creation
+
+    //         props.navigation.navigate("home");
+    //     }
+    // })
+    // .catch((e) => {
+    //     if (e.response) setError(e.response.data.Error)
+    //     if (e.response.status == 501)
+    //     {
+    //         setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+    //         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
+    //     }
+    //     else if(e.response.status == 502)
+    //     {
+    //         setEmailError(true)//emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+    //     }
+    // });
   }
 
   //render(){
@@ -188,7 +199,6 @@ export default function Register(props) {
             placeholder="John"
             returnKeyType="next"
             ref={firstNameRef}
-            keyboardType="next"
             onSubmitEditing={() => {lastNameRef.current.focus();}}
             onChangeText={(text)=> setFirstName(text)}/>
             
