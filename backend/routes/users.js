@@ -1008,6 +1008,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
   // send email to user
   try {
     var client = new EmailClient(process.env.EMAIL_CONNECTION_STRING);
+    console.log(client.send)
     //send mail
     const emailMessage = {
       sender: process.env.EMAIL_SENDER,
@@ -1023,7 +1024,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
         ],
       },
     };
-    var response = await client.send(emailMessage);
+    var response = await client.beginSend(emailMessage);
   } catch (e) {
     console.log(e);
   }
