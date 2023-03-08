@@ -95,6 +95,27 @@ export default function DiscoverPage(props) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
+  const exercisesList = API_Instance.post("exercises/search",{
+    muscleGroupsStr: selectedMuscleGroupsFilter,
+    exerciseTypeSrch : selectedTypeFilter,
+    equipmentFilters : selectedEquipmentFilter
+  },   {
+    header: {
+      'authorization': `BEARER ${globalState.authToken}`
+    }
+  })
+  .then((response) => {
+      if (response.status == 200){
+          console.log(response.data);
+          Alert.alert('Success!');
+      }
+  })
+  .catch((e) => {
+    console.log(e);
+    Alert.alert('Error!');
+  
+  })
+
   // const baseUrl = config.API_URL + config.PORT + "/";
 
   // const windowWidth = useWindowDimensions().width;
@@ -114,15 +135,7 @@ export default function DiscoverPage(props) {
 	};
 
   const displayExercises = () => {
-    exercises = API_Instance.post("exercises/search",{
-      muscleGroupsStr: selectedMuscleGroupsFilter,
-      exerciseTypeSrch : selectedTypeFilter,
-      equipmentFilters : selectedEquipmentFilter
-    },   {
-      header: {
-        'authorization': `BEARER ${globalState.authToken}`
-      }
-    })
+    
  
   }
   // API_Instance.post("exercises/add", formData, {
@@ -377,7 +390,7 @@ return (
       </View>
       <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
-              data = {exerciseData}
+              data = {{exercisesList}}
               style = {styles.boxContainer}
               renderItem = 
               {({item}) => <TouchableOpacity onPress={()=>
