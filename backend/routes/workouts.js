@@ -11,6 +11,7 @@ const { User, userSchema } = require('../models/user.model');
 const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const config = require("../config.js");
 const mongoose = require('mongoose');
+const authenticateToken = require('../middleware/authenticateToken');
 
 /*
 Error Codes:
@@ -18,6 +19,9 @@ Error Codes:
 400 - general error (look at message for details)
 401 - error retrieving workout(s)
 402 - cloudinary image upload failed
+403 - Failed to authenticate
+405 - No Token Provided
+494 - User does not have authorization
 495 - saving associated user failed
 496 - error deleting workout
 497 - error saving workout
@@ -37,36 +41,24 @@ function removeItem(array, val){
 
 //------GET-----//
 
-// Get all workouts
-// (GET) http://(baseUrl)/workouts/
-// returns [{ workouts }]
-router.route('/').get((req,res) => {
-  Workout.find()
-    .then(workouts => res.json(workouts))
-    .catch(err => res.status(401).json('Error: ' + err));
-});
-
-// Get workout by id
-// req.params = { workoutId }
-// (GET) http://(baseUrl)/workouts/:id
-// returns { workout }
-router.route('/:id').get((req, res) => {
-  Workout.findById(req.params.id)
-    .then(workout => res.json(workout))
-    .catch(err => res.status(401).json('Error: ' + err))
-});
-
 //-----POST-----//
 
 // Create workout
+// header.authorization = Bearer "AccessToken"
 // req.body = { title, description, exerciseIds, duration, location, tags, muscleGroups, owner }
 // req.file = { image }
-// (POST) http://(baseUrl)/workouts/add
+// (POST) API_Instance.post("workouts/add")
 // returns { newWorkout }
-router.route('/add').post(upload.single('image'),async (req,res) => {
+router.route('/add').post(authenticateToken, upload.single('image'),async (req,res) => {
   // gather information to add workout into database
   const title = req.body.title;
   const description = req.body.description;
+  const owner = req.body.owner;
+
+  if ((owner && req.user._id != owner) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
+  }
 
   var image = null;
   var imageId = null;
@@ -96,7 +88,6 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
   const duration = req.body.duration;
   const location = req.body.location;
   const muscleGroups = req.body.muscleGroups;
-  const owner = req.body.owner;
   
   let tags = [];
   tags = tags.concat(req.body.tags)
@@ -147,12 +138,17 @@ router.route('/add').post(upload.single('image'),async (req,res) => {
 });
 
 // Search workouts
+// header.authorization = Bearer "AccessToken"
 // req.body = { searchStr, muscleGroupsSrch, equipmentSrch, ownerId }
-// (GET) http://(baseUrl)/workouts/search
+// (GET) API_Instance.post("workouts/search")
 // returns [{ workouts }]
-router.route('/search').post(async (req, res) => {
-
+router.route('/search').post(authenticateToken, async (req, res) => {
   let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
+
+  if ((ownerId && req.user._id != ownerId) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
+  }
 
   let filters = {};
   filters.$and = [{scheduledDate: {$exists: false}}];
@@ -184,19 +180,25 @@ router.route('/search').post(async (req, res) => {
 //------UPDATE-----//
 
 // Update workout
+// header.authorization = Bearer "AccessToken"
 // req.body = { title,description,img,exercises,location,recurrence,scheduledDate,
 //            dateOfCompletion,owner }
 // req.file = { image }
-// (PATCH) http://(baseUrl)/workouts/:id
+// (PATCH) API_Instance.patch("workouts/{$id}")
 // returns { newWorkout }
-router.route('/:id').patch(upload.single('image'), async (req,res) => {
+router.route('/:id').patch(authenticateToken, upload.single('image'), async (req,res) => {
   const id = req.params.id;
-  const {title,description,img,exercises,location,recurrence,scheduledDate,dateOfCompletion,owner} = req.body;
+  const {title,description,exercises,location,recurrence,scheduledDate,dateOfCompletion} = req.body;
 
   const workout = await Workout.findById(id);
   if(!workout)
   {
     return res.status(498).send({Error: `Workout ${id} does not exist!`});
+  }
+
+  if ((workout.owner && workout.owner != req.user._id) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
   }
 
   var image = null;
@@ -242,11 +244,18 @@ router.route('/:id').patch(upload.single('image'), async (req,res) => {
 //------DELETE-----//
 
 // Delete workout
+// header.authorization = Bearer "AccessToken"
 // req.params { id }
-// (DELETE) http://(baseUrl)/workouts/:id
+// (DELETE) API_Instance.delete("workouts/{$id}")
 // returns `Workout ${deletion.title} deleted!`
-router.route('/:id').delete(async (req,res) => {
+router.route('/:id').delete(authenticateToken, async (req,res) => {
   const workout = await Workout.findById(req.params.id);
+
+  if ((workout.owner && workout.owner != req.user._id) && !req.user.isAdmin)
+  {
+    return res.sendStatus(494);
+  }
+
   if (workout.owner) {
     const user = await User.findById(workout.owner);
     user.customWorkouts = removeItem(user.customWorkouts, workout._id);
@@ -272,3 +281,31 @@ router.route('/:id').delete(async (req,res) => {
 });
 
 module.exports = router;
+
+/* ----- GraveYard ----- */
+
+/*
+// Get all workouts
+// (GET) http://(baseUrl)/workouts/
+// returns [{ workouts }]
+//! NEED TO SECURE THIS. NO LONGER SAFE IF ALL
+//! USERS STORE PERSONAL STUFF IN THIS COLLECTION
+router.route('/').get((req,res) => {
+  Workout.find()
+    .then(workouts => res.json(workouts))
+    .catch(err => res.status(401).json('Error: ' + err));
+});
+
+// Get workout by id
+// req.params = { workoutId }
+// (GET) http://(baseUrl)/workouts/:id
+// returns { workout }
+//! SECURE THIS ENDPOINT SOME WAY OR WIPE IT OUT
+router.route('/:id').get((req, res) => {
+  Workout.findById(req.params.id)
+    .then(workout => res.json(workout))
+    .catch(err => res.status(401).json('Error: ' + err))
+});
+
+
+*/

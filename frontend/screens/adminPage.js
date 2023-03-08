@@ -11,7 +11,7 @@ import {
   } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, {useState, useRef} from 'react';
-import axios from 'axios';
+import API_Instance from '../../backend/axios_instance';
 import config from '../../config';
 import { useGlobalState } from '../../GlobalState.js';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -37,6 +37,7 @@ export default function AdminPage(props) {
     const [tags, setTags] = useState('');
     const [muscleGroups, setMuscleGroups] = useState('');
     const [owner, setOwner] = useState('');
+    const [globalState, updateGlobalState] = useGlobalState();
 
     const imageSelect = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -98,9 +99,10 @@ export default function AdminPage(props) {
             if (restTime)
                 formData.append('restTime', restTime)
               
-            axios.post(baseUrl + "exercises/add", formData, {
+            API_Instance.post("exercises/add", formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': `BEARER ${globalState.authToken}`
                   }
 			})
 			.then((response) => {
@@ -131,10 +133,11 @@ export default function AdminPage(props) {
             if (location)
                 formData.append('location', location);
 
-            axios.post(baseUrl + "workouts/add", formData, {
+            API_Instance.post("workouts/add", formData, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                  }
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': `BEARER ${globalState.authToken}`
+                  },
 			})
 			.then((response) => {
 				if (response.status == 200) {

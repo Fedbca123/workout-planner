@@ -13,8 +13,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom from "react-dom";
-import axios from "axios";
-import config from "../../config";
+import API_Instance from "../../backend/axios_instance";
 import { useGlobalState } from "../../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";

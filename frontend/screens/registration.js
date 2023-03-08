@@ -7,13 +7,10 @@ import {
   Pressable } from 'react-native';
 import React, {useState, useRef} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import axios from 'axios';
-import config from '../../config';
+import API_Instance from '../../backend/axios_instance';
 import {useGlobalState} from '../../GlobalState.js';
 import {TextInput} from 'react-native-paper';
 
-const baserUrl = config.API_URL + config.PORT + '/';
-const allGood = true;
 
 export default function Register(props) {
   // defining state
@@ -121,8 +118,10 @@ export default function Register(props) {
         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
         tempError += '- Passwords do not match!\n';
     }
-    else if(!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(password))
+    // original Regex /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ doesn't accept special characters
+    else if(!/^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z!@#$%^&*()]*$/.test(password))
     {
+        console.log(password)
         setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
         tempError += '- Passwords must be at least 8 characters\nand have at least one uppercase letter,\none lowercase letter, and one number.';
@@ -136,7 +135,7 @@ export default function Register(props) {
       setError('');
     }
 
-    axios.post(baserUrl + 'users/register', {
+    API_Instance.post('users/register', {
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -146,7 +145,8 @@ export default function Register(props) {
         if (response.status == 200)
         {
             setError('');
-            updateGlobalState("user", response.data);
+            updateGlobalState("user", response.data.user);
+            updateGlobalState("JWT", response.data.authToken)
             // no need for friends state to render bc itll be empty on account creation
 
             props.navigation.navigate("home");
