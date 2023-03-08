@@ -120,9 +120,8 @@ export default function Register(props) {
         tempError += '- Passwords do not match!\n';
     }
     // original Regex /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/ doesn't accept special characters
-    else if(!/^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z!@#$%^&*()]*$/.test(password))
+    else if(!/^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z?!@#$%^&*()]*$/.test(password))
     {
-        console.log(password)
         setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
         tempError += '- Passwords must be at least 8 characters\nand have at least one uppercase letter,\none lowercase letter, and one number.';
@@ -142,9 +141,12 @@ export default function Register(props) {
         lastName: lastName,
         email: email,
         password: password
+      }).catch((e)=>{
+        console.log(e);
       });
 
-    Alert.alert(`Verify your account through the link sent to ${email} and return to login through the app!`);
+    Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
+    [{text:"Back to Login", onPress: () => props.navigation.goBack()}]);
       
     // API_Instance.post('users/register', {
     //     firstName: firstName,

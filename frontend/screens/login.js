@@ -93,7 +93,7 @@ export default function Login(props) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
-      
+      {/*
         <Button
         title="BACKDOOR"
         onPress={() =>
@@ -101,7 +101,7 @@ export default function Login(props) {
       <Button
         title="ADMIN BACKDOOR"
         onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>
-
+*/}
       {/* <Button
         title="START WORKOUT BUTTON"
         onPress={() => props.navigation.navigate("start")}
