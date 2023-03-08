@@ -11,7 +11,7 @@ const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../middleware/authenticateToken.js');
-
+const { EmailClient } = require("@azure/communication-email");
 
 /* 
 ADDING JWT TO YOUR AXIOS CALLS w/ Nestor :) :
