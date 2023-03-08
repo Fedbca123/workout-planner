@@ -1123,10 +1123,11 @@ router.route('/forgotpassword/reset/:JWT').get(async (req,res) => {
 
   // decrypt the JWT passed in the URL
   jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
-    const email = user.email;
     if (err){ 
       return res.render('pages/reset', {success: false, email:null ,title:"Invalid Request", message: message});
     }
+
+    const email = user.email;
     
     // timeout when trying to find user...
     // once this is figured out, it should render the form
