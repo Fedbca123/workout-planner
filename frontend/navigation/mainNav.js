@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeNav from './homeNav.js';
 import CreateWorkoutNav from "./createWorkoutNav.js";
 import StartWorkoutNav from "./startWorkoutNav.js";
+import HomeHeader from "../component/homeHeader.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -13,7 +14,7 @@ export default function MainNav() {
             <Stack.Screen
                 name="Home"
                 component={HomeNav}
-                options={{ headerShown: false }}
+                options={{ header: HomeHeader }}
             />
             <Stack.Screen
                 name="createNav"

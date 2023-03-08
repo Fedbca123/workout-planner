@@ -1,6 +1,4 @@
 import React from 'react';
-
-import HomeHeader from "../component/homeHeader.js";
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { useGlobalState } from '../GlobalState.js';
@@ -38,7 +36,7 @@ export default function DrawerNav (props) {
             <Drawer.Screen 
                 name="Main" 
                 component={ MainNav }
-                options={{ header: HomeHeader }} />
+                options={{ headerShown: false }} />
         </Drawer.Navigator>
     )
 }

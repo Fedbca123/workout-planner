@@ -25,9 +25,18 @@ export default function CreateWorkoutNav() {
 			<Stack.Screen
 				name="exerciseSearch"
 				component={ExerciseSearch}
+				options={{ headerShown: false }}
 			/>
-			<Stack.Screen name="finalizeWorkout" component={Finalize} />
-			<Stack.Screen name="customExercise" component={CustomExercise} />
+			<Stack.Screen 
+				name="finalizeWorkout" 
+				component={Finalize} 
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen 
+				name="customExercise" 
+				component={CustomExercise}
+				options={{ headerShown: false }} 
+			/>
 		</Stack.Navigator>
 	);
 }
