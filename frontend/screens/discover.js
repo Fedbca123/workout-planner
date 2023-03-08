@@ -7,21 +7,15 @@ import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
 // import config from "../../backend/config";
-//import API_Instance from '../../backend/axios_instance';
+import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
 import { RFC_2822 } from 'moment';
-import { useWindowDimensions } from 'react-native';
+import { userInfo } from 'os';
+import { GlobalState, useGlobalState } from '../../GlobalState.js';
 
 // const baseUrl = config.API_URL + config.PORT + '/';
-// const router = require('express').Router();
-
-// //exercises = axios.get(baseUrl + "exercises/search")
-// router.route('/').get((req,res) => {
-//   Exercise.find()
-//     .then(exercises => res.json(exercises))
-//     .catch(err => res.status(401).json('Error: ' + err));
-// });
+//const router = require('express').Router();
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -98,8 +92,8 @@ export default function DiscoverPage(props) {
   const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
   const [selectedMuscleGroupsFilter, setMuscleGroupsFilter] = useState([]);
   const [selectedTypeFilter, setTypeFilter] = useState([]);
-  const [isAFilterExpanded, closeExpandedFilters] = useState(false);
-
+  const [globalState, updateGlobalState] = useGlobalState();
+  
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -107,7 +101,7 @@ export default function DiscoverPage(props) {
 
   // const windowWidth = useWindowDimensions().width;
   // const windowHeight = useWindowDimensions().height;
-  const {height, width} = useWindowDimensions();
+  // const {height, width} = useWindowDimensions();
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
@@ -121,10 +115,38 @@ export default function DiscoverPage(props) {
 		console.log("Type Filter Pressed");
 	};
 
-  const closeOtherFilters = () => {
-    
+  const displayExercises = () => {
+    exercises = API_Instance.post("exercises/search",{
+      muscleGroupsStr: selectedMuscleGroupsFilter,
+      exerciseTypeSrch : selectedTypeFilter,
+      equipmentFilters : selectedEquipmentFilter
+    },   {
+      header: {
+        'authorization': `BEARER ${globalState.authToken}`
+      }
+    })
+ 
   }
-
+  // API_Instance.post("exercises/add", formData, {
+  //   headers: {
+  //       'Content-Type': 'multipart/form-data',
+  //       'authorization': `BEARER ${globalState.authToken}`
+  //     }
+  // })
+  // .then((response) => {
+  //   if (response.status == 200) {
+  //       console.log(response.data);
+  //       Alert.alert('Success!', 'Exercise created', [
+  //           {text: 'OK', onPress: () => console.log('OK Pressed')},
+  //       ]);
+  //   }
+  // })
+  // .catch((e) => {
+  //   Alert.alert('Error!', 'Exercise not created', [
+  //       {text: 'OK', onPress: () => console.log('OK Pressed')},
+  //   ]);
+  //   console.log(e);
+  // });
   const WorkoutsList = [
 		{
 			title: "Leg Day",
@@ -170,27 +192,6 @@ export default function DiscoverPage(props) {
 		},
 	];
   
-  // function getWorkouts(){
-  //   axios.get(baseUrl + "/").then((response) => {
-	// 		if (response.status === 200) {
-	// 			return <Workouts data={response.data} />;
-	// 		}
-	// 	});  
-  // }
-
-  // function getExercises(){
-
-  // }
-
-  // useEffect(() => {
-  //   axios.get('https://reactnative.dev/movies.json')
-  //     .then(({ data }) => {
-  //       console.log("defaultApp -> data", data.movies)
-  //       setData(data.movies)
-  //     })
-  //     .catch((error) => console.error(error))
-  //     .finally(() => setLoading(false));
-  // }, []);
 
   function onMultiChangeEquipment() {
     return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
