@@ -7,36 +7,20 @@ import {
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState, useRef } from "react";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 import {TextInput} from 'react-native-paper';
 import API_Instance from "../../backend/axios_instance";
+import * as SecureStore from 'expo-secure-store';
+import { AuthContext } from '../AuthProvider';
 
-/*<Button
-					title="BACKDOOR"
-					onPress={() =>
-						backDoorHandler("Test@gmail.com", "password")
-					}
-				/>
-				<Button
-					title="ADMIN BACKDOOR"
-					onPress={() => props.navigation.navigate("admin")}
-            	/>
-
-				{/* this was added by Alice for the start workout screens, will move in the future }
-				<Button
-					title="START WORKOUT BUTTON"
-					onPress={() => props.navigation.navigate("start")}
-            	/>
-				{/* code will break at the end to home bc name can't be rendered}	
-          */
-
-export default function Login(props) {
+export default function Login({navigation}) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
   	const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
+	const { setIsLoggedIn } = React.useContext(AuthContext);
 
 	// functions
   	const emailInputHandler = (enteredEmail) => {
@@ -46,6 +30,16 @@ export default function Login(props) {
 	const passwordInputHandler = (enteredPassword) => {
 		setPassword(enteredPassword);
 	};
+
+	React.useEffect(() => {
+		const fetchData = async () => {
+			if (globalState.authToken)
+				await SecureStore.setItemAsync("authKey", globalState.authToken);
+			if (globalState.user)
+				await SecureStore.setItemAsync("userId", globalState.user._id);
+		}
+		fetchData();
+	}, [globalState])
 
 	const loginHandler = () => {
 		API_Instance
@@ -57,12 +51,11 @@ export default function Login(props) {
 				if (response.status == 200) {
 					setError("");
 					updateGlobalState("user", response.data.user);
-					updateGlobalState("friends", response.data.friends);
-          updateGlobalState("authToken", response.data.authToken);
+          			updateGlobalState("authToken", response.data.authToken);
 					if (response.data.user.isAdmin) {
-						props.navigation.navigate("admin");
+						navigation.navigate("admin");
 					} else {
-						props.navigation.navigate("home");
+						setIsLoggedIn(true);
 					}
 				}
 			})
@@ -80,13 +73,12 @@ export default function Login(props) {
 			.then((response) => {
 				if (response.status == 200) {
 					updateGlobalState("user", response.data.user);
-					updateGlobalState("friends", response.data.friends);
-          updateGlobalState("authToken", response.data.authToken);
+          			updateGlobalState("authToken", response.data.authToken);
 					setError("");
 					if (response.data.user.isAdmin)
-						props.navigation.navigate("admin");
+						navigation.navigate("admin");
 					else
-						props.navigation.navigate("home");
+						setIsLoggedIn(true);
 				}
 			})
 			.catch((e) => {

@@ -114,7 +114,8 @@ router.route('/register').post(async (req,res) =>
 
     await user.save((err, newUser) => {
         if (err) return res.status(499).send(err);
-        const authToken = jwt.sign(newUser.toObject(), process.env.ACCESS_TOKEN_SECRET);
+        toEncode = {user: user._id};
+        const authToken = jwt.sign(toEncode, process.env.ACCESS_TOKEN_SECRET);
         user.password = null;
 
         return res.status(200).json({authToken, user: newUser});
@@ -143,17 +144,9 @@ router.route('/login').post(async (req, res) => {
 
     if (await bcrypt.compare(password, user.password))
     {
-        // turn friend IDs into full on friend objects
-        var friends = [];
-        for (const friendID of user.friends) {
-          await User.findById(friendID)
-            .then(friend => friends.push(friend))
-            .catch(err => res.status(400).json({Error: err}))
-        }
         // sign JWT for return
-        const authToken = jwt.sign(user.toObject(), process.env.ACCESS_TOKEN_SECRET);
-
-        user.friends = friends;
+        toEncode = {user: user._id};
+        const authToken = jwt.sign(toEncode, process.env.ACCESS_TOKEN_SECRET);
         user.password = null;
         
         return res.status(200).json({authToken, user: user});
@@ -165,6 +158,19 @@ router.route('/login').post(async (req, res) => {
 });
 
 //-----GET-----//
+
+// Get user by id
+// req.params = { id }
+// (GET) API_Instance.delete("users/${id}")
+// returns { Deleted: user.email }
+router.route('/:id').get(authenticateToken, async (req, res) => {
+  User.findById(req.params.id)
+  .then(user => {
+    user.password = null;
+    res.json(user);
+  })
+  .catch(err => res.status(498).json('Error: ' + err))
+});
 
 //-----DELETE-----//
 
@@ -577,57 +583,6 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
   });
 
 });
-
-/*
-// User A Sends friend request to user B
-// req.params = { userId_A, userId_B }
-// (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
-// returns { newuserB }
-
-router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res) => {
-  // get id's from url
-  const {A_id, B_id} = req.params;
-
-  if (req.user._id != A_id)
-  {
-    return res.sendStatus(403);
-  }
-
-  // ensure users exist w/ ids
-  const userA = await User.findById(A_id);
-  if (!userA)
-  {
-    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
-  }
-  const userB = await User.findById(B_id);
-  if (!userB)
-  {
-    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
-  }
-
-  // if userB has userA blocked, it won't go through
-  if(userB.blockedUsers.includes(userA._id)) {
-    return res.status(497).send("Blocked user");
-  }
-  // if already friends, won't do anything
-  if(userB.friends.includes(userA._id)) {
-    return res.status(496).send("Already friends");
-  }
-  // if already requested, don't do it again
-  if(userB.friendRequests.includes(userA._id)) {
-    return res.status(496).send("Already requested");
-  }
-
-  // add user A as a FR in B's list of FRs
-  userB.friendRequests.push(userA._id);
-
-  // save updated version of userB
-  await userB.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
-  });
-});
-*/
 
 // User A accepts friend request form user B
 // req.params = { userId_A, userId_B }
@@ -1239,3 +1194,54 @@ router.route('/').get(async (req, res) => {
 //     res.status(200).json(newUser);
 //   });
 // }); */
+
+/*
+// User A Sends friend request to user B
+// req.params = { userId_A, userId_B }
+// (PATCH) http://(baseUrl)/users/:A_id/invites/add/:B_id
+// returns { newuserB }
+
+router.route('/:A_id/invites/add/:B_id').patch(authenticateToken, async (req,res) => {
+  // get id's from url
+  const {A_id, B_id} = req.params;
+
+  if (req.user._id != A_id)
+  {
+    return res.sendStatus(403);
+  }
+
+  // ensure users exist w/ ids
+  const userA = await User.findById(A_id);
+  if (!userA)
+  {
+    return res.status(498).send({Error: `User (${A_id}) does not exist!`});
+  }
+  const userB = await User.findById(B_id);
+  if (!userB)
+  {
+    return res.status(498).send({Error: `User (${B_id}) does not exist!`});
+  }
+
+  // if userB has userA blocked, it won't go through
+  if(userB.blockedUsers.includes(userA._id)) {
+    return res.status(497).send("Blocked user");
+  }
+  // if already friends, won't do anything
+  if(userB.friends.includes(userA._id)) {
+    return res.status(496).send("Already friends");
+  }
+  // if already requested, don't do it again
+  if(userB.friendRequests.includes(userA._id)) {
+    return res.status(496).send("Already requested");
+  }
+
+  // add user A as a FR in B's list of FRs
+  userB.friendRequests.push(userA._id);
+
+  // save updated version of userB
+  await userB.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+    res.status(200).json(newUser);
+  });
+});
+*/

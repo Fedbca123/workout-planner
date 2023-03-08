@@ -18,7 +18,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 const baseUrl = config.API_URL + config.PORT + '/';
 
-export default function AdminPage(props) {
+export default function AdminPage({navigation}) {
     const [toggleValue, setToggleValue] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');

@@ -1,6 +1,6 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
 import React from 'react';
-import {useGlobalState} from '../../GlobalState.js';
+import {useGlobalState} from '../GlobalState.js';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function HomeHeader (props) {

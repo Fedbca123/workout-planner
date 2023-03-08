@@ -9,7 +9,7 @@ const exercises = [
   { title: 'Climbing Session', type: 'CARDIO', time: 80000, image: require('../../assets/climbing.png') },
 ];
 
-const StartWorkout = (props) => {
+const StartWorkout = ({ navigation }) => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
 
   const handleNext = () => {
@@ -36,7 +36,10 @@ const StartWorkout = (props) => {
           <Image source={require('../../assets/congrats.png')} style={{ justifyContent: 'center' }}/>
           <Text style={styles.heading}> Congratulations!</Text>
           <Text style={styles.text}> You have completed your workout.</Text>
-          <Button title="Return to Home" onPress={() => {props.navigation.navigate('home');}} />
+          <Button title="Return to Home" onPress={() => { 
+            navigation.popToTop();
+            navigation.navigate('Home'); 
+            }} />
         </View>
       );
     } else {
