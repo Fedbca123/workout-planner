@@ -1119,32 +1119,29 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
 router.route('/forgotpassword/reset/:JWT').get(async (req,res) => {
   const JWT = req.params.JWT;
   const message = "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."
+  const success = true;
+
   // decrypt the JWT passed in the URL
-  const {success, email} = await jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
-    if (err){
-      console.log(err)
-      return false, "";
-    }
+  jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
     const email = user.email;
+    if (err){ 
+      return res.render('pages/reset', {success: false, email:null ,title:"Invalid Request", message: message});
+    }
+    
     // timeout when trying to find user...
     // once this is figured out, it should render the form
     const curUser = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}})
     .catch(e => {
-      console.log(e,email)
-      return false, email;
+      return res.render('pages/reset', {success: false, email:email ,title:"Invalid Request", message: message});
     });
     
     if (!curUser)
     {
-        return false, email;
-        
+      return res.render('pages/reset', {success: false, email:email ,title:"Invalid Request", message: message});
     }
     
-    return true, email;
+    res.render('pages/reset', {success: true, email:curUser.email ,title:"Password Reset Form", message: message});
   });
-
-  const title= success ? "Password Reset form" : "Invalid Request";
-  res.render('pages/reset', {success: success, email:email ,title:title, message: message});
 });
 
 router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
