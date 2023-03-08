@@ -1037,14 +1037,15 @@ router.route('/emailVerification/:JWT').get(async (req,res) => {
   const JWT = req.params.JWT;
   // decrypt the JWT passed in the URL
   jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
-    if (err) return res.sendStatus(406);
+    if (err) res.render('pages/verified', {message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});//return res.sendStatus(406);
     const {firstName, lastName, email, password} = user.user;
 
     const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
     
     if (emailExists)
     {
-        return res.status(502).send({Error: "Email already exists!"});
+        res.render('pages/verified', {message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});
+        //return res.status(502).send({Error: "Email already exists!"}); 
     }
     
     const salt = await bcrypt.genSalt(10);
@@ -1065,12 +1066,129 @@ router.route('/emailVerification/:JWT').get(async (req,res) => {
     });
 
     await newUser.save((err, newUser) => {
-        if (err) return res.status(499).send(err);
-        return res.status(200).json({message: "Please login through the mobile application with your verified email and password!"});
+      const message = err ? "Looks like verification didn't go as smoothly this time. Try again from the mobile app." : `You are officially on your way to pursue your fitness goals through your account linked to ${newUser.email}. Login through the app to begin your journey!`;
+      res.render('pages/verified', {message : message});  
+      //if (err) return res.status(499).send(err);
+        //res.render('views/verified');
+        //return res.status(200).json({message: "Please login through the mobile application with your verified email and password!"});
     })
   })
 });
 
+// endpoint to send link to email reset endpoint
+// body {firstName, lastName, email, password}
+router.route('/forgotpassword/email/send/to').post(async (req,res) => {
+  // encrypt a JWT with the body passed in
+  const {firstName, lastName, email} = req.body;
+
+  const payload = {
+    user:{
+      firstName,
+      lastName,
+      email
+    }
+  }
+
+  const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
+
+  const port = process.env.PORT ? `${process.env.PORT}` : "";
+
+  const endpointURI = `${process.env.API_URL}${port}/users/forgotpassword/reset/${authToken}`
+
+  const message = `Uh oh! Looks like you need to reset your password.\nBelow is the link required to reset your account's password.\n\n${endpointURI}\n\nPlease note this link will expire in about 30 minutes. If it is not visited prior to expiring, you will need to repeat the process of requesting a password reset.`;
+  
+  // send email to user
+  try {
+    var client = new EmailClient(process.env.EMAIL_CONNECTION_STRING);
+    //send mail
+    const emailMessage = {
+      senderAddress: process.env.EMAIL_SENDER,
+      content: {
+        subject: "Workout Planner Password Reset",
+        plainText: message
+      },
+      recipients: {
+        to: [
+          {
+            address: email,
+          },
+        ],
+      },
+    };
+    var response = await client.beginSend(emailMessage);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+router.route('/forgotpassword/reset/:JWT').get(async (req,res) => {
+  const JWT = req.params.JWT;
+  // decrypt the JWT passed in the URL
+  jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
+    if (err) res.render('pages/reset', {success: false, title:"Invalid Request", message: "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."});//return res.sendStatus(406);
+    const {firstName, lastName, email, password} = user.user;
+
+    const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+    
+    if (emailExists)
+    {
+        res.render('pages/reset', {success: false, title:"Invalid Request", message: "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."});
+        //return res.status(502).send({Error: "Email already exists!"}); 
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    const newUser = new User ({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        friends: [],
+        friendRequests: [],
+        blockedUsers: [],
+        scheduledWorkouts: [],
+        completedWorkouts: [],
+        customWorkouts: [],
+        customExercises: [],
+    });
+
+    await newUser.save((err, newUser) => {
+      const message = err ? "Looks like verification didn't go as smoothly this time. Try again from the mobile app." : `You are officially on your way to pursue your fitness goals through your account linked to ${newUser.email}. Login through the app to begin your journey!`;
+      res.render('views/reset', {success: true, title:"Password Reset form", message: ""});  
+      //if (err) return res.status(499).send(err);
+        //res.render('views/verified');
+        //return res.status(200).json({message: "Please login through the mobile application with your verified email and password!"});
+    })
+  })
+});
+
+router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
+  const JWT = req.params.JWT;
+  // decrypt the JWT passed in the URL
+  jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
+    if (err) res.render('pages/reset', {success: false, title:"Invalid Request", message: "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."});//return res.sendStatus(406);
+    const {firstName, lastName, email, password} = user.user;
+    const newPassword = req.body.newPassword;
+
+    const curUser = await User.findOne({email: email});
+    if (!curUser)
+    {
+        res.render('pages/reset', {success: false, title:"Invalid Request", message: "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."});
+        //return res.status(502).send({Error: "Email already exists!"}); 
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    curUser.password = hashedPassword;
+
+    await curUser.save((err, newUser) => {
+      const title = err ? "Failed Reset of Password" : "Password Successfully Reset"
+      const message = err ? "Looks like password reset didn't go as planned. Try starting the process again from the mobile app." : "Attempt a new login in the Workout Planner mobile app with your new password.";
+      res.render('views/reset', {success: false, title: title, message: message});  
+    })
+  })
+});
 module.exports = router;
 
 
