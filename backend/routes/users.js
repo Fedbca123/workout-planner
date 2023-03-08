@@ -1001,17 +1001,18 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const endpointURI = `${config.API_URL}/users/emailVerification/${authToken}`
+  const port = process.env.PORT ? `${process.env.PORT}` : "";
 
-  const message = `Thank you for registering with Workout Planner!\nBelow is the link required to verify your account and complete registration!\n${endpointURI}\n\nPlease note this link will expire in about 30 minutes. If it is not visited prior to expiring, you will need to re-complete the registration form found on the application.`;
+  const endpointURI = `${process.env.API_URL}${port}/users/emailVerification/${authToken}`
+
+  const message = `Thank you for registering with Workout Planner!\nBelow is the link required to verify your account and complete registration!\n\n${endpointURI}\n\nPlease note this link will expire in about 30 minutes. If it is not visited prior to expiring, you will need to re-complete the registration form found on the application.`;
   
   // send email to user
   try {
     var client = new EmailClient(process.env.EMAIL_CONNECTION_STRING);
-    console.log(client.send)
     //send mail
     const emailMessage = {
-      sender: process.env.EMAIL_SENDER,
+      senderAddress: process.env.EMAIL_SENDER,
       content: {
         subject: "Verification Link for Workout Planner Account",
         plainText: message
@@ -1019,7 +1020,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
       recipients: {
         to: [
           {
-            email: email,
+            address: email,
           },
         ],
       },
@@ -1037,7 +1038,7 @@ router.route('/emailVerification/:JWT').get(async (req,res) => {
   // decrypt the JWT passed in the URL
   jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
     if (err) return res.sendStatus(406);
-    const {firstName, lastName, email, password} = user;
+    const {firstName, lastName, email, password} = user.user;
 
     const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
     
@@ -1065,8 +1066,7 @@ router.route('/emailVerification/:JWT').get(async (req,res) => {
 
     await newUser.save((err, newUser) => {
         if (err) return res.status(499).send(err);
-
-        return res.status(200).json("Please login through the mobile application with your verified email and password!");
+        return res.status(200).json({message: "Please login through the mobile application with your verified email and password!"});
     })
   })
 });
