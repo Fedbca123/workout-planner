@@ -34,6 +34,7 @@ Error Codes:
 401 - error retrieving user(s)
 403 - Failed to authenticate
 405 - No Token Provided
+492 - exercise id not found in DB
 493 - email provided not in DB
 494 - workout id not found in db
 495 - email not in proper format
@@ -539,20 +540,17 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
   const A_id = req.params.id;
   const friendEmail = req.body.email;
 
-  if (req.user._id != A_id)
-  {
+  if (req.user._id != A_id){
     return res.sendStatus(403);
   }
 
   const userA = await User.findById(A_id);
-  if (!userA)
-  {
+  if (!userA){
     return res.status(498).send({Error: `User (${A_id}) does not exist!`});
   }
 
   const userB = await User.findOne({email: friendEmail});
-  if (!userB)
-  {
+  if (!userB){
     return res.status(493).send({Error: `User with email ${friendEmail} does not exist!`});
   }
 
@@ -915,7 +913,75 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
   res.status(200).json({
     workouts: workouts
   });
-})
+});
+
+// Get all custom workouts of user
+// req.params = { userId }
+// (Get) API_Instance.get("users/${id}/workouts/custom/all")
+// returns { workouts: [{workouts}]}
+router.route('/:id/workouts/custom/all').get(authenticateToken, async (req,res) => {
+  const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+  // declaring array
+  let workouts = [];
+  // get all workout objects into array
+  for(const workoutID of user.customWorkouts){
+    const workout  = await Workout.findById(workoutID);
+    if (!workout) {
+      return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
+    }
+
+    workouts.push(workout);
+  }
+
+  res.status(200).json({
+    workouts: workouts
+  });
+});
+
+// Get all custom exercises of user
+// req.params = { userId }
+// (Get) API_Instance.get("users/${id}/exercises/custom/all")
+// returns { exercises: [{exercises}]}
+router.route('/:id/exercises/custom/all').get(authenticateToken, async (req,res) => {
+  const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
+  const user = await User.findById(id);
+  if (!user)
+  {
+    return res.status(498).send({Error: "User does not exist!"});
+  }
+  // declaring array
+  let exercises = [];
+  // get all workout objects into array
+  for(const exerciseID of user.customExercises){
+    const exercise  = await Exercise.findById(exerciseID);
+    if (!exercise) {
+      return res.status(492).send({Error: `Exercise ${exerciseID} does not exist!`});
+    }
+
+    exercises.push(exercise);
+  }
+
+  res.status(200).json({
+    exercises: exercises
+  });
+});
 
 // TO-DO Password reset
 // not sure what to throw into this endpoint to complete this.

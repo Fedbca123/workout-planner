@@ -1,63 +1,223 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert, TouchableOpacity } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../../GlobalState.js';
+import API_Instance from "../../backend/axios_instance";
 
-export default function Friends(props) {
+// import { Menu, MenuItem } from 'react-native-material-menu';
+// const [filteredFriends, setFilteredFriends] = useState(globalState.friends);
+  // const [visible, setVisible] = useState(false);
+
+  // const [menuVisible, setMenuVisible] = useState(false);
+
+  // let menu = null;
+
+  // const showMenu = () => {
+  //   setMenuVisible(true);
+  // };
+
+  // const hideMenu = () => {
+  //   setMenuVisible(false);
+  // };
+  
+
+export default function Friends() {
+
+  const [filteredFriends, setFilteredFriends] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [friendEmail, setFriendEmail] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
-
-  const [filteredFriends, setFilteredFriends] = useState(globalState.friends);
-
+  
   const handleSearch = (text) => {
     setSearchTerm(text);
-    setFilteredFriends(
-      globalState.friends.filter((friend) => friend.email.includes(text))
+    const filtered = filteredFriends.filter((friend) =>
+      friend.email.toLowerCase().includes(text.toLowerCase())
     );
+    setFilteredFriends(filtered);
+  };
+  
+  const handleDeleteFriend = (deleteFriendID) => {
+    const deleteID = deleteFriendID;
+    console.log(deleteID);
+    const sendDeleteFriend = async () => {
+      API_Instance
+      .patch(`users/${globalState.user._id}/friends/remove/$${deleteID}`, null, {
+        headers: {
+          Authorization : `Bearer ${globalState.authToken}`,
+        },
+      })
+      .then((response) => {
+				if (response.status == 200) {
+					console.log(response.data);
+          Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
+				}
+			})
+			.catch((error) => {
+        if (error.status === 498) {
+          Alert.alert(`User ${error.message} does not exist`);
+        } else {
+          console.error(error);
+          Alert.alert('An unknown error occurred');
+        }
+			});
+    };
+
+    sendDeleteFriend();
+    fetchFriends();
   };
 
-  const handleAddFriend = () => {
-    Alert.alert('Invitation sent', 'Your invitation has been sent to the email address', [{ text: 'OK' }]);
+  const handleBlockFriend = (blockedFriendID) => {
+    const blockID = blockedFriendID;
+    // console.log(block);
+    const sendBlockFriend = async () => {
+      API_Instance
+      .patch(`users/${globalState.user._id}/blocked/add/${blockID}`, null, {
+        headers: {
+          Authorization : `Bearer ${globalState.authToken}`,
+        },
+      })
+      .then((response) => {
+				if (response.status == 200) {
+					console.log(response.data);
+          Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
+				}
+			})
+			.catch((error) => {
+        if (error.status === 497) {
+          Alert.alert('Blocked user');
+        } else if (error.status === 498) {
+          Alert.alert(`User ${error.message} does not exist`);
+        } else {
+          console.error(error);
+          Alert.alert('An unknown error occurred');
+        }
+			});
+    };
+
+    sendBlockFriend();
+    fetchFriends();
   };
+
+  // This is working smile :)
+  const handleAddFriend = () => {
+    const email = searchTerm;
+    const addFriendRequest = async () => {
+      API_Instance
+      .post(`users/${globalState.user._id}/invites/add`, {
+        email: email
+      }, {
+        headers: {
+          'authorization': `Bearer ${globalState.authToken}`,
+        },
+      })
+      .then((response) => {
+				if (response.status == 200) {
+					console.log(response.data);
+          Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
+				}
+        if (response.status == 496) {
+					console.log(response.data);
+          Alert.alert('Already requested');
+				}
+			})
+			.catch((error) => {
+        console.log("Error is", error)
+        console.log("Error status", error.status)
+        if (error.response.status === 497) {
+          Alert.alert('This user is blocked by you');
+        } else if (error.response.status === 496) {
+          Alert.alert('Already requested');
+        }  else if (error.response.status === 498) {
+          Alert.alert(`User ${error.message} does not exist`);
+        } else if (error.response.status === 493) {
+          Alert.alert('This email does not have a workout account');
+        } else {
+          console.error(error.response.status);
+          Alert.alert('An unknown error occurred');
+        }
+			});
+    };
+    addFriendRequest();
+  };
+  
+  // This is working smile :)
+  const fetchFriends = async () => {
+    API_Instance
+    .get(`users/${globalState.user._id}/friends/all`, {
+      headers: {
+        'authorization': `Bearer ${globalState.authToken}`,
+      },
+    })
+    .then((response) => {
+      // console.log(response.data.friends);
+      setFilteredFriends(response.data.friends);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  };
+
+  useEffect(() => {
+    fetchFriends();
+  }, []);
+
+  useEffect(() => {
+    if (searchTerm === '') {
+      fetchFriends();
+    }
+  }, [searchTerm]);
 
   return  (
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView contentContainerStyle={styles.container}
             bounces={false}>
             <Text style={styles.Title}>Friends</Text>
+            
             <TextInput 
               style={styles.searchBar}
-              placeholder="Search by email..."
+              placeholder="Search by email"
               value={searchTerm}
               onChangeText={handleSearch}
             />
-            {/* <Text style={styles.Title}></Text> */}
-            <ScrollView contentContainerStyle={styles.CardContainer}
-              bounces={true}>
-        {filteredFriends.map((friend, index) => (
-          <View key={index} style={styles.card}>
-            <Text style={styles.name}>
-              {friend.firstName} {friend.lastName}
-            </Text>
-            <Text>{friend.email}</Text>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.iconButton}>
-                  {/* add onpress handle whatever the action is here */}
-                  <Text style={styles.buttonText}>Delete</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
-                  <Text style={styles.buttonText}>Block</Text>
-                </TouchableOpacity>
-                </View>
-          </View>
-        ))}
-        {filteredFriends.length === 0 && (
-          <TouchableOpacity onPress={handleAddFriend}>
-            <Text style={styles.name}>Add friend</Text>
-          </TouchableOpacity>
+            
+            <ScrollView contentContainerStyle={styles.CardContainer} bounces={true}>
 
+            <View >
+            {filteredFriends.length === 0 && searchTerm.length === 0? (
+              <Text>You have no friends added! Search by email to add a friend </Text>
+            ) : (
+            filteredFriends.map((friend) => (
+              <View key={friend._id} style={styles.card}>
+
+                {/* left side */}
+                <View style={styles.info}>
+                  <Text style={styles.name}>
+                  {friend.firstName} {friend.lastName}</Text>
+                  <Text>{friend.email.toLowerCase()}</Text>
+                </View>
+
+                {/* right side */}
+                <View style={styles.buttons}>
+                  <Button style = {styles.buttonslook}
+                    title="Delete"
+                    onPress={() => handleDeleteFriend(friend._id)}
+                  />
+                  <Button style = {styles.buttonlook}
+                    title="Block"
+                    onPress={() => handleBlockFriend(friend._id)}
+                  />
+                 </View>
+
+              </View>
+              ))
+            )}
+            </View>
+
+        {filteredFriends.length === 0 && searchTerm.length != 0 &&(
+          <TouchableOpacity  style={styles.iconButton} onPress={handleAddFriend}>
+                  <Text style={styles.addFriend}>Add friend <Text style={styles.searchTerm}>{searchTerm.toLowerCase()}</Text></Text>
+          </TouchableOpacity>
         )}
+
           </ScrollView>
           <View style={{borderColor: 'black', borderWidth: '0px'}}/>
           </KeyboardAwareScrollView>
@@ -66,6 +226,14 @@ export default function Friends(props) {
 }
 
 const styles = StyleSheet.create({
+    Normal:{
+        fontFamily: 'HelveticaNeue',
+        color: '#2B2B2B',
+        fontSize: 15,
+        textAlign: 'left',
+        paddingLeft: 20,
+        paddingVertical: 5
+    },
     Title:{
         fontFamily: 'HelveticaNeue-Bold',
         color: '#2B2B2B',
@@ -95,7 +263,6 @@ const styles = StyleSheet.create({
       marginBottom: 20,
       borderWidth: 1,
       borderColor: '#ccc',
-
     },
     card:{
       backgroundColor: '#DDF2FF',
@@ -107,7 +274,9 @@ const styles = StyleSheet.create({
       shadowOffset: { width: 0, height: 2 },
       elevation: 2,
       borderRadius: 15,
-
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
     },
     name: {
       fontSize: 18,
@@ -139,13 +308,11 @@ const styles = StyleSheet.create({
     },
     addFriendContainer:{
       flex:0.1,
-      //borderColor: 'black',
-      //borderWidth: '1px',
       width: '95%',
       alignSelf:'center',
       marginBottom: 30
     },
-    buttonContainer: {
+    buttons: {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'flex-end',
@@ -155,5 +322,17 @@ const styles = StyleSheet.create({
       borderRadius: 50,
       padding: 10,
       marginLeft: 10,
+      alignContent: 'center',
     },
+    addFriend: {
+      padding: 10,
+      alignContent: 'center',
+    },
+    info: {
+      alignContent: 'left',
+    },
+    searchTerm:{
+      color: '#FA7B34',
+    }
 });
+
