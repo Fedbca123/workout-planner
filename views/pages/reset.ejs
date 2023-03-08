@@ -30,6 +30,10 @@
           font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
         .lead{
+          padding-top: 10%;
+          padding-bottom: 10%;
+          margin-left: auto;
+          margin-right: auto;
           width: 95%;
         }
     </style>
@@ -41,12 +45,17 @@
     </div>
     <div class="message">
       <% if (success) {%>
-        <form id="password-reset" onsubmit="completePasswordReset(this)">
-          <label for="password">Password:</label>
-          <input type="password">
-          <label for="passwordConf">Password Confirmation:</label>
-          <input type="password">
-          <button type="submit">Reset Password</button>
+        <form action="#">
+          <div class="error-text">Passwords Do Not Match</div>
+          <div class="field">
+            <input type="password" placeholder="Enter Password">
+          </div>
+          <div class="field">
+            <input type="password" placeholder="Confirm Password">
+            <div class="show">SHOW</div>
+          </div>
+          <button disabled>Check</button>
+          
         </form>
         <%} else {%>
           <p class="lead"><%= message %></p>
@@ -54,4 +63,13 @@
     </div>
 </div>
 </body>
+<script>
+  const password = document.getElementById("password").value;
+  const passwordConf = document.getElementById("passwordConf").value;
+  const form = document.getElementById("password-reset");
+
+    if(password.get != )
+
+  }
+</script>
 </html>
