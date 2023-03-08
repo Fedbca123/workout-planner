@@ -20,7 +20,7 @@ import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
 import HomeNav from "../navigation/homeNav";
 
-const baseUrl = config.API_URL + config.PORT + '/';
+// const baseUrl = config.API_URL + config.PORT + '/';
 
 export default function ExerciseSearch(props) {
 	const navigation = useNavigation();
@@ -29,8 +29,13 @@ export default function ExerciseSearch(props) {
 
 	const loadExercises = async () => {
 
-		axios.post(baseUrl + "exercises/search", {
+		API_Instance.post("exercises/search", {
 			ownerId: globalState.user._id
+		}, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				'authorization': `BEARER ${globalState.authToken}`
+			}
 		}).then((response) => {
 			// console.log(response.data);
 			if (response.status == 200) {

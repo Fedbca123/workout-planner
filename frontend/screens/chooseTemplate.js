@@ -16,6 +16,7 @@ import Workouts from "./workout.js";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
+import { Header } from "react-native-elements";
 
 export default function ChooseTemplate(props) {
 	const navigation = useNavigation();
@@ -23,8 +24,13 @@ export default function ChooseTemplate(props) {
 	const [workouts, updateWorkouts] = useState([]);
 	function loadWorkouts() {
 
-		axios.post(baseUrl + "workouts/search", {
+		API_Instance.post("workouts/search", {
 			ownerId: globalState.user._id
+		}, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				'authorization': `BEARER ${globalState.authToken}`
+			}
 		}).then((response) => {
 			// console.log(response.data);
 			if (response.status == 200) {

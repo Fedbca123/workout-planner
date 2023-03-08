@@ -34,7 +34,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 		if (showButton) {
 			return (
 				<View >
-					<Image source={sections.image} style={styles.ImageStyle} />
+					{/* <Image source={sections.image} style={styles.ImageStyle} /> */}
 					<Text style={styles.TitleText}>{sections.title}</Text>
 					
 					<TouchableOpacity onPress={() =>{
@@ -48,7 +48,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 		} else {
 			return (
 				<View>
-					<Image source={sections.image} style={styles.ImageStyle} />
+					{/* <Image source={sections.image} style={styles.ImageStyle} /> */}
 					<Text style={styles.TitleText}>{sections.title}</Text>
 				</View>
 			);
@@ -82,7 +82,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 				return (
 					<View >
 						{/* Image Component here */}
-						<Image source={item.image} style={styles.ImageStyle} />
+						{/* <Image source={item.image} style={styles.ImageStyle} /> */}
 						<Text style={styles.text}>{item.title}</Text>
 					</View>
 				);
