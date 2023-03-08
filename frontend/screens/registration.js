@@ -9,11 +9,12 @@ import {
 import React, {useState, useRef} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import API_Instance from '../../backend/axios_instance';
-import {useGlobalState} from '../../GlobalState.js';
+import {useGlobalState} from '../GlobalState.js';
 import {TextInput} from 'react-native-paper';
+import * as SecureStore from 'expo-secure-store';
 
 
-export default function Register(props) {
+export default function Register({navigation}) {
   // defining state
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -36,6 +37,16 @@ export default function Register(props) {
   const emailRef = useRef(0);
   const passwordRef = useRef(0);
   const passwordConfRef = useRef(0);
+
+  React.useEffect(() => {
+		const fetchData = async () => {
+			if (globalState.authToken)
+				await SecureStore.setItemAsync("authKey", globalState.authToken);
+			if (globalState.user)
+				await SecureStore.setItemAsync("userId", globalState.user._id);
+		}
+		fetchData();
+	}, [globalState])
 
   const registerHandler = () => {
     const emptyFirstname = firstName === '';
@@ -141,42 +152,36 @@ export default function Register(props) {
         lastName: lastName,
         email: email,
         password: password
-      }).catch((e)=>{
-        console.log(e);
-      });
+    }).catch((e)=>{
+      console.log(e);
+    });
 
-    Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
-    [{text:"Back to Login", onPress: () => props.navigation.goBack()}]);
-      
-    // API_Instance.post('users/register', {
-    //     firstName: firstName,
-    //     lastName: lastName,
-    //     email: email,
-    //     password: password
-    // })
-    // .then((response) => {
-    //     if (response.status == 200)
-    //     {
-    //         setError('');
-    //         updateGlobalState("user", response.data.user);
-    //         updateGlobalState("JWT", response.data.authToken)
-    //         // no need for friends state to render bc itll be empty on account creation
+  Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
+  [{text:"Back to Login", onPress: () => props.navigation.goBack()}]);
+    /*
+    .then((response) => {
+        if (response.status == 200)
+        {
+            setError('');
+            updateGlobalState("user", response.data.user);
+            updateGlobalState("authToken", response.data.authToken);
 
-    //         props.navigation.navigate("home");
-    //     }
-    // })
-    // .catch((e) => {
-    //     if (e.response) setError(e.response.data.Error)
-    //     if (e.response.status == 501)
-    //     {
-    //         setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
-    //         setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
-    //     }
-    //     else if(e.response.status == 502)
-    //     {
-    //         setEmailError(true)//emailRef.current.setNativeProps({style: styles.inputerrorstyle});
-    //     }
-    // });
+            setIsLoggedIn(true);
+        }
+    })
+    .catch((e) => {
+        if (e.response) setError(e.response.data.Error)
+        if (e.response.status == 501)
+        {
+            setPW1Error(true)//passwordRef.current.setNativeProps({style: styles.inputerrorstyle});
+            setPW2Error(true)//passwordConfRef.current.setNativeProps({style: styles.inputerrorstyle});
+        }
+        else if(e.response.status == 502)
+        {
+            setEmailError(true)//emailRef.current.setNativeProps({style: styles.inputerrorstyle});
+        }
+    });
+    */
   }
 
   //render(){

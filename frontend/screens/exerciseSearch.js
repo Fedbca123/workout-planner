@@ -14,14 +14,13 @@ import {
 import React from "react";
 import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
 import HomeNav from "../navigation/homeNav";
 
-export default function ExerciseSearch(props) {
-	const navigation = useNavigation();
+export default function ExerciseSearch({ navigation }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const exercises = [
 		{

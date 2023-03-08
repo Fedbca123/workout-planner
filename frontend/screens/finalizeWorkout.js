@@ -14,15 +14,14 @@ import {
 import React from "react";
 import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
 import HomeNav from "../navigation/homeNav";
 
-export default function FinalizeWorkout({ props, data }) {
+export default function FinalizeWorkout({ navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
-	const navigation = useNavigation();
 	return (
 		<View style={styles.container}>
 			<Text style={styles.TitleText}>What do you wanna name the workout?</Text>
@@ -34,7 +33,8 @@ export default function FinalizeWorkout({ props, data }) {
 			<WorkOuts data={globalState.workout} showInput={true}/>
 			<Button title="Add Workout" onPress={()=>{
 				updateGlobalState("workoutScheduled",globalState.workout);
-				navigation.navigate("home");
+				navigation.popToTop();
+				navigation.navigate("Home");
 		}}/>
 		</View>
 	);
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#F1F3FA",
 		margin: 10,
 		padding: 15,
-		borderRadius: "20rem",
+		borderRadius: 20
 		// flex: 0.5,
 		// shadowOpacity: 2
 	},
@@ -61,6 +61,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#F1F3FA",
 		margin: 10,
 		padding: 15,
-		borderRadius: "10rem",
+		borderRadius: 10,
 	}
 })
