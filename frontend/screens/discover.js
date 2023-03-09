@@ -68,14 +68,17 @@ const exerciseDummyData = [
 const workoutDummyData = [
   {Name: 'Top Workout', id: 1, Exercises: 5},
   {Name: 'Legs', id: 2, Exercises: 6},
-  {Name: 'Full Body', id: 3, Exercises: 11},
+  {Name: 'Full Body', id: 3, Exercises: 9},
   {Name: 'Arms', id: 4, Exercises: 5},
   {Name: 'Legs', id: 5, Exercises: 6},
-  {Name: 'Full Body', id: 6, Exercises: 11},
+  {Name: 'Full Body', id: 6, Exercises: 8},
   {Name: 'Arms', id: 7, Exercises: 5},
   {Name: 'Legs', id: 8, Exercises: 6},
   {Name: 'Full Body', id: 9, Exercises: 11},
-  {Name: 'Bottom Workout', id: 10, Exercises: 5},
+  {Name: 'Arms', id: 10, Exercises: 2},
+  {Name: 'Legs', id: 11, Exercises: 15},
+  {Name: 'Full Body', id: 12, Exercises: 3},
+  {Name: 'Bottom Workout', id: 13, Exercises: 7},
 ];
 
 export default function DiscoverPage(props) {
@@ -140,7 +143,7 @@ export default function DiscoverPage(props) {
     setSearch(search);
   }
 
-
+  // Remove?
   const WorkoutsList = [
 		{
 			title: "Leg Day",
@@ -240,16 +243,16 @@ return (
                       height: 50,
                       //radius: 40,
                     //borderWidth: -1,
-                    activeBackgroundColor: "#8EB4FA",
-                    inActiveBackgroundColor: "#C38AF0"
+                    activeBackgroundColor: "#E5DAE7",
+                    inActiveBackgroundColor: "#88CAE7"
                     }}
                     thumbButton={{
                       width: 80,
                       height: 50,
                       //radius: 30,
                       borderWidth: 1,
-                      activeBackgroundColor: "#ddff33",
-                      inActiveBackgroundColor: "#33ff9c"
+                      activeBackgroundColor: "#34A5D5",
+                      inActiveBackgroundColor: "#BFBCC8"
                       }}
                     />
               </View>
@@ -497,21 +500,23 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   workoutItems:{
-    backgroundColor: '#3377ff',
-    color: "#33ff9c",
+    backgroundColor: '#E5DAE7',
+    color: "#333",
+    fontWeight: "500",
     justifyContent: 'center',
     textAlign: 'center',
-    padding: 10, 
+    padding: 12, 
     //height: Dimensions.get('window') / numColumns,
     flex: 1,
     margin: 1,
  },
   exerciseItems:{
-      backgroundColor: '#8333ff',
-      color: "#ddff33",
+      backgroundColor: '#67BBE0',
+      color: "#333",
+      fontWeight: "500",
       justifyContent: 'center',
       textAlign: 'center',
-      padding: 10, 
+      padding: 14, 
       //height: Dimensions.get('window') / numColumns,
       flex: 1,
       margin: 1,
@@ -579,30 +584,6 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
 
-  // workoutsBttnText:{
-  //   color: '#12BEF6',
-  //   fontWeight: 'bold',
-  // },
-  // exercisesBttnText:{
-  //   color: '#FA7B34',
-  //   fontWeight: 'bold',
-  // },
-  // discoverBttnsCntnr:{
-  //   justifyContent: 'center',
-  //   flexDirection: 'row',
-  // },
-  // discoverWorkoutsBttnsContainer:{
-  //   backgroundColor: '#DCF1FE',
-  //   margin: 30,
-  //   padding: 15,
-  //   borderRadius: '10rem',
-  // },
-  // discoverExercisesBttnsContainer:{
-  //   backgroundColor: '#F8E1D2',
-  //   margin: 30,
-  //   padding: 15,
-  //   borderRadius: '10rem',
-  // },
   discoverTitle:{
     fontSize: 20,
     fontWeight: 'bold',
@@ -615,9 +596,9 @@ const styles = StyleSheet.create({
     opacity: .45,
   },
   discoverContainer:{
-    backgroundColor: 'salmon',
-    height: "75.5%",
-    //flex: 2,
+    backgroundColor: 'white',
+    height: "72.8%",
+    // flex: 2,
   },
   discoverHeaderContainer:{
     backgroundColor: 'white',
