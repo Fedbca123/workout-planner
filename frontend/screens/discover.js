@@ -6,11 +6,10 @@ import { SearchBar } from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
-import config from "../../config";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
-import { RFC_2822 } from 'moment';
+import { GlobalState, useGlobalState } from '../GlobalState.js';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -35,7 +34,7 @@ const muscleGroupsFilters = [
   {item: 'Chest', id: '8'},
   {item: 'Back', id: '9'},
   {item: 'Hamstring', id: '10'},
-  {item: 'Quads', id: '11'}, // Quadriceps?
+  {item: 'Quads', id: '11'},
   {item: 'Calves', id: '12'},
   {item: 'Glutes', id: '13'},
   {item: 'Forearms', id: '14'},
@@ -49,7 +48,7 @@ const typeFilters = [
   {item: 'AMRAP', id: '3'}
 ];
 
-const exerciseData = [
+const exerciseDummyData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
   {Name: 'Benchpress', id: 2, Sets: 3, Reps: 5},
   {Name: 'Lunges', id: 3, Sets: 5, Reps: 5},
@@ -66,17 +65,20 @@ const exerciseData = [
   {Name: 'Deadlift', id: 14, Sets: 1, Reps: 3},
   {Name: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
 ];
-const workoutData = [
+const workoutDummyData = [
   {Name: 'Top Workout', id: 1, Exercises: 5},
   {Name: 'Legs', id: 2, Exercises: 6},
-  {Name: 'Full Body', id: 3, Exercises: 11},
+  {Name: 'Full Body', id: 3, Exercises: 9},
   {Name: 'Arms', id: 4, Exercises: 5},
   {Name: 'Legs', id: 5, Exercises: 6},
-  {Name: 'Full Body', id: 6, Exercises: 11},
+  {Name: 'Full Body', id: 6, Exercises: 8},
   {Name: 'Arms', id: 7, Exercises: 5},
   {Name: 'Legs', id: 8, Exercises: 6},
   {Name: 'Full Body', id: 9, Exercises: 11},
-  {Name: 'Bottom Workout', id: 10, Exercises: 5},
+  {Name: 'Arms', id: 10, Exercises: 2},
+  {Name: 'Legs', id: 11, Exercises: 15},
+  {Name: 'Full Body', id: 12, Exercises: 3},
+  {Name: 'Bottom Workout', id: 13, Exercises: 7},
 ];
 
 export default function DiscoverPage(props) {
@@ -87,12 +89,51 @@ export default function DiscoverPage(props) {
   const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
   const [selectedMuscleGroupsFilter, setMuscleGroupsFilter] = useState([]);
   const [selectedTypeFilter, setTypeFilter] = useState([]);
-  const [isAFilterExpanded, closeExpandedFilters] = useState(false);
-
+  const [globalState, updateGlobalState] = useGlobalState();
+  
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const baseUrl = config.API_URL + config.PORT + "/";
+//   const Item = ({title, description, exerciseType, muscleGroups}) => (
+//     <View>
+//       <Text style = {styles.exerciseTitle}>{title}</Text>
+//       <Text style = {styles.exerciseCardDescription}>{description}</Text>
+//       <Text style = {styles.exerciseCardType}>{exerciseType}</Text>
+//       <Text style = {styles.exerciseCardMuscleGroups}>{muscleGroups}</Text>
+//  </View>
+//   );
+
+//   const renderCard = ({item}) => (
+//       <Item title = {item.title} 
+//                     description = {item.description}
+//                     exerciseType = {item.exerciseType}
+//                     muscleGroups = {item.muscleGroups}/>
+//   );
+
+  const exercisesList = API_Instance.post('exercises/search',
+  {
+    muscleGroupsStr: selectedMuscleGroupsFilter,
+    exerciseTypeSrch : selectedTypeFilter,
+    equipmentFilters : selectedEquipmentFilter
+  },   
+  {
+    headers: {
+      'authorization': `BEARER ${globalState.authToken}`,
+      'Content-Type':'multipart/form-data'
+    }
+  })
+  .then((response) => {
+    if (response.status == 200){
+      console.log(response.data);
+      console.log('Success!');
+    }
+  })
+  .catch((e) => {
+    console.log(e);
+    console.log(globalState.authToken);
+    Alert.alert('Error!');
+  
+  })
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
@@ -102,14 +143,7 @@ export default function DiscoverPage(props) {
     setSearch(search);
   }
 
-  const handleTypePress = () => {
-		console.log("Type Filter Pressed");
-	};
-
-  const closeOtherFilters = () => {
-    
-  }
-
+  // Remove?
   const WorkoutsList = [
 		{
 			title: "Leg Day",
@@ -155,27 +189,6 @@ export default function DiscoverPage(props) {
 		},
 	];
   
-  // function getWorkouts(){
-  //   axios.get(baseUrl + "/").then((response) => {
-	// 		if (response.status === 200) {
-	// 			return <Workouts data={response.data} />;
-	// 		}
-	// 	});  
-  // }
-
-  // function getExercises(){
-
-  // }
-
-  // useEffect(() => {
-  //   axios.get('https://reactnative.dev/movies.json')
-  //     .then(({ data }) => {
-  //       console.log("defaultApp -> data", data.movies)
-  //       setData(data.movies)
-  //     })
-  //     .catch((error) => console.error(error))
-  //     .finally(() => setLoading(false));
-  // }, []);
 
   function onMultiChangeEquipment() {
     return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
@@ -230,23 +243,27 @@ return (
                       height: 50,
                       //radius: 40,
                     //borderWidth: -1,
-                    activeBackgroundColor: "#8EB4FA",
-                    inActiveBackgroundColor: "#C38AF0"
+                    activeBackgroundColor: "#E5DAE7",
+                    inActiveBackgroundColor: "#88CAE7"
                     }}
                     thumbButton={{
                       width: 80,
                       height: 50,
                       //radius: 30,
                       borderWidth: 1,
-                      activeBackgroundColor: "#ddff33",
-                      inActiveBackgroundColor: "#33ff9c"
+                      activeBackgroundColor: "#34A5D5",
+                      inActiveBackgroundColor: "#BFBCC8"
                       }}
                     />
               </View>
               <View style={styles.filters}>
                 <TouchableOpacity onPress={toggleFiltersShowing}>
+                  
                 <View style={styles.modalContainer}></View>
-                <Text style={styles.openText}>Open Filters</Text>
+                    <Image source = {require("../../assets/filter_icon.png")}
+                      style={styles.filterImage}
+                    />
+                {/* <Text style={styles.openText}>Open Filters</Text> */}
                   <Modal 
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
@@ -334,14 +351,14 @@ return (
                       </TouchableOpacity>
                     </SafeAreaView>
                   </Modal>
-                </TouchableOpacity>
+                  </TouchableOpacity>
               </View>
             </View>
             <View style={styles.searchBar}>
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
-                data={exerciseData} 
+                data={exercisesList} 
                 lightTheme
                 round
                 onChangeText={updateSearch}
@@ -361,35 +378,35 @@ return (
           </View>
         </View> 
       </View>
-      <View style={styles.discoverContainer}>
-              {toggleValue ? <FlatList
-              data = {exerciseData}
-              style = {styles.boxContainer}
-              renderItem = 
-              {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
-              /> : <FlatList
-              data = {workoutData}
-              style = {styles.boxContainer}
-              renderItem = {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
-              />}
-      </View>
-
       {/* <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
-              data = {exerciseData}
+              // data = {exercisesList}
+              data = {exerciseDummyData}
               style = {styles.boxContainer}
-              renderItem = 
-              {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              // renderItem = {renderCard}
+              // keyExtractor = {(item) => item.id}
               /> : <FlatList
-              data = {workoutData}
+              data = {workoutDummyData}
               style = {styles.boxContainer}
               renderItem = {({item}) => <TouchableOpacity onPress={()=>
               Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
               />}
       </View> */}
+
+      <View style={styles.discoverContainer}>
+              {toggleValue ? <FlatList
+              data = {exerciseDummyData}
+              style = {styles.boxContainer}
+              renderItem = 
+              {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              /> : <FlatList
+              data = {workoutDummyData}
+              style = {styles.boxContainer}
+              renderItem = {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              />}
+      </View>
     </SafeAreaView>
   )
 }
@@ -404,8 +421,13 @@ const styles = StyleSheet.create({
   },
   modalCloseButton:{
     alignItems: 'center',
+    position: 'absolute',
+    justifyContent: 'center',
+    alignContent: 'center',
+    bottom: "2%",
+    width: "100%"
     // bottom: -375,
-    //width: "50%",
+    // width: "90%",
     // justifyContent: 'center',
     // alignContent:'center',
     //width:"100%",
@@ -419,11 +441,11 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 3,
     borderRadius: "20rem",
-    bottom: -375,
+    // bottom: -375,
     alignItems: 'center',
     paddingHorizontal: 10,
     marginHorizontal: 1,
-    width: "35%",
+    //width: "35%",
     justifyContent: 'center',
     alignContent: 'center',
   },
@@ -433,7 +455,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 30,
     paddingHorizontal: 8,
-    borderRadius: 20,
+    //borderRadius: "20rem",
     
   },
   openText:{
@@ -449,6 +471,15 @@ const styles = StyleSheet.create({
   },
   filterOptions:{
     color: '#000',
+    flex: 3,
+  },
+  filterImage:{
+    width: 30,
+    height: 30,
+    // paddingHorizontal: 8,
+    //paddingVertical: 10,
+    marginTop: 25,
+    marginLeft: 5,
   },
 
   selectedFilterLabels: {
@@ -462,9 +493,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#2193BC'
     
   },
-  filterSearch:{
-    //backgroundColor: 'pink'
-  },
 
   filterLabels:{
     fontWeight: '500',
@@ -472,25 +500,43 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   workoutItems:{
-    backgroundColor: '#3377ff',
-    color: "#33ff9c",
+    backgroundColor: '#E5DAE7',
+    color: "#333",
+    fontWeight: "500",
     justifyContent: 'center',
     textAlign: 'center',
-    padding: 10, 
+    padding: 12, 
     //height: Dimensions.get('window') / numColumns,
     flex: 1,
     margin: 1,
  },
   exerciseItems:{
-      backgroundColor: '#8333ff',
-      color: "#ddff33",
+      backgroundColor: '#67BBE0',
+      color: "#333",
+      fontWeight: "500",
       justifyContent: 'center',
       textAlign: 'center',
-      padding: 10, 
+      padding: 14, 
       //height: Dimensions.get('window') / numColumns,
       flex: 1,
       margin: 1,
    },
+   exerciseTitle:{
+      color: 'green',
+      fontSize: 14,
+   },
+   exerciseCardDescription:{
+    color: 'black',
+    fontSize: 10,
+  },   
+  exerciseCardType:{
+    color: 'black',
+    fontSize: 10,
+  },
+  exerciseCardMuscleGroups:{
+    color: 'red',
+    fontSize: 10,
+  },
    workoutTitle:{
       fontWeight: 'bold',
       fontSize: 13,
@@ -538,30 +584,6 @@ const styles = StyleSheet.create({
     opacity: 0,
   },
 
-  // workoutsBttnText:{
-  //   color: '#12BEF6',
-  //   fontWeight: 'bold',
-  // },
-  // exercisesBttnText:{
-  //   color: '#FA7B34',
-  //   fontWeight: 'bold',
-  // },
-  // discoverBttnsCntnr:{
-  //   justifyContent: 'center',
-  //   flexDirection: 'row',
-  // },
-  // discoverWorkoutsBttnsContainer:{
-  //   backgroundColor: '#DCF1FE',
-  //   margin: 30,
-  //   padding: 15,
-  //   borderRadius: '10rem',
-  // },
-  // discoverExercisesBttnsContainer:{
-  //   backgroundColor: '#F8E1D2',
-  //   margin: 30,
-  //   padding: 15,
-  //   borderRadius: '10rem',
-  // },
   discoverTitle:{
     fontSize: 20,
     fontWeight: 'bold',
@@ -574,9 +596,9 @@ const styles = StyleSheet.create({
     opacity: .45,
   },
   discoverContainer:{
-    backgroundColor: 'salmon',
-    height: "75.5%",
-    //flex: 2,
+    backgroundColor: 'white',
+    height: "72.8%",
+    // flex: 2,
   },
   discoverHeaderContainer:{
     backgroundColor: 'white',
