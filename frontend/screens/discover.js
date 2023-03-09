@@ -48,7 +48,7 @@ const typeFilters = [
   {item: 'AMRAP', id: '3'}
 ];
 
-const exerciseData = [
+const exerciseDummyData = [
   {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
   {Name: 'Benchpress', id: 2, Sets: 3, Reps: 5},
   {Name: 'Lunges', id: 3, Sets: 5, Reps: 5},
@@ -65,7 +65,7 @@ const exerciseData = [
   {Name: 'Deadlift', id: 14, Sets: 1, Reps: 3},
   {Name: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
 ];
-const workoutData = [
+const workoutDummyData = [
   {Name: 'Top Workout', id: 1, Exercises: 5},
   {Name: 'Legs', id: 2, Exercises: 6},
   {Name: 'Full Body', id: 3, Exercises: 11},
@@ -91,21 +91,21 @@ export default function DiscoverPage(props) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const Item = ({title, description, exerciseType, muscleGroups}) => (
-    <View>
-      <Text style = {styles.exerciseTitle}>{title}</Text>
-      <Text style = {styles.exerciseCardDescription}>{description}</Text>
-      <Text style = {styles.exerciseCardType}>{exerciseType}</Text>
-      <Text style = {styles.exerciseCardMuscleGroups}>{muscleGroups}</Text>
- </View>
-  );
+//   const Item = ({title, description, exerciseType, muscleGroups}) => (
+//     <View>
+//       <Text style = {styles.exerciseTitle}>{title}</Text>
+//       <Text style = {styles.exerciseCardDescription}>{description}</Text>
+//       <Text style = {styles.exerciseCardType}>{exerciseType}</Text>
+//       <Text style = {styles.exerciseCardMuscleGroups}>{muscleGroups}</Text>
+//  </View>
+//   );
 
-  const renderCard = ({item}) => (
-      <Item title = {item.title} 
-                    description = {item.description}
-                    exerciseType = {item.exerciseType}
-                    muscleGroups = {item.muscleGroups}/>
-  );
+//   const renderCard = ({item}) => (
+//       <Item title = {item.title} 
+//                     description = {item.description}
+//                     exerciseType = {item.exerciseType}
+//                     muscleGroups = {item.muscleGroups}/>
+//   );
 
   const exercisesList = API_Instance.post('exercises/search',
   {
@@ -375,34 +375,35 @@ return (
           </View>
         </View> 
       </View>
-      <View style={styles.discoverContainer}>
-              {toggleValue ? <FlatList
-              data = {exercisesList}
-              style = {styles.boxContainer}
-              renderItem = {renderCard}
-              keyExtractor = {(item) => item.id}
-              /> : <FlatList
-              data = {workoutData}
-              style = {styles.boxContainer}
-              renderItem = {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
-              />}
-      </View>
-
       {/* <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
-              data = {exerciseData}
+              // data = {exercisesList}
+              data = {exerciseDummyData}
               style = {styles.boxContainer}
-              renderItem = 
-              {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              // renderItem = {renderCard}
+              // keyExtractor = {(item) => item.id}
               /> : <FlatList
-              data = {workoutData}
+              data = {workoutDummyData}
               style = {styles.boxContainer}
               renderItem = {({item}) => <TouchableOpacity onPress={()=>
               Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
               />}
       </View> */}
+
+      <View style={styles.discoverContainer}>
+              {toggleValue ? <FlatList
+              data = {exerciseDummyData}
+              style = {styles.boxContainer}
+              renderItem = 
+              {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              /> : <FlatList
+              data = {workoutDummyData}
+              style = {styles.boxContainer}
+              renderItem = {({item}) => <TouchableOpacity onPress={()=>
+              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              />}
+      </View>
     </SafeAreaView>
   )
 }
