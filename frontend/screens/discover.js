@@ -6,14 +6,10 @@ import { SearchBar } from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
-// import config from "../../backend/config";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
 import { GlobalState, useGlobalState } from '../../GlobalState.js';
-
-// const baseUrl = config.API_URL + config.PORT + '/';
-//const router = require('express').Router();
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -95,7 +91,7 @@ export default function DiscoverPage(props) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const exercisesList = API_Instance.post(`exercises/search`,
+  const exercisesList = API_Instance.post('exercises/search',
   {
     muscleGroupsStr: selectedMuscleGroupsFilter,
     exerciseTypeSrch : selectedTypeFilter,
@@ -103,7 +99,8 @@ export default function DiscoverPage(props) {
   },   
   {
     header: {
-      Authorization: `BEARER ${globalState.authToken}`
+      'authorization': `BEARER ${globalState.authToken}`,
+      'Content-Type':'multipart/form-data',
     }
   })
   .then((response) => {
@@ -114,6 +111,7 @@ export default function DiscoverPage(props) {
   })
   .catch((e) => {
     console.log(e);
+    console.log(globalState.authToken);
     Alert.alert('Error!');
   
   })
@@ -241,8 +239,12 @@ return (
               </View>
               <View style={styles.filters}>
                 <TouchableOpacity onPress={toggleFiltersShowing}>
+                  
                 <View style={styles.modalContainer}></View>
-                <Text style={styles.openText}>Open Filters</Text>
+                    <Image source = {require("../../assets/filter_icon.png")}
+                      style={styles.filterImage}
+                    />
+                {/* <Text style={styles.openText}>Open Filters</Text> */}
                   <Modal 
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
@@ -330,14 +332,14 @@ return (
                       </TouchableOpacity>
                     </SafeAreaView>
                   </Modal>
-                </TouchableOpacity>
+                  </TouchableOpacity>
               </View>
             </View>
             <View style={styles.searchBar}>
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
-                data={exerciseData} 
+                data={exercisesList} 
                 lightTheme
                 round
                 onChangeText={updateSearch}
@@ -451,6 +453,14 @@ const styles = StyleSheet.create({
   filterOptions:{
     color: '#000',
     flex: 3,
+  },
+  filterImage:{
+    width: 30,
+    height: 30,
+    // paddingHorizontal: 8,
+    //paddingVertical: 10,
+    marginTop: 25,
+    marginLeft: 5,
   },
 
   selectedFilterLabels: {
