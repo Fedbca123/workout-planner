@@ -1096,7 +1096,11 @@ router.route('/forgotpassword/reset/:JWT').get(async (req,res) => {
       return res.render('pages/reset', {success: false, email:email ,title:"Invalid Request", message: message});
     }
     
-    return res.render('pages/reset', {success: true, email:curUser.email ,title:"Password Reset Form", message: message});
+    //new token
+    const toEncode = {email: user.email};
+    const authToken = jwt.sign(toEncode, process.env.ACCESS_TOKEN_SECRET);
+
+    return res.render('pages/reset', {success: true, email:curUser.email ,title:"Password Reset Form", message: message, id: curUser._id, JWT: authToken});
   });
 });
 
@@ -1110,13 +1114,10 @@ router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
     const curUser = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
     if (!curUser)
     {
-        res.render('pages/reset', {success: false, title:"Invalid Request", message: "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."});
-        //return res.status(502).send({Error: "Email already exists!"}); 
+      return res.render('pages/reset', {success: false, title:"Invalid Request", message: "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."});
     }
 
-    const {password, passwordConf} = req.body;
-
-    // make sure they are equal
+    const {password} = req.body;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -1125,8 +1126,8 @@ router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
     await curUser.save((err, newUser) => {
       const title = err ? "Failed Reset of Password" : "Password Successfully Reset"
       const message = err ? "Looks like password reset didn't go as planned. Try starting the process again from the mobile app." : "Attempt a new login in the Workout Planner mobile app with your new password.";
-      res.render('views/reset', {success: false, title: title, message: message});  
-    })
+      res.render('pages/reset', {success: false, title: title, message: message});  
+    });
   })
 });
 module.exports = router;
