@@ -1,6 +1,7 @@
 import React, { useState, useEffect  } from 'react';
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+import API_Instance from "../../backend/axios_instance";
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 LocaleConfig.locales['en'] = {
@@ -14,12 +15,28 @@ LocaleConfig.defaultLocale = 'en';
 
 const CalendarScreen = () => {
   
-//   useEffect(() => {
-//     fetch('(Get) API_Instance.get("users/${id}/calendar/all')
-//       .then((response) => response.json())
-//       .then((data) => setWorkouts(data.workouts))
-//       .catch((error) => console.error(error));
-//   }, []);
+  const fetchEvents = async () => {
+    API_Instance
+    .get(`users/${globalState.user._id}/calendar/all`, {
+      headers: {
+        'authorization': `Bearer ${globalState.authToken}`,
+      },
+    })
+    .then(data => {
+      return data.workouts;
+    })
+    .catch((error) => {
+      console.error(error);
+      if (error.response.status === 403) {
+        Alert.alert('Failed to authenticate you');
+      } 
+    });
+  };
+
+  useEffect(() => {
+    // fetchEvents();
+    // console.log('Workouts:', workouts);
+  }, []);
   
   const [selectedDate, setSelectedDate] = useState('');
   const [eventList, setEventList] = useState([
