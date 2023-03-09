@@ -38,7 +38,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 					<Text style={styles.TitleText}>{sections.title}</Text>
 					
 					<TouchableOpacity onPress={() =>{
-						navigation.navigate("exerciseSearch");
+						navigation.push("exerciseSearch");
 						updateGlobalState("workout", data);
 					}}>
 						<Text>Choose Workout</Text>
