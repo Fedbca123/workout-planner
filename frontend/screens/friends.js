@@ -1,7 +1,7 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import {useGlobalState} from '../../GlobalState.js';
+import {useGlobalState} from '../GlobalState.js';
 import API_Instance from "../../backend/axios_instance";
 
 // import { Menu, MenuItem } from 'react-native-material-menu';

@@ -4,6 +4,7 @@ import LandingPage from '../screens/landingPage';
 import Friends from '../screens/friends';
 import CalendarPage from '../screens/calendar';
 import DiscoverPage from '../screens/discover';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
@@ -75,7 +76,6 @@ export default function HomeNav (props) {
                     )
                 }} 
             />
-
         </Tab.Navigator>
     )
 };

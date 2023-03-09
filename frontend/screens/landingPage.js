@@ -11,13 +11,12 @@ import {
 import React from "react";
 import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import WorkOuts from "./workout";
 
-export default function LandingPage(props) {
+export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
-	const navigation = useNavigation();
 
 	const handleScratchPress = () => {
 		// console.log("Scratch Button Pressed");
@@ -25,7 +24,7 @@ export default function LandingPage(props) {
 	};
 	const handleTemplatePress = () => {
 		// console.log("Template Button Pressed");
-		navigation.navigate("chooseTemplate");
+		navigation.navigate("createNav");
 	};
 
 	const loadCurrentDayWorkoutStatus = () => {

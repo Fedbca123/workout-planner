@@ -3,31 +3,43 @@ import {
 	Button,
 	Text,
 	Image,
-	View,
-	//TextInput,
+	View
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState, useRef } from "react";
-import { useGlobalState } from "../../GlobalState.js";
+import { useGlobalState } from "../GlobalState.js";
 import {TextInput} from 'react-native-paper';
 import API_Instance from "../../backend/axios_instance";
+import * as SecureStore from 'expo-secure-store';
+import { AuthContext } from '../AuthProvider';
 
-export default function Login(props) {
+export default function Login({navigation}) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(true);
+  	const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
+	const { setIsLoggedIn } = React.useContext(AuthContext);
 
 	// functions
-  const emailInputHandler = (enteredEmail) => {
+  	const emailInputHandler = (enteredEmail) => {
 		setEmail(enteredEmail);
 	};
 
 	const passwordInputHandler = (enteredPassword) => {
 		setPassword(enteredPassword);
 	};
+
+	React.useEffect(() => {
+		const fetchData = async () => {
+			if (globalState.authToken)
+				await SecureStore.setItemAsync("authKey", globalState.authToken);
+			if (globalState.user)
+				await SecureStore.setItemAsync("userId", globalState.user._id);
+		}
+		fetchData();
+	}, [globalState])
 
 	const loginHandler = () => {
 		API_Instance
@@ -39,12 +51,11 @@ export default function Login(props) {
 				if (response.status == 200) {
 					setError("");
 					updateGlobalState("user", response.data.user);
-					updateGlobalState("friends", response.data.friends);
-          updateGlobalState("authToken", response.data.authToken);
+          			updateGlobalState("authToken", response.data.authToken);
 					if (response.data.user.isAdmin) {
-						props.navigation.navigate("admin");
+						navigation.navigate("admin");
 					} else {
-						props.navigation.navigate("home");
+						setIsLoggedIn(true);
 					}
 				}
 			})
@@ -52,6 +63,7 @@ export default function Login(props) {
 				if (e.response) setError(e.response.data.Error);
 			});
 	};
+	
 	const backDoorHandler = (e, p) => {
 		API_Instance
 			.post("users/login", {
@@ -61,30 +73,28 @@ export default function Login(props) {
 			.then((response) => {
 				if (response.status == 200) {
 					updateGlobalState("user", response.data.user);
-					updateGlobalState("friends", response.data.friends);
-          updateGlobalState("authToken", response.data.authToken);
+          			updateGlobalState("authToken", response.data.authToken);
 					setError("");
 					if (response.data.user.isAdmin)
-						props.navigation.navigate("admin");
+						navigation.navigate("admin");
 					else
-						props.navigation.navigate("home");
+						setIsLoggedIn(true);
 				}
 			})
 			.catch((e) => {
 				if (e.response) setError(e.response.data.Error);
 			});
 	};
+
 	return (
 		<KeyboardAwareScrollView
 			extraHeight={100}
 			contentContainerStyle={styles.container}
 			keyboardShouldPersistTaps="handled"
-			bounces={false}
-		>
+			bounces={false}>
 			<Image
 				style={styles.image}
-				source={require("../../assets/workout.png")}
-			/>
+				source={require("../../assets/workout.png")}/>
 			<View style={styles.textcontainer}>
 				<Text style={styles.heading}> Welcome! </Text>
 				<Text style={styles.text}>
@@ -111,58 +121,54 @@ export default function Login(props) {
       
 			<View style={styles.buttoncontainer}>
 				<Text style={styles.error}> {error} </Text>
-				
-        <TextInput
-          mode='outlined'
-          outlineColor="black"
-          activeOutlineColor="#10B9F1"
-					style={styles.inputstyle}
-          theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
-					placeholder="username@server.com"
-          label="Email"
-					returnKeyType="next"
-					onSubmitEditing={() => {
-						passwordRef.current.focus();
-					}}
-          right={email != "" ? <TextInput.Icon /> : null}
-          //left={email != "" ? <TextInput.Icon /> : null}
-					blurOnSubmit={false}
-					keyboardType="email-address"
-					onChangeText={(text) => emailInputHandler(text)}
-				/>
-        
+						
 				<TextInput
-          mode='outlined'
-          outlineColor="black"
-          activeOutlineColor="#10B9F1"
+					mode='outlined'
+					outlineColor="black"
+					activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
-          theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
-					label="Password"
-          placeholder="***"
-					returnKeyType="go"
-					autoCapitalize="none"
-					ref={passwordRef}
-          //onFocus={()=>setPWFocus(true)}
-          //onBlur={()=>setPWFocus(false)}
-					secureTextEntry={showPassword}
-          value={password}
-					onChangeText={(text) => {
-						passwordInputHandler(text);
-					}}
-					onSubmitEditing={() => {
-						passwordRef.current.blur();
-						loginHandler();
-					}}
-          right={showPassword ? 
-            <TextInput.Icon icon="eye" onPress={()=>setShowPassword(!showPassword)}/>
-            :
-            <TextInput.Icon icon="eye-off" onPress={()=>setShowPassword(!showPassword)}/>
-          }
-          //left={password != "" || pwFocus ? <TextInput.Icon /> : null}
-				/>
-        </View>
+					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
+								placeholder="username@server.com"
+					label="Email"
+								returnKeyType="next"
+								onSubmitEditing={() => {
+									passwordRef.current.focus();
+								}}
+					right={email != "" ? <TextInput.Icon /> : null}
+								blurOnSubmit={false}
+								keyboardType="email-address"
+								onChangeText={(text) => emailInputHandler(text)}/>
+				
+				<TextInput
+					mode='outlined'
+					outlineColor="black"
+					activeOutlineColor="#10B9F1"
+								style={styles.inputstyle}
+					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
+								label="Password"
+					placeholder="***"
+								returnKeyType="go"
+								autoCapitalize="none"
+								ref={passwordRef}
+					//onFocus={()=>setPWFocus(true)}
+					//onBlur={()=>setPWFocus(false)}
+								secureTextEntry={showPassword}
+					value={password}
+								onChangeText={(text) => {
+									passwordInputHandler(text);
+								}}
+								onSubmitEditing={() => {
+									passwordRef.current.blur();
+									loginHandler();
+								}}
+					right={showPassword ? 
+						<TextInput.Icon icon="eye" onPress={()=>setShowPassword(!showPassword)}/>
+						:
+						<TextInput.Icon icon="eye-off" onPress={()=>setShowPassword(!showPassword)}/>
+				}/>
+			</View>
 
-        <View style={{flex:1, marginTop: 50}}>
+			<View style={{flex:1, marginTop: 50}}>
 				<Button
 					title="Login"
 					color="#10B9F1"
@@ -175,9 +181,8 @@ export default function Login(props) {
 					onPress={() => {
 						setError("");
 						props.navigation.navigate("registration");
-					}}
-				/>
-        </View>
+				}}/>
+			</View>
 		</KeyboardAwareScrollView>
 	);
 }
