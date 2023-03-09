@@ -146,7 +146,7 @@ router.route('/login').post(async (req, res) => {
     if (await bcrypt.compare(password, user.password))
     {
         // sign JWT for return
-        toEncode = {user: user._id};
+        toEncode = {_id: user._id};
         const authToken = jwt.sign(toEncode, process.env.ACCESS_TOKEN_SECRET);
         user.password = null;
         

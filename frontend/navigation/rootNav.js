@@ -31,7 +31,7 @@ export default function RootNav()
             API_Instance
                 .get(`users/${id}`, {
                     headers: {
-                        'authorization': `BEARER ${authToken}`
+                        'authorization': `Bearer ${authToken}`
                     }
                 })
                 .then((response) => {
