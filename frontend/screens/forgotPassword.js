@@ -29,6 +29,8 @@ export default function ForgotPassword({navigation}) {
         setErrorMsg('');
       }
 
+      // need to use API to send email
+
       Alert.alert("Reset Password Link Sent",`Please log in to ${email} and use the link sent to reset your password`,
   [{text:"Back to Login", onPress: () => navigation.goBack()}]);
     }
