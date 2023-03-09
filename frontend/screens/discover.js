@@ -130,14 +130,6 @@ export default function DiscoverPage(props) {
     setSearch(search);
   }
 
-  const handleTypePress = () => {
-		console.log("Type Filter Pressed");
-	};
-
-  const displayExercises = () => {
-    
- 
-  }
   // API_Instance.post("exercises/add", formData, {
   //   headers: {
   //       'Content-Type': 'multipart/form-data',
