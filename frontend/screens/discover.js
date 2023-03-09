@@ -91,6 +91,22 @@ export default function DiscoverPage(props) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
+  const Item = ({title, description, exerciseType, muscleGroups}) => (
+    <View>
+      <Text style = {styles.exerciseTitle}>{title}</Text>
+      <Text style = {styles.exerciseCardDescription}>{description}</Text>
+      <Text style = {styles.exerciseCardType}>{exerciseType}</Text>
+      <Text style = {styles.exerciseCardMuscleGroups}>{muscleGroups}</Text>
+ </View>
+  );
+
+  const renderCard = ({item}) => (
+      <Item title = {item.title} 
+                    description = {item.description}
+                    exerciseType = {item.exerciseType}
+                    muscleGroups = {item.muscleGroups}/>
+  );
+
   const exercisesList = API_Instance.post('exercises/search',
   {
     muscleGroupsStr: selectedMuscleGroupsFilter,
@@ -106,7 +122,7 @@ export default function DiscoverPage(props) {
   .then((response) => {
     if (response.status == 200){
       console.log(response.data);
-      Alert.alert('Success!');
+      console.log('Success!');
     }
   })
   .catch((e) => {
@@ -361,11 +377,10 @@ return (
       </View>
       <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
-              data = {{exercisesList}}
+              data = {exercisesList}
               style = {styles.boxContainer}
-              renderItem = 
-              {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              renderItem = {renderCard}
+              keyExtractor = {(item) => item.id}
               /> : <FlatList
               data = {workoutData}
               style = {styles.boxContainer}
@@ -474,9 +489,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#2193BC'
     
   },
-  filterSearch:{
-    //backgroundColor: 'pink'
-  },
 
   filterLabels:{
     fontWeight: '500',
@@ -503,6 +515,22 @@ const styles = StyleSheet.create({
       flex: 1,
       margin: 1,
    },
+   exerciseTitle:{
+      color: 'green',
+      fontSize: 14,
+   },
+   exerciseCardDescription:{
+    color: 'black',
+    fontSize: 10,
+  },   
+  exerciseCardType:{
+    color: 'black',
+    fontSize: 10,
+  },
+  exerciseCardMuscleGroups:{
+    color: 'red',
+    fontSize: 10,
+  },
    workoutTitle:{
       fontWeight: 'bold',
       fontSize: 13,
