@@ -9,7 +9,7 @@ import Modal from "react-native-modal";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
-import { GlobalState, useGlobalState } from '../../GlobalState.js';
+import { GlobalState, useGlobalState } from '../GlobalState.js';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -100,7 +100,7 @@ export default function DiscoverPage(props) {
   {
     header: {
       'authorization': `BEARER ${globalState.authToken}`,
-      'Content-Type':'multipart/form-data',
+      'Content-Type':'multipart/form-data'
     }
   })
   .then((response) => {
