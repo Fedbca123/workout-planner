@@ -198,7 +198,6 @@ export default function Register({navigation}) {
             placeholder="John"
             returnKeyType="next"
             ref={firstNameRef}
-            keyboardType="next"
             onSubmitEditing={() => {lastNameRef.current.focus();}}
             onChangeText={(text)=> setFirstName(text)}/>
             
@@ -294,7 +293,7 @@ export default function Register({navigation}) {
                 color="#C4C4C4"
                 accessibilityLabel="Back to Login"
                 onPress={() => {
-                  props.navigation.navigate("login")
+                  navigation.navigate("login")
               }}/>
             </View>
           </View>
