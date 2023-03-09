@@ -95,32 +95,28 @@ export default function DiscoverPage(props) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const exercisesList = API_Instance.post("exercises/search",{
+  const exercisesList = API_Instance.post(`exercises/search`,
+  {
     muscleGroupsStr: selectedMuscleGroupsFilter,
     exerciseTypeSrch : selectedTypeFilter,
     equipmentFilters : selectedEquipmentFilter
-  },   {
+  },   
+  {
     header: {
-      'authorization': `BEARER ${globalState.authToken}`
+      Authorization: `BEARER ${globalState.authToken}`
     }
   })
   .then((response) => {
-      if (response.status == 200){
-          console.log(response.data);
-          Alert.alert('Success!');
-      }
+    if (response.status == 200){
+      console.log(response.data);
+      Alert.alert('Success!');
+    }
   })
   .catch((e) => {
     console.log(e);
     Alert.alert('Error!');
   
   })
-
-  // const baseUrl = config.API_URL + config.PORT + "/";
-
-  // const windowWidth = useWindowDimensions().width;
-  // const windowHeight = useWindowDimensions().height;
-  // const {height, width} = useWindowDimensions();
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
@@ -130,26 +126,7 @@ export default function DiscoverPage(props) {
     setSearch(search);
   }
 
-  // API_Instance.post("exercises/add", formData, {
-  //   headers: {
-  //       'Content-Type': 'multipart/form-data',
-  //       'authorization': `BEARER ${globalState.authToken}`
-  //     }
-  // })
-  // .then((response) => {
-  //   if (response.status == 200) {
-  //       console.log(response.data);
-  //       Alert.alert('Success!', 'Exercise created', [
-  //           {text: 'OK', onPress: () => console.log('OK Pressed')},
-  //       ]);
-  //   }
-  // })
-  // .catch((e) => {
-  //   Alert.alert('Error!', 'Exercise not created', [
-  //       {text: 'OK', onPress: () => console.log('OK Pressed')},
-  //   ]);
-  //   console.log(e);
-  // });
+
   const WorkoutsList = [
 		{
 			title: "Leg Day",
