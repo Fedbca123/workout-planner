@@ -153,8 +153,6 @@ export default function Friends() {
     })
     .catch((error) => {
       console.error(error);
-      console.log(globalState.user._id);
-      console.log(globalState.authToken);
       if (error.response.status === 403) {
         Alert.alert('Failed to authenticate you');
       } 
