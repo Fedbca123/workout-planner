@@ -98,7 +98,7 @@ export default function DiscoverPage(props) {
     equipmentFilters : selectedEquipmentFilter
   },   
   {
-    header: {
+    headers: {
       'authorization': `BEARER ${globalState.authToken}`,
       'Content-Type':'multipart/form-data'
     }
