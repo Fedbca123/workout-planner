@@ -29,15 +29,28 @@
           text-align: center;
           font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
         }
-        .lead{
+        .form{
           padding-top: 10%;
           padding-bottom: 10%;
-          margin-left: auto;
-          margin-right: auto;
-          width: 95%;
+          
+        }
+        .form-container{
+          display: inline-block;
         }
     </style>
 </head>
+<script>  
+  function matchPassword() {  
+    var pw1 = document.getElementById("pswd1").value;  
+    var pw2 = document.getElementById("pswd2").value;  
+    if(pw1 != pw2)  
+    {   
+      alert("Passwords did not match");  
+    } else {  
+      alert("Password created successfully");  
+    }  
+  }  
+  </script>  
 <body>
   <div class="container">
     <div class="focus">
@@ -45,18 +58,21 @@
     </div>
     <div class="message">
       <% if (success) {%>
-        <form action="#">
-          <div class="error-text">Passwords Do Not Match</div>
-          <div class="field">
-            <input type="password" placeholder="Enter Password">
+        <form class="form">
+          <div class="form-container">
+          <div class>
+            <td> Enter Password </td> <br><br>
+            <td> Confirm Password </td> <br><br>
+            <button type = "submit" onclick="matchPassword()">Submit</button> 
           </div>
-          <div class="field">
-            <input type="password" placeholder="Confirm Password">
-            <div class="show">SHOW</div>
+          <div>
+            <input type = "password" name = "pswd1"> <br><br>  
+             
+            <input type = "password" name = "pswd2"> <br><br>
+            <button type = "reset" value = "Reset" >Clear</button>  
           </div>
-          <button disabled>Check</button>
-          
-        </form>
+          </div>  
+          </form>
         <%} else {%>
           <p class="lead"><%= message %></p>
         <%}%>
@@ -67,9 +83,5 @@
   const password = document.getElementById("password").value;
   const passwordConf = document.getElementById("passwordConf").value;
   const form = document.getElementById("password-reset");
-
-    if(password.get != )
-
-  }
 </script>
 </html>

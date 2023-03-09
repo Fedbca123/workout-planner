@@ -1096,7 +1096,7 @@ router.route('/forgotpassword/reset/:JWT').get(async (req,res) => {
       return res.render('pages/reset', {success: false, email:email ,title:"Invalid Request", message: message});
     }
     
-    res.render('pages/reset', {success: true, email:curUser.email ,title:"Password Reset Form", message: message});
+    return res.render('pages/reset', {success: true, email:curUser.email ,title:"Password Reset Form", message: message});
   });
 });
 
