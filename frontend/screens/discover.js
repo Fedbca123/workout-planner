@@ -124,13 +124,13 @@ export default function DiscoverPage(props) {
   })
   .then((response) => {
     if (response.status == 200){
-      console.log(response.data);
-      console.log('Success!');
+      //console.log(response.data);
+      //console.log('Success!');
     }
   })
   .catch((e) => {
-    console.log(e);
-    console.log(globalState.authToken);
+    // console.log(e);
+    // console.log(globalState.authToken);
     Alert.alert('Error!');
   
   })
@@ -198,16 +198,6 @@ export default function DiscoverPage(props) {
   }
   function onMultiChangeType() {
     return (item) => setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'))
-  }
-
-
-
-  function handleExercisePress() {
-    console.log("Exercise button pressed");
-  }
-
-  function handleWorkoutPress() {
-    console.log("Workout button pressed");
   }
 
   function showWorkout() {
