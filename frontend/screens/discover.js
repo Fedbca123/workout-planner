@@ -268,7 +268,7 @@ return (
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
                     //backdropOpacity = "1"
-                    backdropColor = "gray"
+                    backdropColor = "white"
                     presentationStyle='fullScreen'
                     transparent={false}
                     >
