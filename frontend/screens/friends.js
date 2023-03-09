@@ -138,14 +138,14 @@ export default function Friends() {
     };
     addFriendRequest();
   };
-  
+
   // This is working smile :)
   const fetchFriends = async () => {
     API_Instance
-    .get(`users/${globalState.user._id}/friends/all`, {
+    .get(`users/${globalState.user._id}/friends/all` ,{
       headers: {
         'authorization': `Bearer ${globalState.authToken}`,
-      },
+      }
     })
     .then((response) => {
       // console.log(response.data.friends);
@@ -153,6 +153,11 @@ export default function Friends() {
     })
     .catch((error) => {
       console.error(error);
+      console.log(globalState.user._id);
+      console.log(globalState.authToken);
+      if (error.response.status === 403) {
+        Alert.alert('Failed to authenticate you');
+      } 
     });
   };
 
