@@ -239,12 +239,19 @@ return (
               </View>
               <View style={styles.filters}>
                 <TouchableOpacity onPress={toggleFiltersShowing}>
+<<<<<<< Updated upstream
                   
                 <View style={styles.modalContainer}></View>
                     <Image source = {require("../../assets/filter_icon.png")}
                       style={styles.filterImage}
                     />
                 {/* <Text style={styles.openText}>Open Filters</Text> */}
+=======
+                      <Image source = {"../../assets/filter_icon.png"}/>
+                </TouchableOpacity>
+                <View style={styles.modalContainer}></View>
+                <>
+>>>>>>> Stashed changes
                   <Modal 
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
