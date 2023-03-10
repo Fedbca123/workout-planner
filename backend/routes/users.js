@@ -1078,8 +1078,7 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
 
 router.route('/forgotpassword/reset/:JWT').get(async (req,res) => {
   const JWT = req.params.JWT;
-  const message = "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue."
-  const success = true;
+  const message = "Please return to the Workout Planner mobile application to begin the process of resetting your password if you wish to continue.";
 
   // decrypt the JWT passed in the URL
   jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
