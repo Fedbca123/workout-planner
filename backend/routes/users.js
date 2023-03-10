@@ -1034,6 +1034,12 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {email} = req.body;
 
+  const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+  
+  if(!emailExists){
+    return res.status(502);
+  }
+
   const payload = {
     email: email
   }
@@ -1064,8 +1070,7 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
         ],
       },
     };
-    //var response = await client.beginSend(emailMessage);
-    console.log(endpointURI);
+    var response = await client.beginSend(emailMessage);
   } catch (e) {
     console.log(e);
   }

@@ -180,7 +180,7 @@ export default function Login({navigation}) {
 					accessibilityLabel="Create an account"
 					onPress={() => {
 						setError("");
-						props.navigation.navigate("registration");
+						navigation.navigate("registration");
 				}}/>
         <Button
 					title="Forgot Password?"

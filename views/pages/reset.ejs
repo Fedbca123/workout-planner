@@ -8,41 +8,127 @@
 		<link href='https://fonts.googleapis.com/css?family=Roboto:400,500italic' rel='stylesheet' type='text/css'>
     <script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="/stylesheets/new-password.css" rel="stylesheet">
+    
+    <style>
+      .custom-alert{
+        background-color: #fb9357;
+        color: black;
+        border-radius: 10rem;
+        width:90%;
+        margin-top: 2%;
+      }
+      body{
+        background-color: #5ad4fd;
+        flex:1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .focus {
+        display:block;
+        background-color: #ff9c62;
+        border-radius: 10rem;
+        margin-top: 30%;
+        text-align: center;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        align-self: center;
+        width: 90%;
+      }
+      .message {
+        display: block;
+        width: 90%;
+        background-color: white;
+        border: 1px solid white;
+        border-radius: 5rem;
+        text-align: center;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        margin-top: 10%;
+      }
+      .form{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex:1;
+        flex-direction: column;
+      }
+      .textfield{
+        display: block;
+        width:50%;
+        margin-top: 5%;
+        text-align: center;
+      }
+      .lead{
+          padding-top: 10%;
+          padding-bottom: 10%;
+          margin-left: auto;
+          margin-right: auto;
+          width: 95%;
+      }
+      .container {
+        display:flex;
+        flex-direction:column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
 	</head>
 	<body>
     <% if(success) { %>
-	  <div class="create-new-password-bg">
-
-        <div id="success-msg" style='display: none; text-align: center;'>
-          
-          <h1>Successfully Reset password!</h1>
-          You can now use the new password to Login
-        </div>
-        <div id="error-msg" style='display: none; text-align: center;'>
-          <h1>Failed to Change password</h1>
-          Reason: <span id='error-reason'></span>
-        </div>
-        <form name="changepass-form" id="changepass-form">
-          <h1>Change Password Form</h1>
-          <div class="alert alert-danger" id="alert" style="display: none;">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <p>Passwords Must Match!</p>
+        <div id="success-msg" style='display: none; text-align: center;width:90%;align-self:center;'>
+          <div class="container">
+            <div class="focus">
+                <h1>Password Successfully Reset</h1>
+            </div>
+            <div class="message">
+              <p class="lead">Feel free to return to the app to login with your new password!</p>
+            </div>
           </div>
-          <div class="alert alert-danger" id="alert-regex" style="display: none;">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <p>Passwords must be at least 8 characters\nand have at least one uppercase letter,\none lowercase letter, and one number.</p>
+        </div>
+        <div id="error-msg" style='display: none; text-align: center;width:90%;'>
+          <div class="container">
+            <div class="focus">
+                <h1>Password Reset Failed</h1>
+            </div>
+            <div class="message">
+              <p class="lead">It appears we were unable to reset your password as of right now.</p>
+            </div>
           </div>
-           <input type="password" name="newpass" id="newpass" placeholder="Enter New Password" />
-           <input type="password" name="newpass-verify" id="newpass-verify" placeholder="Confirm New Password" />
-           <input type="text" name="id" id="id" style="display: none;" value="<%= id %>" />
-           <input type="text" name="JWT" id="JWT" style="display: none;" value="<%= JWT %>" />
-           <input type="submit" name="submit" id="submit" value="Submit" />
-        </form>
-
-	  </div>
+        </div>
+        <div class="container">
+          <div class="focus">
+            <h1 id="passwordresetheader">Password Reset Form</h1>
+          </div>
+        
+        <div class="alert alert-danger custom-alert" id="alert" style="display: none;">
+          <!--<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>-->
+          <p>Passwords Must Match!</p>
+        </div>
+        <div class="alert alert-danger custom-alert" id="alert-regex" style="display: none;">
+          <!--<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>-->
+          <p>Passwords must be at least 8 characters and have at least one uppercase letter, one lowercase letter, and one number.</p>
+        </div>
+        <div class="message" id="form-wrapper">
+          <form class="form" name="changepass-form" id="changepass-form">
+             <input type="password" name="newpass" id="newpass" placeholder="Enter New Password" class="textfield"/>
+             <input type="password" name="newpass-verify" id="newpass-verify" placeholder="Confirm New Password" class="textfield"/>
+             <input type="text" name="id" id="id" style="display: none;" value=<%= id %> />
+             <input type="text" name="JWT" id="JWT" style="display: none;" value=<%= JWT %> />
+             <input type="submit" name="submit" id="submit" value="Submit" style="margin-bottom: 5%;margin-top: 5%;"/>
+          </form>
+        </div>
+        </div>
+	  <!--</div>-->
     <% } else { %>
-      <p>failure</p>
+      <div class="container">
+        <div class="focus">
+            <h1>Please Request A Password Reset</h1>
+        </div>
+        <div class="message">
+          <p class="lead">You can do this via the mobile app. An email with the necessary link will be sent to you shortly after.</p>
+        </div>
+      </div>
     <% } %>
 <script>
   $(document).ready(function () {
@@ -54,7 +140,8 @@
         $("#newpass").focus();
         return false;
       }
-      if(!regex.test($("#newpass").val())){
+      if(!/^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z?!@#$%^&*()]*$/.test($("#newpass").val())){
+        console.log($("#newpass").val().length)
         $("#alert-regex").slideDown();
         $("#newpass").focus();
         return false;
@@ -68,116 +155,23 @@
           password: $("#newpass").val()
         },
         success: function (resp) {
-          console.log(resp);
           if (resp.error) {
             $("#changepass-form").hide();
-            $("#error-reason").html(resp.message);
+            $('#passwordresetheader').hide();
+            $("#alert").hide();
+            $('#form-wrapper').hide();
             $("#error-msg").show();
           }  else {
             $("#changepass-form").hide();
             $("#success-msg").show();
+            $('#passwordresetheader').hide();
+            $("#alert").hide();
+            $('#form-wrapper').hide();
           }
         }
       })
     })
   })
 </script>
-<!--
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>Workout Planner Password Reset</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <style>
-        body {
-          flex:1;
-          background-color: #5ad4fd;
-        }
-        .container {
-          margin-top: auto;
-          margin-bottom: auto;
-          height: 80%;
-          flex: 1;
-        }
-        .focus {
-            background-color: #ff9c62;
-            border-radius: 10rem;
-            margin-top: 10px;
-            text-align: center;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-        }
-        .message {
-          background-color: white;
-          border: 1px solid white;
-          border-radius: 5rem;
-          flex: 1;
-          text-align: center;
-          font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-        }
-        .form{
-          padding-top: 10%;
-          padding-bottom: 10%;
-          
-        }
-        .form-container{
-          display: inline-block;
-          flex-direction: row;
-          flex-flow: row;
-          width:50%;
-          border: 1px solid black;
-        }
-        .left {
-          border: 1px solid black;
-          width:45%;
-          float: center;
-        }
-        .right {
-          border: 1px solid black;
-          width:50%;
-          float:center;
-        }
-    </style>
-</head>
-<script>  
-  function matchPassword() {  
-    var pw1 = document.getElementById("pswd1").value;  
-    var pw2 = document.getElementById("pswd2").value;  
-    if(pw1 != pw2)  
-    {   
-      alert("Passwords did not match");  
-    } else {  
-      alert("Password created successfully");  
-    }  
-  }  
-  </script>  
-<body>
-  <div class="container">
-    <div class="focus">
-        <h1><%= title %></h1>
-    </div>
-    <div class="message">
-      <% if (success) {%>
-        <form class="form">
-          <div class="form-container">
-          <div class="left">
-            <td> Enter Password </td> <br><br>
-            <td> Confirm Password </td> <br><br>
-            <button type = "submit" onclick="matchPassword()">Submit</button> 
-          </div>
-          <div class="right">
-            <input type = "password" name = "pswd1"> <br><br>  
-             
-            <input type = "password" name = "pswd2"> <br><br>
-            <button type = "reset" value = "Reset" >Clear</button>  
-          </div>
-          </div>  
-          </form>
-        <%} else {%>
-          <p class="lead"><%= message %></p>
-        <%}%>
-    </div>
-</div>
 </body>
 </html>
--->

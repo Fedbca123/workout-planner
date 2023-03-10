@@ -30,8 +30,14 @@ export default function ForgotPassword({navigation}) {
       }
 
       // need to use API to send email
+      API_Instance.post('users/forgotpassword/email/send/to',
+      {
+        email: email
+      }).catch((e)=>{
+        console.log(e);
+      });
 
-      Alert.alert("Reset Password Link Sent",`Please log in to ${email} and use the link sent to reset your password`,
+      Alert.alert("Reset Password Link Sent If Email Verified",`Please log in to ${email} and use the link sent to reset your password`,
   [{text:"Back to Login", onPress: () => navigation.goBack()}]);
     }
 

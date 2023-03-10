@@ -157,7 +157,7 @@ export default function Register({navigation}) {
     });
 
   Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
-  [{text:"Back to Login", onPress: () => props.navigation.goBack()}]);
+  [{text:"Back to Login", onPress: () => navigation.goBack()}]);
     /*
     .then((response) => {
         if (response.status == 200)
@@ -301,7 +301,7 @@ export default function Register({navigation}) {
                 color="#C4C4C4"
                 accessibilityLabel="Back to Login"
                 onPress={() => {
-                  props.navigation.navigate("login")
+                  navigation.goBack()
               }}/>
             </View>
           </View>
