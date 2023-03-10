@@ -107,14 +107,14 @@ export default function Login({navigation}) {
         <Button
         title="BACKDOOR"
         onPress={() =>
-          backDoorHandler("Test@gmail.com", "password")}/>
-      <Button
+          backDoorHandler("Test@gmail.com", "password")}/> */}
+      {/* <Button
         title="ADMIN BACKDOOR"
         onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>
 */}
       {/* <Button
         title="START WORKOUT BUTTON"
-        onPress={() => props.navigation.navigate("start")}
+        onPress={() => navigation.navigate("start")}
             />
        */}
      
