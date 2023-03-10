@@ -294,7 +294,7 @@ export default function Register({navigation}) {
                 color="#C4C4C4"
                 accessibilityLabel="Back to Login"
                 onPress={() => {
-                  props.navigation.navigate("login")
+                  navigation.navigate("login")
               }}/>
             </View>
           </View>

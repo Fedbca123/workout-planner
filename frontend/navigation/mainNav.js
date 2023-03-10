@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeNav from './homeNav.js';
 import CreateWorkoutNav from "./createWorkoutNav.js";
-import StartWorkoutNav from "./startWorkoutNav.js";
+import StartWorkout from "../screens/startWorkout.js";
 import HomeHeader from "../component/homeHeader.js";
 
 const Stack = createNativeStackNavigator();
@@ -22,10 +22,10 @@ export default function MainNav() {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
-                name="startNav"
-                component={StartWorkoutNav}
-                options={{ headerShown: false }}
-            />
+					name="start"
+					component={StartWorkout}
+					options={{ headerShown: false }}
+				/>
         </Stack.Navigator>
 	);
 }
