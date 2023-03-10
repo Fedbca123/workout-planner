@@ -34,10 +34,10 @@ export default function ForgotPassword({navigation}) {
       {
         email: email
       }).catch((e)=>{
-        console.log(e);
+        console.log("email doesn't exist in DB");
       });
 
-      Alert.alert("Reset Password Link Sent If Email Verified",`Please log in to ${email} and use the link sent to reset your password`,
+      Alert.alert("Reset Password Link Sent If Email Was Verified",`Please log in to ${email} and use the link sent to reset your password`,
   [{text:"Back to Login", onPress: () => navigation.goBack()}]);
     }
 
