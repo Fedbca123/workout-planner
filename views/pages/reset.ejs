@@ -145,7 +145,6 @@
         return false;
       }
       if(!/^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z?!@#$%^&*()]*$/.test($("#newpass").val())){
-        console.log($("#newpass").val().length)
         $("#alert-regex").slideDown();
         $("#newpass").focus();
         return false;
