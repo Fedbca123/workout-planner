@@ -1,12 +1,8 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
 import React from 'react';
-import {useGlobalState} from '../GlobalState.js';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useDrawerStatus } from '@react-navigation/drawer';
 
-export default function HomeHeader ({ navigation }) {
-    const [globalState, updateGlobalState] = useGlobalState();
-
+export default function DrawerHeader ({navigation}) {
     return (
         <View style= {styles.container}>
             <View style={styles.buttonContainer}>
@@ -18,16 +14,14 @@ export default function HomeHeader ({ navigation }) {
                     />
                 </TouchableOpacity>
             </View>
-            <View style={styles.textContainer}>
-                {globalState.user && <Text style={styles.text}>Hello {globalState.user.firstName}!</Text>}
-            </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        height: 110,
+        height: 80, 
+        width: '100%',
         backgroundColor: "white",
     },
     buttonContainer: {
@@ -36,15 +30,6 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginTop: 50,
         backgroundColor: "white"
-    },
-    textContainer: {
-    },
-    button: {
-    },
-    text:{
-        fontWeight: 'bold',
-        fontSize: 20,
-        textAlign: 'center'
     },
     ImageIconStyle: {
         width: 30,
