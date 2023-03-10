@@ -1050,7 +1050,7 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
 
   const endpointURI = `${process.env.API_URL}${port}/users/forgotpassword/reset/${authToken}`
 
-  const message = `Looks like you requested to reset your password.\n\nBelow is the link required to reset your account's password.\n\n\t${endpointURI}\n\nPlease note this link will expire in about 30 minutes. If it is not visited prior to expiring, you will need to repeat the process of requesting a password reset in our app.`;
+  const message = `Looks like you requested to reset your password.\n\nBelow is the link required to reset your account's password.\n\n${endpointURI}\n\nPlease note this link will expire in about 30 minutes. If it is not visited prior to expiring, you will need to repeat the process of requesting a password reset in our app.`;
   
   // send email to user
   try {
