@@ -6,6 +6,7 @@
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 		<link href='https://fonts.googleapis.com/css?family=Roboto:400,500italic' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="#">
     <script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     
@@ -119,7 +120,12 @@
              <input type="password" name="newpass-verify" id="newpass-verify" placeholder="Confirm New Password" class="textfield"/>
              <input type="text" name="id" id="id" style="display: none;" value=<%= id %> />
              <input type="text" name="JWT" id="JWT" style="display: none;" value=<%= JWT %> />
-             <input type="submit" name="submit" id="submit" value="Submit" style="margin-bottom: 5%;margin-top: 5%;"/>
+             <div style="margin-bottom:5%;">
+              <input type="submit" name="submit" id="submit" value="Submit" style="margin-bottom: 5%;margin-top: 5%;"/>
+              <button type="button" id="clearbtn">Clear</button>
+              <button type="button" id="showbtn" style="display:unset">Show Password</button>
+              <button type="button" id="hidebtn" style="display: none">Hide Password</button>
+             </div>
           </form>
         </div>
         </div>
@@ -135,7 +141,34 @@
       </div>
     <% } %>
 <script>
+
   $(document).ready(function () {
+    $('#hidebtn').click(function (e) {
+      e.preventDefault();
+      // change passwords to be hidden
+      $("#newpass").get(0).type="password";
+      $("#newpass-verify").get(0).type="password";
+      // set own display to none and set showbtn to show
+      $('#hidebtn').hide();
+      $('#showbtn').show();
+    });
+
+    $('#showbtn').click(function (e) {
+      e.preventDefault();
+      // change passwords to be showing
+      $("#newpass").get(0).type="text";
+      $("#newpass-verify").get(0).type="text";
+      // set own display to none and set hidebtn to show
+      $('#showbtn').hide();
+      $('#hidebtn').show();
+    });
+
+    $('#clearbtn').click(function (e) {
+      e.preventDefault();
+      $('#newpass').val('');
+      $('#newpass-verify').val('');
+    });
+
     $("#changepass-form").submit(function (e) {
       e.preventDefault();
       var regex = new RegExp('^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z?!@#$%^&*()]*$');
