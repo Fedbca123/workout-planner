@@ -38,7 +38,7 @@ export default function ChooseTemplate(props) {
 
 				// console.log(response.data);
 				// console.log(response.data.length);]
-				const newData = response.data.map(obj => [obj]);
+				// const newData = response.data.map(obj => [obj]);
 				// updateWorkouts(newData);
 				// console.log(newData);
 				updateWorkouts(response.data);
@@ -66,6 +66,7 @@ export default function ChooseTemplate(props) {
 	];
 
 	function comments(n) {
+		console.log(typeof (n));
 		console.log(JSON.stringify(n, null, 2));
 		// console.log("\n");
 	}
@@ -73,21 +74,22 @@ export default function ChooseTemplate(props) {
 	return (
 		<SafeAreaView style={styles.Background}>
 			<Text style={styles.HeaderText}>Your Saved Workouts</Text>
-			{/* <Workouts data={SECTIONS} showButton={true} showInput={false} /> */}
+
+
+
 			<Text style={styles.HeaderText}>Workout Templates</Text>
 			<FlatList
 				data={workouts}
-				renderItem={(item) => {
-					// <View>
-						<Text style={{fontSize:16}}>Test Item</Text>
-						// <Workouts data={[item.item]} showButton={true} showInput={false} />
-						// {comments([item.item])}
-					// </View>
-				}}
-				ListEmptyComponent={<Text style={{ fontSize: 64 }}>NO WORKOUTS</Text>}
+				renderItem={(item) => (
+					<View>
+						{/* {comments(item.item)} */}
+						<Workouts data={[item.item]} showButton={true} showInput={false} />
+					</View>
+				)}
+				ListEmptyComponent={<Text style={{ fontSize: 16 }}>NO WORKOUTS</Text>}
 				refreshing={true}
 			/>
-				{/* <Workouts data={(workouts?.length !== 0 ? workouts[0] : [])} showButton={true} showInput={false} /> */}
+				{/* <Workouts data={(workouts?.length !== 0 ? workouts[1] : [])} showButton={true} showInput={false} /> */}
 			<Button title="Create from Scratch" onPress={() => {
 				updateGlobalState("workout", noTemplate);
 				navigation.push("exerciseSearch");

@@ -123,17 +123,17 @@ export default function WorkOuts({ data, showButton, showInput}) {
 const styles = StyleSheet.create({
 	collapsePill: {
 		margin: 10,
-		padding: 15,
+		// padding: 15,
 		backgroundColor: "#F1F3FA",
 		padding: 20,
 		shadowColor: "#000",
 		shadowOpacity: 0.2,
-		shadowRadius: 5,
+		shadowRadius: 4,
 		shadowOffset: { width: 0, height: 2 },
 		// elevation: 2,
 		borderRadius: "20rem",
 		width: 390,
-		left:-40,
+		// left:-40,
 	},
 	text: {
 		color: "black",
@@ -154,8 +154,8 @@ const styles = StyleSheet.create({
 	collapsedContent: {
 		// flexDirection: "row",
 		// backgroundColor: "#F1F3FA",
-		margin: 30,
-		padding: 15,
+		// margin: 30,
+		// padding: 15,
 		borderRadius:"30rem",
 	},
 	TitleText: {
