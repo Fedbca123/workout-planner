@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useGlobalState } from '../GlobalState';
 import DrawerNav from './drawerNavigation.js';
 import API_Instance from "../../backend/axios_instance";
+import ForgotPassword from '../screens/forgotPassword.js';
 
 const RootStack = createNativeStackNavigator();
 export default function RootNav()
@@ -84,6 +85,11 @@ export default function RootNav()
                         name="admin"
                         component={AdminPage}
                         options={{ headerShown: false }}
+                    />
+                    <RootStack.Screen
+                      name="forgot-password"
+                      component={ForgotPassword}
+                      options={{headerShown: false}}
                     />
                 </>
             )}

@@ -103,15 +103,15 @@ export default function Login({navigation}) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
-      
-        {/* <Button
+      {/*
+        <Button
         title="BACKDOOR"
         onPress={() =>
           backDoorHandler("Test@gmail.com", "password")}/> */}
       {/* <Button
         title="ADMIN BACKDOOR"
-        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/> */}
-
+        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>
+*/}
       {/* <Button
         title="START WORKOUT BUTTON"
         onPress={() => navigation.navigate("start")}
@@ -168,7 +168,7 @@ export default function Login({navigation}) {
 				}/>
 			</View>
 
-			<View style={{flex:1, marginTop: 50}}>
+			<View style={{flex:1, marginTop: 40}}>
 				<Button
 					title="Login"
 					color="#10B9F1"
@@ -181,6 +181,13 @@ export default function Login({navigation}) {
 					onPress={() => {
 						setError("");
 						navigation.navigate("registration");
+				}}/>
+        <Button
+					title="Forgot Password?"
+					color="#10B9F1"
+					accessibilityLabel="Forgot Password?"
+					onPress={() => {
+						navigation.navigate("forgot-password");
 				}}/>
 			</View>
 		</KeyboardAwareScrollView>

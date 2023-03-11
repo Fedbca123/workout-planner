@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang=en>
+	<head>
+		<title>Reset Password</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+		<link href='https://fonts.googleapis.com/css?family=Roboto:400,500italic' rel='stylesheet' type='text/css'>
+    <link rel="shortcut icon" href="#">
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <style>
+      .custom-alert{
+        background-color: #fb9357;
+        color: black;
+        border-radius: 10rem;
+        width:90%;
+        margin-top: 2%;
+      }
+      body{
+        background-color: #5ad4fd;
+        flex:1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-top: 10%;
+      }
+      .focus {
+        display:block;
+        background-color: #ff9c62;
+        border-radius: 10rem;
+        margin-top: auto;
+        margin-bottom: auto;
+        text-align: center;
+        font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        align-self: center;
+        width: 90%;
+      }
+      .message {
+        display: block;
+        width: 90%;
+        background-color: white;
+        border: 1px solid white;
+        border-radius: 5rem;
+        text-align: center;
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        margin-top: 10%;
+      }
+      .form{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex:1;
+        flex-direction: column;
+      }
+      .textfield{
+        display: block;
+        width:50%;
+        margin-top: 5%;
+        text-align: center;
+      }
+      .lead{
+          padding-top: 10%;
+          padding-bottom: 10%;
+          margin-left: auto;
+          margin-right: auto;
+          width: 95%;
+      }
+      .container {
+        display:flex;
+        flex-direction:column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+	</head>
+	<body>
+    <% if(success) { %>
+        <div id="success-msg" style='display: none; text-align: center;width:90%;align-self:center;'>
+          <div class="container">
+            <div class="focus">
+                <h1>Password Successfully Reset</h1>
+            </div>
+            <div class="message">
+              <p class="lead">Feel free to return to the app to login with your new password!</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="error-msg" style='display: none; text-align: center;width:90%;'>
+          <div class="container">
+            <div class="focus">
+                <h1>Password Reset Failed</h1>
+            </div>
+            <div class="message">
+              <p class="lead">It appears we were unable to reset your password as of right now.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="focus">
+            <h1 id="passwordresetheader">Password Reset Form</h1>
+          </div>
+        
+        <div class="alert alert-danger custom-alert" id="alert" style="display: none;">
+          <!--<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>-->
+          <p>Passwords Must Match!</p>
+        </div>
+        <div class="alert alert-danger custom-alert" id="alert-regex" style="display: none;">
+          <!--<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>-->
+          <p>Passwords must be at least 8 characters and have at least one uppercase letter, one lowercase letter, and one number.</p>
+        </div>
+        <div class="message" id="form-wrapper">
+          <form class="form" name="changepass-form" id="changepass-form">
+             <input type="password" name="newpass" id="newpass" placeholder="Enter New Password" class="textfield"/>
+             <input type="password" name="newpass-verify" id="newpass-verify" placeholder="Confirm New Password" class="textfield"/>
+             <input type="text" name="id" id="id" style="display: none;" value=<%= id %> />
+             <input type="text" name="JWT" id="JWT" style="display: none;" value=<%= JWT %> />
+             <div style="margin-bottom:5%;">
+              <input type="submit" name="submit" id="submit" value="Submit" style="margin-bottom: 5%;margin-top: 5%;"/>
+              <button type="button" id="clearbtn">Clear</button>
+              <button type="button" id="showbtn" style="display:unset">Show Password</button>
+              <button type="button" id="hidebtn" style="display: none">Hide Password</button>
+             </div>
+          </form>
+        </div>
+        </div>
+	  <!--</div>-->
+    <% } else { %>
+      <div class="container">
+        <div class="focus">
+            <h1>Please Request A Password Reset</h1>
+        </div>
+        <div class="message">
+          <p class="lead">You can do this via the mobile app. An email with the necessary link will be sent to you shortly after.</p>
+        </div>
+      </div>
+    <% } %>
+<script>
+
+  $(document).ready(function () {
+    $('#hidebtn').click(function (e) {
+      e.preventDefault();
+      // change passwords to be hidden
+      $("#newpass").get(0).type="password";
+      $("#newpass-verify").get(0).type="password";
+      // set own display to none and set showbtn to show
+      $('#hidebtn').hide();
+      $('#showbtn').show();
+    });
+
+    $('#showbtn').click(function (e) {
+      e.preventDefault();
+      // change passwords to be showing
+      $("#newpass").get(0).type="text";
+      $("#newpass-verify").get(0).type="text";
+      // set own display to none and set hidebtn to show
+      $('#showbtn').hide();
+      $('#hidebtn').show();
+    });
+
+    $('#clearbtn').click(function (e) {
+      e.preventDefault();
+      $('#newpass').val('');
+      $('#newpass-verify').val('');
+    });
+
+    $("#changepass-form").submit(function (e) {
+      e.preventDefault();
+      var regex = new RegExp('^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z?!@#$%^&*()]*$');
+      if ($("#newpass").val() != $("#newpass-verify").val()) {
+        $("#alert").slideDown();
+        $("#newpass").focus();
+        return false;
+      }
+      if(!/^(?=^.{8,}$)(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s)[0-9a-zA-Z?!@#$%^&*()]*$/.test($("#newpass").val())){
+        $("#alert-regex").slideDown();
+        $("#newpass").focus();
+        return false;
+      }
+      $.ajax({
+        headers: {"authorization": $("#id").val()},
+        method: "POST",
+        type: "POST",
+        url: "/users/forgotpassword/reset/" + $("#JWT").val(),
+        data: {
+          password: $("#newpass").val()
+        },
+        success: function (resp) {
+          if (resp.error) {
+            $("#changepass-form").hide();
+            $('#passwordresetheader').hide();
+            $("#alert").hide();
+            $("#alert-regex").hide();
+            $('#form-wrapper').hide();
+            $("#error-msg").show();
+          }  else {
+            $("#changepass-form").hide();
+            $("#success-msg").show();
+            $('#passwordresetheader').hide();
+            $("#alert").hide();
+            $("#alert-regex").hide();
+            $('#form-wrapper').hide();
+          }
+        }
+      })
+    })
+  })
+</script>
+</body>
+</html>
