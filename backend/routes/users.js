@@ -47,6 +47,7 @@ Error Codes:
 500 - all fields not entered properly
 501 - password not of 8 chars long
 502 - email already exists
+505 - failed to send email
 */
 
 
@@ -956,7 +957,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.PORT ? `${process.env.PORT}` : "";
+  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailVerification/${authToken}`
 
@@ -1046,7 +1047,7 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.PORT ? `${process.env.PORT}` : "";
+  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/forgotpassword/reset/${authToken}`
 
@@ -1073,7 +1074,10 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
     var response = await client.beginSend(emailMessage);
   } catch (e) {
     console.log(e);
+    return res.status(505).json({message: "Email sent if email exists"});
   }
+
+  return res.status(200);
 });
 
 router.route('/forgotpassword/reset/:JWT').get(async (req,res) => {
