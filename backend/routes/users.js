@@ -957,7 +957,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.PORT ? `${process.env.PORT}` : "";
+  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailVerification/${authToken}`
 
