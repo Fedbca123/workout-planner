@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
 import {Card, Title} from 'react-native-paper';
-import { SearchBar } from 'react-native-elements';
+import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
@@ -94,21 +94,21 @@ export default function DiscoverPage(props) {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-//   const Item = ({title, description, exerciseType, muscleGroups}) => (
-//     <View>
-//       <Text style = {styles.exerciseTitle}>{title}</Text>
-//       <Text style = {styles.exerciseCardDescription}>{description}</Text>
-//       <Text style = {styles.exerciseCardType}>{exerciseType}</Text>
-//       <Text style = {styles.exerciseCardMuscleGroups}>{muscleGroups}</Text>
-//  </View>
-//   );
+  const Item = ({title, description, exerciseType, muscleGroups}) => (
+    <View>
+      <Text style = {styles.exerciseTitle}>{title}</Text>
+      <Text style = {styles.exerciseCardDescription}>{description}</Text>
+      <Text style = {styles.exerciseCardType}>{exerciseType}</Text>
+      <Text style = {styles.exerciseCardMuscleGroups}>{muscleGroups}</Text>
+ </View>
+  );
 
-//   const renderCard = ({item}) => (
-//       <Item title = {item.title} 
-//                     description = {item.description}
-//                     exerciseType = {item.exerciseType}
-//                     muscleGroups = {item.muscleGroups}/>
-//   );
+  const renderCard = ( {item} ) => (
+      <View>
+        console.log(item.response.title)
+        <Text>{item.id}. {item.Name}</Text>
+      </View>
+  );
 
   const exercisesList = API_Instance.post('exercises/search',
   {
@@ -124,8 +124,8 @@ export default function DiscoverPage(props) {
   })
   .then((response) => {
     if (response.status == 200){
-      //console.log(response.data);
-      //console.log('Success!');
+      console.log(response.data[0].title);
+      console.log('Success!');
     }
   })
   .catch((e) => {
@@ -210,8 +210,12 @@ export default function DiscoverPage(props) {
       if (!isExerciseVisible) {
         setExerciseVisible(true);
         setWorkoutVisible(false);
+      }
   }
-}
+
+  const openExerciseInfo = (exercise) => {
+      console.log(exercise.Name + "says hi");
+  }
 
 return (
     <SafeAreaView style = {styles.page}>
@@ -368,22 +372,35 @@ return (
           </View>
         </View> 
       </View>
-      {/* <View style={styles.discoverContainer}>
+      <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
-              // data = {exercisesList}
-              data = {exerciseDummyData}
+              data = {{exercisesList}}
+              //data = {exerciseDummyData}
               style = {styles.boxContainer}
-              // renderItem = {renderCard}
-              // keyExtractor = {(item) => item.id}
+              
+              renderItem = {({item})=> {
+                renderCard(this.item.response.title)
+              }}
+              
+              // renderItem = {exerciseCard}
+              //  onPress={openExerciseInfo(data)}
+              // renderItem = {({item}) => {
+              //   return <ListItem 
+              //             title = {item.response.data[0].title}
+              //             // onPress = {console.log(item.Name)}
+              //               // openExerciseInfo(item)}
+              //   />
+              //  }}
+              // // keyExtractor = {(item) => item.id}
               /> : <FlatList
               data = {workoutDummyData}
               style = {styles.boxContainer}
               renderItem = {({item}) => <TouchableOpacity onPress={()=>
               Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
               />}
-      </View> */}
+      </View>
 
-      <View style={styles.discoverContainer}>
+      {/* <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
               data = {exerciseDummyData}
               style = {styles.boxContainer}
@@ -396,7 +413,7 @@ return (
               renderItem = {({item}) => <TouchableOpacity onPress={()=>
               Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
               />}
-      </View>
+      </View> */}
     </SafeAreaView>
   )
 }
