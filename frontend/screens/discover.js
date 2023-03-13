@@ -49,37 +49,58 @@ const typeFilters = [
 ];
 
 const exerciseDummyData = [
-  {Name: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
-  {Name: 'Benchpress', id: 2, Sets: 3, Reps: 5},
-  {Name: 'Lunges', id: 3, Sets: 5, Reps: 5},
-  {Name: 'Deadlift', id: 4, Sets: 1, Reps: 3},
-  {Name: 'Skullcrusher', id: 5, Sets: 4, Reps: 3},
-  {Name: 'Squats', id: 6, Sets: 2, Reps: 3},
-  {Name: 'Benchpress', id: 7, Sets: 3, Reps: 5},
-  {Name: 'Lunges', id: 8, Sets: 5, Reps: 5},
-  {Name: 'Deadlift', id: 9, Sets: 1, Reps: 3},
-  {Name: 'Skullcrusher', id: 10, Sets: 4, Reps: 3},
-  {Name: 'Squats', id: 11, Sets: 2, Reps: 3},
-  {Name: 'Benchpress', id: 12, Sets: 3, Reps: 5},
-  {Name: 'Lunges', id: 13, Sets: 5, Reps: 5},
-  {Name: 'Deadlift', id: 14, Sets: 1, Reps: 3},
-  {Name: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
+  {title: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
+  {title: 'Benchpress', id: 2, Sets: 3, Reps: 5},
+  {title: 'Lunges', id: 3, Sets: 5, Reps: 5},
+  {title: 'Deadlift', id: 4, Sets: 1, Reps: 3},
+  {title: 'Skullcrusher', id: 5, Sets: 4, Reps: 3},
+  {title: 'Squats', id: 6, Sets: 2, Reps: 3},
+  {title: 'Benchpress', id: 7, Sets: 3, Reps: 5},
+  {title: 'Lunges', id: 8, Sets: 5, Reps: 5},
+  {title: 'Deadlift', id: 9, Sets: 1, Reps: 3},
+  {title: 'Skullcrusher', id: 10, Sets: 4, Reps: 3},
+  {title: 'Squats', id: 11, Sets: 2, Reps: 3},
+  {title: 'Benchpress', id: 12, Sets: 3, Reps: 5},
+  {title: 'Lunges', id: 13, Sets: 5, Reps: 5},
+  {title: 'Deadlift', id: 14, Sets: 1, Reps: 3},
+  {title: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
 ];
 const workoutDummyData = [
-  {Name: 'Top Workout', id: 1, Exercises: 5},
-  {Name: 'Legs', id: 2, Exercises: 6},
-  {Name: 'Full Body', id: 3, Exercises: 9},
-  {Name: 'Arms', id: 4, Exercises: 5},
-  {Name: 'Legs', id: 5, Exercises: 6},
-  {Name: 'Full Body', id: 6, Exercises: 8},
-  {Name: 'Arms', id: 7, Exercises: 5},
-  {Name: 'Legs', id: 8, Exercises: 6},
-  {Name: 'Full Body', id: 9, Exercises: 11},
-  {Name: 'Arms', id: 10, Exercises: 2},
-  {Name: 'Legs', id: 11, Exercises: 15},
-  {Name: 'Full Body', id: 12, Exercises: 3},
-  {Name: 'Bottom Workout', id: 13, Exercises: 7},
+  {title: 'Top Workout', id: 1, Exercises: 5},
+  {title: 'Legs', id: 2, Exercises: 6},
+  {title: 'Full Body', id: 3, Exercises: 9},
+  {title: 'Arms', id: 4, Exercises: 5},
+  {title: 'Legs', id: 5, Exercises: 6},
+  {title: 'Full Body', id: 6, Exercises: 8},
+  {title: 'Arms', id: 7, Exercises: 5},
+  {title: 'Legs', id: 8, Exercises: 6},
+  {title: 'Full Body', id: 9, Exercises: 11},
+  {title: 'Arms', id: 10, Exercises: 2},
+  {title: 'Legs', id: 11, Exercises: 15},
+  {title: 'Full Body', id: 12, Exercises: 3},
+  {title: 'Bottom Workout', id: 13, Exercises: 7},
 ];
+
+const exercisesTest = [
+  {"__v": 0, "_id": "63fa2ca3f43bb11786b20838",
+   "createdAt": "2023-02-25T15:43:31.121Z", "description": "The classic Pushups exercise",
+   "exerciseType": "SETSXREPS",
+   "image": "http://res.cloudinary.com/djbbyeabd/image/upload/v1677339810/exercises/itcyvmgvlbus6marx998.jpg",
+   "imageId": "exercises/itcyvmgvlbus6marx998", 
+   "muscleGroups": ["Chest", "Shoulders", "Triceps", "Core"], "reps": 20, "restTime": 60, 
+   "sets": 4, "tags": ["Bodyweight", "Calisthenics", "Pushups"], "time": 600, 
+   "title": "Pushups", "updatedAt": "2023-02-25T15:43:31.121Z"
+  }, 
+  {
+    "__v": 0, "_id": "640100ed07897c9d0ea77846", 
+    "createdAt": "2023-03-02T20:02:53.593Z", "description": "Test Calf Raise Exercise", 
+    "exerciseType": "SETSXREPS", 
+    "image": "https://res.cloudinary.com/djbbyeabd/image/upload/exercises/exerciseDefault_bgnsno.jpg", 
+    "imageId": "exercises/exerciseDefault_bgnsno", "muscleGroups": ["Legs", "Calfs"], "reps": 30, 
+    "restTime": 30, "sets": 5, "tags": ["", "Body Weight", "Calf", "Raises", "Public"], 
+    "title": "Calf Raises Public", "updatedAt": "2023-03-02T20:17:43.331Z"
+  }
+]
 
 export default function DiscoverPage(props) {
 
@@ -91,49 +112,59 @@ export default function DiscoverPage(props) {
   const [selectedTypeFilter, setTypeFilter] = useState([]);
   const [globalState, updateGlobalState] = useGlobalState();
   
+  useEffect(() => {
+    exercisesList();
+}, []);
+  const [exerciseList, setExercises] = useState([])
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
-  const Item = ({title, description, exerciseType, muscleGroups}) => (
-    <View>
-      <Text style = {styles.exerciseTitle}>{title}</Text>
-      <Text style = {styles.exerciseCardDescription}>{description}</Text>
-      <Text style = {styles.exerciseCardType}>{exerciseType}</Text>
-      <Text style = {styles.exerciseCardMuscleGroups}>{muscleGroups}</Text>
- </View>
-  );
-
-  const renderCard = ( {item} ) => (
+  const renderCard = ( {item} ) => {
       <View>
-        console.log(item.response.title)
-        <Text>{item.id}. {item.Name}</Text>
-      </View>
-  );
+        <Text>{item.id}. {item.title}</Text>
+      </View>     
+}
+const Item = ({title}) => (
+  <View style={styles.item}>
+    <TouchableOpacity onPress={()=>Alert.alert(title)}>
+      <Text style={styles.title}>{title}</Text>
+    </TouchableOpacity>
+  </View>
+);
+const Card = ({exercise}) => (
+  <View style={styles.item}>
+    <Text style={styles.title}>{exercise.title}</Text>
+  </View>
+);
 
-  const exercisesList = API_Instance.post('exercises/search',
-  {
-    muscleGroupsStr: selectedMuscleGroupsFilter,
-    exerciseTypeSrch : selectedTypeFilter,
-    equipmentFilters : selectedEquipmentFilter
-  },   
-  {
-    headers: {
-      'authorization': `BEARER ${globalState.authToken}`,
-      'Content-Type':'multipart/form-data'
-    }
-  })
-  .then((response) => {
-    if (response.status == 200){
-      console.log(response.data[0].title);
-      console.log('Success!');
-    }
-  })
-  .catch((e) => {
-    // console.log(e);
-    // console.log(globalState.authToken);
-    Alert.alert('Error!');
-  
-  })
+  const exercisesList = async()=> {
+      API_Instance.post('exercises/search',
+    {
+      muscleGroupsStr: selectedMuscleGroupsFilter,
+      exerciseTypeSrch : selectedTypeFilter,
+      equipmentFilters : selectedEquipmentFilter
+    },   
+    {
+      headers: {
+        'authorization': `BEARER ${globalState.authToken}`,
+        'Content-Type':'multipart/form-data'
+      }
+    })
+    .then((response) => {
+      if (response.status == 200){
+        setExercises(response.data);
+        console.log(response.data[0].title);
+        console.log(response.data);
+        console.log('Success!');
+      }
+    })
+    .catch((e) => {
+      // console.log(e);
+      // console.log(globalState.authToken);
+      Alert.alert('Error!');
+    
+    })
+}
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
@@ -211,10 +242,6 @@ export default function DiscoverPage(props) {
         setExerciseVisible(true);
         setWorkoutVisible(false);
       }
-  }
-
-  const openExerciseInfo = (exercise) => {
-      console.log(exercise.Name + "says hi");
   }
 
 return (
@@ -374,18 +401,24 @@ return (
       </View>
       <View style={styles.discoverContainer}>
               {toggleValue ? <FlatList
-              data = {{exercisesList}}
-              //data = {exerciseDummyData}
+              data = {exerciseList}
+              // data = {{exercisesTest}}
+              ListEmptyComponent={<Text style={{fontSize:20}}>Hi Omar I'm your biggest fan</Text>}
+              // data = {exerciseDummyData}
               style = {styles.boxContainer}
               
-              renderItem = {({item})=> {
-                renderCard(this.item.response.title)
-              }}
+              // renderItem = {({item})=> {
+              //   renderCard(item)
+              // }}
               
-              // renderItem = {exerciseCard}
+
+              renderItem={({item}) => (<Item title={item.title} />)}
+              // renderItem = {this.renderCard}
+              // renderItem={({item}) => <Item title={item["title"]} />}
+              // renderItem = {renderCard}
               //  onPress={openExerciseInfo(data)}
               // renderItem = {({item}) => {
-              //   return <ListItem 
+              //   <ListItem 
               //             title = {item.response.data[0].title}
               //             // onPress = {console.log(item.Name)}
               //               // openExerciseInfo(item)}
@@ -396,7 +429,7 @@ return (
               data = {workoutDummyData}
               style = {styles.boxContainer}
               renderItem = {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.title}</Text></TouchableOpacity>}
               />}
       </View>
 
@@ -406,7 +439,7 @@ return (
               style = {styles.boxContainer}
               renderItem = 
               {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
+              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.title}</Text></TouchableOpacity>}
               /> : <FlatList
               data = {workoutDummyData}
               style = {styles.boxContainer}
