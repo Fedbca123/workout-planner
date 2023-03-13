@@ -15,6 +15,7 @@ import API_Instance from '../../backend/axios_instance';
 import config from '../../config';
 import Toggle from "react-native-toggle-element";
 import * as ImagePicker from 'expo-image-picker';
+import { useGlobalState } from '../GlobalState';
 
 const baseUrl = config.API_URL + config.PORT + '/';
 
