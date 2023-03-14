@@ -2,7 +2,7 @@ import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInpu
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default function DrawerHeader ({navigation}) {
+export default function settingsHeader ({navigation}) {
     return (
         <View style= {styles.container}>
             <View style={styles.buttonContainer}>
@@ -14,14 +14,16 @@ export default function DrawerHeader ({navigation}) {
                     />
                 </TouchableOpacity>
             </View>
+            <View style={styles.textContainer}>
+                <Text style={styles.text}>Settings</Text>
+            </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        height: 80, 
-        width: '100%',
+        height: 110,
         backgroundColor: "white",
     },
     buttonContainer: {
@@ -30,6 +32,15 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginTop: 50,
         backgroundColor: "white"
+    },
+    textContainer: {
+    },
+    button: {
+    },
+    text:{
+        fontWeight: 'bold',
+        fontSize: 20,
+        textAlign: 'center'
     },
     ImageIconStyle: {
         width: 30,

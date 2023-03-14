@@ -1,12 +1,12 @@
 import React from 'react';
-import { Alert, Settings} from 'react-native';
+import { Alert, StyleSheet} from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import { useGlobalState } from '../GlobalState.js';
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from '../AuthProvider';
 import MainNav from './mainNav.js';
 import SettingsPage from '../screens/settingsPage.js';
-import DrawerHeader from '../component/drawerHeader.js';
+import SettingsHeader from '../component/settingsHeader.js';
 
 const Drawer = createDrawerNavigator();
 
@@ -37,6 +37,7 @@ function CustomDrawerContent(props) {
             <DrawerItem
                 label="Logout"
                 onPress={onLogoutButton}
+                style={styles.logoutButton}
             />
         </DrawerContentScrollView>
     );
@@ -57,7 +58,14 @@ export default function DrawerNav (props) {
             <Drawer.Screen
                 name="Settings"
                 component={SettingsPage}
-                options={{ header: DrawerHeader }}/>
+                options={{ header: SettingsHeader }}/>
         </Drawer.Navigator>
     )
 }
+
+const styles = StyleSheet.create({
+    logoutButton: {
+        marginTop: 60,
+        backgroundColor: "#f7c1c1",
+    },
+});
