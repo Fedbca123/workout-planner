@@ -1140,7 +1140,7 @@ router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
 });
 
 // endpoint to send link to email verification endpoint for email reset
-// body {firstName, lastName, email, password}
+// body {firstName, lastName, email, id} email is new email
 router.route('/emailreset/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {firstName, lastName, email, password} = req.body;
@@ -1150,7 +1150,7 @@ router.route('/emailreset/send/to').post(async (req,res) => {
       firstName,
       lastName,
       email,
-      password
+      id
     }
   }
 
@@ -1186,14 +1186,14 @@ router.route('/emailreset/send/to').post(async (req,res) => {
   }
 });
 
-// email verification endpoint
-// once opened, register account stored in the jwt
+// email reset endpoint
+// once opened, account of id is updated with email stored in the JWT
 router.route('/emailreset/:JWT').get(async (req,res) => {
   const JWT = req.params.JWT;
   // decrypt the JWT passed in the URL
   jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
     if (err) res.render('pages/verified', {title: "Unsuccessful Verification",message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});//return res.sendStatus(406);
-    const {firstName, lastName, email, password} = user.user;
+    const {firstName, lastName, email, id} = user.user;
 
     const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
     
@@ -1203,24 +1203,10 @@ router.route('/emailreset/:JWT').get(async (req,res) => {
         //return res.status(502).send({Error: "Email already exists!"}); 
     }
     
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    
-    const newUser = new User ({
-        firstName,
-        lastName,
-        email,
-        password: hashedPassword,
-        friends: [],
-        friendRequests: [],
-        blockedUsers: [],
-        scheduledWorkouts: [],
-        completedWorkouts: [],
-        customWorkouts: [],
-        customExercises: [],
-    });
+    const userDoc = await User.findById(id);
+    userDoc.email = email;
 
-    await newUser.save((err, newUser) => {
+    await userDoc.save((err, newUser) => {
       const title = err ? "Unsuccessful Verification" : "Your New Email Has Been Verified!"
       const message = err ? "Looks like verification didn't go as smoothly this time. Try again from the mobile app." : `You can now proudly tell your friends your Workout Planner account email is ${newUser.email}. Login through the app to see it in action!`;
       res.render('pages/verified', {title: title, message : message});
