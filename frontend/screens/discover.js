@@ -10,7 +10,8 @@ import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
 import { GlobalState, useGlobalState } from '../GlobalState.js';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import Accordion from 'react-native-collapsible/Accordion'
+import {AccordionList} from 'react-native-accordion-list-view';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -96,6 +97,7 @@ export default function DiscoverPage(props) {
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState();
   const [selectedWorkoutTitle, setSelectedWorkoutTitle] = useState();
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
+  const [selectedExerciseDuration, setSelectedExerciseDuration] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
   const [filteredExerciseData, setFilteredExerciseData] = useState([]);
@@ -147,14 +149,14 @@ export default function DiscoverPage(props) {
     </View>
   );
 
-  const WorkoutItem = ({title, description, location, type, muscleGroups, tags}) => (
+  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration}) => (
     <View style={styles.workoutItems}>
       <View style={styles.workoutCardText}>
         <Text style={styles.workoutCardTitle}>{title}</Text>
         <Text style={styles.workoutCardDescription}>{description}</Text>
         <Text style={styles.workoutCardDescription}>{location}</Text>
-        <Text style={styles.workoutCardType}>Type: {type}</Text>
         <Text style={styles.workoutCardType}>Tags: {tags}</Text>
+        <Text style={styles.workoutCardDescription}>Duration: {duration} min</Text>
       </View>
     </View>
   );
@@ -233,11 +235,10 @@ export default function DiscoverPage(props) {
   const workoutDummyData = [
 		{
 			title: "Leg Day",
-			duration:45,
+			duration: 45,
       description: "Leg day all day",
 			location:"Gold's Gym",
-      type: "SETSXREPS",
-			content: [
+			exercises: [
 				{
 					title: "Deadlift",
 					ExerciseType: "SETSXREPS",
@@ -524,8 +525,10 @@ return (
               }
               //keyExtractor={(item) => item._id}
              
-              /> : <FlatList
+              /> : <AccordionList
+              // data = {workoutDummyData}
               data = {workoutDummyData}
+              expandMultiple = {true}
               // data = {filteredWorkoutData}
               style = {styles.boxContainer}
               renderItem={({item}) => 
@@ -535,6 +538,7 @@ return (
                     setSelectedWorkoutTitle(item.title);
                     //setSelectedExerciseMuscleGroups(item.muscleGroups);
                     //setSelectedExerciseImage(item.image);
+                    setSelectedExerciseDuration(item.duration);
                     //showInfoModal();
                     
               }}>
@@ -542,7 +546,8 @@ return (
                 description={item.description}
                 location ={item.location} 
                 type={item.exerciseType} tags={item.tags}
-                
+                duration={item.duration}
+
                 /></TouchableOpacity>
                 )
               }
