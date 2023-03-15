@@ -1138,6 +1138,95 @@ router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
     });
   })
 });
+
+// endpoint to send link to email verification endpoint for email reset
+// body {firstName, lastName, email, password}
+router.route('/emailreset/send/to').post(async (req,res) => {
+  // encrypt a JWT with the body passed in
+  const {firstName, lastName, email, password} = req.body;
+
+  const payload = {
+    user:{
+      firstName,
+      lastName,
+      email,
+      password
+    }
+  }
+
+  const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
+
+  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
+
+  const endpointURI = `${process.env.API_URL}${port}/users/emailreset/${authToken}`
+
+  const message = `Hi ${firstName} ${lastName},\nThank you for pursuing your fitness goals with Workout Planner!\nBelow is the link required to verify ${email} as the new email related to your account!\n\n${endpointURI}\n\nPlease note this link will expire in about 30 minutes. If it is not visited prior to expiring, you will need to request an update of your email again from the settings page of the mobile application.`;
+  
+  // send email to user
+  try {
+    var client = new EmailClient(process.env.EMAIL_CONNECTION_STRING);
+    //send mail
+    const emailMessage = {
+      senderAddress: process.env.EMAIL_SENDER,
+      content: {
+        subject: "Verification Link for New Workout Planner Email",
+        plainText: message
+      },
+      recipients: {
+        to: [
+          {
+            address: email,
+          },
+        ],
+      },
+    };
+    var response = await client.beginSend(emailMessage);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+// email verification endpoint
+// once opened, register account stored in the jwt
+router.route('/emailreset/:JWT').get(async (req,res) => {
+  const JWT = req.params.JWT;
+  // decrypt the JWT passed in the URL
+  jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
+    if (err) res.render('pages/verified', {title: "Unsuccessful Verification",message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});//return res.sendStatus(406);
+    const {firstName, lastName, email, password} = user.user;
+
+    const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+    
+    if (emailExists)
+    {
+        res.render('pages/verified', {title: "Unsuccessful Verification", message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});
+        //return res.status(502).send({Error: "Email already exists!"}); 
+    }
+    
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    const newUser = new User ({
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+        friends: [],
+        friendRequests: [],
+        blockedUsers: [],
+        scheduledWorkouts: [],
+        completedWorkouts: [],
+        customWorkouts: [],
+        customExercises: [],
+    });
+
+    await newUser.save((err, newUser) => {
+      const title = err ? "Unsuccessful Verification" : "Your New Email Has Been Verified!"
+      const message = err ? "Looks like verification didn't go as smoothly this time. Try again from the mobile app." : `You can now proudly tell your friends your Workout Planner account email is ${newUser.email}. Login through the app to see it in action!`;
+      res.render('pages/verified', {title: title, message : message});
+    })
+  })
+});
 module.exports = router;
 
 
