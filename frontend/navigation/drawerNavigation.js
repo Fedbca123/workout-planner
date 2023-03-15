@@ -54,7 +54,7 @@ export default function DrawerNav (props) {
             <Drawer.Screen 
                 name="Main" 
                 component={ MainNav }
-                options={{ headerShown: false }} />
+                options={{ headerShown: false}} />
             <Drawer.Screen
                 name="Settings"
                 component={SettingsPage}
@@ -65,7 +65,7 @@ export default function DrawerNav (props) {
 
 const styles = StyleSheet.create({
     logoutButton: {
-        marginTop: 60,
-        backgroundColor: "#f7c1c1",
+        marginTop: 80,
+        backgroundColor: "#fad7d7",
     },
 });
