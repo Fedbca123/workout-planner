@@ -66,7 +66,7 @@ const exerciseDummyData = [
   {title: 'Deadlift', id: 14, Sets: 1, Reps: 3},
   {title: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
 ];
-const workoutDummyData = [
+const oldworkoutDummyData = [
   {title: 'Top Workout', id: 1, Exercises: 5},
   {title: 'Legs', id: 2, Exercises: 6},
   {title: 'Full Body', id: 3, Exercises: 9},
@@ -147,11 +147,12 @@ export default function DiscoverPage(props) {
     </View>
   );
 
-  const WorkoutItem = ({title, description, type, muscleGroups, tags}) => (
+  const WorkoutItem = ({title, description, location, type, muscleGroups, tags}) => (
     <View style={styles.workoutItems}>
       <View style={styles.workoutCardText}>
         <Text style={styles.workoutCardTitle}>{title}</Text>
         <Text style={styles.workoutCardDescription}>{description}</Text>
+        <Text style={styles.workoutCardDescription}>{location}</Text>
         <Text style={styles.workoutCardType}>Type: {type}</Text>
         <Text style={styles.workoutCardType}>Tags: {tags}</Text>
       </View>
@@ -229,11 +230,13 @@ export default function DiscoverPage(props) {
   // }
 
   // Remove?
-  const WorkoutsList = [
+  const workoutDummyData = [
 		{
 			title: "Leg Day",
 			duration:45,
+      description: "Leg day all day",
 			location:"Gold's Gym",
+      type: "SETSXREPS",
 			content: [
 				{
 					title: "Deadlift",
@@ -536,7 +539,8 @@ return (
                     
               }}>
                 <WorkoutItem title={item.title} 
-                description={item.description} 
+                description={item.description}
+                location ={item.location} 
                 type={item.exerciseType} tags={item.tags}
                 
                 /></TouchableOpacity>
