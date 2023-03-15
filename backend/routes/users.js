@@ -1143,7 +1143,7 @@ router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
 // body {firstName, lastName, email, id} email is new email
 router.route('/emailreset/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
-  const {firstName, lastName, email, password} = req.body;
+  const {firstName, lastName, email, id} = req.body;
 
   const payload = {
     user:{
