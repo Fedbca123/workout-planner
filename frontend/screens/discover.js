@@ -1,10 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
 import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
-import {Card, Title} from 'react-native-paper';
 import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
-import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import Modal from "react-native-modal";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
@@ -104,38 +102,16 @@ export default function DiscoverPage(props) {
   const [masterExerciseData, setMasterExerciseData] = useState([]);
   const [filteredWorkoutData, setFilteredWorkoutData] = useState([]);
   const [masterWorkoutData, setMasterWorkoutData] = useState([]);
-  const [search, setSearch] = useState('');
+  const [exerciseSearch, setExerciseSearch] = useState('');
+  const [workoutSearch, setWorkoutSearch] = useState('');
+
+  const [exerciseList, setExercises] = useState([]);
+  const [workoutList, setWorkouts] = useState([]);
 
   useEffect(() => {
     exercisesList();
+    workoutsList();
   }, []);
-
-  // useEffect(() =>{
-  //   workoutsList();
-  // })
-  
-  const [exerciseList, setExercises] = useState([]);
-  const [workoutList, setWorkouts] = useState([]);
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
-
-  const renderCard = ( {item} ) => {
-      <View>
-        <Text>{item.title}</Text>
-      </View>     
-  }
-
-  const Card = ({title, description, sets, reps, type, muscleGroups, tags}) => (
-  <View style={styles.exerciseItems}>
-    <View View style={styles.exerciseCardText}>
-      <Text style={styles.exerciseCardTitle}>{title}</Text>
-      <Text style={styles.exerciseCardDescription}>{description}</Text>
-      <Text style={styles.exerciseCardSets}>Sets: {sets}</Text>
-      <Text style={styles.exerciseCardType}>Type: {type}</Text>
-      <Text style={styles.exerciseCardType}>Tags: {tags}</Text>
-    </View>  
-  </View>
-  );
 
   const ExerciseItem = ({title, description, sets, reps, type, muscleGroups, tags}) => (
     <View style={styles.exerciseItems}>
@@ -276,9 +252,52 @@ export default function DiscoverPage(props) {
 				},
 			],
 		},
+    {
+			title: "Arm Day",
+			duration: 55,
+      description: "Ew leg day",
+			location:"Gold's Gym",
+			exercises: [
+				{
+					title: "Barbell Curls",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 10,
+				},
+				{
+					title: "Dumbbell Curls",
+					ExerciseType: "SETSXREPS",
+					sets: 4,
+					reps: 12,
+				},
+				{
+					title: "Skull Crusher",
+					ExerciseType: "AMRAP",
+					time: 60000,
+				},
+				{
+					title: "Cable Tricep Pushdown",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 10,
+				},
+				{
+					title: "Cable Bicep Curl",
+					ExerciseType: "SETSXREPS",
+					sets: 4,
+					reps: 12,
+				},
+				{
+					title: "Hammer Curl",
+					ExerciseType: "SETSXREPS",
+					sets: 3,
+					reps: 15,
+				},
+			],
+		},
 	];
 
-  const searchFilter = (text) => {
+  const searchExercisesFilter = (text) => {
     if (text){
       const newData = masterExerciseData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
@@ -286,13 +305,29 @@ export default function DiscoverPage(props) {
         return itemData.indexOf(textData) > -1;
       });
       setFilteredExerciseData(newData);
-      setFilteredWorkoutData(newData);
-      setSearch(text);
+      // setFilteredWorkoutData(newData);
+      setExerciseSearch(text);
     }
     else {
       setFilteredExerciseData(masterExerciseData);
+      // setFilteredWorkoutData(masterWorkoutData);
+      setExerciseSearch(text);
+    }
+  }
+
+  const searchWorkoutsFilter = (text) => {
+    if (text){
+      const newData = masterWorkoutData.filter((item) => {
+        const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      setFilteredWorkoutData(newData);
+      setWorkoutSearch(text);
+    }
+    else {
       setFilteredWorkoutData(masterWorkoutData);
-      setSearch(text);
+      setWorkoutSearch(text);
     }
   }
   
@@ -320,10 +355,6 @@ export default function DiscoverPage(props) {
       }
   }
   
-  // const toggleInfoShowing = () => {
-  //   setInfoPageVisible(!isInfoPageVisible);
-  // }
-
   const openExerciseInfo = (item) => {
     // toggleInfoShowing();
     // setInfoPageVisible(true);
@@ -478,13 +509,14 @@ return (
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
-                data={exerciseList} 
+                data={toggleValue ? exerciseList : workoutList} 
                 lightTheme
                 round
                 // onChangeText={updateSearch}
                 autoCorrect={false}
-                value={search}
-                onChangeText = {(text) => searchFilter(text)}
+                value={(toggleValue ? exerciseSearch : workoutSearch)}
+                onChangeText = {(toggleValue ? ((text) => searchExercisesFilter(text)) :
+                 ((text) => searchWorkoutsFilter(text)))}
                 // searchIcon = {false}
                 inputStyle={{
                     color: "black",
@@ -525,11 +557,12 @@ return (
               }
               //keyExtractor={(item) => item._id}
              
-              /> : <AccordionList
+              /> : <FlatList
+              // data = {workoutsList}
               // data = {workoutDummyData}
-              data = {workoutDummyData}
-              expandMultiple = {true}
-              // data = {filteredWorkoutData}
+              // expandMultiple = {true}
+              data = {filteredWorkoutData}
+              ListEmptyComponent={<View style={styles.emptyList}><Text style={{fontSize:20, alignItems: 'center'}}>No Workouts Found</Text></View>}
               style = {styles.boxContainer}
               renderItem={({item}) => 
                 (
