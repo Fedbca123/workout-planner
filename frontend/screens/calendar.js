@@ -1,102 +1,78 @@
-import React, { useState, useEffect  } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
-
-const screenWidth = Math.round(Dimensions.get('window').width);
-LocaleConfig.locales['en'] = {
-  monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-  monthNamesShort: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-  dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-  dayNamesShort: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-};
-
-LocaleConfig.defaultLocale = 'en';
+import moment from 'moment';
+import {useGlobalState} from '../GlobalState.js';
 
 const CalendarScreen = () => {
-  
+  const [globalState, updateGlobalState] = useGlobalState();
+  const [workouts, setWorkouts] = useState([]);
+  const [weeklyEvents, setWeeklyEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
+
   const fetchEvents = async () => {
-    API_Instance
-    .get(`users/${globalState.user._id}/calendar/all`, {
-      headers: {
-        'authorization': `Bearer ${globalState.authToken}`,
-      },
-    })
-    .then(data => {
-      return data.workouts;
-    })
-    .catch((error) => {
+    try {
+      const startOfWeek = moment().startOf('week').toISOString();
+      const endOfWeek = moment().endOf('week').toISOString();
+      const response = await API_Instance.get(`users/${globalState.user._id}/calendar/all`, {
+        params: {
+          startOfWeek,
+          endOfWeek,
+        }, 
+        headers: {
+          'authorization': `Bearer ${globalState.authToken}`,
+        },
+      });
+      console.log("My workouts are", response.data.workouts);
+      setWeeklyEvents(response.data.workouts);
+      setSelectedDate(moment().startOf('week').toISOString());
+    } catch (error) {
       console.error(error);
-      if (error.response.status === 403) {
+      if (error.response && error.response.status === 403) {
         Alert.alert('Failed to authenticate you');
-      } 
-    });
+      }
+      setWeeklyEvents([]);
+    }
   };
 
   useEffect(() => {
-    // fetchEvents();
-    // console.log('Workouts:', workouts);
+    fetchEvents();
   }, []);
-  
-  const [selectedDate, setSelectedDate] = useState('');
-  const [eventList, setEventList] = useState([
-    { date: '2023-03-16', title: 'Running', type: 'Cardio', sets: 3, recurring: true },
-    { date: '2023-03-17', title: 'Yoga', type: 'Flexibility', sets: 1, recurring: false },
-    { date: '2023-03-18', title: 'Weightlifting', type: 'Strength', sets: 5, recurring: true },
-    { date: '2023-03-19', title: 'Pilates', type: 'Core', sets: 2, recurring: false },
-    { date: '2023-03-01', title: 'Swimming', type: 'Endurance', sets: 4, recurring: true },
-  ]);
 
-  const [friendEventList, setFriendEventList] = useState([
-    { date: '2023-03-116', title: 'Soccer', type: 'Cardio', friendName: 'John' },
-    { date: '2023-02-14', title: 'Basketball', type: 'Cardio', friendName: 'Mary' },
-  ]);
+  
 
   const eventsByDate = {};
-  eventList.forEach((event) => {
-    if (!eventsByDate[event.date]) {
-      eventsByDate[event.date] = [];
-    }
-    eventsByDate[event.date].push(event);
-  });
+  weeklyEvents.forEach((event) => {
+  const eventDate = event.scheduledDate || event.dateOfCompletion;
+  if (!eventsByDate[eventDate]) {
+    eventsByDate[eventDate] = [];
+  }
+  eventsByDate[eventDate].push(event);
+});
 
-  const markedDates = {};
-  Object.keys(eventsByDate).forEach((date) => {
-    markedDates[date] = { dots: [{ color: '#24C8FE' }] };
-  });
-  
+const markedDates = {};
+Object.keys(eventsByDate).forEach((date) => {
+  markedDates[date] = { dots: [{ color: '#24C8FE' }] };
+});
   const onDayPress = (day) => {
-    setSelectedDate(day.dateString);
+    const selectedDay = moment(day.dateString).toISOString();
+    setSelectedDate(selectedDay);
   };
 
   const renderEvent = ({ item }) => {
-    if (item.date === selectedDate) {
+    const date = item.scheduledDate || item.dateOfCompletion;
+    if (date === selectedDate) {
       return (
-        <View style={{ padding: 10, backgroundColor: '#24C8FE'}}>
-          <Text style={{ fontWeight: 'bold' }}>{item.date}</Text>
-          <Text style={{ fontWeight: 'bold' }}>{item.title}</Text>
-          <Text>Workouts: {item.type}</Text>
-
+        <View style={{ padding: 10, backgroundColor: '#24C8FE' }}>
+          <Text style={{ fontWeight: 'bold' }}>{date}</Text>
+          <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+          <Text>Location: {item.location}</Text>
         </View>
       );
     }
     return null;
   };
-
-  const renderFriend = ({ item }) => {
-    if (item.date === selectedDate) {
-      return (
-        <View style={{ padding: 10, backgroundColor: '#grey'}}>
-          <Text style={{ fontWeight: 'bold' }}>{item.date}</Text>
-          <Text style={{ fontWeight: 'bold' }}>{item.title}</Text>
-          <Text>Workouts: {item.type}</Text>
-
-        </View>
-      );
-    }
-    return null;
-  };
-
 
   return (
     <View style={styles.container}>
@@ -106,23 +82,26 @@ const CalendarScreen = () => {
           ...markedDates,
           [selectedDate]: { selected: true },
         }}
+        theme={{
+          todayTextColor: '#24C8FE',
+          arrowColor: '#24C8FE',
+          selectedDayBackgroundColor: '#24C8FE',
+        }}
       />
       <FlatList
-        data={eventList}
+        data={weeklyEvents}
         renderItem={renderEvent}
-        keyExtractor={(item) => item.date}
+        keyExtractor={(item, index) => `${item._id}_${item.scheduledDate || item.dateOfCompletion}_${index}`}
       />
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
-  }
+    backgroundColor: 'white',
+  },
 });
 
 export default CalendarScreen;
-
