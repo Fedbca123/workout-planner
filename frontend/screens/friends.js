@@ -21,7 +21,7 @@ const FriendsScreen = () => {
 
   const handleDeleteFriend = (deleteFriendID) => {
     const deleteID = deleteFriendID;
-    console.log(deleteID);
+    // console.log(deleteID);
     const sendDeleteFriend = async () => {
       API_Instance
       .patch(`users/${globalState.user._id}/friends/remove/${deleteID}`, null, {
@@ -45,7 +45,6 @@ const FriendsScreen = () => {
         }
       });
     };
-
     sendDeleteFriend();
     fetchFriends();
   };
@@ -64,7 +63,6 @@ const FriendsScreen = () => {
         if (response.status == 200) {
           console.log(response.data);
           Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
-          sendBlockFriend();
         }
       })
       .catch((error) => {

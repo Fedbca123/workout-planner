@@ -40,27 +40,41 @@ export default function Inbox({ navigation }) {
     useEffect(() => {
         fetchFriendRequests();
     }, []);
-  
-    const acceptFriendRequest = async (userIdA, userIdB) => {
-        try {
-          const response = await API_Instance.patch(`users/${userIdA}/invites/accept/${userIdB}`, {
-            headers: {
-              'authorization': `Bearer ${globalState.authToken}`,
-            }
-          });
-          return response.data;
-        } catch (error) {
-          console.error(error);
-          throw error;
-        }
-      }
 
-    const handleAcceptFriendRequest = (friendId) => {
-      // handle accepting friend request
+    const handleAcceptFriendRequest = (acceptNewFriendId) => {
+        const id = acceptNewFriendId;
+        const acceptFriendRequest = async () => {
+            try {
+              const response = await API_Instance.patch(`users/${globalState.user._id}/invites/accept/${id}`,null, {
+                headers: {
+                  'authorization': `Bearer ${globalState.authToken}`,
+                }
+              });
+            } catch (error) {
+              console.error(error);
+              throw error;
+            }
+          }
+        acceptFriendRequest();
+        fetchFriendRequests();
     };
   
-    const declineFriendRequest = (friendId) => {
-      // handle declining friend request
+    const handleDeclineFriendRequest = (deleteNewFriendId) => {
+        const deleteid = deleteNewFriendId;
+        const declineFriendRequest = async () => {
+            try {
+              const response = await API_Instance.patch(`users/${globalState.user._id}/invites/reject/${deleteid}`,null, {
+                headers: {
+                  'authorization': `Bearer ${globalState.authToken}`,
+                }
+              });
+            } catch (error) {
+              console.error(error);
+              throw error;
+            }
+          }
+        declineFriendRequest();
+        fetchFriendRequests();
     };
   
     return (
@@ -78,7 +92,7 @@ export default function Inbox({ navigation }) {
                   <TouchableOpacity onPress={() => handleAcceptFriendRequest(item._id)}>
                     <Text style={{ paddingRight: 20 }}>Accept</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => declineFriendRequest(item._id)}>
+                  <TouchableOpacity onPress={() => handleDeclineFriendRequest(item._id)}>
                     <Text>Decline</Text>
                   </TouchableOpacity>
                 </View>
