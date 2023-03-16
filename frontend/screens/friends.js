@@ -23,30 +23,27 @@ const FriendsScreen = () => {
     const deleteID = deleteFriendID;
     // console.log(deleteID);
     const sendDeleteFriend = async () => {
-      API_Instance
-      .patch(`users/${globalState.user._id}/friends/remove/${deleteID}`, null, {
-        headers: {
-          Authorization : `Bearer ${globalState.authToken}`,
-        },
-      })
-      .then((response) => {
+      try {
+        const response = await API_Instance.patch(`users/${globalState.user._id}/friends/remove/${deleteID}`, null, {
+          headers: {
+            Authorization : `Bearer ${globalState.authToken}`,
+          },
+        });
         if (response.status == 200) {
           console.log(response.data);
           Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
-          
         }
-      })
-      .catch((error) => {
+        fetchFriends();
+      } catch (error) {
         if (error.status === 498) {
           Alert.alert(`User ${error.message} does not exist`);
         } else {
           console.error(error);
           Alert.alert('An unknown error occurred');
         }
-      });
+      }
     };
     sendDeleteFriend();
-    fetchFriends();
   };
 
   const handleBlockFriend = (blockedFriendID) => {
@@ -61,9 +58,10 @@ const FriendsScreen = () => {
       })
       .then((response) => {
         if (response.status == 200) {
-          console.log(response.data);
+          // console.log(response.data);
           Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
         }
+        fetchFriends();
       })
       .catch((error) => {
         if (error.status === 497) {
@@ -77,8 +75,8 @@ const FriendsScreen = () => {
       });
     };
     sendBlockFriend();
-    fetchFriends();
   };
+
   const handleAddFriend = () => {
     const email = searchTerm;
     const addFriendRequest = async () => {
@@ -214,8 +212,8 @@ const BlockFriendScreen = () => {
         if (response.status == 200) {
           console.log(response.data);
           Alert.alert('Unblocked', 'Your blocked friend has been unblocked', [{ text: 'OK' }]);
-          
         }
+        fetchBlockedFriends();
       })
       .catch((error) => {
         if (error.status === 498) {
@@ -226,9 +224,7 @@ const BlockFriendScreen = () => {
         }
       });
     };
-
     sendunblockFriend();
-    fetchBlockedFriends();
   };
 
   const fetchBlockedFriends = async () => {
