@@ -126,7 +126,7 @@ const FriendsScreen = () => {
       }
     })
     .then((response) => {
-      console.log("My real friends are", response.data.friends);
+      // console.log("My real friends are", response.data.friends);
       setFilteredFriends(response.data.friends);
     })
     .catch((error) => {

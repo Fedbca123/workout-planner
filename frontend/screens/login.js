@@ -112,9 +112,9 @@ export default function Login({navigation}) {
           backDoorHandler("Test@gmail.com", "password")}/> */}
       {/* <Button
           backDoorHandler("Test@gmail.com", "password")}/> */}
-      {/* <Button
+      <Button
         title="ADMIN BACKDOOR"
-        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/> */}
+        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>
 
       {/* <Button
         title="START WORKOUT BUTTON"
@@ -186,7 +186,7 @@ export default function Login({navigation}) {
 						setError("");
 						navigation.navigate("registration");
 				}}/>
-        <Button
+        		<Button
 					title="Forgot Password?"
 					color="#10B9F1"
 					accessibilityLabel="Forgot Password?"

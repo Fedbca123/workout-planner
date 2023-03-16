@@ -5,97 +5,72 @@ import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
 import {useGlobalState} from '../GlobalState.js';
 
-const CalendarScreen = () => {
-  const [globalState, updateGlobalState] = useGlobalState();
-  const [workouts, setWorkouts] = useState([]);
-  const [weeklyEvents, setWeeklyEvents] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
-
-  const fetchEvents = async () => {
-    try {
-      const startOfWeek = moment().startOf('week').toISOString();
-      const endOfWeek = moment().endOf('week').toISOString();
-      const response = await API_Instance.get(`users/${globalState.user._id}/calendar/all`, {
-        params: {
-          startOfWeek,
-          endOfWeek,
-        }, 
-        headers: {
-          'authorization': `Bearer ${globalState.authToken}`,
-        },
-      });
-      console.log("My workouts are", response.data.workouts);
-      setWeeklyEvents(response.data.workouts);
-      setSelectedDate(moment().startOf('week').toISOString());
-    } catch (error) {
-      console.error(error);
-      if (error.response && error.response.status === 403) {
-        Alert.alert('Failed to authenticate you');
-      }
-      setWeeklyEvents([]);
-    }
-  };
-
-  useEffect(() => {
-    fetchEvents();
-  }, []);
-
+const CalendarScreen = ({}) => {
+    const [globalState, updateGlobalState] = useGlobalState();
+    const [weeklyEvents, setWeeklyEvents] = useState({});
   
-
-  const eventsByDate = {};
-  weeklyEvents.forEach((event) => {
-  const eventDate = event.scheduledDate || event.dateOfCompletion;
-  if (!eventsByDate[eventDate]) {
-    eventsByDate[eventDate] = [];
-  }
-  eventsByDate[eventDate].push(event);
-});
-
-const markedDates = {};
-Object.keys(eventsByDate).forEach((date) => {
-  markedDates[date] = { dots: [{ color: '#24C8FE' }] };
-});
-  const onDayPress = (day) => {
-    const selectedDay = moment(day.dateString).toISOString();
-    setSelectedDate(selectedDay);
+    const fetchEvents = async () => {
+      try {
+        const response = await API_Instance.get(`users/${globalState.user._id}/calendar/all`, {
+          headers: {
+            'authorization': `Bearer ${globalState.authToken}`,
+          },
+        });
+        console.log("My workouts are", response.data.workouts);
+        const formattedEvents = formatEvents(response.data.workouts);
+        setWeeklyEvents(formattedEvents);
+      } catch (error) {
+        console.error(error);
+        if (error.response && error.response.status === 403) {
+          Alert.alert('Failed to authenticate you');
+        }
+        setWeeklyEvents({});
+      }
+    };
+  
+    useEffect(() => {
+      fetchEvents();
+    }, []);
+  
+    const formatEvents = (events) => {
+      const formattedEvents = {};
+      events.forEach((event) => {
+        const date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
+        if (!formattedEvents[date]) {
+          formattedEvents[date] = [];
+        }
+        formattedEvents[date].push(event);
+      });
+      return formattedEvents;
+    };
+  
+    const handleDayPress = (day) => {
+      const formattedDate = moment(day.dateString).format('YYYY-MM-DD');
+      if (weeklyEvents[formattedDate]) {
+        const events = weeklyEvents[formattedDate];
+        setEvents(events);
+      } else {
+        setEvents([]);
+      }
+    };
+  
+    const [events, setEvents] = useState([]);
+  
+    const renderItem = ({ item }) => (
+      <View>
+        <Text>{item.title}</Text>
+        <Text>{item.description}</Text>
+      </View>
+    );
+  
+    return (
+      <View>
+        <Calendar onDayPress={handleDayPress} markedDates={weeklyEvents} />
+        <FlatList data={events} renderItem={renderItem} />
+      </View>
+    );
   };
-
-  const renderEvent = ({ item }) => {
-    const date = item.scheduledDate || item.dateOfCompletion;
-    if (date === selectedDate) {
-      return (
-        <View style={{ padding: 10, backgroundColor: '#24C8FE' }}>
-          <Text style={{ fontWeight: 'bold' }}>{date}</Text>
-          <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-          <Text>Location: {item.location}</Text>
-        </View>
-      );
-    }
-    return null;
-  };
-
-  return (
-    <View style={styles.container}>
-      <Calendar
-        onDayPress={onDayPress}
-        markedDates={{
-          ...markedDates,
-          [selectedDate]: { selected: true },
-        }}
-        theme={{
-          todayTextColor: '#24C8FE',
-          arrowColor: '#24C8FE',
-          selectedDayBackgroundColor: '#24C8FE',
-        }}
-      />
-      <FlatList
-        data={weeklyEvents}
-        renderItem={renderEvent}
-        keyExtractor={(item, index) => `${item._id}_${item.scheduledDate || item.dateOfCompletion}_${index}`}
-      />
-    </View>
-  );
-};
+  
 
 const styles = StyleSheet.create({
   container: {
