@@ -41,42 +41,36 @@ export default function Inbox({ navigation }) {
         fetchFriendRequests();
     }, []);
 
-    const handleAcceptFriendRequest = (acceptNewFriendId) => {
-        const id = acceptNewFriendId;
-        const acceptFriendRequest = async () => {
-            try {
-              const response = await API_Instance.patch(`users/${globalState.user._id}/invites/accept/${id}`,null, {
-                headers: {
-                  'authorization': `Bearer ${globalState.authToken}`,
-                }
-              });
-            } catch (error) {
-              console.error(error);
-              throw error;
+    const handleAcceptFriendRequest = async (acceptNewFriendId) => {
+        try {
+          const id = acceptNewFriendId;
+          const response = await API_Instance.patch(`users/${globalState.user._id}/invites/accept/${id}`, null, {
+            headers: {
+              'authorization': `Bearer ${globalState.authToken}`,
             }
-          }
-        acceptFriendRequest();
-        fetchFriendRequests();
-    };
+          });
+          fetchFriendRequests(); 
+        } catch (error) {
+          console.error(error);
+          throw error;
+        }
+      };
   
-    const handleDeclineFriendRequest = (deleteNewFriendId) => {
+    const handleDeclineFriendRequest = async (deleteNewFriendId) => {
         const deleteid = deleteNewFriendId;
-        const declineFriendRequest = async () => {
-            try {
-              const response = await API_Instance.patch(`users/${globalState.user._id}/invites/reject/${deleteid}`,null, {
-                headers: {
-                  'authorization': `Bearer ${globalState.authToken}`,
-                }
-              });
-            } catch (error) {
-              console.error(error);
-              throw error;
-            }
-          }
-        declineFriendRequest();
-        fetchFriendRequests();
+        try {
+          const response = await API_Instance.patch(`users/${globalState.user._id}/invites/reject/${deleteid}`, null, {
+            headers: {
+              'authorization': `Bearer ${globalState.authToken}`,
+            },
+          });
+          fetchFriendRequests();
+        } catch (error) {
+          console.error(error);
+          throw error;
+        }
     };
-  
+
     return (
       <View style={styles.container}>
         <Text style={{ paddingLeft: 20 }}>Incoming friend requests</Text>
