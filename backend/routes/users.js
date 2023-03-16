@@ -544,7 +544,7 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
     return res.status(498).send({Error: `User (${A_id}) does not exist!`});
   }
 
-  const userB = await User.findOne({email: friendEmail});
+  const userB = await User.findOne({email: {$regex: new RegExp("^" + friendEmail + "$", "i")}});
   if (!userB){
     return res.status(493).send({Error: `User with email ${friendEmail} does not exist!`});
   }
