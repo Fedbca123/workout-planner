@@ -124,7 +124,12 @@ export default function DiscoverPage(props) {
     </View>
   );
 
-  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration}) => (
+  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration, exercises}) => {
+    const [expanded, setExpanded] = useState(false);
+    const handlePress = () => {
+      setExpanded(!expanded);
+    };
+    return(<TouchableOpacity onPress={handlePress}>
     <View style={styles.workoutItems}>
       <View style={styles.workoutCardText}>
         <Text style={styles.workoutCardTitle}>{title}</Text>
@@ -133,9 +138,24 @@ export default function DiscoverPage(props) {
         <Text style={styles.workoutCardDescription}>Muscle Groups: {muscleGroups}</Text>
         <Text style={styles.workoutCardType}>Tags: {tags}</Text>
         <Text style={styles.workoutCardDescription}>Duration: {duration} min</Text>
+        {expanded &&
+            exercises.map((exercise) => (
+              <View key={exercise.title}>
+                <Text>{exercise.title}</Text>
+                <Text>{exercise.ExerciseType}</Text>
+                {exercise.ExerciseType === 'SETSXREPS' && (
+                  <Text>
+                    {exercise.sets} sets x {exercise.reps} reps
+                  </Text>
+                )}
+                {exercise.ExerciseType === 'AMRAP' && <Text>As many reps as possible in {exercise.time} ms</Text>}
+              </View>
+            ))}
       </View>
     </View>
-  );
+    </TouchableOpacity>
+    );
+  };
 
   const exercisesList = async()=> {
       API_Instance.post('exercises/search',
@@ -187,7 +207,7 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      // console.log(response.data);
+      console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -580,11 +600,15 @@ return (
               //keyExtractor={(item) => item._id}
              
               /> : <FlatList
-              // data = {workoutsList}
-              // data = {workoutDummyData}
-              // expandMultiple = {true}
-              data = {filteredWorkoutData}
-              ListEmptyComponent={<View style={styles.emptyList}><Text style={{fontSize:20, alignItems: 'center'}}>No Workouts Found</Text></View>}
+              data = {workoutDummyData}
+              // data = {filteredWorkoutData}
+              ListEmptyComponent={
+                <View style={styles.emptyList}>
+                  <Text style={{fontSize:20, alignItems: 'center'}}>
+                    No Workouts Found
+                  </Text>
+                </View>
+              }
               style = {styles.boxContainer}
               renderItem={({item}) => 
                 (
@@ -601,11 +625,12 @@ return (
                 description={item.description}
                 location ={item.location} 
                 muscleGroups={item.muscleGroups} tags={item.tags}
-                duration={item.duration}
+                duration={item.duration} exercises={item.exercises}
 
                 /></TouchableOpacity>
                 )
               }
+
               />}
       </View>
 
