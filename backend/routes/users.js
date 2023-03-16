@@ -163,7 +163,7 @@ router.route('/login').post(async (req, res) => {
 
 // Get user by id
 // req.params = { id }
-// (GET) API_Instance.delete("users/${id}")
+// (GET) API_Instance.get("users/${id}")
 // returns { Deleted: user.email }
 router.route('/:id').get(authenticateToken, async (req, res) => {
   User.findById(req.params.id)
@@ -259,7 +259,7 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
     return res.sendStatus(403);
   }
 
-  const {firstName, lastName,email} = req.body
+  const {firstName, lastName} = req.body
 
   // Check if user exists
   const user = await User.findById(id);
@@ -270,23 +270,10 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
 
   if (firstName) {user.firstName = firstName;}
   if (lastName) {user.lastName = lastName;}
-  if (email) {
-    // make sure email field matches a regex
-    if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-      return res.status(495).send({Error: `${email} not in proper email format`});
-    }
-    // Check if email exists in DB
-    const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
-    if (emailExists)
-    {
-      return res.status(502).send({Error: "Email already exists!"});
-    }
-
-    user.email = email;
-  }
 
   await user.save((err, newUser) => {
       if (err) return res.status(499).send(err);
+      newUser.password = null;
       res.status(200).json(newUser);
   });
 });
@@ -945,7 +932,7 @@ router.route('/:id/exercises/custom/all').get(authenticateToken, async (req,res)
 router.route('/emailVerification/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {firstName, lastName, email, password} = req.body;
-
+  
   const payload = {
     user:{
       firstName,
@@ -957,7 +944,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailVerification/${authToken}`
 
@@ -1047,7 +1034,7 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/forgotpassword/reset/${authToken}`
 
@@ -1145,6 +1132,13 @@ router.route('/emailreset/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {firstName, lastName, email, id} = req.body;
 
+  const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+  if (emailExists)
+  {
+      //res.render('pages/verified', {title: "Unsuccessful Verification", message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});
+      return res.status(502).send({Error: "Email already exists!"}); 
+  }
+
   const payload = {
     user:{
       firstName,
@@ -1156,7 +1150,7 @@ router.route('/emailreset/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailreset/${authToken}`
 

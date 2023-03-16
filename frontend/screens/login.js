@@ -105,13 +105,17 @@ export default function Login({navigation}) {
 			</View>
       {/*
         <Button
+      
+        {/* <Button
         title="BACKDOOR"
         onPress={() =>
           backDoorHandler("Test@gmail.com", "password")}/> */}
       {/* <Button
+          backDoorHandler("Test@gmail.com", "password")}/> */}
+      {/* <Button
         title="ADMIN BACKDOOR"
-        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>
-*/}
+        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/> */}
+
       {/* <Button
         title="START WORKOUT BUTTON"
         onPress={() => navigation.navigate("start")}
