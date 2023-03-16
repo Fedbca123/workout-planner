@@ -32,6 +32,7 @@ const CalendarScreen = ({}) => {
       fetchEvents();
     }, []);
   
+    //changes date to yyyy-mm-dd
     const formatEvents = (events) => {
       const formattedEvents = {};
       events.forEach((event) => {
@@ -49,24 +50,41 @@ const CalendarScreen = ({}) => {
       if (weeklyEvents[formattedDate]) {
         const events = weeklyEvents[formattedDate];
         setEvents(events);
+        setSelectedDate(formattedDate);
       } else {
         setEvents([]);
+        setSelectedDate(formattedDate);
       }
     };
   
     const [events, setEvents] = useState([]);
-  
+    const [selectedDate, setSelectedDate] = useState('');
+
     const renderItem = ({ item }) => (
-      <View>
-        <Text>{item.title}</Text>
-        <Text>{item.description}</Text>
+      <View style={{ padding: 10, backgroundColor: '#24C8FE' }}>
+          <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+          <Text>Location: {item.location}</Text>
       </View>
     );
   
     return (
-      <View>
-        <Calendar onDayPress={handleDayPress} markedDates={weeklyEvents} />
-        <FlatList data={events} renderItem={renderItem} />
+      <View style ={styles.container}>
+        <Calendar 
+          onDayPress={handleDayPress} 
+          markedDates={weeklyEvents} 
+        />
+      
+        {selectedDate !== '' && 
+          <Text style={styles.Title}>
+            {moment(selectedDate).format('MMMM D, YYYY')}
+          </Text>
+        }
+
+        <FlatList 
+          data={events} 
+          renderItem={renderItem} 
+          keyExtractor={(item, index) => `${item._id}_${item.scheduledDate || item.dateOfCompletion}_${index}`}
+        />
       </View>
     );
   };
@@ -77,6 +95,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  Title:{
+    fontFamily: 'HelveticaNeue-Bold',
+    color: '#2B2B2B',
+    fontSize: 24,
+    textAlign: 'left',
+    padding: 10,
+},
 });
 
 export default CalendarScreen;

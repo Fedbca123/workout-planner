@@ -112,9 +112,9 @@ export default function Login({navigation}) {
           backDoorHandler("Test@gmail.com", "password")}/> */}
       {/* <Button
           backDoorHandler("Test@gmail.com", "password")}/> */}
-      <Button
+      {/* <Button
         title="ADMIN BACKDOOR"
-        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>
+        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/> */}
 
       {/* <Button
         title="START WORKOUT BUTTON"
