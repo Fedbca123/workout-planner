@@ -163,7 +163,7 @@ router.route('/login').post(async (req, res) => {
 
 // Get user by id
 // req.params = { id }
-// (GET) API_Instance.delete("users/${id}")
+// (GET) API_Instance.get("users/${id}")
 // returns { Deleted: user.email }
 router.route('/:id').get(authenticateToken, async (req, res) => {
   User.findById(req.params.id)
@@ -259,7 +259,7 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
     return res.sendStatus(403);
   }
 
-  const {firstName, lastName,email} = req.body
+  const {firstName, lastName} = req.body
 
   // Check if user exists
   const user = await User.findById(id);
@@ -270,23 +270,10 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
 
   if (firstName) {user.firstName = firstName;}
   if (lastName) {user.lastName = lastName;}
-  if (email) {
-    // make sure email field matches a regex
-    if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
-      return res.status(495).send({Error: `${email} not in proper email format`});
-    }
-    // Check if email exists in DB
-    const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
-    if (emailExists)
-    {
-      return res.status(502).send({Error: "Email already exists!"});
-    }
-
-    user.email = email;
-  }
 
   await user.save((err, newUser) => {
       if (err) return res.status(499).send(err);
+      newUser.password = null;
       res.status(200).json(newUser);
   });
 });
@@ -945,7 +932,7 @@ router.route('/:id/exercises/custom/all').get(authenticateToken, async (req,res)
 router.route('/emailVerification/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {firstName, lastName, email, password} = req.body;
-
+  
   const payload = {
     user:{
       firstName,
@@ -957,7 +944,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailVerification/${authToken}`
 
@@ -1047,7 +1034,7 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/forgotpassword/reset/${authToken}`
 
@@ -1136,6 +1123,88 @@ router.route('/forgotpassword/reset/:JWT').post(async (req,res) => {
       const message = err ? "Looks like password reset didn't go as planned. Try starting the process again from the mobile app." : "Attempt a new login in the Workout Planner mobile app with your new password.";
       res.render('pages/reset', {success: false, title: title, message: message});  
     });
+  })
+});
+
+// endpoint to send link to email verification endpoint for email reset
+// body {firstName, lastName, email, id} email is new email
+router.route('/emailreset/send/to').post(async (req,res) => {
+  // encrypt a JWT with the body passed in
+  const {firstName, lastName, email, id} = req.body;
+
+  const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+  if (emailExists)
+  {
+      //res.render('pages/verified', {title: "Unsuccessful Verification", message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});
+      return res.status(502).send({Error: "Email already exists!"}); 
+  }
+
+  const payload = {
+    user:{
+      firstName,
+      lastName,
+      email,
+      id
+    }
+  }
+
+  const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
+
+  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
+
+  const endpointURI = `${process.env.API_URL}${port}/users/emailreset/${authToken}`
+
+  const message = `Hi ${firstName} ${lastName},\nThank you for pursuing your fitness goals with Workout Planner!\nBelow is the link required to verify ${email} as the new email related to your account!\n\n${endpointURI}\n\nPlease note this link will expire in about 30 minutes. If it is not visited prior to expiring, you will need to request an update of your email again from the settings page of the mobile application.`;
+  
+  // send email to user
+  try {
+    var client = new EmailClient(process.env.EMAIL_CONNECTION_STRING);
+    //send mail
+    const emailMessage = {
+      senderAddress: process.env.EMAIL_SENDER,
+      content: {
+        subject: "Verification Link for New Workout Planner Email",
+        plainText: message
+      },
+      recipients: {
+        to: [
+          {
+            address: email,
+          },
+        ],
+      },
+    };
+    var response = await client.beginSend(emailMessage);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+// email reset endpoint
+// once opened, account of id is updated with email stored in the JWT
+router.route('/emailreset/:JWT').get(async (req,res) => {
+  const JWT = req.params.JWT;
+  // decrypt the JWT passed in the URL
+  jwt.verify(JWT, process.env.ACCESS_TOKEN_SECRET, async (err, user) => {
+    if (err) res.render('pages/verified', {title: "Unsuccessful Verification",message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});//return res.sendStatus(406);
+    const {firstName, lastName, email, id} = user.user;
+
+    const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+    
+    if (emailExists)
+    {
+        res.render('pages/verified', {title: "Unsuccessful Verification", message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});
+        //return res.status(502).send({Error: "Email already exists!"}); 
+    }
+    
+    const userDoc = await User.findById(id);
+    userDoc.email = email;
+
+    await userDoc.save((err, newUser) => {
+      const title = err ? "Unsuccessful Verification" : "Your New Email Has Been Verified!"
+      const message = err ? "Looks like verification didn't go as smoothly this time. Try again from the mobile app." : `You can now proudly tell your friends your Workout Planner account email is ${newUser.email}. Login through the app to see it in action!`;
+      res.render('pages/verified', {title: title, message : message});
+    })
   })
 });
 module.exports = router;

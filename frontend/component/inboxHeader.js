@@ -1,12 +1,8 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert} from 'react-native';
 import React from 'react';
-import {useGlobalState} from '../GlobalState.js';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useDrawerStatus } from '@react-navigation/drawer';
 
-export default function HomeHeader ({ navigation }) {
-    const [globalState, updateGlobalState] = useGlobalState();
-
+export default function inboxHeader ({navigation}) {
     return (
         <View style= {styles.container}>
             <View style={styles.buttonContainer}>
@@ -19,7 +15,7 @@ export default function HomeHeader ({ navigation }) {
                 </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
-                {globalState.user && <Text style={styles.text}>Hello {globalState.user.firstName}!</Text>}
+                <Text style={styles.text}>Inbox</Text>
             </View>
         </View>
     )
