@@ -85,7 +85,6 @@ const oldworkoutDummyData = [
 export default function DiscoverPage(props) {
 
   const [toggleValue, setToggleValue] = useState(false);
-  // const [search, setSearch] = useState("");
   const [areFiltersVisible, setFiltersVisible] = useState(false);
   const [isInfoPageVisible, setInfoPageVisible] = useState(false);
   const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
@@ -113,14 +112,14 @@ export default function DiscoverPage(props) {
     workoutsList();
   }, []);
 
-  const ExerciseItem = ({title, description, sets, reps, type, muscleGroups, tags}) => (
+  const ExerciseItem = ({title, description, type, muscleGroups, tags}) => (
     <View style={styles.exerciseItems}>
       <View style={styles.exerciseCardText}>
         <Text style={styles.exerciseCardTitle}>{title}</Text>
         <Text style={styles.exerciseCardDescription}>{description}</Text>
-        <Text style={styles.exerciseCardSets}>Sets: {sets}</Text>
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
         <Text style={styles.exerciseCardType}>Tags: {tags}</Text>
+        <Text style={styles.exerciseCardDescription}>Muscle Groups: {muscleGroups}</Text>
       </View>
     </View>
   );
@@ -131,6 +130,7 @@ export default function DiscoverPage(props) {
         <Text style={styles.workoutCardTitle}>{title}</Text>
         <Text style={styles.workoutCardDescription}>{description}</Text>
         <Text style={styles.workoutCardDescription}>{location}</Text>
+        <Text style={styles.workoutCardDescription}>Muscle Groups: {muscleGroups}</Text>
         <Text style={styles.workoutCardType}>Tags: {tags}</Text>
         <Text style={styles.workoutCardDescription}>Duration: {duration} min</Text>
       </View>
@@ -549,7 +549,7 @@ return (
                     
               }}>
                 <ExerciseItem title={item.title} 
-                description={item.description} sets={item.sets}
+                description={item.description} muscleGroups={item.muscleGroups}
                 type={item.exerciseType} tags={item.tags}
                 
                 /></TouchableOpacity>
@@ -578,7 +578,7 @@ return (
                 <WorkoutItem title={item.title} 
                 description={item.description}
                 location ={item.location} 
-                type={item.exerciseType} tags={item.tags}
+                muscleGroups={item.muscleGroups} tags={item.tags}
                 duration={item.duration}
 
                 /></TouchableOpacity>
