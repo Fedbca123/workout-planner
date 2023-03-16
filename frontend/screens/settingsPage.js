@@ -8,17 +8,17 @@ import {
     TouchableOpacity,
     Alert
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Icon } from 'react-native-elements'
 import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance";
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from '../AuthProvider';
 
-const text_field_width = '40%';
+const text_field_width = '41%';
 
 
-// TO DO: resetting states onclick
+// TO DO: Handle Various Naming Errors
 export default function SettingsPage({ navigation }) 
 {
     const { isLoggedIn, setIsLoggedIn } = React.useContext(AuthContext);
@@ -29,13 +29,21 @@ export default function SettingsPage({ navigation })
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [userMessage, setUserMessage] = useState("");
     
-    
+    useEffect(() => {
+        setFirstName("");
+        setLastName("");
+        setEmail("");
+        setUserMessage("");
+	}, [editFirstName, editLastName, editEmail])
 
     function updateFirstName() 
     {
         if (firstName == globalState.user.firstName || firstName == '')
+        {
             return;
+        }
         
         API_Instance
         .patch(`users/${globalState.user._id}/contact`, {
@@ -54,15 +62,19 @@ export default function SettingsPage({ navigation })
             }
         })
         .catch((error) => {
+            setUserMessage(error.response.data.errors.firstName.message);
             Alert.alert('An error occurred');
         });
     }
 
     function updateLastName()
     {
-        if (lastName == globalState.user.lastName)
+        if (lastName == globalState.user.lastName || lastName == '')
+        {
             return;
+        }
 
+        
         API_Instance
         .patch(`users/${globalState.user._id}/contact`, {
             lastName: lastName
@@ -74,24 +86,69 @@ export default function SettingsPage({ navigation })
         })
         .then((response) => 
         {
+            
             if (response.status == 200) {
-                setEditLastName(false);     
                 updateGlobalState("user", response.data);
             }
         })
         .catch((error) => {
-            Alert.alert('An error occurred');
+            setUserMessage(error.response.data.errors.lastName.message);
         });
     }
 
     function updateEmail()
     {
-        // TO-DO
+        if (email == globalState.user.email || email == '')
+        {
+            return;
+        }
+
+        if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))
+        {
+            Alert.alert('Email is not valid');
+        }
+
+        try
+        {
+            API_Instance
+            .post(`users/emailreset/send/to`, {
+                firstName: globalState.user.firstName,
+                lastName: globalState.user.lastName,
+                email: email,
+                id: globalState.user._id
+            })
+        }
+        catch(error)
+        {
+            if (error.response.status === 502)
+            {
+                Alert.alert(`${email} Already has an account associated with it`);
+                setUserMessage('');
+            }
+        } 
+
+        setUserMessage(`A confirmation email has been sent to ${email}`);
     }
 
     function handleResetPassword()
     {
-        // TO-DO
+        try
+        {
+            API_Instance
+            .post(`users//forgotpassword/email/send/to`, {
+                email: globalState.user.email,
+            })
+        }
+        catch(error)
+        {
+            if (error.response.status === 502)
+            {
+                Alert.alert(`${globalState.user.email} Already has an account associated with it`);
+                setUserMessage('');
+            }
+        } 
+
+        setUserMessage(`A Password reset email has been sent to ${globalState.user.email}`);
     }
 
     function deleteAccount()
@@ -150,18 +207,27 @@ export default function SettingsPage({ navigation })
                     placeholder={globalState.user.firstName}
                     onChangeText={(text) => setFirstName(text)}
                     />}
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (editFirstName) { updateFirstName(); }
-                            setEditFirstName(!editFirstName)
-                        }}>
-                        {!editFirstName && <Icon
+                    {!editFirstName && <TouchableOpacity
+                        onPress={() => setEditFirstName(true)}>
+                        <Icon
                             name='edit'
-                            type='material'/>}
-                        {editFirstName && <Icon
+                            type='material'/>
+                    </TouchableOpacity>}
+                    {editFirstName && <TouchableOpacity
+                        onPress={() => {
+                            updateFirstName();
+                            setEditFirstName(false);
+                        }}> 
+                        <Icon
                             name='done'
-                            type='material'/>}
-                    </TouchableOpacity>
+                            type='material'/>
+                    </TouchableOpacity>}
+                    {editFirstName && <TouchableOpacity
+                        onPress={() => setEditFirstName(!editFirstName)}>
+                            <Icon
+                            name='close'
+                            type='material'/>
+                    </TouchableOpacity>}
                 </View>
                 <View style={styles.rowView}>
                     <Text style={styles.text}>Last Name:{"\t\t"}</Text>
@@ -172,18 +238,27 @@ export default function SettingsPage({ navigation })
                     placeholder={globalState.user.lastName}
                     onChangeText={(text) => setLastName(text)}
                     />}
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (editLastName) { updateLastName() }
-                            setEditLastName(!editLastName)
-                        }}>
-                        {!editLastName && <Icon
+                    {!editLastName && <TouchableOpacity
+                        onPress={() => setEditLastName(true)}>
+                        <Icon
                             name='edit'
-                            type='material'/>}
-                        {editLastName && <Icon
+                            type='material'/>
+                    </TouchableOpacity>}
+                    {editLastName && <TouchableOpacity
+                        onPress={() => {
+                             updateLastName();
+                            setEditLastName(false);
+                        }}> 
+                        <Icon
                             name='done'
-                            type='material'/>}
-                    </TouchableOpacity>
+                            type='material'/>
+                    </TouchableOpacity>}
+                    {editLastName && <TouchableOpacity
+                        onPress={() => setEditLastName(!editLastName)}>
+                            <Icon
+                            name='close'
+                            type='material'/>
+                    </TouchableOpacity>}
                 </View>
                 <View style={styles.rowView}>
                     <Text style={styles.text}>Email: {"\t\t\t"}</Text>
@@ -194,20 +269,30 @@ export default function SettingsPage({ navigation })
                     placeholder={globalState.user.email}
                     onChangeText={(text) => setEmail(text)}
                     />}
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (editEmail) { updateEmail() }
-                            setEditEmail(!editEmail)
-                            }}>
-                        {!editEmail && <Icon
+                    {!editEmail && <TouchableOpacity
+                        onPress={() => setEditEmail(true)}>
+                        <Icon
                             name='edit'
-                            type='material'/>}
-                        {editEmail && <Icon
+                            type='material'/>
+                    </TouchableOpacity>}
+                    {editEmail && <TouchableOpacity
+                        onPress={() => {
+                            updateEmail();
+                            setEditEmail(false);
+                        }}> 
+                        <Icon
                             name='done'
-                            type='material'/>}
-                    </TouchableOpacity>
+                            type='material'/>
+                    </TouchableOpacity>}
+                    {editEmail && <TouchableOpacity
+                        onPress={() => setEditEmail(!editEmail)}>
+                            <Icon
+                            name='close'
+                            type='material'/>
+                    </TouchableOpacity>}
                 </View>
-                <View style={{marginTop: 30}}>
+                <View style={styles.belowFieldView}>
+                    <Text style={styles.text3}>{userMessage}</Text>
                     <Button
                         title="Reset Password"
                         onPress={() => handleResetPassword()}
@@ -245,6 +330,7 @@ styles = StyleSheet.create({
         alignItems: 'center'
     },
     text: {
+        fontWeight: 'bold',
         fontSize: 20,
         marginRight: 10,
     },
@@ -266,5 +352,13 @@ styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         marginBottom: 100
+    },
+    belowFieldView: {
+        marginTop: 10, 
+        width: '100%',
+        alignItems: 'center'
+    },
+    text3: {
+        fontSize: 12
     }
 });

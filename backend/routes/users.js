@@ -932,7 +932,7 @@ router.route('/:id/exercises/custom/all').get(authenticateToken, async (req,res)
 router.route('/emailVerification/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {firstName, lastName, email, password} = req.body;
-
+  
   const payload = {
     user:{
       firstName,
@@ -1132,6 +1132,13 @@ router.route('/emailreset/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {firstName, lastName, email, id} = req.body;
 
+  const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+  if (emailExists)
+  {
+      //res.render('pages/verified', {title: "Unsuccessful Verification", message:"Looks like verification didn't go as smoothly this time. Try again from the mobile app."});
+      return res.status(502).send({Error: "Email already exists!"}); 
+  }
+
   const payload = {
     user:{
       firstName,
@@ -1143,7 +1150,7 @@ router.route('/emailreset/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailreset/${authToken}`
 
