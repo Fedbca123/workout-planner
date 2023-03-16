@@ -186,7 +186,7 @@ export default function Login({navigation}) {
 						setError("");
 						navigation.navigate("registration");
 				}}/>
-        <Button
+        		<Button
 					title="Forgot Password?"
 					color="#10B9F1"
 					accessibilityLabel="Forgot Password?"
