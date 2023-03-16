@@ -61,7 +61,7 @@ const CalendarScreen = ({}) => {
     const [selectedDate, setSelectedDate] = useState('');
 
     const renderItem = ({ item }) => (
-      <View style={{ padding: 10, backgroundColor: '#24C8FE' }}>
+      <View style={styles.myExercise}>
           <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
           <Text>Location: {item.location}</Text>
       </View>
@@ -102,6 +102,34 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 10,
 },
+  myExercise:{
+    backgroundColor: '#DDF2FF',
+    padding: 20,
+    marginBottom: 0,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  friendExercise:{
+    backgroundColor: '#F1F3FA',
+    padding: 20,
+    marginBottom: 0,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  }
 });
 
 export default CalendarScreen;
