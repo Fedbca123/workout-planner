@@ -58,10 +58,14 @@ export default function ChooseTemplate(props) {
 
 	const noTemplate = [
 		{
-			title: "Your Workout",
+			title: "My Custom Workout",
 			duration: 60,
-			location: "",
+			description: "",
 			exercises: [],
+			location:"",
+			scheduledDate: new Date("2022-01-01"),
+			tags: [],
+			muscleGroups: [],
 		}
 	];
 

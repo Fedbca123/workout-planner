@@ -33,11 +33,11 @@ export default function WorkOuts({ data, showButton, showInput}) {
 	function renderHeader(sections) {
 		if (showButton) {
 			return (
-				<View >
-					{/* <Image source={sections.image} style={styles.ImageStyle} /> */}
+				<View style={{ flexDirection: "row"}}>
+					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
 					<Text style={styles.TitleText}>{sections.title}</Text>
 					
-					<TouchableOpacity onPress={() =>{
+					<TouchableOpacity style={styles.addButton} onPress={() =>{
 						navigation.push("exerciseSearch");
 						updateGlobalState("workout", data);
 					}}>
@@ -47,8 +47,8 @@ export default function WorkOuts({ data, showButton, showInput}) {
 			);
 		} else {
 			return (
-				<View>
-					{/* <Image source={sections.image} style={styles.ImageStyle} /> */}
+				<View style={{ flexDirection: "row"}}>
+					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
 					<Text style={styles.TitleText}>{sections.title}</Text>
 				</View>
 			);
@@ -61,6 +61,7 @@ export default function WorkOuts({ data, showButton, showInput}) {
 				return (
 					<View>
 						{/* Image Component here */}
+						<Image source={{ uri: item.image }} style={styles.ImageStyle} />
 						<Text style={styles.text}>{item.title}</Text>
 						<TextInput
 							placeholder="sets"
@@ -80,9 +81,9 @@ export default function WorkOuts({ data, showButton, showInput}) {
 				);
 			}else{
 				return (
-					<View >
+					<View style={{ flexDirection: "row"}}>
 						{/* Image Component here */}
-						{/* <Image source={item.image} style={styles.ImageStyle} /> */}
+						<Image source={{ uri: item.image }} style={styles.ExerciseImage} />
 						<Text style={styles.text}>{item.title}</Text>
 					</View>
 				);
@@ -138,15 +139,18 @@ const styles = StyleSheet.create({
 	text: {
 		color: "black",
 		fontWeight: "bold",
-		fontSize: 12,
+		fontSize: 16,
+		left: 20,
+		top: 20
 	},
 	addButton: {
-		position: "relative",
-		width: 28,
+		// position: "relative",
+		// width: 28,
 		height: 28,
-		left: 328,
-		top: 26,
-		fontSize: 28,
+		left: 140,
+		top: 20,
+		// fontSize: 28,
+		flexDirection: "row"
 	},
 	Background: {
 		backgroundColor: "#E5E5E5",
@@ -162,17 +166,27 @@ const styles = StyleSheet.create({
 		color: "black",
 		fontWeight: "bold",
 		fontSize: 20,
+		left: 20,
+		top: 10,
+		// textAlign: "center"
 	},
 	ImageStyle:{
-		height: 75,
-		width: 75,
+		height: 50,
+		width: 50,
 		borderWidth: 1,
-		borderRadius: "20rem",
+		borderRadius: 20,
+	},
+	ExerciseImage: {
+		height: 50,
+		width: 50,
+		borderWidth: 1,
+		borderRadius: 100,
+		marginTop: 10
 	},
 	ExerciseText: {
 		fontSize: 20,
 		fontWeight: 'bold',
-		left: 10,
+		left: 30,
 		textAlignVertical: "bottom",
 	}
 });

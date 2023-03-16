@@ -6,6 +6,7 @@ import ExerciseSearch from "../screens/exerciseSearch.js";
 import Finalize from "../screens/finalizeWorkout.js";
 import startWorkout from "../screens/startWorkout.js";
 import CustomExercise from "../screens/customExercise.js";
+import FinalizedContinued from "../screens/finalizedContinued.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ export default function CreateWorkoutNav() {
 			<Stack.Screen 
 				name="finalizeWorkout" 
 				component={Finalize} 
+				// options={{ headerShown: false }}
+			/>
+			<Stack.Screen 
+				name="finalizedContinued" 
+				component={FinalizedContinued} 
 				// options={{ headerShown: false }}
 			/>
 			<Stack.Screen 

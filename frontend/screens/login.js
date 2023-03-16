@@ -103,11 +103,11 @@ export default function Login({navigation}) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
-      {/*
+      
         <Button
         title="BACKDOOR"
         onPress={() =>
-          backDoorHandler("Test@gmail.com", "password")}/> */}
+          backDoorHandler("Test@gmail.com", "password")}/>
       {/* <Button
         title="ADMIN BACKDOOR"
         onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/>

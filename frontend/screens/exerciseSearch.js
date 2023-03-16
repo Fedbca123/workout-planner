@@ -60,10 +60,22 @@ export default function ExerciseSearch(props) {
 
 	return (
 		<SafeAreaView >
-			<SearchBar placeholder="Enter exercise names or muscle groups you wish to train!"></SearchBar>
 			<Text style={styles.TitleText}>Current Workout:</Text>
 			<WorkOuts data={globalState.workout} />
+			<Button
+				title="Finalize Workout"
+				onPress={() => {
+					if (globalState.workout[0].exercises.length !== 0) {
+						navigation.push("finalizeWorkout");
+					} else {
+						Alert.alert("Please add at least one exercise to this workout.");
+					}
+				}}
+			/>
 			<Text style={styles.TitleText}>Exercises:</Text>
+			<Button title="Custom Exercise" onPress={() => {
+				navigation.push("customExercise");
+			}} />
 			<FlatList
 				data={exercises}
 				keyExtractor={(item) => item.title}
@@ -85,16 +97,6 @@ export default function ExerciseSearch(props) {
 					</View>
 				)}
 			/>
-			<Button
-				title="Finalize Workout"
-				onPress={() => {
-					navigation.push("finalizeWorkout");
-					
-				}}
-			/>
-			<Button title="Custom Exercise" onPress={() => {
-				navigation.push("customExercise");
-			}} />
 			{/* <HomeNav/> */}
 			
 		</SafeAreaView>
@@ -123,8 +125,8 @@ const styles = StyleSheet.create({
 		// justifyContent:"flex-start"
 	},
 	ImageStyle:{
-		height: 75,
-		width: 75,
+		height: 50,
+		width: 50,
 		// flex: 0.5,
 		borderWidth: 1,
 		borderRadius:100
