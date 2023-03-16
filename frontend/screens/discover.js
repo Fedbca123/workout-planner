@@ -235,6 +235,7 @@ export default function DiscoverPage(props) {
 			duration: 45,
       description: "Leg day all day",
 			location:"Gold's Gym",
+      tags: ["LegDay", "Push"],
 			exercises: [
 				{
 					title: "Deadlift",
@@ -363,7 +364,9 @@ export default function DiscoverPage(props) {
       const newData = masterWorkoutData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
+        // const itemTags = item.tags || [];
         return itemData.indexOf(textData) > -1;
+        //  || itemTags.some((tag) => tag.toUpperCase().indexOf(textData) > -1));
       });
       setFilteredWorkoutData(newData);
       setWorkoutSearch(text);
