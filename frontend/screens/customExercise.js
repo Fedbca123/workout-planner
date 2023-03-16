@@ -82,16 +82,27 @@ export default function CustomExercise(props) {
 			Alert.alert("Please Give Your Exercise a Description");
 		} else if(selected.length === 0){
 			Alert.alert("Make sure to list what muscles this exercise targets");
-		} else if(exercise.image === null){
-			
 		} else {
 			formData.append('title', exercise.title);
 			formData.append('description', exercise.description);
 			
-			let filename = imageUri.split('/').pop();
-            let match = /\.(\w+)$/.exec(filename);
-            let type = match ? `image/${match[1]}` : `image`;
-			formData.append('image', { uri: imageUri, name: filename, type });
+			if (imageUri !== null) {
+				let filename = imageUri.split('/').pop();
+				let match = /\.(\w+)$/.exec(filename);
+				let type = match ? `image/${match[1]}` : `image`;
+				formData.append('image', { uri: imageUri, name: filename, type });
+			}
+
+			muscleGroupsArr = selected.split(',').map(item => item.trim());
+			for (let j = 0; j < muscleGroupsArr.length; j++){
+				formData.append('muscleGroups[]', muscleGroupsArr[j]);
+			}
+            
+			tagsArr = equipment.split(',').map(item =>item.trim());
+			for (let i = 0; i < tagsArr.length; i++){
+				formData.append('tags[]', tagsArr[i]);
+			}
+                
 
 			formData.append('owner', globalState.user._id);
 
@@ -106,7 +117,9 @@ export default function CustomExercise(props) {
 					console.log(response.data);
                     Alert.alert('Success!', 'Exercise created', [
                         {text: 'OK', onPress: () => {}},
-                    ]);
+					]);
+					globalState.workout[0].exercises.push(response.data);
+					navigation.navigate("exerciseSearch");
 				}
 			})
 			.catch((e) => {
@@ -193,8 +206,6 @@ export default function CustomExercise(props) {
 			<Text style={styles.TitleText}>Can you give a description of the exercise?</Text>
 			
 			<TextInput style={styles.TextInputBox} onChange={(text) => { exercise.description = text }} multiline />
-
-			<Text style={styles.TitleText}>What muscle groups does this workout train?</Text>
 
 			<Text style={styles.TitleText}>Upload an image demonstrating the exercise if possible.</Text>
 			{ imageUri && <Image source={{ uri: imageUri }} style={styles.ImageStyle} />}

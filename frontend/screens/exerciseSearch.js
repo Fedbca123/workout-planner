@@ -74,7 +74,7 @@ export default function ExerciseSearch(props) {
 			/>
 			<Text style={styles.TitleText}>Exercises:</Text>
 			<Button title="Custom Exercise" onPress={() => {
-				navigation.push("customExercise");
+				navigation.navigate("customExercise");
 			}} />
 			<FlatList
 				data={exercises}

@@ -58,10 +58,14 @@ export default function FinalizeWorkout({ navigation}) {
 	};
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={styles.container}>
 			<Text style={styles.TitleText}>What do you wanna name the workout?</Text>
 
 			<TextInput style={styles.TextInputBox} placeholder="My Leg Day Workout" onChangeText={(val) => { globalState.workout[0].title = val }} defaultValue={globalState.workout[0].title} />
+
+			<Text style={styles.TitleText}>Edit Description</Text>
+
+			<TextInput style={styles.TextInputBox} placeholder="My Leg Day Workout" onChangeText={(val) => { globalState.workout[0].description= val }} defaultValue={globalState.workout[0].description} />
 			
 			<Text style={styles.TitleText}>Where are you going to have this workout?</Text>
 
@@ -82,13 +86,12 @@ export default function FinalizeWorkout({ navigation}) {
 				onCancel={hideDatePicker}
 			/>
 
-			<FlatList
+			{/* <FlatList
 				initialNumToRender={1}
 				style={{maxHeight:220}}
 				data={exercises}
 				renderItem={({ item }) => (
 					<View style={styles.ExerciseCard}>
-							{/* <Image source={{ uri: item.image }} style={styles.ImageStyle} /> */}
 						<Text style={styles.ExerciseText}>
 							{item.title}	
 							<View>
@@ -108,17 +111,18 @@ export default function FinalizeWorkout({ navigation}) {
 						
 					</View>
 				)}
-			/>
+			/> */}
 
 			{/* <WorkOuts data={globalState.workout} showInput={true} /> */}
 			
-			<Button title="Add Workout to Schedule" onPress={() => {
-				scheduledWorkout();
-				updateGlobalState("workoutScheduled",globalState.workout);
-				navigation.popToTop();
-				navigation.navigate("Home");
-		}}/>
-		</View>
+			<Button title="Continue" onPress={() => {
+				// scheduledWorkout();
+				// updateGlobalState("workoutScheduled",globalState.workout);
+				// navigation.popToTop();
+				// navigation.navigate("Home");
+				navigation.push("finalizedContinued");
+			}}/>
+		</SafeAreaView>
 	);
 }
 
@@ -138,6 +142,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: "white",
+		padding: 16,
 	},
 	buttonStyle: {
 		backgroundColor: "#F1F3FA",
