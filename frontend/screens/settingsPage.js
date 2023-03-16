@@ -63,7 +63,6 @@ export default function SettingsPage({ navigation })
         })
         .catch((error) => {
             setUserMessage(error.response.data.errors.firstName.message);
-            Alert.alert('An error occurred');
         });
     }
 
