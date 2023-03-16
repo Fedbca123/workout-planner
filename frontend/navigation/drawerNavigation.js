@@ -7,6 +7,8 @@ import { AuthContext } from '../AuthProvider';
 import MainNav from './mainNav.js';
 import SettingsPage from '../screens/settingsPage.js';
 import SettingsHeader from '../component/settingsHeader.js';
+import inboxHeader from '../component/inboxHeader.js';
+import inbox from '../screens/inbox.js';
 
 const Drawer = createDrawerNavigator();
 
@@ -55,6 +57,10 @@ export default function DrawerNav (props) {
                 name="Main" 
                 component={ MainNav }
                 options={{ headerShown: false}} />
+            <Drawer.Screen
+                name="Inbox"
+                component={inbox}
+                options={{ header: inboxHeader }}/>
             <Drawer.Screen
                 name="Settings"
                 component={SettingsPage}
