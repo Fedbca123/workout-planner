@@ -4,6 +4,7 @@ import {
 	Text,
 	Image,
     TextInput,
+    FlatList,
 	View,
     TouchableOpacity,
     Alert
@@ -15,7 +16,7 @@ import API_Instance from "../../backend/axios_instance";
 export default function Inbox({ navigation }) {
     const [filteredFriends, setFilteredFriends] = useState([]);
     const [globalState, updateGlobalState] = useGlobalState();
-    
+
     const fetchFriendRequests = async () => {
       try {
         const response = await API_Instance.get(`users/${globalState.user._id}/invites/all`, {
@@ -23,11 +24,13 @@ export default function Inbox({ navigation }) {
             'authorization': `Bearer ${globalState.authToken}`,
           },
         });
-  
-        const friendRequests = response.data.friends || [];
+        console.log(response.data.friendInvites);
+        const friendRequests = response.data.friendInvites || [];
+        
         setFilteredFriends(friendRequests);
       } catch (error) {
         console.error(error);
+        console.log(error);
         if (error.response?.status === 403) {
           Alert.alert('Failed to authenticate you');
         }
@@ -35,10 +38,24 @@ export default function Inbox({ navigation }) {
     };
   
     useEffect(() => {
-      fetchFriendRequests();
+        fetchFriendRequests();
     }, []);
   
-    const acceptFriendRequest = (friendId) => {
+    const acceptFriendRequest = async (userIdA, userIdB) => {
+        try {
+          const response = await API_Instance.patch(`users/${userIdA}/invites/accept/${userIdB}`, {
+            headers: {
+              'authorization': `Bearer ${globalState.authToken}`,
+            }
+          });
+          return response.data;
+        } catch (error) {
+          console.error(error);
+          throw error;
+        }
+      }
+
+    const handleAcceptFriendRequest = (friendId) => {
       // handle accepting friend request
     };
   
@@ -55,10 +72,11 @@ export default function Inbox({ navigation }) {
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
               <View style={styles.friendRequestContainer}>
-                <Text>{item.username} wants to be your friend!</Text>
+                <Text>{item.email}</Text>
+                <Text>{item.firstName} {item.lastName} wants to be your friend!</Text>
                 <View style={styles.friendRequestButtons}>
-                  <TouchableOpacity onPress={() => acceptFriendRequest(item._id)}>
-                    <Text>Accept</Text>
+                  <TouchableOpacity onPress={() => handleAcceptFriendRequest(item._id)}>
+                    <Text style={{ paddingRight: 20 }}>Accept</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={() => declineFriendRequest(item._id)}>
                     <Text>Decline</Text>
@@ -68,7 +86,7 @@ export default function Inbox({ navigation }) {
             )}
           />
         ) : (
-          <Text>No friend requests</Text>
+          <Text style={{ paddingLeft: 20 }}>No friend requests</Text>
         )}
       </View>
     );
@@ -80,7 +98,7 @@ export default function Inbox({ navigation }) {
       backgroundColor: 'white',
     },
     friendRequestContainer: {
-      flexDirection: 'row',
+      flexDirection: 'column',
       justifyContent: 'space-between',
       alignItems: 'center',
       padding: 10,
