@@ -187,7 +187,7 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      // console.log(response.data);
+      console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -201,6 +201,7 @@ export default function DiscoverPage(props) {
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
+    console.log(selectedTypeFilter);
   }
   
   // const updateSearch = (search) => {
@@ -301,8 +302,10 @@ export default function DiscoverPage(props) {
     if (text){
       const newData = masterExerciseData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
+        // Tried to add this to search tags, get undefined is not a function
+        // const itemTags = item.tags ? item.tags.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
+        return (itemData.indexOf(textData) > -1 );//|| itemTags.indexOf(textData));
       });
       setFilteredExerciseData(newData);
       // setFilteredWorkoutData(newData);
@@ -545,14 +548,13 @@ return (
                     setSelectedExerciseDesc(item.description);
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
-                    showInfoModal();
-                    
-              }}>
-                <ExerciseItem title={item.title} 
-                description={item.description} muscleGroups={item.muscleGroups}
-                type={item.exerciseType} tags={item.tags}
-                
-                /></TouchableOpacity>
+                    showInfoModal();  
+                }}>
+                  <ExerciseItem title={item.title} 
+                  description={item.description} muscleGroups={item.muscleGroups}
+                  type={item.exerciseType} tags={item.tags}
+                  />
+                </TouchableOpacity>
                 )
               }
               //keyExtractor={(item) => item._id}
