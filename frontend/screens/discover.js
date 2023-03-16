@@ -187,7 +187,7 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      console.log(response.data);
+      // console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -201,7 +201,7 @@ export default function DiscoverPage(props) {
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
-    console.log(selectedTypeFilter);
+    console.log(selectedEquipmentFilter);
   }
   
   // const updateSearch = (search) => {
@@ -298,14 +298,34 @@ export default function DiscoverPage(props) {
 		},
 	];
 
+  // const searchExercisesFilter = (text) => {
+  //   if (text){
+  //     const newData = masterExerciseData.filter((item) => {
+  //       const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
+  //       // Tried to add this to search tags, get undefined is not a function
+  //       // const itemTags = item.tags ? item.tags.toUpperCase() : ''.toUpperCase();
+  //       const textData = text.toUpperCase();
+  //       return (itemData.indexOf(textData) > -1 );//|| itemTags.indexOf(textData));
+  //     });
+  //     setFilteredExerciseData(newData);
+  //     // setFilteredWorkoutData(newData);
+  //     setExerciseSearch(text);
+  //   }
+  //   else {
+  //     setFilteredExerciseData(masterExerciseData);
+  //     // setFilteredWorkoutData(masterWorkoutData);
+  //     setExerciseSearch(text);
+  //   }
+  // }
+  // Searches by title and tags
   const searchExercisesFilter = (text) => {
     if (text){
       const newData = masterExerciseData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
-        // Tried to add this to search tags, get undefined is not a function
-        // const itemTags = item.tags ? item.tags.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
-        return (itemData.indexOf(textData) > -1 );//|| itemTags.indexOf(textData));
+        const itemTags = item.tags || [];
+        return (itemData.indexOf(textData) > -1 || 
+        itemTags.some((tag) => tag.toUpperCase().indexOf(textData) > -1));
       });
       setFilteredExerciseData(newData);
       // setFilteredWorkoutData(newData);
