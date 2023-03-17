@@ -267,6 +267,7 @@ export default function SettingsPage({ navigation })
                     <TextInput style={styles.inputfield}
                     placeholder={globalState.user.email}
                     onChangeText={(text) => setEmail(text)}
+                    autoCapitalize='none'
                     />}
                     {!editEmail && <TouchableOpacity
                         onPress={() => setEditEmail(true)}>

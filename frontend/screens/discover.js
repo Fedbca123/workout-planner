@@ -207,7 +207,6 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -221,7 +220,6 @@ export default function DiscoverPage(props) {
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
-    console.log(selectedEquipmentFilter);
   }
   
   // const updateSearch = (search) => {

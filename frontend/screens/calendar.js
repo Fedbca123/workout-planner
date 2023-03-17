@@ -16,11 +16,9 @@ const CalendarScreen = ({}) => {
             'authorization': `Bearer ${globalState.authToken}`,
           },
         });
-        console.log("My workouts are", response.data.workouts);
         const formattedEvents = formatEvents(response.data.workouts);
         setWeeklyEvents(formattedEvents);
       } catch (error) {
-        console.error(error);
         if (error.response && error.response.status === 403) {
           Alert.alert('Failed to authenticate you');
         }
