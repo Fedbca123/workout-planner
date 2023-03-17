@@ -68,6 +68,7 @@ export default function ForgotPassword({navigation}) {
           activeOutlineColor='#10B9F1'
           returnKeyType="done"
           keyboardType="email-address"
+          autoCapitalize='none'
           outlineColor={error == true ? '#fb9357' : '#C4C4C4'}
           onSubmitEditing={()=>submitHandler()}
           onChangeText={(text)=>setEmail(text.toLowerCase())}
