@@ -230,6 +230,7 @@ export default function Register({navigation}) {
             mode="outlined"
             multiline={false}
             dense={true}
+            autoCapitalize="none"
             activeOutlineColor='#10B9F1'
             outlineColor={emailError == true ? '#fb9357' : '#C4C4C4'}
             placeholder="user@server.com"

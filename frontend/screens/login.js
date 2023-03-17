@@ -134,6 +134,7 @@ export default function Login({navigation}) {
 						
 				<TextInput
 					mode='outlined'
+          autoCapitalize="none"
 					outlineColor="black"
 					activeOutlineColor="#10B9F1"
 					style={styles.inputstyle}
