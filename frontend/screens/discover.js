@@ -94,6 +94,7 @@ export default function DiscoverPage(props) {
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState();
   const [selectedWorkoutTitle, setSelectedWorkoutTitle] = useState();
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
+  const [selectedExerciseDuration, setSelectedExerciseDuration] = useState();
   const [selectedExerciseTags, setSelectedExerciseTags] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
@@ -127,23 +128,25 @@ export default function DiscoverPage(props) {
     </View>
   );
 
-  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration, exercises}) => {
+  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => {
       setExpanded(!expanded);
     };
-    return(<TouchableOpacity onPress={handlePress} activeOpacity=".7">
+    return(
     <View style={styles.workoutItems}>
+    <TouchableOpacity onPress={handlePress} activeOpacity=".4">
+      <View style={styles.exerciseCardImageContainer}>
+        <Image style={styles.exerciseCardImage} src = {image}/>
+      </View> 
       <View style={styles.workoutCardText}>
         <Text style={styles.workoutCardTitle}>{title}</Text>
         <Text style={styles.workoutCardDescription}>{description}</Text>
-        <Text style={styles.workoutCardDescription}>{location}</Text>
-        <Text style={styles.workoutCardDescription}>Muscle Groups: {muscleGroups}</Text>
-        <Text style={styles.workoutCardType}>Tags: {tags}</Text>
-        <Text style={styles.workoutCardDescription}>Duration: {duration} min</Text>
+        <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups}</Text>
+        <Text style={styles.workoutCardTags}>Tags: {tags}</Text>
+        <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
         {expanded &&
-            exercises.map((exercise) => (             
-              <View style = {styles.workoutExerciseContainer}key={exercise.title}>
+            exercises.map((exercise, index) => (
               <TouchableOpacity onPress={()=>{
                     openExerciseInfo(exercise);
                     setSelectedExerciseTitle(exercise.title);
@@ -153,21 +156,28 @@ export default function DiscoverPage(props) {
                     setSelectedExerciseTags(exercise.tags);
                     showInfoModal();  
               }
-              }>
-                <Text>{exercise.title}</Text>
-                <Text>{exercise.ExerciseType}</Text>
-                {exercise.ExerciseType === 'SETSXREPS' && (
-                  <Text>
-                    {exercise.sets} sets x {exercise.reps} reps
-                  </Text>
-                )}
-                {exercise.ExerciseType === 'AMRAP' && <Text>As many reps as possible in {exercise.time} ms</Text>}
-                </TouchableOpacity>
+              }>             
+              <View style = {styles.workoutExerciseContainer}key={index}>
+                <View style={styles.workoutExerciseCardImageContainer}>
+                  <Image style={styles.workoutExerciseCardImage} src = {exercise.image}/>
+                </View> 
+                <View style={styles.workoutExerciseCardText}>
+                  <Text style={styles.workoutExerciseCardTitle}>{exercise.title}</Text>
+                  <Text>{exercise.exerciseType}</Text>
+                  {exercise.exerciseType === 'SETSXREPS' && (
+                    <Text>
+                      {exercise.sets} sets x {exercise.reps} reps
+                    </Text>
+                  )}
+                  {exercise.exerciseType === 'AMRAP' && <Text>As many reps as possible in {exercise.time} seconds!</Text>}
+                  {exercise.exerciseType === 'CARDIO' && <Text>Push for {exercise.duration} seconds!</Text>}
+                </View>
               </View>
+            </TouchableOpacity>
             ))}
       </View>
+      </TouchableOpacity>
     </View>
-    </TouchableOpacity>
     );
   };
 
@@ -221,7 +231,7 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      console.log(response.data);
+      // console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -333,7 +343,6 @@ export default function DiscoverPage(props) {
 			],
 		},
 	];
-
  
   const searchExercisesFilter = (text) => {
     if (text){
@@ -377,7 +386,6 @@ export default function DiscoverPage(props) {
     }
   }
   
-
   function onMultiChangeEquipment() {
     return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
   }
@@ -402,14 +410,9 @@ export default function DiscoverPage(props) {
   }
   
   const openExerciseInfo = (item) => {
-    // toggleInfoShowing();
-    // setInfoPageVisible(true);
-    // console.log(item.title);
     return (<View>
       <Text style={{fontSize: 20}}>title: {item.title}</Text>
     </View>)
-    // showInfoModal();
-
   }
 
   function showInfoModal() {
@@ -631,6 +634,7 @@ return (
                 location ={item.location} 
                 muscleGroups={item.muscleGroups} tags={item.tags}
                 duration={item.duration} exercises={item.exercises}
+                image={item.image}
 
                 /></TouchableOpacity>
                 )
@@ -722,13 +726,27 @@ const styles = StyleSheet.create({
   exerciseCardImageContainer:{
     position: 'absolute',
     left: 10,
-    marginRight: 20
+    top: 0,
+    marginRight: 20,
+
   },
   exerciseCardImage:{
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
     resizeMode: 'stretch', // can be changed to contain if needed
-    borderRadius: 20
+    borderRadius: 20,
+  },
+
+  workoutExerciseCardImageContainer:{
+    position: 'absolute',
+    left: 10,
+    marginRight: 20
+  },
+  workoutExerciseCardImage:{
+    width: 60,
+    height: 60,
+    resizeMode: 'stretch', // can be changed to contain if needed
+    borderRadius: 20,
   },
 
   boxContainer:{
@@ -827,6 +845,11 @@ const styles = StyleSheet.create({
     //height: Dimensions.get('window') / numColumns,
     flex: 1,
     margin: 1,
+    // overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 1,
+    shadowRadius: 2
  },
   exerciseItems:{
       backgroundColor: '#67BBE0',
@@ -851,44 +874,43 @@ const styles = StyleSheet.create({
     alignItems: 'center'
    },
 
+  workoutExerciseCardText:{
+    alignItems: 'center'
+   },
+
    exerciseCardTitle:{
       fontSize: 18,
       fontWeight: 'bold',
    },
+
+   workoutExerciseCardTitle:{
+    fontSize: 16,
+    fontWeight: 'bold',
+ },
    exerciseCardMuscleGroups:{
     fontSize: 12,
     fontWeight: 'bold',
  },
   workoutCardText:{
     alignItems: 'center',
+    marginLeft: 120,
   },
 
   workoutCardTitle:{
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
  },
    emptyList:{
     alignItems: 'center'
    },
-  //  exerciseCardDescription:{
-  //   color: 'black',
-  //   fontSize: 10,
-  // },   
-  // exerciseCardType:{
-  //   color: 'black',
-  //   fontSize: 10,
-  // },
-  // exerciseCardMuscleGroups:{
-  //   color: 'red',
-  //   fontSize: 10,
-  // },
+
   exerciseCardSets:{
     fontWeight: 'bold',
     fontSize: 13    
   },
-  workoutCardSets:{
+  workoutCardMuscleGroups:{
     fontWeight: 'bold',
-    fontSize: 13    
+    fontSize: 12    
   },
    workoutTitle:{
       fontWeight: 'bold',
@@ -899,6 +921,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 13,
  },
+ 
+  workoutCardDescription:{
+    fontWeight: 'bold',
+    fontSize: 14
+  },
 
    exerciseCardDescription:{
       fontWeight: 'bold',
@@ -915,6 +942,16 @@ const styles = StyleSheet.create({
     fontSize: 12
   },
 
+  workoutCardTags:{
+    fontWeight: 'bold',
+    fontSize: 12
+  },
+
+  workoutCardDuration:{
+    fontWeight: 'bold',
+    fontSize: 12,
+    paddingBottom: 10
+  },
   discoveryPageHeader:{
     backgroundColor: 'white',
   },
@@ -980,11 +1017,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    padding: 12, 
+    width: "120%",
+    // paddingTop: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 12, 
     //height: Dimensions.get('window') / numColumns,
-    flex: 1,
-    margin: 1,
-    flexDirection: 'row'
+    // flex: 1,
+    margin: 1.5,
+    flexDirection: 'row',
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {width: 0, height: 0},
+    shadowOpacity: 1,
+    shadowRadius: 2
  },
   page:{
     //height: 600,
