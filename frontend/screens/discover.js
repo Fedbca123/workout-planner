@@ -157,7 +157,7 @@ export default function DiscoverPage(props) {
                     showInfoModal();  
               }
               }>             
-              <View style = {styles.workoutExerciseContainer}key={index}>
+              <View style = {styles.workoutExerciseContainer} key={index}>
                 <View style={styles.workoutExerciseCardImageContainer}>
                   <Image style={styles.workoutExerciseCardImage} src = {exercise.image}/>
                 </View> 
@@ -905,7 +905,7 @@ const styles = StyleSheet.create({
 
   workoutExerciseCardText:{
     alignItems: 'center',
-    width: "100%",
+    // width: "100%",
    },
 
    exerciseCardTitle:{
@@ -1048,7 +1048,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     textAlign: 'center',
-    width: "120%",
+    width: "110%",
     // paddingTop: 12,
     paddingVertical: 12,
     paddingHorizontal: 12, 
