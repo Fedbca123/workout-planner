@@ -85,7 +85,6 @@ const oldworkoutDummyData = [
 export default function DiscoverPage(props) {
 
   const [toggleValue, setToggleValue] = useState(false);
-  // const [search, setSearch] = useState("");
   const [areFiltersVisible, setFiltersVisible] = useState(false);
   const [isInfoPageVisible, setInfoPageVisible] = useState(false);
   const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
@@ -113,29 +112,50 @@ export default function DiscoverPage(props) {
     workoutsList();
   }, []);
 
-  const ExerciseItem = ({title, description, sets, reps, type, muscleGroups, tags}) => (
+  const ExerciseItem = ({title, description, type, muscleGroups, tags}) => (
     <View style={styles.exerciseItems}>
       <View style={styles.exerciseCardText}>
         <Text style={styles.exerciseCardTitle}>{title}</Text>
         <Text style={styles.exerciseCardDescription}>{description}</Text>
-        <Text style={styles.exerciseCardSets}>Sets: {sets}</Text>
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
         <Text style={styles.exerciseCardType}>Tags: {tags}</Text>
+        <Text style={styles.exerciseCardDescription}>Muscle Groups: {muscleGroups}</Text>
       </View>
     </View>
   );
 
-  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration}) => (
+  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration, exercises}) => {
+    const [expanded, setExpanded] = useState(false);
+    const handlePress = () => {
+      setExpanded(!expanded);
+    };
+    return(<TouchableOpacity onPress={handlePress}>
     <View style={styles.workoutItems}>
       <View style={styles.workoutCardText}>
         <Text style={styles.workoutCardTitle}>{title}</Text>
         <Text style={styles.workoutCardDescription}>{description}</Text>
         <Text style={styles.workoutCardDescription}>{location}</Text>
+        <Text style={styles.workoutCardDescription}>Muscle Groups: {muscleGroups}</Text>
         <Text style={styles.workoutCardType}>Tags: {tags}</Text>
         <Text style={styles.workoutCardDescription}>Duration: {duration} min</Text>
+        {expanded &&
+            exercises.map((exercise) => (
+              <View key={exercise.title}>
+                <Text>{exercise.title}</Text>
+                <Text>{exercise.ExerciseType}</Text>
+                {exercise.ExerciseType === 'SETSXREPS' && (
+                  <Text>
+                    {exercise.sets} sets x {exercise.reps} reps
+                  </Text>
+                )}
+                {exercise.ExerciseType === 'AMRAP' && <Text>As many reps as possible in {exercise.time} ms</Text>}
+              </View>
+            ))}
       </View>
     </View>
-  );
+    </TouchableOpacity>
+    );
+  };
 
   const exercisesList = async()=> {
       API_Instance.post('exercises/search',
@@ -187,7 +207,7 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      // console.log(response.data);
+      console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -201,6 +221,7 @@ export default function DiscoverPage(props) {
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
+    console.log(selectedEquipmentFilter);
   }
   
   // const updateSearch = (search) => {
@@ -214,6 +235,7 @@ export default function DiscoverPage(props) {
 			duration: 45,
       description: "Leg day all day",
 			location:"Gold's Gym",
+      tags: ["LegDay", "Push"],
 			exercises: [
 				{
 					title: "Deadlift",
@@ -297,12 +319,34 @@ export default function DiscoverPage(props) {
 		},
 	];
 
+  // const searchExercisesFilter = (text) => {
+  //   if (text){
+  //     const newData = masterExerciseData.filter((item) => {
+  //       const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
+  //       // Tried to add this to search tags, get undefined is not a function
+  //       // const itemTags = item.tags ? item.tags.toUpperCase() : ''.toUpperCase();
+  //       const textData = text.toUpperCase();
+  //       return (itemData.indexOf(textData) > -1 );//|| itemTags.indexOf(textData));
+  //     });
+  //     setFilteredExerciseData(newData);
+  //     // setFilteredWorkoutData(newData);
+  //     setExerciseSearch(text);
+  //   }
+  //   else {
+  //     setFilteredExerciseData(masterExerciseData);
+  //     // setFilteredWorkoutData(masterWorkoutData);
+  //     setExerciseSearch(text);
+  //   }
+  // }
+  // Searches by title and tags
   const searchExercisesFilter = (text) => {
     if (text){
       const newData = masterExerciseData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
-        return itemData.indexOf(textData) > -1;
+        const itemTags = item.tags || [];
+        return (itemData.indexOf(textData) > -1 || 
+        itemTags.some((tag) => tag.toUpperCase().indexOf(textData) > -1));
       });
       setFilteredExerciseData(newData);
       // setFilteredWorkoutData(newData);
@@ -320,7 +364,9 @@ export default function DiscoverPage(props) {
       const newData = masterWorkoutData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
+        // const itemTags = item.tags || [];
         return itemData.indexOf(textData) > -1;
+        //  || itemTags.some((tag) => tag.toUpperCase().indexOf(textData) > -1));
       });
       setFilteredWorkoutData(newData);
       setWorkoutSearch(text);
@@ -545,24 +591,27 @@ return (
                     setSelectedExerciseDesc(item.description);
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
-                    showInfoModal();
-                    
-              }}>
-                <ExerciseItem title={item.title} 
-                description={item.description} sets={item.sets}
-                type={item.exerciseType} tags={item.tags}
-                
-                /></TouchableOpacity>
+                    showInfoModal();  
+                }}>
+                  <ExerciseItem title={item.title} 
+                  description={item.description} muscleGroups={item.muscleGroups}
+                  type={item.exerciseType} tags={item.tags}
+                  />
+                </TouchableOpacity>
                 )
               }
               //keyExtractor={(item) => item._id}
              
               /> : <FlatList
-              // data = {workoutsList}
-              // data = {workoutDummyData}
-              // expandMultiple = {true}
-              data = {filteredWorkoutData}
-              ListEmptyComponent={<View style={styles.emptyList}><Text style={{fontSize:20, alignItems: 'center'}}>No Workouts Found</Text></View>}
+              data = {workoutDummyData}
+              // data = {filteredWorkoutData}
+              ListEmptyComponent={
+                <View style={styles.emptyList}>
+                  <Text style={{fontSize:20, alignItems: 'center'}}>
+                    No Workouts Found
+                  </Text>
+                </View>
+              }
               style = {styles.boxContainer}
               renderItem={({item}) => 
                 (
@@ -578,12 +627,13 @@ return (
                 <WorkoutItem title={item.title} 
                 description={item.description}
                 location ={item.location} 
-                type={item.exerciseType} tags={item.tags}
-                duration={item.duration}
+                muscleGroups={item.muscleGroups} tags={item.tags}
+                duration={item.duration} exercises={item.exercises}
 
                 /></TouchableOpacity>
                 )
               }
+
               />}
       </View>
 
