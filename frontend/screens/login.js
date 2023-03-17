@@ -104,8 +104,6 @@ export default function Login({navigation}) {
 				</Text>
 			</View>
       
-        <Button
-      
         {/* <Button
         title="BACKDOOR"
         onPress={() =>
