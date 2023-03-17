@@ -589,8 +589,8 @@ return (
               //keyExtractor={(item) => item._id}
              
               /> : <FlatList
-              // data = {workoutDummyData}
-              data = {filteredWorkoutData}
+              data = {workoutDummyData}
+              // data = {filteredWorkoutData}
               ListEmptyComponent={
                 <View style={styles.emptyList}>
                   <Text style={{fontSize:20, alignItems: 'center'}}>
