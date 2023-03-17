@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react';
-import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, FlatList, Alert } from 'react-native';
+import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, TouchableWithoutFeedback, FlatList, Alert } from 'react-native';
 import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import Modal from "react-native-modal";
@@ -121,8 +121,8 @@ export default function DiscoverPage(props) {
         <Text style={styles.exerciseCardTitle}>{title}</Text>
         <Text style={styles.exerciseCardDescription}>{description}</Text>
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
-        <Text style={styles.exerciseCardType}>Tags: {tags}</Text>
-        <Text style={styles.exerciseCardDescription}>Muscle Groups: {muscleGroups}</Text>
+        <Text style={styles.exerciseCardTags}>Tags: {tags}</Text>
+        <Text style={styles.exerciseCardMuscleGroups}>Muscle Groups: {muscleGroups}</Text>
       </View>
     </View>
   );
@@ -132,7 +132,7 @@ export default function DiscoverPage(props) {
     const handlePress = () => {
       setExpanded(!expanded);
     };
-    return(<TouchableOpacity onPress={handlePress}>
+    return(<TouchableOpacity onPress={handlePress} activeOpacity=".7">
     <View style={styles.workoutItems}>
       <View style={styles.workoutCardText}>
         <Text style={styles.workoutCardTitle}>{title}</Text>
@@ -143,7 +143,7 @@ export default function DiscoverPage(props) {
         <Text style={styles.workoutCardDescription}>Duration: {duration} min</Text>
         {expanded &&
             exercises.map((exercise) => (
-              <View key={exercise.title}>
+              <View style = {styles.workoutExerciseContainer}key={exercise.title}>
                 <Text>{exercise.title}</Text>
                 <Text>{exercise.ExerciseType}</Text>
                 {exercise.ExerciseType === 'SETSXREPS' && (
@@ -179,7 +179,7 @@ export default function DiscoverPage(props) {
         setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
         // console.log(response.data[0].title);
-        console.log(response.data);
+        // console.log(response.data);
         // console.log('Success!');
       }
     })
@@ -210,7 +210,7 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      // console.log(response.data);
+      console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -815,27 +815,33 @@ const styles = StyleSheet.create({
       backgroundColor: '#67BBE0',
       color: "#333",
       fontWeight: "500",
-      alignContent: 'center',
+      // alignContent: 'center',
       alignItems: 'center',
       justifyContent: 'center',
-      textAlign: 'center',
+      // textAlign: 'center',
       padding: 12, 
-      //height: Dimensions.get('window') / numColumns,
       flex: 1,
       margin: 1,
-      flexDirection: 'row'
+      flexDirection: 'row',
+      // Can delete below if wanted
+      shadowColor: "#000",
+      shadowOffset: {width: 0, height: 0},
+      shadowOpacity: 1,
+      shadowRadius: 2
    },
    exerciseCardText:{
-    // position: 'absolute',
     marginLeft: 120,
-    // right: 0, 
     alignItems: 'center'
    },
 
    exerciseCardTitle:{
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: 'bold',
    },
+   exerciseCardMuscleGroups:{
+    fontSize: 12,
+    fontWeight: 'bold',
+ },
   workoutCardText:{
     alignItems: 'center',
   },
@@ -879,12 +885,17 @@ const styles = StyleSheet.create({
 
    exerciseCardDescription:{
       fontWeight: 'bold',
-      fontSize: 13
+      fontSize: 14
    },
    
    exerciseCardType:{
     fontWeight: 'bold',
-    fontSize: 13
+    fontSize: 12
+  },
+  
+  exerciseCardTags:{
+    fontWeight: 'bold',
+    fontSize: 12
   },
 
   discoveryPageHeader:{
@@ -944,6 +955,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     //flex: 1,
   },
+  workoutExerciseContainer:{
+    backgroundColor: '#67BBE0',
+    color: "#333",
+    fontWeight: "500",
+    alignContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    padding: 12, 
+    //height: Dimensions.get('window') / numColumns,
+    flex: 1,
+    margin: 1,
+    flexDirection: 'row'
+ },
   page:{
     //height: 600,
   },
