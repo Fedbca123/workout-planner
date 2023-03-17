@@ -320,26 +320,7 @@ export default function DiscoverPage(props) {
 		},
 	];
 
-  // const searchExercisesFilter = (text) => {
-  //   if (text){
-  //     const newData = masterExerciseData.filter((item) => {
-  //       const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
-  //       // Tried to add this to search tags, get undefined is not a function
-  //       // const itemTags = item.tags ? item.tags.toUpperCase() : ''.toUpperCase();
-  //       const textData = text.toUpperCase();
-  //       return (itemData.indexOf(textData) > -1 );//|| itemTags.indexOf(textData));
-  //     });
-  //     setFilteredExerciseData(newData);
-  //     // setFilteredWorkoutData(newData);
-  //     setExerciseSearch(text);
-  //   }
-  //   else {
-  //     setFilteredExerciseData(masterExerciseData);
-  //     // setFilteredWorkoutData(masterWorkoutData);
-  //     setExerciseSearch(text);
-  //   }
-  // }
-  // Searches by title and tags
+ 
   const searchExercisesFilter = (text) => {
     if (text){
       const newData = masterExerciseData.filter((item) => {
@@ -367,9 +348,11 @@ export default function DiscoverPage(props) {
       const newData = masterWorkoutData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
-        // const itemTags = item.tags || [];
-        return itemData.indexOf(textData) > -1;
-        //  || itemTags.some((tag) => tag.toUpperCase().indexOf(textData) > -1));
+        const itemTags = item.tags || [];
+        const tagData = itemTags.filter(tag => tag !== null && tag !== undefined).map(tag => tag.toUpperCase());
+        return (itemData.indexOf(textData) > -1 
+         || 
+         tagData.some((tag) => tag.indexOf(textData) > -1));
       });
       setFilteredWorkoutData(newData);
       setWorkoutSearch(text);
@@ -606,8 +589,8 @@ return (
               //keyExtractor={(item) => item._id}
              
               /> : <FlatList
-              data = {workoutDummyData}
-              // data = {filteredWorkoutData}
+              // data = {workoutDummyData}
+              data = {filteredWorkoutData}
               ListEmptyComponent={
                 <View style={styles.emptyList}>
                   <Text style={{fontSize:20, alignItems: 'center'}}>
