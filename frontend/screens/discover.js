@@ -112,7 +112,7 @@ export default function DiscoverPage(props) {
     workoutsList();
   }, []);
 
-  const ExerciseItem = ({title, description, type, muscleGroups, tags}) => (
+  const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
       <View style={styles.exerciseCardText}>
         <Text style={styles.exerciseCardTitle}>{title}</Text>
@@ -120,6 +120,7 @@ export default function DiscoverPage(props) {
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
         <Text style={styles.exerciseCardType}>Tags: {tags}</Text>
         <Text style={styles.exerciseCardDescription}>Muscle Groups: {muscleGroups}</Text>
+        <Image style={styles.filterImage} src = {image}/>
       </View>
     </View>
   );
@@ -176,7 +177,7 @@ export default function DiscoverPage(props) {
         setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
         // console.log(response.data[0].title);
-        //console.log(response.data);
+        console.log(response.data);
         // console.log('Success!');
       }
     })
@@ -207,7 +208,7 @@ export default function DiscoverPage(props) {
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // console.log(response.data[0].title);
-      console.log(response.data);
+      // console.log(response.data);
       // console.log('Success!');
     }
   })
@@ -221,7 +222,7 @@ export default function DiscoverPage(props) {
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
-    console.log(selectedEquipmentFilter);
+    // console.log(selectedEquipmentFilter);
   }
   
   // const updateSearch = (search) => {
@@ -581,7 +582,7 @@ return (
                 }}>
                   <ExerciseItem title={item.title} 
                   description={item.description} muscleGroups={item.muscleGroups}
-                  type={item.exerciseType} tags={item.tags}
+                  type={item.exerciseType} tags={item.tags} image={item.image}
                   />
                 </TouchableOpacity>
                 )
@@ -589,6 +590,7 @@ return (
               //keyExtractor={(item) => item._id}
              
               /> : <FlatList
+              // workoutDummyData doesn't go through filtering
               data = {workoutDummyData}
               // data = {filteredWorkoutData}
               ListEmptyComponent={
@@ -649,7 +651,7 @@ return (
 
             <SafeAreaView style={styles.exerciseInfoHeader}>
               <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
-              {/* <Image src ={{uri: {selectedExerciseImage}}}/> */}
+              <Image src ={selectedExerciseImage} style={styles.exerciseInfoImage}/>
             </SafeAreaView>
 
             <SafeAreaView style={styles.exerciseInfoBody}>
@@ -693,6 +695,12 @@ const styles = StyleSheet.create({
     flex: .5,
     alignItems: 'center',
   },
+  exerciseInfoImage:{
+    width: "75%",
+    height: "75%",
+    resizeMode: 'contain'
+  },
+
   boxContainer:{
     flex: 1,
   },
