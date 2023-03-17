@@ -279,6 +279,7 @@ export default function DiscoverPage(props) {
 			duration: 55,
       description: "Ew leg day",
 			location:"Gold's Gym",
+      tags: ["ArmDay"],
 			exercises: [
 				{
 					title: "Barbell Curls",
@@ -345,8 +346,10 @@ export default function DiscoverPage(props) {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
         const itemTags = item.tags || [];
-        return (itemData.indexOf(textData) > -1 || 
-        itemTags.some((tag) => tag.toUpperCase().indexOf(textData) > -1));
+        const tagData = itemTags.filter(tag => tag !== null && tag !== undefined).map(tag => tag.toUpperCase());
+        return (itemData.indexOf(textData) > -1 
+         || 
+         tagData.some((tag) => tag.indexOf(textData) > -1));
       });
       setFilteredExerciseData(newData);
       // setFilteredWorkoutData(newData);
