@@ -443,17 +443,26 @@ return (
                       height: 50,
                       //radius: 40,
                     //borderWidth: -1,
+                    // borderColor: "black",
                     activeBackgroundColor: "#E5DAE7",
-                    inActiveBackgroundColor: "#88CAE7"
+                    inActiveBackgroundColor: "#88CAE7",
+                    }}
+                    trackBarStyle={{
+                        borderColor: 'black',
+                        borderWidth: 2.5,
+                        height: 54,
+                        width: 174
+                  
                     }}
                     thumbButton={{
                       width: 80,
                       height: 50,
                       //radius: 30,
-                      borderWidth: 1,
+                      // borderWidth: 1,
                       activeBackgroundColor: "#34A5D5",
                       inActiveBackgroundColor: "#BFBCC8"
                       }}
+                      t
                     />
               </View>
               <View style={styles.filters}>
