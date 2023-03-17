@@ -201,7 +201,7 @@ export default function DiscoverPage(props) {
         setMasterExerciseData(response.data);
         // console.log(response.data[0].title);
         // console.log(response.data);
-        console.log(selectedExerciseTags);
+        // console.log(selectedExerciseTags);
         // console.log('Success!');
       }
     })
