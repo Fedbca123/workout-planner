@@ -16,6 +16,8 @@ const CalendarScreen = ({}) => {
             'authorization': `Bearer ${globalState.authToken}`,
           },
         });
+        // console.log(response.data.workouts);
+        // console.log("My user email is", globalState.user.email);
         const formattedEvents = formatEvents(response.data.workouts);
         setWeeklyEvents(formattedEvents);
       } catch (error) {
@@ -56,20 +58,32 @@ const CalendarScreen = ({}) => {
     };
   
     const [events, setEvents] = useState([]);
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
 
-    const renderItem = ({ item }) => (
-      <View style={styles.myExercise}>
-          <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-          <Text>Location: {item.location}</Text>
-      </View>
-    );
+    const renderItem = ({ item }) => {
+      if (item.ownerEmail === globalState.user?.email) {
+        return (
+          <View style={styles.myExercise}>
+              <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+              <Text>Location: {item.location}</Text>
+          </View>
+        );
+      } else {
+        return (
+          <View style={styles.friendExercise}>
+              <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+              <Text>Location: {item.location}</Text>
+          </View>
+        );
+      }
+    };
   
     return (
       <View style ={styles.container}>
         <Calendar 
           onDayPress={handleDayPress} 
           markedDates={weeklyEvents} 
+          selected={[selectedDate]} // add selected prop
         />
       
         {selectedDate !== '' && 
@@ -82,6 +96,9 @@ const CalendarScreen = ({}) => {
           data={events} 
           renderItem={renderItem} 
           keyExtractor={(item, index) => `${item._id}_${item.scheduledDate || item.dateOfCompletion}_${index}`}
+          ListEmptyComponent={() => (
+            <Text style={styles.noEvents}>No events scheduled</Text>
+          )}
         />
       </View>
     );
@@ -127,6 +144,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  noEvents: {
+    textAlign: 'left',
+    marginTop: 10,
+    paddingLeft: 20,
+    fontSize: 16,
   }
 });
 
