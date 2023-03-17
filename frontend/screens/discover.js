@@ -114,13 +114,15 @@ export default function DiscoverPage(props) {
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
+      <View style={styles.exerciseCardImageContainer}>
+        <Image style={styles.exerciseCardImage} src = {image}/>
+      </View> 
       <View style={styles.exerciseCardText}>
         <Text style={styles.exerciseCardTitle}>{title}</Text>
         <Text style={styles.exerciseCardDescription}>{description}</Text>
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
         <Text style={styles.exerciseCardType}>Tags: {tags}</Text>
         <Text style={styles.exerciseCardDescription}>Muscle Groups: {muscleGroups}</Text>
-        <Image style={styles.filterImage} src = {image}/>
       </View>
     </View>
   );
@@ -700,6 +702,17 @@ const styles = StyleSheet.create({
     height: "75%",
     resizeMode: 'contain'
   },
+  exerciseCardImageContainer:{
+    position: 'absolute',
+    left: 10,
+    marginRight: 20
+  },
+  exerciseCardImage:{
+    width: 100,
+    height: 100,
+    resizeMode: 'stretch', // can be changed to contain if needed
+    borderRadius: 20
+  },
 
   boxContainer:{
     flex: 1,
@@ -806,13 +819,17 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       textAlign: 'center',
-      padding: 14, 
+      padding: 12, 
       //height: Dimensions.get('window') / numColumns,
       flex: 1,
       margin: 1,
+      flexDirection: 'row'
    },
    exerciseCardText:{
-      alignItems: 'center',
+    // position: 'absolute',
+    marginLeft: 120,
+    // right: 0, 
+    alignItems: 'center'
    },
 
    exerciseCardTitle:{
