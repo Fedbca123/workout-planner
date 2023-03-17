@@ -94,7 +94,7 @@ export default function DiscoverPage(props) {
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState();
   const [selectedWorkoutTitle, setSelectedWorkoutTitle] = useState();
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
-  const [selectedExerciseDuration, setSelectedExerciseDuration] = useState();
+  const [selectedExerciseTags, setSelectedExerciseTags] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
   const [filteredExerciseData, setFilteredExerciseData] = useState([]);
@@ -142,8 +142,18 @@ export default function DiscoverPage(props) {
         <Text style={styles.workoutCardType}>Tags: {tags}</Text>
         <Text style={styles.workoutCardDescription}>Duration: {duration} min</Text>
         {expanded &&
-            exercises.map((exercise) => (
+            exercises.map((exercise) => (             
               <View style = {styles.workoutExerciseContainer}key={exercise.title}>
+              <TouchableOpacity onPress={()=>{
+                    openExerciseInfo(exercise);
+                    setSelectedExerciseTitle(exercise.title);
+                    setSelectedExerciseDesc(exercise.description);
+                    setSelectedExerciseMuscleGroups(exercise.muscleGroups);
+                    setSelectedExerciseImage(exercise.image);
+                    setSelectedExerciseTags(exercise.tags);
+                    showInfoModal();  
+              }
+              }>
                 <Text>{exercise.title}</Text>
                 <Text>{exercise.ExerciseType}</Text>
                 {exercise.ExerciseType === 'SETSXREPS' && (
@@ -152,6 +162,7 @@ export default function DiscoverPage(props) {
                   </Text>
                 )}
                 {exercise.ExerciseType === 'AMRAP' && <Text>As many reps as possible in {exercise.time} ms</Text>}
+                </TouchableOpacity>
               </View>
             ))}
       </View>
@@ -580,6 +591,7 @@ return (
                     setSelectedExerciseDesc(item.description);
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
+                    setSelectedExerciseTags(item.tags);
                     showInfoModal();  
                 }}>
                   <ExerciseItem title={item.title} 
@@ -593,8 +605,8 @@ return (
              
               /> : <FlatList
               // workoutDummyData doesn't go through filtering
-              data = {workoutDummyData}
-              // data = {filteredWorkoutData}
+              // data = {workoutDummyData}
+              data = {filteredWorkoutData}
               ListEmptyComponent={
                 <View style={styles.emptyList}>
                   <Text style={{fontSize:20, alignItems: 'center'}}>
@@ -653,12 +665,13 @@ return (
 
             <SafeAreaView style={styles.exerciseInfoHeader}>
               <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
-              <Image src ={selectedExerciseImage} style={styles.exerciseInfoImage}/>
+              <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
             </SafeAreaView>
 
             <SafeAreaView style={styles.exerciseInfoBody}>
               <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
               <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {selectedExerciseMuscleGroups}</Text>
+              <Text style={styles.exerciseInfoTags}>Tags: {selectedExerciseTags}</Text>
             </SafeAreaView>
 
             <SafeAreaView>
@@ -686,6 +699,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   exerciseInfoMuscleGroups:{
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  exerciseInfoTags:{
     fontSize: 14,
     fontWeight: 'bold',
   },
