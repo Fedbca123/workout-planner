@@ -122,8 +122,8 @@ export default function DiscoverPage(props) {
         <Text style={styles.exerciseCardTitle}>{title}</Text>
         <Text style={styles.exerciseCardDescription}>{description}</Text>
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
-        <Text style={styles.exerciseCardTags}>Tags: {tags}</Text>
-        <Text style={styles.exerciseCardMuscleGroups}>Muscle Groups: {muscleGroups}</Text>
+        <Text style={styles.exerciseCardTags}>Tags: {tags.join(", ")}</Text>
+        <Text style={styles.exerciseCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
       </View>
     </View>
   );
@@ -136,14 +136,14 @@ export default function DiscoverPage(props) {
     return(
     <View style={styles.workoutItems}>
     <TouchableOpacity onPress={handlePress} activeOpacity=".4">
-      <View style={styles.exerciseCardImageContainer}>
-        <Image style={styles.exerciseCardImage} src = {image}/>
+      <View style={styles.workoutCardImageContainer}>
+        <Image style={styles.workoutCardImage} src = {image}/>
       </View> 
       <View style={styles.workoutCardText}>
         <Text style={styles.workoutCardTitle}>{title}</Text>
         <Text style={styles.workoutCardDescription}>{description}</Text>
-        <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups}</Text>
-        <Text style={styles.workoutCardTags}>Tags: {tags}</Text>
+        <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
+        <Text style={styles.workoutCardTags}>Tags: {tags.join(", ")}</Text>
         <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
         {expanded &&
             exercises.map((exercise, index) => (
@@ -201,6 +201,7 @@ export default function DiscoverPage(props) {
         setMasterExerciseData(response.data);
         // console.log(response.data[0].title);
         // console.log(response.data);
+        console.log(selectedExerciseTags);
         // console.log('Success!');
       }
     })
@@ -455,7 +456,7 @@ return (
                   
                     }}
                     thumbButton={{
-                      width: 80,
+                      width: 77,
                       height: 50,
                       //radius: 30,
                       // borderWidth: 1,
@@ -683,8 +684,8 @@ return (
 
             <SafeAreaView style={styles.exerciseInfoBody}>
               <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
-              <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {selectedExerciseMuscleGroups}</Text>
-              <Text style={styles.exerciseInfoTags}>Tags: {selectedExerciseTags}</Text>
+              <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {selectedExerciseMuscleGroups.join(", ")}</Text>
+              <Text style={styles.exerciseInfoTags}>Tags: {selectedExerciseTags.join(", ")}</Text>
             </SafeAreaView>
 
             <SafeAreaView>
@@ -735,7 +736,7 @@ const styles = StyleSheet.create({
   exerciseCardImageContainer:{
     position: 'absolute',
     left: 10,
-    top: 0,
+    //paddingVertical: 5,
     marginRight: 20,
 
   },
@@ -745,6 +746,21 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch', // can be changed to contain if needed
     borderRadius: 20,
   },
+
+  workoutCardImageContainer:{
+    position: 'absolute',
+    left: 10,
+    top: 0,
+    marginRight: 20,
+
+  },
+  workoutCardImage:{
+    width: 90,
+    height: 90,
+    resizeMode: 'stretch', // can be changed to contain if needed
+    borderRadius: 20,
+  },
+
 
   workoutExerciseCardImageContainer:{
     position: 'absolute',
@@ -868,7 +884,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       // textAlign: 'center',
-      padding: 12, 
+      paddingVertical: 12, 
+      paddingHorizontal: 12,
       flex: 1,
       margin: 1,
       flexDirection: 'row',
@@ -879,12 +896,16 @@ const styles = StyleSheet.create({
       shadowRadius: 2
    },
    exerciseCardText:{
-    marginLeft: 120,
-    alignItems: 'center'
+    marginLeft: 100,
+    width: "100%",
+    // paddingLeft: 0,
+    alignItems: 'center',
+    alignContent: 'center'
    },
 
   workoutExerciseCardText:{
-    alignItems: 'center'
+    alignItems: 'center',
+    width: "100%",
    },
 
    exerciseCardTitle:{
@@ -899,6 +920,7 @@ const styles = StyleSheet.create({
    exerciseCardMuscleGroups:{
     fontSize: 12,
     fontWeight: 'bold',
+    alignItems: 'center'
  },
   workoutCardText:{
     alignItems: 'center',
