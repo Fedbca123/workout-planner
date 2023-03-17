@@ -338,6 +338,137 @@ router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) =>
   });
 });
 
+// Create and schedule a workout in one endpoint
+// req.params = { userId }
+// (POST) API_Instance.post("users/{$id}/workouts/create/schedule")
+// returns { newuser }
+// body: title, description, image, owner, location, duration, exercises [objects], muscleGroups, tags, recurrence, scheduledDate
+router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.single('image'), async (req,res) => {
+  const owner = req.body.owner;
+
+  if (req.user._id != owner)
+  {
+    return res.sendStatus(403);
+  }
+
+  var image = null;
+  var imageId = null;
+  if(req.file){
+    await cloudinary.v2.uploader.upload(req.file.path,{folder: "workouts"},function(err, result) {
+      if (err)
+        return res.status(402).send({Error: err});
+      image = result.url;
+      imageId = result.public_id;
+    });
+  } else{
+    // Defualt Cloudinary Workout Image, UPDATE IF CHANGED!!
+    image = config.DEFAULTWORKIMAGE;
+    imageId = config.DEFAULTWORKIMAGEID;
+  }
+
+  // gather information to add workout into database
+  const title = req.body.title;
+  const description = req.body.description;
+  const location = req.body.location;
+  const duration = req.body.duration;
+  const exercises = req.body.exercises;
+  const muscleGroups = req.body.muscleGroups
+  
+  const dateStr = req.body.scheduledDate;
+  const scheduledDate = new Date(dateStr);
+
+  const recurrence = req.body.recurrence;
+
+  let tags = [];
+  tags = tags.concat(req.body.tags)
+  if (title)
+    tags = tags.concat(title.split(' '));
+
+  // scheduled workout has date and recurrence
+  const newWorkout = new Workout({
+    title,
+    description,
+    owner,
+    image,
+    imageId,
+    duration,
+    location,
+    exercises,
+    muscleGroups,
+    tags,
+    scheduledDate,
+    recurrence
+  });
+
+  // custom workouts dont have a scheduled date and recurrence
+  const newCustomWorkout = new Workout({
+    title,
+    description,
+    owner,
+    image,
+    imageId,
+    duration,
+    location,
+    exercises,
+    muscleGroups,
+    tags,
+  })
+
+  // store scheduled workout
+  newWorkout.save()
+    .then(async () => {
+      if (newWorkout.owner) {
+        const user = await User.findById(newWorkout.owner);
+        user.scheduledWorkouts.push(newWorkout._id);
+        
+        await user.save((err, newUser) => {
+          if (err) return res.status(495).send(err);
+        });
+      }
+      res.json(newWorkout);
+    })
+    .catch(async err => {
+      if (newWorkout.imageId != config.DEFAULTWORKIMAGEID) 
+      {
+        await cloudinary.v2.uploader.destroy(newWorkout.imageId, function() {
+          if (err)
+            console.log("There was an error deleting the exercise Photo")
+          else{
+            console.log("Photo deleted");
+          }
+        });
+      }
+      res.status(497).send({Error: err})
+    });
+
+  newCustomWorkout.save()
+    .then(async()=>{
+      const user = await User.findById(newWorkout.owner);
+      user.scheduledWorkouts.push(newWorkout._id);
+        
+      await user.save((err, newUser) => {
+        if (err) return res.status(495).send(err);
+      });
+    })
+    .catch(async err => {
+      if (newCustomWorkout.imageId != config.DEFAULTWORKIMAGEID) 
+      {
+        await cloudinary.v2.uploader.destroy(newCustomWorkout.imageId, function() {
+          if (err)
+            console.log("There was an error deleting the exercise Photo")
+          else{
+            console.log("Photo deleted");
+          }
+        });
+      }
+      res.status(497).send({Error: err})
+    });
+
+  if(req.file){
+     await unlinkAsync(req.file.path);
+  }
+});
+
 // Remove a scheduled workout
 // req.params = { userId, workoutId }
 // (PATCH) API_Instance.patch("users/{$id}/workouts/remove/${w:id}")
