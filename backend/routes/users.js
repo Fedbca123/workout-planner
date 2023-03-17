@@ -544,7 +544,7 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
     return res.status(498).send({Error: `User (${A_id}) does not exist!`});
   }
 
-  const userB = await User.findOne({email: friendEmail});
+  const userB = await User.findOne({email: {$regex: new RegExp("^" + friendEmail + "$", "i")}});
   if (!userB){
     return res.status(493).send({Error: `User with email ${friendEmail} does not exist!`});
   }
@@ -933,6 +933,14 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
   // encrypt a JWT with the body passed in
   const {firstName, lastName, email, password} = req.body;
   
+  // CHECK IF USER EXISTS BY EMAIL BEFORE SENDING A URL TO VERIFY AN ACCOUNT
+  const emailExists = await User.findOne({email: {$regex: new RegExp("^" + email + "$", "i")}});
+  if (emailExists)
+  {
+    // don't send an email
+    return res.status(502).send({Error: "Email already exists!"}); 
+  }
+
   const payload = {
     user:{
       firstName,

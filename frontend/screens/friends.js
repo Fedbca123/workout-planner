@@ -150,7 +150,13 @@ const FriendsScreen = () => {
   return (
     <View>
       
-      <TextInput style={styles.searchBar} placeholder="Search by email" value={searchTerm} onChangeText={handleSearch}/>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search by email"
+        value={searchTerm}
+        onChangeText={handleSearch}
+        autoCapitalize='none'
+      />
           
           
           <View >
