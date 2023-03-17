@@ -26,6 +26,7 @@ import HomeNav from "../navigation/homeNav";
 import * as ImagePicker from "expo-image-picker";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function CustomExercise(props) {
 
@@ -42,6 +43,7 @@ export default function CustomExercise(props) {
 		image: null,
 		imageId: "",
 	};
+	const [currType, setCurrType] = useState('SETSXREPS');
 	const [imageUri, setImageUri] = useState(null);
 	const muscleGroups = [
 		{ label: 'Chest', value: 'Chest' },
@@ -71,11 +73,17 @@ export default function CustomExercise(props) {
 		{ label: 'Pull-Up Bar', value: 'Pull-Up Bar' },
 		{ label: 'Resistance Bands', value: 'Resistance Bands' },
 	];
+	const exerciseType = [
+		{ label: 'Cardio', value: 'CARDIO' },
+		{ label: 'As many reps as possible', value: 'AMRAP' },
+		{label: 'Sets and Reps', value: 'SETSXREPS'},
+	]
 	const [equipmentSelected, setEquipment] = useState([]);
 	const [selected, setSelected] = useState([]);
 	const formData = new FormData();
 
 	function createExercise() {
+
 		if(exercise.title == ""){
 			Alert.alert("Please Name the Exercise");
 		} else if(exercise.description == ""){
@@ -93,18 +101,13 @@ export default function CustomExercise(props) {
 				formData.append('image', { uri: imageUri, name: filename, type });
 			}
 
-			muscleGroupsArr = selected.split(',').map(item => item.trim());
-			for (let j = 0; j < muscleGroupsArr.length; j++){
-				formData.append('muscleGroups[]', muscleGroupsArr[j]);
-			}
-            
-			tagsArr = equipment.split(',').map(item =>item.trim());
-			for (let i = 0; i < tagsArr.length; i++){
-				formData.append('tags[]', tagsArr[i]);
-			}
-                
+			formData.append('muscleGroups', selected);
 
+			formData.append('tags', equipmentSelected);
+                
 			formData.append('owner', globalState.user._id);
+
+			formData.append('exerciseType', currType);
 
 			API_Instance.post("exercises/add", formData, {
                 headers: {
@@ -114,24 +117,20 @@ export default function CustomExercise(props) {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-					console.log(response.data);
+					// console.log(response.data);
                     Alert.alert('Success!', 'Exercise created', [
                         {text: 'OK', onPress: () => {}},
 					]);
+					// console.log(globalState.workout[0].exercises);
 					globalState.workout[0].exercises.push(response.data);
 					navigation.navigate("exerciseSearch");
 				}
-			})
-			.catch((e) => {
+			}).catch((e) => {
                 Alert.alert('Error!', 'Exercise not created', [
                     {text: 'OK', onPress: () => {}},
                 ]);
 				console.log(e);
 			});
-
-
-			globalState.workout[0].content.push(exercise);
-			navigation.push("exerciseSearch");
 		}
 	}
 
@@ -150,8 +149,8 @@ export default function CustomExercise(props) {
 			});
 
 			if (!result.canceled) {
-				setImageUri(result["uri"]);
-				return result["uri"];
+				setImageUri(result.assets[0].uri);
+				return result.assets[0].uri;
 			}
 		}
 		
@@ -175,8 +174,8 @@ export default function CustomExercise(props) {
 			});
 
 			if (!result.canceled) {
-				setImageUri(result["uri"]);
-				return result["uri"];
+				setImageUri(result.assets[0].uri);
+				return result.assets[0].uri;
 			}
 		}
 		
@@ -201,11 +200,11 @@ export default function CustomExercise(props) {
 			
 			<Text style={styles.TitleText}>What is the name of the exercise?</Text>
 			
-			<TextInput style={styles.TextInputBox} onChange={(text) => { exercise.title = text }} />
+			<TextInput style={styles.TextInputBox} onChangeText={(text) => { exercise.title = text }} />
 			
 			<Text style={styles.TitleText}>Can you give a description of the exercise?</Text>
 			
-			<TextInput style={styles.TextInputBox} onChange={(text) => { exercise.description = text }} multiline />
+			<TextInput style={styles.TextInputBox} onChangeText={(text) => { exercise.description = text }} multiline />
 
 			<Text style={styles.TitleText}>Upload an image demonstrating the exercise if possible.</Text>
 			{ imageUri && <Image source={{ uri: imageUri }} style={styles.ImageStyle} />}
@@ -293,8 +292,22 @@ export default function CustomExercise(props) {
 					</TouchableOpacity>
           		)}
 			/>
+			<Text style={styles.TitleText}>What type of exercise is this?</Text>
+			<Dropdown
+				style={styles.dropdown}
+				data={exerciseType}
+				labelField="label"
+				valueField="value"
+				value={currType}
+				onChange={(val) => {
+					console.log(val.value);
+					setCurrType(val.value);
+				}}
+			/>
 
-			<Button title="Create Exercise" onPress={() => { createExercise(); }} />
+			<Button title="Create Exercise" onPress={() => {
+				createExercise();
+			}} />
 			
 		</SafeAreaView>
 	);

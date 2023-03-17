@@ -55,6 +55,8 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
   const description = req.body.description;
   const owner = req.body.owner;
 
+  console.log("Hey Nestor ;)");
+
   if ((owner && req.user._id != owner) && !req.user.isAdmin)
   {
     return res.sendStatus(494);
@@ -62,6 +64,8 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
 
   var image = null;
   var imageId = null;
+
+  console.log("Hey Robert ;)");
   if(req.file){
     await cloudinary.v2.uploader.upload(req.file.path,{folder: "exercises"},function(err, result) {
       if (err)
@@ -74,7 +78,8 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
     image = config.DEFAULTEXIMAGE;
     imageId = config.DEFAULTEXIMAGEID;
   }
-
+  console.log("Hey Nestor AND Robert ;)");
+  
   const exerciseType = req.body.exerciseType;
   const sets = req.body.sets;
   const reps = req.body.reps;
@@ -119,9 +124,10 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
       if (newExercise.imageId != config.DEFAULTEXIMAGEID) 
       {
         await cloudinary.v2.uploader.destroy(newExercise.imageId, function() {
-          if (err)
-            console.log("There was an error deleting the exercise Photo")
-          else{
+          if (err) {
+            console.log("There was an error deleting the exercise Photo");
+            console.log(err);
+          } else{
             console.log("Photo deleted");
           }
         });

@@ -104,28 +104,16 @@ export default function Login({navigation}) {
 				</Text>
 			</View>
       
-        {/* <Button
+        <Button
         title="BACKDOOR"
         onPress={() =>
           backDoorHandler("Test@gmail.com", "password")}/>
-      {/* <Button
-          backDoorHandler("Test@gmail.com", "password")}/> */}
-      {/* <Button
-        title="ADMIN BACKDOOR"
-        onPress={() =>  backDoorHandler("admin@gmail.com", "password")}/> */}
 
       {/* <Button
         title="ADMIN BACKDOOR"
         onPress={() => props.navigation.navigate("admin")}
             /> */}
 
-       {/*this was added by Alice for the start workout screens, will move in the future}
-	<Button
-			{/*
-        title="START WORKOUT BUTTON"
-        onPress={() => navigation.navigate("start")}
-            />
-			*/}
       {/*code will break at the end to home bc name can't be rendered}
       */}
       
