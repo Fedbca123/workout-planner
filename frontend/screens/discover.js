@@ -684,8 +684,8 @@ return (
 
             <SafeAreaView style={styles.exerciseInfoBody}>
               <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
-              <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {selectedExerciseMuscleGroups.join(", ")}</Text>
-              <Text style={styles.exerciseInfoTags}>Tags: {selectedExerciseTags.join(", ")}</Text>
+              <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text> 
+              <Text style={styles.exerciseInfoTags}>Tags: {selectedExerciseTags && selectedExerciseTags.join(", ")}</Text>
             </SafeAreaView>
 
             <SafeAreaView>
