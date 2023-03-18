@@ -63,10 +63,19 @@ export default function LandingPage({navigation}) {
 		<SafeAreaView style={styles.container}>
 			<View style={styles.Header}>
 				<Text style={styles.HeaderText}>
-					You have {loadCurrentDayWorkoutStatus()}
+					{/* You have {loadCurrentDayWorkoutStatus()} */}
 				</Text>
 			</View>
-
+			<View style={{alignItems: "center",
+						backgroundColor: "#E0F0FE",
+						marginHorizontal: 30,
+						padding: 25,
+						borderRadius: "10rem"
+						}}>
+					<TouchableOpacity onPress={() => navigation.navigate("start")}>
+						<Text style={styles.CreateWorkoutBttns}>Start Workout</Text>
+					</TouchableOpacity>
+			</View>
 			<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>
