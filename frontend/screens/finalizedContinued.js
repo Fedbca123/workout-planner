@@ -106,13 +106,7 @@ export default function FinalizedContinued() {
 			formData.append('location', globalState.workout[0].location);
 			formData.append('duration', globalState.workout[0].duration);
 
-			exercisesArr = exercises.split(',').map(item => item.trim());
-                for (let k = 0; k < exercisesArr.length; k++)
-					formData.append('exerciseIds[]', exercisesArr[k]);
 			
-			for (let i = 0; i < exercises.length; i++){
-				
-			}
 		}
 	}
 
@@ -140,7 +134,7 @@ export default function FinalizedContinued() {
 							{/* <Image source={{ uri: item.image }} style={styles.ImageStyle} /> */}
 						<Text style={styles.ExerciseText}>
 							{item.title}	
-							<View>
+							<View style={{ display: "flex", flexDirection: "row"}}>
 								<Dropdown
 									style={styles.dropdown}
 									data={exerciseTypes}
@@ -153,10 +147,14 @@ export default function FinalizedContinued() {
 										updateExercises(exercisesCopy);
 									}}
 								/>
-								{(item.exerciseType === "SETSXREPS"  || item.exerciseType === "AMRAP")&& <TextInput onChangeText={(val) => { item.sets = val }} placeholder="sets" keyboardType="number-pad"/>}
-								{item.exerciseType === "SETSXREPS" && <TextInput onChangeText={(val) => { item.reps = val }} placeholder="reps" keyboardType="number-pad"/>}
-								{(item.exerciseType === "SETSXREPS" || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => { item.weight = val }} placeholder="weight" keyboardType="number-pad"/>}
-								{(item.exerciseType === "CARDIO"  || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => { item.time = val }} placeholder="time" keyboardType="number-pad"/>}
+
+								{(item.exerciseType === "SETSXREPS" || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => { item.sets = val }} placeholder="sets" keyboardType="number-pad" style={styles.exerciseInput} />}
+								
+								{item.exerciseType === "SETSXREPS" && <TextInput onChangeText={(val) => { item.reps = val }} placeholder="reps" keyboardType="number-pad" style={styles.exerciseInput} />}
+								
+								{(item.exerciseType === "SETSXREPS" || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => { item.weight = val }} placeholder="weight" keyboardType="number-pad" style={styles.exerciseInput} />}
+								
+								{(item.exerciseType === "CARDIO" || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => { item.time = val }} placeholder="time" keyboardType="number-pad" style={styles.exerciseInput} />}
 							</View>
 						</Text>
 						
@@ -186,6 +184,9 @@ const styles = StyleSheet.create({
 		borderRadius: 20
 		// flex: 0.5,
 		// shadowOpacity: 2
+	},
+	exerciseInput: {
+		padding: 10,
 	},
 	container: {
 		flex: 1,
@@ -224,14 +225,14 @@ const styles = StyleSheet.create({
 	ExerciseText: {
 		fontSize: 16,
 		fontWeight: 'bold',
-		left: 10,
+		left: 0,
 		// top: 30,
 		// marginVertical: "auto"
 		textAlignVertical: "bottom",
 		// flex:0.5
 	},
 	dropdown: {
-		 width:120,
+		width: 120,
     //   margin: 2,
     //   height: 50,
     //   borderBottomColor: 'gray',
