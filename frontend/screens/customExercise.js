@@ -10,9 +10,7 @@ import {
 	FlatList,
 	ScrollView,
 	Alert,
-	Modal,
 	Pressable,
-	
 } from "react-native";
 import React, {useState, useRef} from "react";
 import reactDom from "react-dom";
@@ -27,6 +25,7 @@ import * as ImagePicker from "expo-image-picker";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Dropdown } from "react-native-element-dropdown";
+import Modal from "react-native-modal";
 
 export default function CustomExercise(props) {
 
@@ -81,6 +80,7 @@ export default function CustomExercise(props) {
 	const [equipmentSelected, setEquipment] = useState([]);
 	const [selected, setSelected] = useState([]);
 	const formData = new FormData();
+	const [isVisible, setIsVisible] = useState(false);
 
 	function createExercise() {
 
@@ -182,9 +182,16 @@ export default function CustomExercise(props) {
 		
 	}
 
-	function picChooser() {
+	// function picChooser() {
 
-	}
+	// 	return (
+	// 		<Modal isVisible={true} swipeDirection='down' style={{ justifyContent: 'flex-end' }}>
+	// 			<View style={{ backgroundColor: '#fff' }}>
+	// 				<Text>bottom half</Text>
+	// 			</View>
+	// 		</Modal>
+	// 	)
+	// }
 
 	const renderItem = item => {
       return (
@@ -213,11 +220,28 @@ export default function CustomExercise(props) {
 						setImageUri(await getPhotoForExercise());
 						// setImageUri(await takePhotoForExercise());
 						// picChooser();
+						setIsVisible(true);
 					}} />}
                     { imageUri && <Button title = "Clear"
                     onPress={async () => {
                         setImageUri(null);
 				}} />}
+			
+			{/* <Modal
+			isVisible={isVisible}
+			swipeDirection="down"
+			style={{ justifyContent: 'flex-end', margin: 0 }}>
+				<View style={{ backgroundColor: '#fff', height: Dimensions.get('screen').height / 1.5 }}>
+					<Text>bottom half</Text>
+					<Button title="Hide modal" onPress={setIsVisible(false)} />
+				</View>
+      		</Modal> */}
+
+			<Modal isVisible={isVisible} swipeDirection='down' style={{ justifyContent: 'flex-end' }}>
+  				<View style={{ backgroundColor: '#fff' }}>
+      				<Text>bottom half</Text>
+   				</View>
+			</Modal>
 			
 			<Text style={styles.TitleText}>What muscles does this exercise workout?</Text>
 
