@@ -906,6 +906,28 @@ router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,
   });
 });
 
+// get workouts scheduled for today for user
+
+router.route('/:id/workouts/today').get(authenticateToken, async (req,res) => {
+  const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
+  // find all workouts with scheduled date matching today and owner id is same as user
+  const workouts = await Workout.find({
+    scheduledDate: {
+      $gte: new Date().setHours(0,0,0,0),
+      $lt: new Date().setHours(23,59,59)
+    },
+    owner: id
+  });
+
+  return res.json(workouts);
+});
+
 // Get all scheduled workouts of user and friends nicely
 // req.params = { userId }
 // (Get) API_Instance.get("users/${id}/calendar/all")
