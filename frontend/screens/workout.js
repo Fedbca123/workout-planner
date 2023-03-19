@@ -17,7 +17,7 @@ import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 
-export default function WorkOuts({ props, data, showButton, showInput}) {
+export default function WorkOuts({ data, showButton, showInput, startButton}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const navigation = useNavigation();
@@ -33,27 +33,71 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 	function renderHeader(sections) {
 		if (showButton) {
 			return (
-				<View style={styles.collapsePill}>
-					<Text style={styles.TitleText}>{sections.title}</Text>
-					{/* <Button
-						onPress={() => {
-							navigation.navigate("dateTimeRepsPicker");
+				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+					
+					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
+
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+						
+						<Text style={styles.TitleText}>{sections.title}</Text>
+
+					</View>
+
+					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
+						
+						<TouchableOpacity style={styles.addButton} onPress={() =>{
+							navigation.push("exerciseSearch");
 							updateGlobalState("workout", data);
-						}}
-						title="+"
-					/> */}
-					<TouchableOpacity onPress={() =>{
-						navigation.navigate("exerciseSearch");
-						updateGlobalState("workout", data);
-					}}>
-						<Text>Choose Workout</Text>
-					</TouchableOpacity>
+						}}>
+
+							<Text style={{ alignSelf: "center" }}>Choose Workout</Text>
+							
+						</TouchableOpacity>
+
+					</View>
+					
+					
 				</View>
 			);
-		} else {
+		} else if (startButton) {
 			return (
-				<View style={styles.collapsePill}>
-					<Text style={styles.TitleText}>{sections.title}</Text>
+				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+					
+					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
+
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+						
+						<Text style={styles.TitleText}>{sections.title}</Text>
+
+					</View>
+
+					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
+						
+						<TouchableOpacity style={styles.addButton} onPress={() =>{
+							navigation.navigate("startWorkout", { workout: data });
+						}}>
+
+							<Text style={{ alignSelf: "center" }}>Start!</Text>
+							
+						</TouchableOpacity>
+
+					</View>
+					
+					
+				</View>
+			)
+		}else {
+			return (
+				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+
+					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
+
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+						
+						<Text style={styles.TitleText}>{sections.title}</Text>
+
+					</View>
+					
 				</View>
 			);
 		}
@@ -63,9 +107,13 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 		function itemRender({ item }) {
 			if (showInput) {
 				return (
-					<View style={styles.collapsedContent}>
+					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+
 						{/* Image Component here */}
+						<Image source={{ uri: item.image }} style={styles.ImageStyle} />
+
 						<Text style={styles.text}>{item.title}</Text>
+
 						<TextInput
 							placeholder="sets"
 							onChangeText={(val)=>{
@@ -73,6 +121,7 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 							}}
 							style={styles.text}
 						/>
+
 						<TextInput
 							placeholder="reps"
 							onChangeText={(val)=>{
@@ -80,13 +129,20 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 							}}
 							style={styles.text}
 						/>
+
 					</View>
 				);
 			}else{
 				return (
-					<View style={styles.collapsedContent}>
+					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row", marginTop: 10}}>
+						
 						{/* Image Component here */}
-						<Text style={styles.text}>{item.title}</Text>
+						<Image source={{ uri: item.image }} style={styles.ExerciseImage} />
+
+						<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column"}}>
+							<Text style={styles.text}>{item.title}</Text>
+						</View>
+
 					</View>
 				);
 			}
@@ -94,7 +150,7 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 
 		return (
 			<View>
-				<FlatList data={section.content} renderItem={itemRender} />
+				<FlatList data={section.exercises} renderItem={itemRender} />
 			</View>
 			// <View style={styles.content}>
 			//     <Text>{section.content}</Text>
@@ -103,7 +159,7 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 	}
 
 	return (
-		<SafeAreaView style={styles.collapsePill}>
+		<SafeAreaView >
 			<Accordion
 				// containerStyle={styles.Background}
 				// renderAsFlatList={true}
@@ -113,6 +169,11 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 				// renderSectionTitle={renderSectionTitle}
 				activeSections={activeSections}
 				onChange={setActiveSections}
+				// keyExtractor={(item) => {
+				// 	updateGlobalState("workout", item);
+				// }}
+				sectionContainerStyle={styles.collapsePill}
+				containerStyle={styles.collapsedContent}
 			/>
 		</SafeAreaView>
 	);
@@ -120,45 +181,71 @@ export default function WorkOuts({ props, data, showButton, showInput}) {
 
 const styles = StyleSheet.create({
 	collapsePill: {
-		// flexDirection: "row",
-		// backgroundColor: "#DDF2FF", //"#F1F3FA",
-		// margin: 30,
+		margin: 10,
 		// padding: 15,
 		backgroundColor: "#F1F3FA",
 		padding: 20,
-		marginBottom: 0,
 		shadowColor: "#000",
 		shadowOpacity: 0.2,
-		shadowRadius: 5,
+		shadowRadius: 4,
 		shadowOffset: { width: 0, height: 2 },
-		elevation: 2,
-		borderRadius: 15,
+		// elevation: 2,
+		borderRadius: "20rem",
+		width: 390,
 	},
 	text: {
 		color: "black",
 		fontWeight: "bold",
-		fontSize: 12,
+		fontSize: 16,
+		display: "flex",
+		textAlignVertical: "center",
+		alignContent: "center",
+		flexDirection: "row",
+		justifyContent:"space-around",
+		// left: 5,
 	},
 	addButton: {
-		position: "relative",
-		width: 28,
-		height: 28,
-		left: 328,
-		top: 26,
-		fontSize: 28,
+		// position: "relative",
+		// fontSize: 28,
+		display:"flex",
+		justifyContent:"flex-end",
+		flexDirection: "row",
+		flex:1,
+
 	},
 	Background: {
 		backgroundColor: "#E5E5E5",
 	},
 	collapsedContent: {
-		flexDirection: "row",
-		backgroundColor: "#F1F3FA",
-		margin: 30,
-		padding: 15,
+		// flexDirection: "row",
+		// backgroundColor: "#F1F3FA",
+		// margin: 30,
+		// padding: 15,
+		borderRadius:"30rem",
 	},
 	TitleText: {
 		color: "black",
+		position:"relative",
 		fontWeight: "bold",
 		fontSize: 20,
+		display: "flex",
+		textAlignVertical: "center",
+		alignContent: "center",
+		flexDirection: "row",
+		justifyContent:"space-around",
+		left: 5,
+	},
+	ImageStyle:{
+		height: 50,
+		width: 50,
+		borderWidth: 1,
+		borderRadius: 20,
+	},
+	ExerciseImage: {
+		height: 50,
+		width: 50,
+		borderWidth: 1,
+		borderRadius: 100,
+		// marginTop: 10
 	},
 });

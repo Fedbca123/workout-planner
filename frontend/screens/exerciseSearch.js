@@ -11,7 +11,7 @@ import {
 	ScrollView,
 	Alert,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
 import { useGlobalState } from "../GlobalState.js";
@@ -20,73 +20,79 @@ import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
 import HomeNav from "../navigation/homeNav";
 
-export default function ExerciseSearch({ navigation }) {
+// const baseUrl = config.API_URL + config.PORT + '/';
+
+export default function ExerciseSearch(props) {
+	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
-	const exercises = [
-		{
-			title: "Romanian Deadlift",
-			muscleGroups: ["Hamstrings", "Lower Back", "Glutes"],
-		},
-		{
-			title: "Barbell Bench Press",
-			muscleGroups: ["Chest", "triceps", "shoulders"],
-		},
-		{
-			title: "Preacher Curls",
-			muscleGroups: ["Biceps"],
-		},
-		{
-			title:"Lunges",
-			muscleGroups: ["Quads"],
-		},
-		{
-			title:"Skullcrushers",
-			muscleGroups:["triceps", "Upper Chest"]
-		},
-		{
-			title:"Deadman hangs",
-			muscleGroups:["forearms"]
-		},
-		{
-			title:"Barbell Front Squats",
-			muscleGroups:["Hamstrings", "glutes"]
-		}
-	];
+	const [exercises, updateExercises] = useState([]);
+
+	const loadExercises = async () => {
+
+		API_Instance.post("exercises/search", {
+			ownerId: globalState.user._id
+		}, {
+			headers: {
+				'authorization': `BEARER ${globalState.authToken}`
+			}
+		}).then((response) => {
+			if (response.status == 200) {
+				updateExercises(response.data);
+			} else {
+				console.log(response.status);
+			}
+		}).catch((e) => {
+			console.log(e);
+		})
+	}
+
+	useEffect(() => {
+		loadExercises();
+	}, []);
+
+	useEffect(() => {
+		
+	}, [])
 
 	return (
 		<SafeAreaView >
-			<SearchBar placeholder="Enter exercise names or muscle groups you wish to train!"></SearchBar>
+			<Text style={styles.TitleText}>Current Workout:</Text>
 			<WorkOuts data={globalState.workout} />
+			<Button
+				title="Finalize Workout"
+				onPress={() => {
+					if (globalState.workout[0].exercises.length !== 0) {
+						navigation.push("finalizeWorkout");
+					} else {
+						Alert.alert("Please add at least one exercise to this workout.");
+					}
+				}}
+			/>
 			<Text style={styles.TitleText}>Exercises:</Text>
+			<Button title="Custom Exercise" onPress={() => {
+				navigation.navigate("customExercise");
+			}} />
 			<FlatList
 				data={exercises}
 				keyExtractor={(item) => item.title}
 				renderItem={({ item }) => (
-					<View style={styles.ExerciseCard}>
-						<TouchableOpacity
+					<View >
+						<TouchableOpacity style={styles.ExerciseCard}
 							onPress={() => {
-								globalState.workout[0].content.push(item);
+								let workout = [...globalState.workout];
+								workout[0].exercises.push(item);
+								updateGlobalState("workout", workout);
 								Alert.alert("Exercise Added to workout!");
+								
 							}}
 						>
-							{/* Image component Here */}
-							<Text>{item.title}</Text>
+							<Image source={{ uri: item.image }} style={styles.ImageStyle} />
+							<Text style={styles.ExerciseText}>{item.title}</Text>
 							{/* Button to take user to page about info for the workout */}
 						</TouchableOpacity>
 					</View>
 				)}
 			/>
-			<Button
-				title="Finalize Workout"
-				onPress={() => {
-					// updateGlobalState("workout", userWorkout);
-					navigation.navigate("finalizeWorkout");
-				}}
-			/>
-			<Button title="Custom Exercise" onPress={() => {
-				// updateGlobalState("workout", userWorkout);
-				navigation.navigate("customExercise");
-			}} />
 			{/* <HomeNav/> */}
 			
 		</SafeAreaView>
@@ -97,16 +103,37 @@ const styles = StyleSheet.create({
 	ExerciseCard: {
 		backgroundColor: "#F1F3FA",
 		padding: 20,
-		marginBottom: 0,
+		margin:10,
+		// marginBottom: 0,
 		shadowColor: "#000",
 		shadowOpacity: 0.2,
 		shadowRadius: 5,
 		shadowOffset: { width: 0, height: 2 },
 		elevation: 2,
 		borderRadius: 15,
+		flexDirection: "row",
+		// flexDirection: "row",
+		alignItems: "center"
 	},
 	TitleText:{
 		fontSize: 20,
-    	fontWeight: 'bold',
+		fontWeight: 'bold',
+		// justifyContent:"flex-start"
+	},
+	ImageStyle:{
+		height: 50,
+		width: 50,
+		// flex: 0.5,
+		borderWidth: 1,
+		borderRadius:100
+	},
+	ExerciseText: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		left: 10,
+		// top: 30,
+		// marginVertical: "auto"
+		textAlignVertical: "bottom",
+		// flex:0.5
 	}
 });

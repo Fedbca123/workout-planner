@@ -12,6 +12,9 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../middleware/authenticateToken.js');
 const { EmailClient } = require("@azure/communication-email");
+const fs = require('fs');
+const { promisify } = require('util');
+const unlinkAsync = promisify(fs.unlink);
 
 /* 
 ADDING JWT TO YOUR AXIOS CALLS w/ Nestor :) :
@@ -305,13 +308,13 @@ router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) =>
     return res.status(498).send({Error: "Workout does not exist!"});
   }
 
-  var workoutDate;
-  if(dateString){
-    // format of date in body "YYYY/MM/DD EST"
-    workoutDate = new Date(dateString);
-  }else if(workout.scheduledDate){
-    workoutDate = workout.scheduledDate;
-  }
+  // var workoutDate;
+  // if(dateString){
+  //   // format of date in body "YYYY/MM/DD EST"
+  //   workoutDate = new Date(dateString);
+  // }else if(workout.scheduledDate){
+  //   workoutDate = workout.scheduledDate;
+  // }
 
   const newWorkout = new Workout({
     title: workout.title,
@@ -324,7 +327,7 @@ router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) =>
     tags: workout.tags,
     muscleGroups: workout.muscleGroups,
     owner: workout.owner,
-    scheduledDate: workoutDate
+    scheduledDate: dateString
   })
 
   await newWorkout.save()
@@ -371,13 +374,21 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
   const description = req.body.description;
   const location = req.body.location;
   const duration = req.body.duration;
-  const exercises = req.body.exercises;
-  const muscleGroups = req.body.muscleGroups
+  const exercisesString = req.body.exercises;
+  const exercises = [];
+  const muscleGroups = req.body.muscleGroups;
   
   const dateStr = req.body.scheduledDate;
-  const scheduledDate = new Date(dateStr);
+  const scheduledDate = dateStr;
 
   const recurrence = req.body.recurrence;
+
+  for (let str of exercisesString) {
+    exercises.push(JSON.parse(str));
+    // console.log(JSON.parse(str));
+  }
+
+  // console.log('\n\n' + exercises);
 
   let tags = [];
   tags = tags.concat(req.body.tags)
@@ -438,13 +449,14 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
           }
         });
       }
+      console.log(err);
       res.status(497).send({Error: err})
     });
 
   newCustomWorkout.save()
     .then(async()=>{
       const user = await User.findById(newWorkout.owner);
-      user.scheduledWorkouts.push(newWorkout._id);
+      // user.scheduledWorkouts.push(newWorkout._id);
         
       await user.save((err, newUser) => {
         if (err) return res.status(495).send(err);
@@ -461,7 +473,8 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
           }
         });
       }
-      res.status(497).send({Error: err})
+      console.log(err);
+      return res.status(497).send({ Error: err });
     });
 
   if(req.file){
@@ -904,6 +917,28 @@ router.route('/:A_id/blocked/remove/:B_id').patch(authenticateToken, async (req,
     if (err) return res.status(499).send(err);
     res.status(200).json(newUser);
   });
+});
+
+// get workouts scheduled for today for user
+
+router.route('/:id/workouts/today').get(authenticateToken, async (req,res) => {
+  const id = req.params.id;
+
+  if (req.user._id != id)
+  {
+    return res.sendStatus(403);
+  }
+
+  // find all workouts with scheduled date matching today and owner id is same as user
+  const workouts = await Workout.find({
+    scheduledDate: {
+      $gte: new Date().setHours(0,0,0,0),
+      $lt: new Date().setHours(23,59,59)
+    },
+    owner: id
+  });
+
+  return res.json(workouts);
 });
 
 // Get all scheduled workouts of user and friends nicely

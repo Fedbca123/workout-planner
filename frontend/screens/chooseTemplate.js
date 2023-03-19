@@ -8,118 +8,91 @@ import {
 	SafeAreaView,
 	TextInput,
 	FlatList,
+	ScrollView,
+	VirtualizedList,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
 import Workouts from "./workout.js";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
+import { Header } from "react-native-elements";
 
 export default function ChooseTemplate(props) {
 	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
+	const [workouts, updateWorkouts] = useState([]);
 	function loadWorkouts() {
-		API_Instance.get("/").then((response) => {
-			if (response.status === 200) {
-				return <Workouts data={response.data} />;
+
+		API_Instance.post("workouts/search", {
+			ownerId: globalState.user._id
+		}, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				'authorization': `BEARER ${globalState.authToken}`
 			}
+		}).then((response) => {
+
+			if (response.status == 200) {
+
+				// const newData = response.data.map(obj => [obj]);
+				// updateWorkouts(newData);
+				updateWorkouts(response.data);
+
+			} else {
+				console.log(response.status);
+			}
+		}).catch((e) => {
+			console.log(e);
 		});
+
 	}
-	const SECTIONS = [
-		{
-			title: "Leg Day",
-			duration:45,
-			location:"Gold's Gym",
-			content: [
-				{
-					title: "Deadlift",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 10,
-				},
-				{
-					title: "Front Squats",
-					ExerciseType: "SETSXREPS",
-					sets: 4,
-					reps: 12,
-				},
-				{
-					title: "Calf Raises",
-					ExerciseType: "AMRAP",
-					time: 60000,
-				},
-				{
-					title: "Bulgarian Split Squats",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 10,
-				},
-				{
-					title: "Leg Press",
-					ExerciseType: "SETSXREPS",
-					sets: 4,
-					reps: 12,
-				},
-				{
-					title: "Lunges",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 15,
-				},
-			],
-		},
-	];
-	const sections = [
-		{
-			title: "Heavy Chest Day",
-			duration:70,
-			location:"L.A. Fitness",
-			content: [
-				{
-					title: "Barbell Bench Press",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 10,
-				},
-				{
-					title: "Incline Dumbbell Press",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 8,
-				},
-				{
-					title: "Decline Barbell Bench Press",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 8,
-				},
-				{
-					title: "Pec Fly",
-					ExerciseType: "AMRAP",
-					time: 60000,
-				},
-			],
-		},
-	];
+
+	useEffect(() => {
+		loadWorkouts();
+	}, []);
+
 	const noTemplate = [
 		{
-			title: "Your Workout",
-			duration: 60,
-			location: "",
-			content:[]
+			title: "My Custom Workout",
+			duration: 0,
+			description: "",
+			exercises: [],
+			location:"",
+			scheduledDate: new Date("2022-01-01"),
+			tags: [],
+			muscleGroups: [],
 		}
-	]
+	];
+
+	function comments(n) {
+		console.log(typeof (n));
+		console.log(JSON.stringify(n, null, 2));
+	}
 
 	return (
 		<SafeAreaView style={styles.Background}>
 			<Text style={styles.HeaderText}>Your Saved Workouts</Text>
-			<Workouts data={SECTIONS} showButton={true} showInput={false} />
+
+
+
 			<Text style={styles.HeaderText}>Workout Templates</Text>
-			<Workouts data={sections} showButton={true} showInput={false} />
+			<FlatList
+				data={workouts}
+				renderItem={(item) => (
+					<View>
+						{/* {comments(item.item)} */}
+						<Workouts data={[item.item]} showButton={true} showInput={false} />
+					</View>
+				)}
+				ListEmptyComponent={<Text style={{ fontSize: 16 }}>NO WORKOUTS</Text>}
+				refreshing={true}
+			/>
+				{/* <Workouts data={(workouts?.length !== 0 ? workouts[1] : [])} showButton={true} showInput={false} /> */}
 			<Button title="Create from Scratch" onPress={() => {
-				updateGlobalState("workout",noTemplate)
-				navigation.navigate("exerciseSearch");
+				updateGlobalState("workout", noTemplate);
+				navigation.push("exerciseSearch");
 			}} />
 		</SafeAreaView>
 	);
