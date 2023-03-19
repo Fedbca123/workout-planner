@@ -29,6 +29,8 @@ export default function LandingPage({navigation}) {
 
 	const loadCurrentDayWorkoutStatus = () => {
 		// logic to define whether a workout exists today or not
+
+		API_Instance
 		if (globalState.workoutScheduled != null) {
 			return "a workout scheduled today";
 		} else {

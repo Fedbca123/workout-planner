@@ -59,7 +59,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton}) {
 					
 				</View>
 			);
-		} else if (showButton) {
+		} else if (startButton) {
 			return (
 				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
 					
@@ -88,9 +88,16 @@ export default function WorkOuts({ data, showButton, showInput, startButton}) {
 			)
 		}else {
 			return (
-				<View style={{ flexDirection: "row"}}>
+				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+
 					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
-					<Text style={styles.TitleText}>{sections.title}</Text>
+
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+						
+						<Text style={styles.TitleText}>{sections.title}</Text>
+
+					</View>
+					
 				</View>
 			);
 		}
@@ -100,10 +107,13 @@ export default function WorkOuts({ data, showButton, showInput, startButton}) {
 		function itemRender({ item }) {
 			if (showInput) {
 				return (
-					<View>
+					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ImageStyle} />
+
 						<Text style={styles.text}>{item.title}</Text>
+
 						<TextInput
 							placeholder="sets"
 							onChangeText={(val)=>{
@@ -111,6 +121,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton}) {
 							}}
 							style={styles.text}
 						/>
+
 						<TextInput
 							placeholder="reps"
 							onChangeText={(val)=>{
@@ -118,14 +129,20 @@ export default function WorkOuts({ data, showButton, showInput, startButton}) {
 							}}
 							style={styles.text}
 						/>
+
 					</View>
 				);
 			}else{
 				return (
-					<View style={{ flexDirection: "row"}}>
+					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row", marginTop: 10}}>
+						
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ExerciseImage} />
-						<Text style={styles.text}>{item.title}</Text>
+
+						<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column"}}>
+							<Text style={styles.text}>{item.title}</Text>
+						</View>
+
 					</View>
 				);
 			}
@@ -180,6 +197,12 @@ const styles = StyleSheet.create({
 		color: "black",
 		fontWeight: "bold",
 		fontSize: 16,
+		display: "flex",
+		textAlignVertical: "center",
+		alignContent: "center",
+		flexDirection: "row",
+		justifyContent:"space-around",
+		// left: 5,
 	},
 	addButton: {
 		// position: "relative",
@@ -223,12 +246,6 @@ const styles = StyleSheet.create({
 		width: 50,
 		borderWidth: 1,
 		borderRadius: 100,
-		marginTop: 10
+		// marginTop: 10
 	},
-	ExerciseText: {
-		fontSize: 20,
-		fontWeight: 'bold',
-		left: 30,
-		textAlignVertical: "bottom",
-	}
 });
