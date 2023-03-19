@@ -29,7 +29,7 @@ export default function LandingPage({navigation}) {
 		navigation.push("createNav");
 	};
 
-	const loadCurrentDayWorkoutStatus = () => {
+	const loadCurrentDayWorkouts = () => {
 		// logic to define whether a workout exists today or not
 
 		API_Instance.get(`users/${globalState.user._id}/workouts/today`, {
@@ -51,13 +51,16 @@ export default function LandingPage({navigation}) {
 				// Alert.alert("Error");
 				console.log(e);
 			});
+	};
+
+	const loadCurrentDayWorkoutStatus = () => {
 		if (todaysWorkouts.length !== 0) {
 			return "a workout scheduled today";
 		} else {
 			return "no workout scheduled today";
 			//or "you are done with your workout today!"
 		}
-	};
+	}
 
 	function loadTodaysWorkout() {
 		if (todaysWorkouts.length !== 0) {
@@ -78,7 +81,9 @@ export default function LandingPage({navigation}) {
 	}
 
 	useEffect(() => {
+		loadCurrentDayWorkouts();
 		loadTodaysWorkout();
+		loadCurrentDayWorkoutStatus();
 	}, []);
 
 	//componentWillMount(){
