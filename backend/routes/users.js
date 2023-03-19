@@ -916,11 +916,11 @@ router.route('/:id/workouts/today').get(authenticateToken, async (req,res) => {
     return res.sendStatus(403);
   }
 
-  // find all workouts with scheduled date matching today whose id is same as user
+  // find all workouts with scheduled date matching today and owner id is same as user
   const workouts = await Workout.find({
     scheduledDate: {
-      $gte: new Date(),
-      $lt: new Date()
+      $gte: new Date().setHours(0,0,0,0),
+      $lt: new Date().setHours(23,59,59)
     },
     owner: id
   });
