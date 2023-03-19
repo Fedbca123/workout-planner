@@ -29,7 +29,6 @@ export default function ExerciseSearch(props) {
 
 	const loadExercises = async () => {
 
-		console.log(globalState.user._id);
 		API_Instance.post("exercises/search", {
 			ownerId: globalState.user._id
 		}, {
@@ -37,7 +36,7 @@ export default function ExerciseSearch(props) {
 				'authorization': `BEARER ${globalState.authToken}`
 			}
 		}).then((response) => {
-			console.log(response.data);
+			// console.log(response.data);
 			if (response.status == 200) {
 				updateExercises(response.data);
 			} else {

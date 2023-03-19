@@ -52,8 +52,11 @@ export default function FinalizeWorkout({ navigation}) {
 	};
 
 	const handleConfirm = (date) => {
-		globalState.workout[0].scheduledDate = date;
-		console.log("A date has been picked: ", globalState.workout[0].scheduledDate);
+		let temp = new Date(date).toString();
+		globalState.workout[0].scheduledDate = temp;
+		console.log(typeof (temp));
+		// console.log("A date has been picked: ", globalState.workout[0].scheduledDate);
+		console.log("A date has been picked: ", temp);
 		hideDatePicker();
 	};
 

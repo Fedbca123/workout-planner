@@ -16,32 +16,32 @@ export default function CreateWorkoutNav() {
 			<Stack.Screen
 				name="chooseTemplate"
 				component={ChooseTemplate}
-				// options={{ headerShown: false }}
+				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
 				name="start"
 				component={startWorkout}
-				// options={{ headerShown: false }}
+				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
 				name="exerciseSearch"
 				component={ExerciseSearch}
-				// options={{ headerShown: false }}
+				options={{ headerShown: false }}
 			/>
 			<Stack.Screen 
 				name="finalizeWorkout" 
 				component={Finalize} 
-				// options={{ headerShown: false }}
+				options={{ headerShown: false }}
 			/>
 			<Stack.Screen 
 				name="finalizedContinued" 
 				component={FinalizedContinued} 
-				// options={{ headerShown: false }}
+				options={{ headerShown: false }}
 			/>
 			<Stack.Screen 
 				name="customExercise" 
 				component={CustomExercise}
-				// options={{ headerShown: false }} 
+				options={{ headerShown: false }} 
 			/>
 		</Stack.Navigator>
 	);

@@ -17,7 +17,7 @@ import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 
-export default function WorkOuts({ data, showButton, showInput}) {
+export default function WorkOuts({ data, showButton, showInput, startButton}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const navigation = useNavigation();
@@ -33,19 +33,60 @@ export default function WorkOuts({ data, showButton, showInput}) {
 	function renderHeader(sections) {
 		if (showButton) {
 			return (
-				<View style={{ flexDirection: "row"}}>
-					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
-					<Text style={styles.TitleText}>{sections.title}</Text>
+				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
 					
-					<TouchableOpacity style={styles.addButton} onPress={() =>{
-						navigation.push("exerciseSearch");
-						updateGlobalState("workout", data);
-					}}>
-						<Text>Choose Workout</Text>
-					</TouchableOpacity>
+					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
+
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+						
+						<Text style={styles.TitleText}>{sections.title}</Text>
+
+					</View>
+
+					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
+						
+						<TouchableOpacity style={styles.addButton} onPress={() =>{
+							navigation.push("exerciseSearch");
+							updateGlobalState("workout", data);
+						}}>
+
+							<Text style={{ alignSelf: "center" }}>Choose Workout</Text>
+							
+						</TouchableOpacity>
+
+					</View>
+					
+					
 				</View>
 			);
-		} else {
+		} else if (showButton) {
+			return (
+				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+					
+					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
+
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+						
+						<Text style={styles.TitleText}>{sections.title}</Text>
+
+					</View>
+
+					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
+						
+						<TouchableOpacity style={styles.addButton} onPress={() =>{
+							navigation.navigate("startWorkout", { workout: data });
+						}}>
+
+							<Text style={{ alignSelf: "center" }}>Start!</Text>
+							
+						</TouchableOpacity>
+
+					</View>
+					
+					
+				</View>
+			)
+		}else {
 			return (
 				<View style={{ flexDirection: "row"}}>
 					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
@@ -134,23 +175,20 @@ const styles = StyleSheet.create({
 		// elevation: 2,
 		borderRadius: "20rem",
 		width: 390,
-		// left:-40,
 	},
 	text: {
 		color: "black",
 		fontWeight: "bold",
 		fontSize: 16,
-		left: 20,
-		top: 20
 	},
 	addButton: {
 		// position: "relative",
-		// width: 28,
-		height: 28,
-		left: 140,
-		top: 20,
 		// fontSize: 28,
-		flexDirection: "row"
+		display:"flex",
+		justifyContent:"flex-end",
+		flexDirection: "row",
+		flex:1,
+
 	},
 	Background: {
 		backgroundColor: "#E5E5E5",
@@ -164,11 +202,15 @@ const styles = StyleSheet.create({
 	},
 	TitleText: {
 		color: "black",
+		position:"relative",
 		fontWeight: "bold",
 		fontSize: 20,
-		left: 20,
-		top: 10,
-		// textAlign: "center"
+		display: "flex",
+		textAlignVertical: "center",
+		alignContent: "center",
+		flexDirection: "row",
+		justifyContent:"space-around",
+		left: 5,
 	},
 	ImageStyle:{
 		height: 50,

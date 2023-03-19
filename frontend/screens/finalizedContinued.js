@@ -10,6 +10,7 @@ import {
 	FlatList,
 	ScrollView,
 	Alert,
+	Switch,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom from "react-dom";
@@ -31,11 +32,13 @@ export default function FinalizedContinued() {
 	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
 	const [imageUri, setImageUri] = useState(defaultImage);
 	const [exercises, updateExercises] = useState(globalState.workout[0].exercises);
+	const [isReoccurring, setReoccurring] = useState(false);
 	const exerciseTypes = [
 	{label: 'Cardio', value: "CARDIO"},
 	{label: 'Sets and Reps', value: "SETSXREPS"},
 	{label: 'As many reps as possible', value: "AMRAP"},
 	];
+	const toggleSwitch = () => setReoccurring(previousState => !previousState);
 	// const [currType, setCurrType] = useState([]);
     
 	const getPhotoForExercise = async () => {
@@ -105,8 +108,56 @@ export default function FinalizedContinued() {
 			formData.append('owner', globalState.user._id);
 			formData.append('location', globalState.workout[0].location);
 			formData.append('duration', globalState.workout[0].duration);
+			formData.append('recurrence', isReoccurring);
+			formData.append('scheduledDate', globalState.workout[0].scheduledDate);
 
-			
+			let workoutTags = [];
+			let muscleGroups = [];
+
+			for (let i = 0; i < exercises.length; i++){
+				// console.log(exercises[i]);
+				formData.append('exercises[]', JSON.stringify(exercises[i]));
+			}
+
+			for (let i = 0; i < exercises.length; i++){
+
+				for (let j = 0; j < exercises[i].tags.length; j++){
+					if (!workoutTags.includes(exercises[i].tags[j])) {
+						workoutTags.push(exercises[i].tags[j]);
+						formData.append('tags[]', exercises[i].tags[j])
+					}
+				}
+
+				for (let j = 0; j < exercises[i].muscleGroups.length; j++){
+					if (!muscleGroups.includes(exercises[i].muscleGroups[j])) {
+						workoutTags.push(exercises[i].muscleGroups[j]);
+						formData.append('muscleGroups[]', exercises[i].muscleGroups[j]);
+					}
+				}
+			}
+
+			API_Instance.post(`users/${globalState.user._id}/workouts/create/schedule`, formData, {
+				headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': `BEARER ${globalState.authToken}`
+                }
+			}).then((response) => {
+				if (response.status == 200) {
+					// console.log(response.data);
+                    Alert.alert('Success!', 'Workout scheduled!', [
+                        {text: 'OK', onPress: () => {}},
+					]);
+
+					navigation.popToTop();
+					navigation.navigate("Home");
+				}
+			}).catch((e) => {
+                Alert.alert('Error!', 'Workout not created', [
+                    {text: 'OK', onPress: () => {}},
+                ]);
+				console.log(e);
+			});
+
 		}
 	}
 
@@ -154,13 +205,22 @@ export default function FinalizedContinued() {
 								
 								{(item.exerciseType === "SETSXREPS" || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => { item.weight = val }} placeholder="weight" keyboardType="number-pad" style={styles.exerciseInput} />}
 								
-								{(item.exerciseType === "CARDIO" || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => { item.time = val }} placeholder="time" keyboardType="number-pad" style={styles.exerciseInput} />}
+								{(item.exerciseType === "CARDIO" || item.exerciseType === "AMRAP") && <TextInput onChangeText={(val) => {
+									item.time = val
+								}} placeholder="time" keyboardType="number-pad" style={styles.exerciseInput} />}
 							</View>
-						</Text>
-						
+						</Text>	
 					</View>
 				)}
 			/>
+
+			<Text style={styles.TitleText}>Reoccurring?
+				<Switch
+					value={isReoccurring}
+					onValueChange={toggleSwitch}
+				/>
+			</Text>
+			
 			<Button title="Continue" onPress={() => {
 				scheduledWorkout();
 				// updateGlobalState("workoutScheduled",globalState.workout);
