@@ -104,10 +104,10 @@ export default function Login({navigation}) {
 				</Text>
 			</View>
       
-        <Button
+        {/* <Button
         title="BACKDOOR"
         onPress={() =>
-          backDoorHandler("Test@gmail.com", "password")}/>
+          backDoorHandler("Test@gmail.com", "password")}/> */}
 
       {/* <Button
         title="ADMIN BACKDOOR"

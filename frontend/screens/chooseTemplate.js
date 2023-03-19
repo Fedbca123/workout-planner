@@ -33,14 +33,11 @@ export default function ChooseTemplate(props) {
 				'authorization': `BEARER ${globalState.authToken}`
 			}
 		}).then((response) => {
-			// console.log(response.data);
+
 			if (response.status == 200) {
 
-				// console.log(response.data);
-				// console.log(response.data.length);]
 				// const newData = response.data.map(obj => [obj]);
 				// updateWorkouts(newData);
-				// console.log(newData);
 				updateWorkouts(response.data);
 
 			} else {
@@ -59,7 +56,7 @@ export default function ChooseTemplate(props) {
 	const noTemplate = [
 		{
 			title: "My Custom Workout",
-			duration: 60,
+			duration: 0,
 			description: "",
 			exercises: [],
 			location:"",
@@ -72,7 +69,6 @@ export default function ChooseTemplate(props) {
 	function comments(n) {
 		console.log(typeof (n));
 		console.log(JSON.stringify(n, null, 2));
-		// console.log("\n");
 	}
 
 	return (

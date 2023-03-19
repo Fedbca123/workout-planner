@@ -36,7 +36,6 @@ export default function ExerciseSearch(props) {
 				'authorization': `BEARER ${globalState.authToken}`
 			}
 		}).then((response) => {
-			// console.log(response.data);
 			if (response.status == 200) {
 				updateExercises(response.data);
 			} else {
@@ -54,8 +53,6 @@ export default function ExerciseSearch(props) {
 	useEffect(() => {
 		
 	}, [])
-	
-	// console.log("Rerendering Search");
 
 	return (
 		<SafeAreaView >

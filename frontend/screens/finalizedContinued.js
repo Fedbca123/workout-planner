@@ -71,7 +71,7 @@ export default function FinalizedContinued() {
 		await requestCameraPermission(ImagePicker.requestCameraPermissionsAsync);
 		// await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-		console.log(cameraStatus.status);
+		// console.log(cameraStatus.status);
 
 		if (cameraStatus.granted === false) {
 			Alert.alert("You need to go to settings to allow camera access");

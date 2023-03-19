@@ -54,9 +54,9 @@ export default function FinalizeWorkout({ navigation}) {
 	const handleConfirm = (date) => {
 		let temp = new Date(date).toString();
 		globalState.workout[0].scheduledDate = temp;
-		console.log(typeof (temp));
+		// console.log(typeof (temp));
 		// console.log("A date has been picked: ", globalState.workout[0].scheduledDate);
-		console.log("A date has been picked: ", temp);
+		// console.log("A date has been picked: ", temp);
 		hideDatePicker();
 	};
 
@@ -119,11 +119,19 @@ export default function FinalizeWorkout({ navigation}) {
 			{/* <WorkOuts data={globalState.workout} showInput={true} /> */}
 			
 			<Button title="Continue" onPress={() => {
-				// scheduledWorkout();
-				// updateGlobalState("workoutScheduled",globalState.workout);
-				// navigation.popToTop();
-				// navigation.navigate("Home");
-				navigation.push("finalizedContinued");
+				
+				if (globalState.workout[0].scheduledDate == Date("2022-01-01")) {
+					Alert.alert("Please choose a time to schedule this workout");
+				} else if (globalState.workout[0].location === "") {
+					Alert.alert("Please select where you are going to have this workout");
+				} else if (globalState.workout[0].title === "") {
+					Alert.alert("Please enter a title for the workout");
+				} else if (globalState.workout[0].duration === 0 || globalState.workout[0].duration === "") {
+					Alert.alert("Please choose a valid duration for the workout.");
+				} else {
+					navigation.push("finalizedContinued");
+				}
+				
 			}}/>
 		</SafeAreaView>
 	);

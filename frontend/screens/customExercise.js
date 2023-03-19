@@ -117,11 +117,9 @@ export default function CustomExercise(props) {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-					// console.log(response.data);
                     Alert.alert('Success!', 'Exercise created', [
                         {text: 'OK', onPress: () => {}},
 					]);
-					// console.log(globalState.workout[0].exercises);
 					globalState.workout[0].exercises.push(response.data);
 					navigation.navigate("exerciseSearch");
 				}
@@ -159,9 +157,8 @@ export default function CustomExercise(props) {
 	const takePhotoForExercise = async () => {
 
 		await requestCameraPermission(ImagePicker.requestCameraPermissionsAsync);
-		// await Permissions.askAsync(Permissions.CAMERA_ROLL);
 
-		console.log(cameraStatus.status);
+		// console.log(cameraStatus.status);
 
 		if (cameraStatus.granted === false) {
 			Alert.alert("You need to go to settings to allow camera access");
@@ -352,7 +349,7 @@ export default function CustomExercise(props) {
 				valueField="value"
 				value={currType}
 				onChange={(val) => {
-					console.log(val.value);
+					// console.log(val.value);
 					setCurrType(val.value);
 				}}
 			/>
