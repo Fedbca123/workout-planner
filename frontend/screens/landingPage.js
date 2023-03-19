@@ -7,8 +7,9 @@ import {
 	View,
 	SafeAreaView,
 	TextInput,
+	FlatList,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
 import { useGlobalState } from "../GlobalState.js";
@@ -17,6 +18,7 @@ import WorkOuts from "./workout";
 
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
+	const [todaysWorkouts, setTodaysWorkouts] = useState([]);
 
 	const handleScratchPress = () => {
 		// console.log("Scratch Button Pressed");
@@ -30,8 +32,26 @@ export default function LandingPage({navigation}) {
 	const loadCurrentDayWorkoutStatus = () => {
 		// logic to define whether a workout exists today or not
 
-		API_Instance
-		if (globalState.workoutScheduled != null) {
+		API_Instance.get(`users/${globalState.user._id}/workouts/today`, {
+				headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': `BEARER ${globalState.authToken}`
+                }
+		}).then((response) => {
+
+				// console.log(response.data);
+				// for (let workout of response.data) {
+				// for (let i = 0; i < response.data.length; i++){
+				// 		// console.log(JSON.parse);
+				// 		// todaysWorkouts.push(response.data[i]);
+				// 	}
+				setTodaysWorkouts(response.data);
+			
+			}).catch((e) => {
+				// Alert.alert("Error");
+				console.log(e);
+			});
+		if (todaysWorkouts.length !== 0) {
 			return "a workout scheduled today";
 		} else {
 			return "no workout scheduled today";
@@ -41,12 +61,16 @@ export default function LandingPage({navigation}) {
 	};
 
 	function loadTodaysWorkout() {
-		if (globalState.workoutScheduled != null) {
+		if (todaysWorkouts.length !== 0) {
 			return (
-				<WorkOuts
-					data={globalState.workoutScheduled}
-					showButton={false}
-					showInput={true}
+				<FlatList
+					data={todaysWorkouts}
+					renderItem={(item) => (
+						<View>
+							<WorkOuts data={[item.item]} startButton={true}/>
+						</View>
+					)}
+					ListEmptyComponent={<Text>Nothing</Text>}
 				/>
 			);
 		} else {
@@ -54,13 +78,16 @@ export default function LandingPage({navigation}) {
 		}
 	}
 
+	useEffect(() => {
+		loadTodaysWorkout();
+	}, []);
+
 	//componentWillMount(){
 	// could do a call through axios to get user info for each render.
 	// this would be a lot of API calls though I think.
 	// either way this is something to consider and discuss but for now we have loaded info
 	//}
 
-	//render(){
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={styles.Header}>
