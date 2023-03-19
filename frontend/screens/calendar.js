@@ -24,6 +24,7 @@ const CalendarScreen = ({}) => {
         if (error.response && error.response.status === 403) {
           Alert.alert('Failed to authenticate you');
         }
+        console.log(error);
         setWeeklyEvents({});
       }
     };
@@ -33,7 +34,8 @@ const CalendarScreen = ({}) => {
     }, []);
   
     //changes date to yyyy-mm-dd
-    const formatEvents = (events) => {
+  const formatEvents = (events) => {
+    console.log(events);
       const formattedEvents = {};
       events.forEach((event) => {
         const date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
