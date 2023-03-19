@@ -57,7 +57,6 @@ export default function LandingPage({navigation}) {
 			return "no workout scheduled today";
 			//or "you are done with your workout today!"
 		}
-		return "no workout scheduled today";
 	};
 
 	function loadTodaysWorkout() {
