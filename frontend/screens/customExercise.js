@@ -182,17 +182,6 @@ export default function CustomExercise(props) {
 		
 	}
 
-	// function picChooser() {
-
-	// 	return (
-	// 		<Modal isVisible={true} swipeDirection='down' style={{ justifyContent: 'flex-end' }}>
-	// 			<View style={{ backgroundColor: '#fff' }}>
-	// 				<Text>bottom half</Text>
-	// 			</View>
-	// 		</Modal>
-	// 	)
-	// }
-
 	const renderItem = item => {
       return (
         <View style={styles.item}>
@@ -217,9 +206,9 @@ export default function CustomExercise(props) {
 			{ imageUri && <Image source={{ uri: imageUri }} style={styles.ImageStyle} />}
                     { !imageUri && <Button title = "Choose File"
                     onPress={async () => {
-						setImageUri(await getPhotoForExercise());
+						// setImageUri(await getPhotoForExercise());
 						// setImageUri(await takePhotoForExercise());
-						// picChooser();
+
 						setIsVisible(true);
 					}} />}
                     { imageUri && <Button title = "Clear"
@@ -237,9 +226,48 @@ export default function CustomExercise(props) {
 				</View>
       		</Modal> */}
 
-			<Modal isVisible={isVisible} swipeDirection='down' style={{ justifyContent: 'flex-end' }}>
-  				<View style={{ backgroundColor: '#fff' }}>
-      				<Text>bottom half</Text>
+			<Modal
+				isVisible={isVisible}
+				swipeDirection='down'
+				style={{ justifyContent: 'flex-end', margin: 0 }}
+				animationIn={"slideInUp"}
+				animationOut={"slideOutDown"}
+				onSwipeComplete={() => { setIsVisible(false) }}
+				>
+				<View style={{ backgroundColor: '#fff', height: 300 }}>
+					<View style={{flex:.5}}>
+						<Text style={styles.modalText}>Choose where to upload from:</Text>
+					</View>
+					
+					<View style={{flex:1}}>
+						<TouchableOpacity style={styles.modalButton} onPress={async () => {
+						setImageUri(await getPhotoForExercise());
+						setIsVisible(false);
+						}}>
+
+							<AntDesign name="picture" size={24}/>
+							<Text style={styles.modalText}>Upload an Image from Library</Text>
+
+						</TouchableOpacity>
+					</View>
+					
+
+					<TouchableOpacity style={styles.modalButton} onPress={async () => {
+						setImageUri(await takePhotoForExercise());
+						setIsVisible(false);
+					}}>
+
+						<AntDesign name="camera" size={24}/>
+						<Text style={styles.modalText}>Take a Photo</Text>
+
+					</TouchableOpacity>
+
+					<TouchableOpacity style={styles.modalButton} onPress={() => { setIsVisible(false); }}>
+
+						<AntDesign name="close" size={24}/>
+						<Text style={styles.modalText}>Cancel</Text>
+
+					</TouchableOpacity>
    				</View>
 			</Modal>
 			
@@ -437,5 +465,15 @@ const styles = StyleSheet.create({
     textSelectedStyle: {
       marginRight: 5,
       fontSize: 16,
-    },
+	},
+	modalButton: {
+		display: "flex",
+		flexDirection: "row",
+		flex: 1,
+		borderWidth: 2,
+	},
+	modalText: {
+		fontSize: 20,
+		textAlign: "center"
+	},
 })

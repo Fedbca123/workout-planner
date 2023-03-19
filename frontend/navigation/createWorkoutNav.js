@@ -41,7 +41,7 @@ export default function CreateWorkoutNav() {
 			<Stack.Screen 
 				name="customExercise" 
 				component={CustomExercise}
-				options={{ headerShown: false }} 
+				// options={{ headerShown: false }} 
 			/>
 		</Stack.Navigator>
 	);
