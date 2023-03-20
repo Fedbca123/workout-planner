@@ -120,10 +120,10 @@ export default function DiscoverPage(props) {
       </View> 
       <View style={styles.exerciseCardText}>
         <Text style={styles.exerciseCardTitle}>{title}</Text>
-        <Text style={styles.exerciseCardDescription}>{description}</Text>
+        {/* <Text style={styles.exerciseCardDescription}>{description}</Text> */}
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
-        <Text style={styles.exerciseCardTags}>Tags: {tags.join(", ")}</Text>
-        <Text style={styles.exerciseCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
+        {/* <Text style={styles.exerciseCardTags}>Tags: {tags.join(", ")}</Text> */}
+        {/* <Text style={styles.exerciseCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text> */}
       </View>
     </View>
   );
@@ -741,8 +741,8 @@ const styles = StyleSheet.create({
 
   },
   exerciseCardImage:{
-    width: 90,
-    height: 90,
+    width: 60,
+    height: 60,
     resizeMode: 'stretch', // can be changed to contain if needed
     borderRadius: 20,
   },
@@ -909,7 +909,7 @@ const styles = StyleSheet.create({
    },
 
    exerciseCardTitle:{
-      fontSize: 18,
+      fontSize: 20,
       fontWeight: 'bold',
    },
 
@@ -965,7 +965,7 @@ const styles = StyleSheet.create({
    
    exerciseCardType:{
     fontWeight: 'bold',
-    fontSize: 12
+    fontSize: 14
   },
   
   exerciseCardTags:{
