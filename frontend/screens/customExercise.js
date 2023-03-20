@@ -19,7 +19,7 @@ import config from "../../config";
 import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
-import WorkOuts from "./workout";
+import WorkOuts from "../component/workout";
 import HomeNav from "../navigation/homeNav";
 import * as ImagePicker from "expo-image-picker";
 import { MultiSelect } from "react-native-element-dropdown";
