@@ -56,7 +56,7 @@ const StartWorkout = ({ navigation, route }) => {
 
 
   const handleNext = () => {
-    if (exercises[currentExerciseIndex + 1].exerciseType !== 'SETSXREPS')
+    if (exercises[currentExerciseIndex + 1] != null && exercises[currentExerciseIndex + 1].exerciseType !== 'SETSXREPS')
     {
       setTimerDuration(exercises[currentExerciseIndex + 1].time);
       setRemainingTime(exercises[currentExerciseIndex + 1].time);
