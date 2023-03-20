@@ -17,7 +17,7 @@ import API_Instance from "../../backend/axios_instance";
 import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
-import WorkOuts from "./workout";
+import WorkOuts from "../component/workout";
 import HomeNav from "../navigation/homeNav";
 
 // const baseUrl = config.API_URL + config.PORT + '/';

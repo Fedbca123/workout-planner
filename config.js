@@ -2,6 +2,7 @@ import Constants from "expo-constants";
 
 const { manifest } = Constants;
 
+console.log(process.env.Node_ENV);
 if (process.env.NODE_ENV === 'production')
     url = process.env.API_URL;
 else

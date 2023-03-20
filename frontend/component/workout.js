@@ -16,15 +16,11 @@ import Collapsible from "react-native-collapsible";
 import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
-import ExerciseInfo from "../component/exerciseInfo.js";
-import { AntDesign } from "@expo/vector-icons";
-import Modal from "react-native-modal";
 
-export default function WorkOuts({ data, showButton, showInput, startButton}) {
+export default function WorkOuts({ data, showButton, showInput, startButton }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const navigation = useNavigation();
-	const [modalVisible, setModalVisibility] = useState(false);
 
 	// function renderSectionTitle(section) {
 	// 	return (
@@ -78,7 +74,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton}) {
 					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
 						
 						<TouchableOpacity style={styles.addButton} onPress={() =>{
-							navigation.navigate("startWorkout", { workout: data[0] });
+							navigation.navigate("start", { workout: data[0] });
 						}}>
 
 							<Text style={{ alignSelf: "center" }}>Start!</Text>
@@ -146,53 +142,6 @@ export default function WorkOuts({ data, showButton, showInput, startButton}) {
 						<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column"}}>
 							<Text style={styles.text}>{item.title}</Text>
 						</View>
-
-						<View>
-							<TouchableOpacity onPress={() => {
-								setModalVisibility(true);
-							}}>
-								<AntDesign size={17} name="search1"/>
-							</TouchableOpacity>
-						</View>
-
-						<Modal
-							isVisible={modalVisible}
-							coverScreen = {true}
-							//backdropOpacity = "1"
-							backdropColor = "white"
-							presentationStyle='fullScreen'
-							transparent={false}
-						>
-
-							{/* <View>
-								<SafeAreaView style={styles.exerciseInfoHeader}>
-									<Text style={styles.exerciseInfoTitle}>{item.title}</Text>
-										<Image style={styles.exerciseInfoImage} source={{ uri: item.image }} />
-								</SafeAreaView>
-
-								<SafeAreaView style={styles.exerciseInfoBody}>
-									<Text style={styles.exerciseInfoDescription}>{item.description}</Text>
-									<Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {item.MuscleGroups && item.MuscleGroups.join(", ")}</Text> 
-									<Text style={styles.exerciseInfoTags}>Tags: {item.tags && item.tags.join(", ")}</Text>
-								</SafeAreaView>
-
-								<SafeAreaView>
-									<TouchableOpacity style={styles.modalCloseButton} onPress={() => {setModalVisibility(false)}}>
-										<View style={styles.closeButtonContainer}>
-											<Text style={styles.closeText}>Close</Text>
-										</View>
-									</TouchableOpacity> 
-								</SafeAreaView>
-
-							</View> */}
-
-
-							<View>
-								<ExerciseInfo exercise={item} />
-							</View>
-							
-							<Button title="Close" onPress={() => {setModalVisibility(false)}}/>
-						</Modal>
 
 					</View>
 				);
@@ -299,73 +248,4 @@ const styles = StyleSheet.create({
 		borderRadius: 100,
 		// marginTop: 10
 	},
-	exerciseInfoHeader:{
-        // flex: 1,
-        alignItems: 'center',
-    },
-    exerciseInfoTitle:{
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    exerciseInfoImage:{
-        width: "75%",
-		height: "65%",
-		borderWidth: 2,
-		borderRadius: 10,
-        // resizeMode: "contain"
-    },
-    exerciseInfoBody:{
-        flex: 1,
-        alignItems: 'center',
-    },
-    exerciseInfoDescription:{
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    exerciseInfoMuscleGroups:{
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    exerciseInfoTags:{
-        fontSize: 16,
-        fontWeight: 'bold',
-    },
-    closeButtonContainer:{
-        backgroundColor: 'white',
-        borderColor: "black",
-        overflow: 'hidden',
-        borderWidth: 3,
-        borderRadius: "20rem",
-        // bottom: -375,
-        alignItems: 'center',
-        paddingHorizontal: 10,
-        marginHorizontal: 1,
-        //width: "35%",
-        justifyContent: 'center',
-        alignContent: 'center',
-    },
-    closeText:{
-        fontWeight: 'bold',
-        color: 'black',
-        fontSize: 30,
-        paddingHorizontal: 8,
-        //borderRadius: "20rem",
-    },
-
-    modalCloseButton:{
-    alignItems: 'center',
-    position: 'absolute',
-    justifyContent: 'center',
-    alignContent: 'center',
-    bottom: "2%",
-    width: "100%"
-    // bottom: -375,
-    // width: "90%",
-    // justifyContent: 'center',
-    // alignContent:'center',
-    //width:"100%",
-    //borderColor: "black"
-    // right: -170,
-    // backgroundColor: 'gray',
-  },
 });

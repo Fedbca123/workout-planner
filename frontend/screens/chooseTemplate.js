@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
-import Workouts from "./workout.js";
+import Workouts from "../component/workout.js";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"

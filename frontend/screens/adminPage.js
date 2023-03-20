@@ -150,7 +150,7 @@ export default function AdminPage({navigation}) {
                 Alert.alert('Error!', 'Workout not created', [
                     {text: 'OK', onPress: () => console.log('OK Pressed')},
                 ]);
-				console.log(e);
+				console.log(e.response);
 			});
         }
     }
