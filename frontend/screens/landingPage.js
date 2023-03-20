@@ -14,7 +14,7 @@ import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
 import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
-import WorkOuts from "./workout";
+import WorkOuts from "../component/workout";
 
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
@@ -99,7 +99,6 @@ export default function LandingPage({navigation}) {
 					You have {loadCurrentDayWorkoutStatus()}
 				</Text>
 			</View>
-
 			<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>
