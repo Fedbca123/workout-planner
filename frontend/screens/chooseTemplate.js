@@ -19,8 +19,7 @@ import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header } from "react-native-elements";
 
-export default function ChooseTemplate(props) {
-	const navigation = useNavigation();
+export default function ChooseTemplate({ navigation }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [workouts, updateWorkouts] = useState([]);
 	function loadWorkouts() {

@@ -20,7 +20,6 @@ import { useGlobalState } from "../GlobalState.js";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-screens";
 import WorkOuts from "./workout";
-import HomeNav from "../navigation/homeNav";
 import * as ImagePicker from "expo-image-picker";
 import { MultiSelect } from "react-native-element-dropdown";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -31,7 +30,6 @@ export default function CustomExercise(props) {
 
 	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
-	// const [modalVisible, setModalVisible] = useState(false);
 	const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions(ImagePicker.PermissionStatus.UNDETERMINED);
 	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
 	const exercise = {
@@ -121,7 +119,8 @@ export default function CustomExercise(props) {
                         {text: 'OK', onPress: () => {}},
 					]);
 					globalState.workout[0].exercises.push(response.data);
-					navigation.navigate("exerciseSearch");
+					// navigation.navigate("exerciseSearch");
+					navigation.push("exerciseSearch");
 				}
 			}).catch((e) => {
                 Alert.alert('Error!', 'Exercise not created', [
@@ -467,7 +466,9 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		flex: 1,
-		borderWidth: 2,
+		borderWidth: .5,
+		alignItems: "center",
+		justifyContent: "center",
 	},
 	modalText: {
 		fontSize: 20,
