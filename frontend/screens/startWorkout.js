@@ -1,35 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useInter } from 'react';
 import { StyleSheet, View, Image, Text, Button, SafeAreaView, TouchableOpacity } from 'react-native';
 import API_Instance from "../../backend/axios_instance";
+import CircularProgress from 'react-native-circular-progress-indicator';
+import { Timer } from 'react-native-stopwatch-timer'
 
-const workout = {"_id":{"$oid":"6413de8e5c5b7c27ee312ca5"},"title":"Test Workout`","description":"This is a test workout","image":"https://res.cloudinary.com/djbbyeabd/image/upload/workouts/workoutDefault_m5co8w.jpg","imageId":"workouts/workoutDefault_m5co8w","exercises":[{"title":"Pushups","description":"The classic Pushups exercise","image":"http://res.cloudinary.com/djbbyeabd/image/upload/v1677339810/exercises/itcyvmgvlbus6marx998.jpg","imageId":"exercises/itcyvmgvlbus6marx998","exerciseType":"SETSXREPS","sets":{"$numberInt":"4"},"reps":{"$numberInt":"20"},"time":{"$numberInt":"600"},"restTime":{"$numberInt":"60"},"tags":["Bodyweight","Calisthenics","Pushups"],"muscleGroups":["Chest","Shoulders","Triceps","Core"],"_id":{"$oid":"63fa2ca3f43bb11786b20838"},"createdAt":{"$date":{"$numberLong":"1677339811121"}},"updatedAt":{"$date":{"$numberLong":"1677339811121"}},"__v":{"$numberInt":"0"}},{"title":"Calf Raises Public","description":"Test Calf Raise Exercise","image":"https://res.cloudinary.com/djbbyeabd/image/upload/exercises/exerciseDefault_bgnsno.jpg","imageId":"exercises/exerciseDefault_bgnsno","exerciseType":"SETSXREPS","sets":{"$numberInt":"5"},"reps":{"$numberInt":"30"},"restTime":{"$numberInt":"30"},"tags":["","Body Weight","Calf","Raises","Public"],"muscleGroups":["Legs","Calfs"],"_id":{"$oid":"640100ed07897c9d0ea77846"},"createdAt":{"$date":{"$numberLong":"1677787373593"}},"updatedAt":{"$date":{"$numberLong":"1677787373593"}},"__v":{"$numberInt":"0"}},{"title":"Calf Raises Private","description":"Test Calf Raise Exercise","image":"https://res.cloudinary.com/djbbyeabd/image/upload/exercises/exerciseDefault_bgnsno.jpg","imageId":"exercises/exerciseDefault_bgnsno","exerciseType":"SETSXREPS","sets":{"$numberInt":"3"},"reps":{"$numberInt":"30"},"restTime":{"$numberInt":"30"},"tags":["","Body Weight","Calf","Raises","Private"],"muscleGroups":["Legs","Calfs"],"owner":{"$oid":"63bda2382fd6238bb45af3f6"},"_id":{"$oid":"6401020d6aff280dffd54960"},"createdAt":{"$date":{"$numberLong":"1677787661317"}},"updatedAt":{"$date":{"$numberLong":"1677787661317"}},"__v":{"$numberInt":"0"}}],"duration":{"$numberInt":"20"},"location":"RWC","tags":[null,"Test","Workout`"],"muscleGroups":[],"createdAt":{"$date":{"$numberLong":"1679023758118"}},"updatedAt":{"$date":{"$numberLong":"1679023758118"}},"__v":{"$numberInt":"0"}}
 
 const StartWorkout = ({ navigation, route }) => {
-  //const { workout } = route.params;
+  const { workout } = route.params;
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [exercises, setExercises] = useState([])
+  const [timerDuration, setTimerDuration] = useState(90000);
+  const [remainingTime, setRemainingTime] = useState(0.000);
+  const [endTime, setEndTime] = useState(new Date().getTime());
+  const [isTimerStart, setIsTimerStart] = useState(false);
 
   useEffect(() => {
     const rawExercises = [...workout.exercises];
     const displayExercises = [];
     for (let i = 0; i < rawExercises.length; i++)
     {
-      for (let j = 0; j < rawExercises[i].sets.$numberInt; j++)
+      if (rawExercises[i].exerciseType === 'SETSXREPS')
       {
-        let tempExercise = {...rawExercises[i]}
-        tempExercise.setNumber = j + 1;
-        displayExercises.push(tempExercise);
+        for (let j = 0; j < rawExercises[i].sets; j++)
+        {
+          let tempExercise = {...rawExercises[i]}
+          tempExercise.setNumber = j + 1;
+          displayExercises.push(tempExercise);
+        }
+      }
+      else
+      {
+        displayExercises.push(rawExercises[i]);
       }
     }
     setExercises(displayExercises);
   }, [])
 
+  useEffect(() => {
+    const currentTime = new Date().getTime();
+    const endTime = new Date(currentTime + remainingTime * 1000);
+    const interval = setInterval(() => {
+      if (isTimerStart)
+      {
+        let remaining = (endTime - new Date().getTime()) / 1000;
+        setRemainingTime(remaining);
+        if (remaining <= 0)
+        {
+          setIsTimerStart(false);
+          setRemainingTime(0);
+        }
+      }
+    }, 1);
+    return () => clearInterval(interval)
+  }, [isTimerStart])
+
+
   const handleNext = () => {
-    if (currentExerciseIndex === exercises.length - 1) {
-      setCurrentExerciseIndex(currentExerciseIndex + 1);
-    } else {
-      setCurrentExerciseIndex(currentExerciseIndex + 1);
+    if (exercises[currentExerciseIndex + 1].exerciseType !== 'SETSXREPS')
+    {
+      setTimerDuration(exercises[currentExerciseIndex + 1].time);
+      setRemainingTime(exercises[currentExerciseIndex + 1].time);
     }
+    setCurrentExerciseIndex(currentExerciseIndex + 1);
   };
 
   const handleBack = () => {
@@ -37,6 +69,19 @@ const StartWorkout = ({ navigation, route }) => {
       setCurrentExerciseIndex(currentExerciseIndex - 1);
     }
   };
+
+  const handleStart = () => {
+    setIsTimerStart(true);
+  }
+
+  const handlePause = () => {
+    setIsTimerStart(false);
+  }
+
+  const handleReset = () => {
+    setIsTimerStart(false);
+    setRemainingTime(timerDuration);
+  }
 
   const progress = (currentExerciseIndex + 1) / exercises.length;
 
@@ -67,20 +112,51 @@ const StartWorkout = ({ navigation, route }) => {
             <View style={{ flex: progress, backgroundColor: '#FA7B34' }} />
             <View style={{ flex: 1 - progress, backgroundColor: 'lightgray' }} />
           </View>
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Image source={{uri: exercises[currentExerciseIndex].image}} style={{ width: 150, height: 150 }} />
-            <Text style={styles.heading}>{exercises[currentExerciseIndex].title}</Text>
-            {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' ? (
-              <>
-                <Text>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets.$numberInt}`}</Text>
-                <Text>{`${exercises[currentExerciseIndex].reps.$numberInt} reps`}</Text>
-              </>
-            ) : (
-              <Text>{`${exercises[currentExerciseIndex].time.$numberInt / 1000} seconds`}</Text>
-            )}
+          <View style={{ flex: 1, alignItems: 'center', marginVertical: 10, marginTop: 30}}>
+            <Image source={{uri: exercises[currentExerciseIndex].image}} style={styles.image} />
+            <View style={{flex: 1, marginTop: 20, alignContent: 'center'}}>
+              <Text style={styles.heading}>{exercises[currentExerciseIndex].title}</Text>
+              {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' ? (
+                <>
+                  <Text style={styles.text}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
+                  <Text style={styles.text}>{`${exercises[currentExerciseIndex].reps} reps`}</Text>
+                </>
+              ) : (
+                <>
+                  <View style={{alignItems: 'center'}}>
+                    <Text style={styles.text}>As many reps as possible!</Text>
+                    <CircularProgress
+                      value={remainingTime}
+                      radius={80}
+                      duration={0}
+                      progressValueColor={'black'}
+                      activeStrokeColor={'#FA7B34'}
+                      maxValue={timerDuration}
+                      title={'Secs'}
+                      titleColor={'black'}
+                      titleStyle={{fontWeight: 'bold'}}
+                      progressFormatter={(value) => {
+                        'worklet';
+                          
+                        return value.toFixed(2);
+                      }}
+                    />
+                    <View style={{flex:1, flexDirection:'row', justifyContent:'center', marginTop:10}}>
+                      <Button title="start" onPress={() => handleStart()}/>
+                      <Button title="pause" onPress={() => handlePause()}/>
+                      <Button title="reset" onPress={() => handleReset()}/>
+                    </View>
+                    <View style={{flex:3, flexDirection:'row', justifyContent:'center', alignItems: 'flex-start'}}>
+                      <Button title="Back" onPress={() => handleBack()}/>
+                      <Button title="Skip" onPress={() => handleNext()}/> 
+                    </View>
+                  </View>
+                </>
+              )}
+            </View>
           </View>
-          <View style={styles.touch}>
-              <TouchableOpacity
+          {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' && <View style={styles.touch}>
+            <TouchableOpacity
               style={styles.opacity}
               onPress={handleBack}
             />
@@ -88,7 +164,7 @@ const StartWorkout = ({ navigation, route }) => {
               style={styles.opacity}
               onPress={handleNext}
             />
-          </View>
+          </View>}
         </View>
       );
     }
@@ -111,7 +187,7 @@ const styles = StyleSheet.create({
 		fontFamily: "HelveticaNeue-Bold",
 		fontSize: 24,
 		textAlign: "center",
-		paddingBottom: 5,
+    marginBottom: 10
 	},
 	text: {
 		fontFamily: "HelveticaNeue",
@@ -120,6 +196,7 @@ const styles = StyleSheet.create({
 		fontWeight: "normal",
 		color: "#2B2B2B",
 		textAlign: "center",
+    marginBottom: 20
 	},
   touch: {
     flexDirection: 'row',
@@ -132,7 +209,15 @@ const styles = StyleSheet.create({
   opacity: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  image: {
+    width: '80%', 
+    aspectRatio: 1, 
+    borderRadius: 10, 
+    borderColor: 'black', 
+    borderWidth: 3
   }
+  
 });
 
 export default StartWorkout;
