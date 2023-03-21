@@ -109,11 +109,6 @@ export default function Login({navigation}) {
         onPress={() =>
           backDoorHandler("Test@gmail.com", "Password1")}/> */}
 
-      {/* <Button
-        title="ADMIN BACKDOOR"
-        onPress={() => props.navigation.navigate("admin")}
-            /> */}
-
       {/*code will break at the end to home bc name can't be rendered}
       */}
       
