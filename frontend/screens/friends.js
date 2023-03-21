@@ -166,7 +166,6 @@ const FriendsScreen = () => {
         autoCapitalize='none'
         autoComplete='off'
         autoCorrect={false}
-        ref={searchRef}
       />
           
           
