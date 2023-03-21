@@ -28,9 +28,8 @@ export default function FinalizedContinued({ navigation }) {
 
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions(ImagePicker.PermissionStatus.UNDETERMINED);
-	const defaultImage = globalState.workout[0].image;
 	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
-	const [imageUri, setImageUri] = useState(defaultImage);
+	const [imageUri, setImageUri] = useState('');
 	const [exercises, updateExercises] = useState(globalState.workout[0].exercises);
 	const [isReoccurring, setReoccurring] = useState(false);
 	const exerciseTypes = [
@@ -93,10 +92,13 @@ export default function FinalizedContinued({ navigation }) {
 			formData.append('title', globalState.workout[0].title);
 			formData.append('description', globalState.workout[0].description);
 			
-			let filename = imageUri.split('/').pop();
-            let match = /\.(\w+)$/.exec(filename);
-            let type = match ? `image/${match[1]}` : `image`;
-			formData.append('image', { uri: imageUri, name: filename, type });
+			if (imageUri != '')
+			{
+				let filename = imageUri.split('/').pop();
+				let match = /\.(\w+)$/.exec(filename);
+				let type = match ? `image/${match[1]}` : `image`;
+				formData.append('image', { uri: imageUri, name: filename, type });
+			}
 
 			formData.append('owner', globalState.user._id);
 			formData.append('location', globalState.workout[0].location);
@@ -157,14 +159,14 @@ export default function FinalizedContinued({ navigation }) {
 	return (
 		<SafeAreaView style={styles.container}>
 			<Text style={styles.TitleText}>Upload an Image here if you wish to change the workout image.</Text>
-			<Image source={{ uri: imageUri }} style={styles.ImageStyle} />
-			{imageUri == defaultImage && <Button title = "Change Image"
+			{imageUri != '' && <Image source={{ uri: imageUri }} style={styles.ImageStyle} />}
+			{imageUri == '' && <Button title = "Change Image"
                     onPress={async () => {
 						setIsVisible(true);
 				}} />}
-			{imageUri != defaultImage &&<Button title = "Reset"
+			{imageUri != '' &&<Button title = "Reset"
                     onPress={async () => {
-                        setImageUri(defaultImage);
+                        setImageUri('');
 				}} />}
 			<Modal
 				isVisible={isVisible}
