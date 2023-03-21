@@ -19,10 +19,10 @@ import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header } from "react-native-elements";
 
-export default function ChooseTemplate(props) {
-	const navigation = useNavigation();
+export default function ChooseTemplate({ navigation }) {
 	const [globalState, updateGlobalState] = useGlobalState();
-	const [workouts, updateWorkouts] = useState([]);
+	const [publicWorkouts, updatePublicWorkouts] = useState([]);
+	const [privateWorkouts, updatePrivateWorkouts] = useState([]);
 	function loadWorkouts() {
 
 		API_Instance.post("workouts/search", {
@@ -36,9 +36,30 @@ export default function ChooseTemplate(props) {
 
 			if (response.status == 200) {
 
+				let publicW = [];
+				let privateW = [];
+
+				for (let data of response.data) {
+
+					console.log(JSON.stringify(data, null, 2));
+					
+					if (data.owner != globalState.user._id) {
+						// updatePublicWorkouts(data);
+						// publicWorkouts.push(data);
+						publicW.push(data);
+					} else {
+						// updatePrivateWorkouts(data);
+						// privateWorkouts.push(data);
+						privateW.push(data);
+					}
+				}
+
+				updatePublicWorkouts(publicW);
+				updatePrivateWorkouts(privateW);
+				
 				// const newData = response.data.map(obj => [obj]);
 				// updateWorkouts(newData);
-				updateWorkouts(response.data);
+				// updateWorkouts(response.data);
 
 			} else {
 				console.log(response.status);
@@ -75,11 +96,8 @@ export default function ChooseTemplate(props) {
 		<SafeAreaView style={styles.Background}>
 			<Text style={styles.HeaderText}>Your Saved Workouts</Text>
 
-
-
-			<Text style={styles.HeaderText}>Workout Templates</Text>
 			<FlatList
-				data={workouts}
+				data={privateWorkouts}
 				renderItem={(item) => (
 					<View>
 						{/* {comments(item.item)} */}
@@ -89,7 +107,19 @@ export default function ChooseTemplate(props) {
 				ListEmptyComponent={<Text style={{ fontSize: 16 }}>NO WORKOUTS</Text>}
 				refreshing={true}
 			/>
-				{/* <Workouts data={(workouts?.length !== 0 ? workouts[1] : [])} showButton={true} showInput={false} /> */}
+
+			<Text style={styles.HeaderText}>Workout Templates</Text>
+			<FlatList
+				data={publicWorkouts}
+				renderItem={(item) => (
+					<View>
+						{/* {comments(item.item)} */}
+						<Workouts data={[item.item]} showButton={true} showInput={false} />
+					</View>
+				)}
+				ListEmptyComponent={<Text style={{ fontSize: 16 }}>NO WORKOUTS</Text>}
+				refreshing={true}
+			/>
 			<Button title="Create from Scratch" onPress={() => {
 				updateGlobalState("workout", noTemplate);
 				navigation.push("exerciseSearch");

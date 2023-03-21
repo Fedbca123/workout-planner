@@ -24,11 +24,9 @@ import * as ImagePicker from "expo-image-picker";
 import Modal from "react-native-modal";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-export default function FinalizedContinued() {
+export default function FinalizedContinued({ navigation }) {
 
-	const navigation = useNavigation();
 	const [globalState, updateGlobalState] = useGlobalState();
-	// const [modalVisible, setModalVisible] = useState(false);
 	const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions(ImagePicker.PermissionStatus.UNDETERMINED);
 	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
 	const [imageUri, setImageUri] = useState('');
@@ -41,7 +39,6 @@ export default function FinalizedContinued() {
 	];
 	const toggleSwitch = () => setReoccurring(previousState => !previousState);
 	const [isVisible, setIsVisible] = useState(false);
-	// const [currType, setCurrType] = useState([]);
     
 	const getPhotoForExercise = async () => {
 
@@ -68,9 +65,6 @@ export default function FinalizedContinued() {
 	const takePhotoForExercise = async () => {
 
 		await requestCameraPermission(ImagePicker.requestCameraPermissionsAsync);
-		// await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-		// console.log(cameraStatus.status);
 
 		if (cameraStatus.granted === false) {
 			Alert.alert("You need to go to settings to allow camera access");
@@ -89,10 +83,6 @@ export default function FinalizedContinued() {
 		}
 		
 		
-	}
-
-	function picChooser() {
-
 	}
 
 	function scheduledWorkout() {
@@ -181,12 +171,12 @@ export default function FinalizedContinued() {
 			<Modal
 				isVisible={isVisible}
 				swipeDirection='down'
-				style={{ justifyContent: 'flex-end', margin: 0 }}
+				style={{ justifyContent: 'flex-end', margin: 0, borderRadius: 10}}
 				animationIn={"slideInUp"}
 				animationOut={"slideOutDown"}
 				onSwipeComplete={() => { setIsVisible(false) }}
 				>
-				<View style={{ backgroundColor: '#fff', height: 300 }}>
+				<View style={{ backgroundColor: '#fff', height: 300}}>
 					<View style={{flex:.5}}>
 						<Text style={styles.modalText}>Choose where to upload from:</Text>
 					</View>
@@ -270,10 +260,6 @@ export default function FinalizedContinued() {
 			
 			<Button title="Continue" onPress={() => {
 				scheduledWorkout();
-				// updateGlobalState("workoutScheduled",globalState.workout);
-				// navigation.popToTop();
-				// navigation.navigate("Home");
-				// navigation.push("finalizedContinued");
 			}}/>
 		</SafeAreaView>
 	)
@@ -349,7 +335,9 @@ const styles = StyleSheet.create({
 		display: "flex",
 		flexDirection: "row",
 		flex: 1,
-		borderWidth: 2,
+		borderWidth: 0.5,
+		alignItems: "center",
+		justifyContent: "center",
 	},
 	modalText: {
 		fontSize: 20,

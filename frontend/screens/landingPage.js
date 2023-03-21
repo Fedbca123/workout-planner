@@ -55,8 +55,10 @@ export default function LandingPage({navigation}) {
 	};
 
 	const loadCurrentDayWorkoutStatus = () => {
-		if (todaysWorkouts.length !== 0) {
+		if (todaysWorkouts.length === 1) {
 			return "a workout scheduled today";
+		} else if (todaysWorkouts.length > 1) {
+			return `${todaysWorkouts.length} workouts scheduled today`;
 		} else {
 			return "no workout scheduled today";
 			//or "you are done with your workout today!"
@@ -116,7 +118,6 @@ export default function LandingPage({navigation}) {
 			<View style={styles.BodyContainer}>
 				<Text style={styles.bodyHeader}>Your Scheduled Workouts:</Text>
 				{loadTodaysWorkout()}
-				{/* Logic to define how to load the saved workouts */}
 			</View>
 		</SafeAreaView>
 	);
