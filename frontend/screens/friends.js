@@ -156,6 +156,8 @@ const FriendsScreen = () => {
         value={searchTerm}
         onChangeText={handleSearch}
         autoCapitalize='none'
+        autoComplete='off'
+        autoCorrect={false}
       />
           
           

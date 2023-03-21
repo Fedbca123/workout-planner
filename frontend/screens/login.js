@@ -125,6 +125,8 @@ export default function Login({navigation}) {
           autoCapitalize="none"
 					outlineColor="black"
 					activeOutlineColor="#10B9F1"
+          autoComplete='off'
+          autoCorrect={false}
 					style={styles.inputstyle}
 					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
 								placeholder="username@server.com"
@@ -142,6 +144,8 @@ export default function Login({navigation}) {
 					mode='outlined'
 					outlineColor="black"
 					activeOutlineColor="#10B9F1"
+          autoComplete='off'
+            autoCorrect={false}
 								style={styles.inputstyle}
 					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
 								label="Password"
