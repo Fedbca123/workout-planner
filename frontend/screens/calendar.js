@@ -4,11 +4,13 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
 import {useGlobalState} from '../GlobalState.js';
+import { useIsFocused } from "@react-navigation/native";
 
 const CalendarScreen = ({}) => {
     const [globalState, updateGlobalState] = useGlobalState();
     const [weeklyEvents, setWeeklyEvents] = useState({});
-  
+    const isFocused = useIsFocused();
+
     const fetchEvents = async () => {
       try {
         const response = await API_Instance.get(`users/${globalState.user._id}/calendar/all`, {
@@ -30,12 +32,15 @@ const CalendarScreen = ({}) => {
     };
   
     useEffect(() => {
-      fetchEvents();
-    }, []);
+      if(isFocused){
+        //console.log('rendering calendar')
+        fetchEvents();
+      }
+    }, [isFocused]);
   
     //changes date to yyyy-mm-dd
   const formatEvents = (events) => {
-    console.log(events);
+    //console.log(events);
       const formattedEvents = {};
       events.forEach((event) => {
         const date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');

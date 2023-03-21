@@ -1,5 +1,5 @@
 import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInput, Card, Icon, Pressable , ScrollView, Alert, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../GlobalState.js';
 import API_Instance from "../../backend/axios_instance";
@@ -9,7 +9,6 @@ const FriendsScreen = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
-
 
   const handleSearch = (text) => {
     setSearchTerm(text);
@@ -79,6 +78,7 @@ const FriendsScreen = () => {
 
   const handleAddFriend = () => {
     const email = searchTerm;
+
     const addFriendRequest = async () => {
       API_Instance
       .post(`users/${globalState.user._id}/invites/add`, {
@@ -92,6 +92,7 @@ const FriendsScreen = () => {
         if (response.status == 200) {
           console.log(response.data);
           Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
+          setSearchTerm('');
         }
         if (response.status == 496) {
           console.log(response.data);
@@ -108,14 +109,20 @@ const FriendsScreen = () => {
         }  else if (error.response.status === 498) {
           Alert.alert(`User ${error.message} does not exist`);
         } else if (error.response.status === 493) {
-          Alert.alert('This email does not have a workout account');
+          Alert.alert('This email does not have a verified account');
         } else {
           console.error(error.response.status);
           Alert.alert('An unknown error occurred');
         }
       });
     };
-    addFriendRequest();
+
+    if(email == globalState.user.email){
+      Alert.alert("Adding yourself as a friend is a kind gesture but not supported in this application. Sorry!");
+      return;
+    }else{
+      addFriendRequest();
+    }
   };
 
   const fetchFriends = async () => {
@@ -155,7 +162,10 @@ const FriendsScreen = () => {
         placeholder="Search by email"
         value={searchTerm}
         onChangeText={handleSearch}
+        keyboardType="email-address"
         autoCapitalize='none'
+        autoComplete='off'
+        autoCorrect={false}
       />
           
           
@@ -176,12 +186,40 @@ const FriendsScreen = () => {
                 {/* right side */}
                <View style={styles.buttons}>
                 <Button style = {styles.buttonslook}
-                  title="Delete"
-                  onPress={() => handleDeleteFriend(user._id)}
+                  title="Unfriend"
+                  onPress={() => {
+                    Alert.alert( `Are you sure you wish to unfriend ${user.firstName + " " + user.lastName}?`,'',
+                      [{
+                          text: 'Yes',
+                          onPress: () => {
+                            handleDeleteFriend(user._id)
+                          },
+                      },
+                      {
+                          text: 'No',
+                      }],
+                      { cancelable: false}
+                    );
+                    
+                  }}
                 />
                 <Button style = {styles.buttonlook}
                   title="Block"
-                  onPress={() => handleBlockFriend(user._id)}
+                  onPress={() => {
+                    Alert.alert( `Are you sure you wish to block ${user.firstName + " " + user.lastName}?`,'',
+                      [{
+                          text: 'Yes',
+                          onPress: () => {
+                            handleBlockFriend(user._id)
+                          },
+                      },
+                      {
+                          text: 'No',
+                      }],
+                      { cancelable: false}
+                    );
+                    
+                  }}
                 />
                </View>
 
@@ -279,7 +317,20 @@ const BlockFriendScreen = () => {
                <View style={styles.buttons}>
                 <Button style = {styles.buttonlook}
                   title="Unblock"
-                  onPress={() => handleUnblockFriend(user._id)}
+                  onPress={() => {
+                    Alert.alert( `Are you sure you wish to unblock ${user.firstName + " " + user.lastName}?`,'',
+                      [{
+                          text: 'Yes',
+                          onPress: () => {
+                            handleUnblockFriend(user._id)
+                          },
+                      },
+                      {
+                          text: 'No',
+                      }],
+                      { cancelable: false}
+                    );
+                  }}
                 />
                </View>
 
@@ -361,7 +412,7 @@ const styles = StyleSheet.create({
     card:{
       backgroundColor: '#DDF2FF',
       padding: 20,
-      marginBottom: 0,
+      marginBottom: 5,
       shadowColor: '#000',
       shadowOpacity: 0.2,
       shadowRadius: 5,
