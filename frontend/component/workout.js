@@ -17,7 +17,7 @@ import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 
-export default function WorkOuts({ data, showButton, showInput, startButton }) {
+export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const navigation = useNavigation();
@@ -46,7 +46,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
 						
 						<TouchableOpacity style={styles.addButton} onPress={() =>{
-							navigation.push("exerciseSearch");
+							setCurrState("ExerciseReview");
 							updateGlobalState("workout", data);
 						}}>
 

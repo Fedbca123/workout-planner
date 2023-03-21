@@ -27,7 +27,7 @@ export default function LandingPage({navigation}) {
 	};
 	const handleTemplatePress = () => {
 		// console.log("Template Button Pressed");
-		navigation.push("createNav");
+		navigation.push("createWorkout");
 	};
 
 	const loadCurrentDayWorkouts = () => {
