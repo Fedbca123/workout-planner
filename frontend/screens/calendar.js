@@ -39,19 +39,32 @@ const CalendarScreen = ({}) => {
     }, [isFocused]);
   
     //changes date to yyyy-mm-dd
-  const formatEvents = (events) => {
-    //console.log(events);
+    const formatEvents = (events) => {
+      console.log(events);
       const formattedEvents = {};
       events.forEach((event) => {
-        const date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
-        if (!formattedEvents[date]) {
-          formattedEvents[date] = [];
+        let date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
+    
+        if (event.recurrence) {
+          // repeat the event for the next 12 weeks
+          for (let i = 0; i < 12; i++) {
+            if (!formattedEvents[date]) {
+              formattedEvents[date] = [];
+            }
+            formattedEvents[date].push(event);
+            // add 7 days to the date for the next occurrence
+            date = moment(date).add(7, 'days').format('YYYY-MM-DD');
+          }
+        } else {
+          if (!formattedEvents[date]) {
+            formattedEvents[date] = [];
+          }
+          formattedEvents[date].push(event);
         }
-        formattedEvents[date].push(event);
       });
       return formattedEvents;
     };
-  
+
     const handleDayPress = (day) => {
       const formattedDate = moment(day.dateString).format('YYYY-MM-DD');
       if (weeklyEvents[formattedDate]) {
@@ -127,7 +140,7 @@ const styles = StyleSheet.create({
   myExercise:{
     backgroundColor: '#DDF2FF',
     padding: 20,
-    marginBottom: 0,
+    marginBottom: 5,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 5,
@@ -141,10 +154,10 @@ const styles = StyleSheet.create({
   friendExercise:{
     backgroundColor: '#F1F3FA',
     padding: 20,
-    marginBottom: 0,
+    marginBottom: 5,
     shadowColor: '#000',
     shadowOpacity: 0.2,
-    shadowRadius: 5,
+    shadowRadius: 2,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
     borderRadius: 15,
