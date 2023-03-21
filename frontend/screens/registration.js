@@ -201,6 +201,8 @@ export default function Register({navigation}) {
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
             mode="outlined"
             dense={true}
+            autoComplete='off'
+            autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={FNError == true ? '#fb9357' : '#C4C4C4'}
             placeholder="John"
@@ -215,6 +217,8 @@ export default function Register({navigation}) {
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }} 
             mode="outlined"
             dense={true}
+            autoComplete='off'
+            autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={LNError == true ? '#fb9357' : '#C4C4C4'}
             placeholder="Smith"
@@ -231,6 +235,8 @@ export default function Register({navigation}) {
             multiline={false}
             dense={true}
             autoCapitalize="none"
+            autoComplete='off'
+            autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={emailError == true ? '#fb9357' : '#C4C4C4'}
             placeholder="user@server.com"
@@ -245,6 +251,8 @@ export default function Register({navigation}) {
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
             mode="outlined"
             dense={true}
+            autoComplete='off'
+            autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={PW1Error == true ? '#fb9357' : '#C4C4C4'}
             placeholder="***"
@@ -267,6 +275,8 @@ export default function Register({navigation}) {
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
             mode="outlined"
             dense={true}
+            autoComplete='off'
+            autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={PW2Error == true ? '#fb9357' : '#C4C4C4'}
             placeholder="***"

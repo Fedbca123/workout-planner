@@ -573,6 +573,13 @@ return (
                 round
                 // onChangeText={updateSearch}
                 autoCorrect={false}
+                autoCapitalize="none"
+                autoComplete='off'
+
+                // below line will make keyboard go away by
+                // tapping away from the input only if it's in a scrollview
+                keyboardShouldPersistTaps='handled'
+
                 value={(toggleValue ? exerciseSearch : workoutSearch)}
                 onChangeText = {(toggleValue ? ((text) => searchExercisesFilter(text)) :
                  ((text) => searchWorkoutsFilter(text)))}
