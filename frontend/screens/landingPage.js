@@ -83,7 +83,7 @@ export default function LandingPage({navigation}) {
 
 	useEffect(() => {
     if(isFocused){
-      console.log('rendering landing page in use effect');
+      //console.log('rendering landing page in use effect');
       loadCurrentDayWorkouts();
 		  loadTodaysWorkout();
 		  loadCurrentDayWorkoutStatus();
