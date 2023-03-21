@@ -75,6 +75,7 @@ export default function ExerciseSearch(props) {
 			<FlatList
 				data={exercises}
 				keyExtractor={(item) => item.title}
+				style={{maxHeight:450}}
 				renderItem={({ item }) => (
 					<View >
 						<TouchableOpacity style={styles.ExerciseCard}
