@@ -155,6 +155,7 @@ const FriendsScreen = () => {
         placeholder="Search by email"
         value={searchTerm}
         onChangeText={handleSearch}
+        keyboardType="email-address"
         autoCapitalize='none'
         autoComplete='off'
         autoCorrect={false}
@@ -178,12 +179,40 @@ const FriendsScreen = () => {
                 {/* right side */}
                <View style={styles.buttons}>
                 <Button style = {styles.buttonslook}
-                  title="Delete"
-                  onPress={() => handleDeleteFriend(user._id)}
+                  title="Unfriend"
+                  onPress={() => {
+                    Alert.alert( `Are you sure you wish to unfriend ${user.firstName + " " + user.lastName}?`,'',
+                      [{
+                          text: 'Yes',
+                          onPress: () => {
+                            handleDeleteFriend(user._id)
+                          },
+                      },
+                      {
+                          text: 'No',
+                      }],
+                      { cancelable: false}
+                    );
+                    
+                  }}
                 />
                 <Button style = {styles.buttonlook}
                   title="Block"
-                  onPress={() => handleBlockFriend(user._id)}
+                  onPress={() => {
+                    Alert.alert( `Are you sure you wish to block ${user.firstName + " " + user.lastName}?`,'',
+                      [{
+                          text: 'Yes',
+                          onPress: () => {
+                            handleBlockFriend(user._id)
+                          },
+                      },
+                      {
+                          text: 'No',
+                      }],
+                      { cancelable: false}
+                    );
+                    
+                  }}
                 />
                </View>
 
@@ -281,7 +310,20 @@ const BlockFriendScreen = () => {
                <View style={styles.buttons}>
                 <Button style = {styles.buttonlook}
                   title="Unblock"
-                  onPress={() => handleUnblockFriend(user._id)}
+                  onPress={() => {
+                    Alert.alert( `Are you sure you wish to unblock ${user.firstName + " " + user.lastName}?`,'',
+                      [{
+                          text: 'Yes',
+                          onPress: () => {
+                            handleUnblockFriend(user._id)
+                          },
+                      },
+                      {
+                          text: 'No',
+                      }],
+                      { cancelable: false}
+                    );
+                  }}
                 />
                </View>
 
