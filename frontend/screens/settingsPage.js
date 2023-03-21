@@ -30,7 +30,7 @@ export default function SettingsPage({ navigation })
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [userMessage, setUserMessage] = useState("");
-    
+
     useEffect(() => {
         setFirstName("");
         setLastName("");
@@ -205,9 +205,14 @@ export default function SettingsPage({ navigation })
                     <TextInput style={styles.inputfield}
                     placeholder={globalState.user.firstName}
                     onChangeText={(text) => setFirstName(text)}
+                    autoComplete='off'
+                    autoCorrect={false}
+                    autoFocus
                     />}
                     {!editFirstName && <TouchableOpacity
-                        onPress={() => setEditFirstName(true)}>
+                        onPress={() => {
+                          setEditFirstName(true);
+                        }}>
                         <Icon
                             name='edit'
                             type='material'/>
@@ -236,6 +241,9 @@ export default function SettingsPage({ navigation })
                     <TextInput style={styles.inputfield}
                     placeholder={globalState.user.lastName}
                     onChangeText={(text) => setLastName(text)}
+                    autoComplete='off'
+                    autoCorrect={false}
+                    autoFocus
                     />}
                     {!editLastName && <TouchableOpacity
                         onPress={() => setEditLastName(true)}>
@@ -268,6 +276,9 @@ export default function SettingsPage({ navigation })
                     placeholder={globalState.user.email}
                     onChangeText={(text) => setEmail(text)}
                     autoCapitalize='none'
+                    autoComplete='off'
+                    autoCorrect={false}
+                    autoFocus
                     />}
                     {!editEmail && <TouchableOpacity
                         onPress={() => setEditEmail(true)}>

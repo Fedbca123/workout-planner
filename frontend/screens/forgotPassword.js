@@ -65,6 +65,8 @@ export default function ForgotPassword({navigation}) {
           theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
           mode="outlined"
           dense={true}
+          autoComplete='off'
+          autoCorrect={false}
           activeOutlineColor='#10B9F1'
           returnKeyType="done"
           keyboardType="email-address"

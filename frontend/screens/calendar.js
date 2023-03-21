@@ -35,7 +35,7 @@ const CalendarScreen = ({}) => {
   
     //changes date to yyyy-mm-dd
   const formatEvents = (events) => {
-    console.log(events);
+    //console.log(events);
       const formattedEvents = {};
       events.forEach((event) => {
         const date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
