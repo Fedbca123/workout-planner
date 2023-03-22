@@ -80,7 +80,7 @@
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.11",
     "use-event-callback": "^0.1.0",
-    "@react-native-community/datetimepicer": "6.7.3"
+    "@react-native-community/datetimepicker": "6.7.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

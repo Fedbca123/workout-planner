@@ -275,98 +275,6 @@ export default function DiscoverPage(props) {
   //   setSearch(search);
   // }
 
-  // Remove?
-  const workoutDummyData = [
-		{
-			title: "Leg Day",
-			duration: 45,
-      description: "Leg day all day",
-			location:"Gold's Gym",
-      tags: ["LegDay", "Push"],
-			exercises: [
-				{
-					title: "Deadlift",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 10,
-				},
-				{
-					title: "Front Squats",
-					ExerciseType: "SETSXREPS",
-					sets: 4,
-					reps: 12,
-				},
-				{
-					title: "Calf Raises",
-					ExerciseType: "AMRAP",
-					time: 60000,
-				},
-				{
-					title: "Bulgarian Split Squats",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 10,
-				},
-				{
-					title: "Leg Press",
-					ExerciseType: "SETSXREPS",
-					sets: 4,
-					reps: 12,
-				},
-				{
-					title: "Lunges",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 15,
-				},
-			],
-		},
-    {
-			title: "Arm Day",
-			duration: 55,
-      description: "Ew leg day",
-			location:"Gold's Gym",
-      tags: ["ArmDay"],
-			exercises: [
-				{
-					title: "Barbell Curls",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 10,
-				},
-				{
-					title: "Dumbbell Curls",
-					ExerciseType: "SETSXREPS",
-					sets: 4,
-					reps: 12,
-				},
-				{
-					title: "Skull Crusher",
-					ExerciseType: "AMRAP",
-					time: 60000,
-				},
-				{
-					title: "Cable Tricep Pushdown",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 10,
-				},
-				{
-					title: "Cable Bicep Curl",
-					ExerciseType: "SETSXREPS",
-					sets: 4,
-					reps: 12,
-				},
-				{
-					title: "Hammer Curl",
-					ExerciseType: "SETSXREPS",
-					sets: 3,
-					reps: 15,
-				},
-			],
-		},
-	];
-
   const searchExercisesFilter = (text) => {
     if (text){
       const newData = masterExerciseData.filter((item) => {
@@ -692,7 +600,7 @@ return (
                     //setSelectedExerciseImage(item.image);
                     setSelectedExerciseDuration(item.duration);
                     //showInfoModal();
-                    key={index}
+                    // key={index}
                     
               }}>
                 <WorkoutItem title={item.title} 
@@ -700,7 +608,7 @@ return (
                 location ={item.location} 
                 muscleGroups={item.muscleGroups} tags={item.tags}
                 duration={item.duration} exercises={item.exercises}
-                image={item.image}
+                image={item.image} key={index}
 
                 /></TouchableOpacity>
                 )
