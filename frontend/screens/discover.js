@@ -8,8 +8,7 @@ import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
 import { GlobalState, useGlobalState } from '../GlobalState.js';
-import Accordion from 'react-native-collapsible/Accordion'
-import {AccordionList} from 'react-native-accordion-list-view';
+import { useIsFocused } from '@react-navigation/native';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -43,9 +42,9 @@ const muscleGroupsFilters = [
 ];
 
 const typeFilters = [
-  {item: 'Cardio', id: '1'},
-  {item: 'SETSXREPS', id: '2'},
-  {item: 'AMRAP', id: '3'}
+  {id: 0,item:'Cardio'},
+  {id: 1,item: 'SETSXREPS'},
+  {id: 2,item:'AMRAP'}
 ];
 
 const exerciseDummyData = [
@@ -84,6 +83,8 @@ const oldworkoutDummyData = [
 
 export default function DiscoverPage(props) {
 
+  const isFocused = useIsFocused();
+
   const [toggleValue, setToggleValue] = useState(false);
   const [areFiltersVisible, setFiltersVisible] = useState(false);
   const [isInfoPageVisible, setInfoPageVisible] = useState(false);
@@ -98,10 +99,17 @@ export default function DiscoverPage(props) {
   const [selectedExerciseTags, setSelectedExerciseTags] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
+
+  // all items resulting from search and filter
   const [filteredExerciseData, setFilteredExerciseData] = useState([]);
+  // all items from DB from search with only ownerID
   const [masterExerciseData, setMasterExerciseData] = useState([]);
+  
+  // all items resulting from search and filter
   const [filteredWorkoutData, setFilteredWorkoutData] = useState([]);
+  // all items from DB from search with only ownerID
   const [masterWorkoutData, setMasterWorkoutData] = useState([]);
+
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [workoutSearch, setWorkoutSearch] = useState('');
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
@@ -110,10 +118,13 @@ export default function DiscoverPage(props) {
   const [exerciseList, setExercises] = useState([]);
   const [workoutList, setWorkouts] = useState([]);
 
-  useEffect(() => {
-    exercisesList();
-    workoutsList();
-  }, [selectedTypeFilter, selectedEquipmentFilter, selectedMuscleGroupsFilter]);
+  useEffect((isFocused) => {
+    if(!isFocused){
+      console.log("rendering")
+      exercisesList();
+      workoutsList();
+    }
+  }, [isFocused]);
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
@@ -197,9 +208,11 @@ export default function DiscoverPage(props) {
   const exercisesList = async()=> {
       API_Instance.post('exercises/search',
     {
-      muscleGroupsStr: selectedMuscleGroupsFilter,
-      exerciseTypeSrch : selectedTypeFilter,
-      equipmentFilters : selectedEquipmentFilter
+      muscleGroupsSrch: selectedMuscleGroupsFilter.map(a => a.item),
+      exerciseTypeSrch : selectedTypeFilter.map(a => a.item),
+      equipmentSrch : selectedEquipmentFilter.map(a => a.item),
+      ownerId : globalState.user._id,
+      searchStr : exerciseSearch
     },   
     {
       headers: {
@@ -209,20 +222,20 @@ export default function DiscoverPage(props) {
     })
     .then((response) => {
       if (response.status == 200){
-        setExercises(response.data);
-        setFilteredExerciseData(response.data);
+        //setExercises(response.data);
         setMasterExerciseData(response.data);
+        setFilteredExerciseData(masterExerciseData);
         // toggleExercisesActivityIndicator(isExercisesLoading);
         // console.log(response.data[0].title);
         // console.log(response.data);
-        console.log(selectedTypeFilter);
+        //console.log(selectedTypeFilter);
         // console.log('Success!');
       }
     })
     .catch((e) => {
       // console.log(e);
       // console.log(globalState.authToken);
-      Alert.alert('Error!');
+      //Alert.alert('Error!');
     
     })
   }
@@ -254,13 +267,15 @@ export default function DiscoverPage(props) {
   .catch((e) => {
     // console.log(e);
     // console.log(globalState.authToken);
-    Alert.alert('Error!');
+    //Alert.alert('Error!');
   
   })
 }
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
+    //exercisesList();
+
     // console.log(selectedEquipmentFilter);
   }
 
@@ -349,7 +364,42 @@ export default function DiscoverPage(props) {
     return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
   }
   function onMultiChangeType() {
-    return (item) => setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'))
+    return (item) => {
+      setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
+      console.log("bye", filterExercises())
+      setFilteredExerciseData(filterExercises());
+    }
+  }
+
+  function filterExercises() {
+    let retList = [];
+    let searchVals = exerciseSearch.split(' ');
+    let searchTags = [...selectedEquipmentFilter.map(a=>a.item), ...searchVals];
+    let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
+    let selectedType = [...selectedTypeFilter.map(a=>a.item)];
+
+
+    for (const exercise of masterExerciseData)
+    {
+      for (const exTag of exercise.tags)
+      {
+        if ((searchTags.length == 1 || (searchTags.includes(exTag))) && !retList.includes(exercise))
+        {
+          //console.log(`${exTag} found in ${exercise.title}`)
+          for (const exMusc of exercise.muscleGroups)
+          {
+            //console.log("muscleBool",muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc))
+            if ((muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc)) && (selectedType.length === 0 || selectedType.includes(exercise.exerciseType)))
+            {
+              //console.log(`${exercise.exerciseType} found`)
+              retList.push(exercise);
+            }
+          }
+        }
+      }
+    }
+    console.log("retlist", retList);
+    return retList;
   }
 
   function showWorkout() {
@@ -377,6 +427,7 @@ export default function DiscoverPage(props) {
 
   function closeInfoModal() {
     setInfoPageVisible(false);
+    exercisesList();
   }
 
 return (
@@ -392,8 +443,8 @@ return (
                     value = {toggleValue}
                     onPress = {(newState) => setToggleValue(newState)}
                     disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
-                    leftComponent = <Text style={styles.workoutTitle}>Workouts</Text>
-                    rightComponent = <Text style={styles.exerciseTitle}>Exercises</Text>
+                    leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
+                    rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
                     trackBar={{
                       width: 170,
                       height: 50,
@@ -418,7 +469,7 @@ return (
                       activeBackgroundColor: "#34A5D5",
                       inActiveBackgroundColor: "#BFBCC8"
                       }}
-                      t
+                      
                     />
               </View>
               <View style={styles.filters}>
@@ -536,7 +587,10 @@ return (
                 keyboardShouldPersistTaps='handled'
 
                 value={(toggleValue ? exerciseSearch : workoutSearch)}
-                onChangeText = {(toggleValue ? ((text) => searchExercisesFilter(text, selectedTypeFilter)) :
+                onChangeText = {(toggleValue ? ((text) => {
+                  //searchExercisesFilter(text)
+                  setExerciseSearch(text);
+                }) :
                  ((text) => searchWorkoutsFilter(text)))}
                 // searchIcon = {false}
                 inputStyle={{
