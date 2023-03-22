@@ -13,12 +13,13 @@ import React, { useEffect, useState } from "react";
 import reactDom from "react-dom";
 import API_Instance from "../../backend/axios_instance";
 import { useGlobalState } from "../GlobalState.js";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import WorkOuts from "../component/workout";
 
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [todaysWorkouts, setTodaysWorkouts] = useState([]);
+  const isFocused = useIsFocused();
 
 	const handleScratchPress = () => {
 		// console.log("Scratch Button Pressed");
@@ -54,8 +55,10 @@ export default function LandingPage({navigation}) {
 	};
 
 	const loadCurrentDayWorkoutStatus = () => {
-		if (todaysWorkouts.length !== 0) {
+		if (todaysWorkouts.length === 1) {
 			return "a workout scheduled today";
+		} else if (todaysWorkouts.length > 1) {
+			return `${todaysWorkouts.length} workouts scheduled today`;
 		} else {
 			return "no workout scheduled today";
 			//or "you are done with your workout today!"
@@ -81,10 +84,13 @@ export default function LandingPage({navigation}) {
 	}
 
 	useEffect(() => {
-		loadCurrentDayWorkouts();
-		loadTodaysWorkout();
-		loadCurrentDayWorkoutStatus();
-	}, []);
+    if(isFocused){
+      //console.log('rendering landing page in use effect');
+      loadCurrentDayWorkouts();
+		  loadTodaysWorkout();
+		  loadCurrentDayWorkoutStatus();
+    }
+	}, [isFocused]);
 
 	//componentWillMount(){
 	// could do a call through axios to get user info for each render.
@@ -99,9 +105,9 @@ export default function LandingPage({navigation}) {
 					You have {loadCurrentDayWorkoutStatus()}
 				</Text>
 			</View>
-			<View style={{ marginTop: 30 }}>
+			{/*<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
-			</View>
+			</View>*/}
 			<View style={styles.CreateWorkoutCntnr}>	
 				<View>
 					<TouchableOpacity onPress={handleTemplatePress} style={styles.CreateWorkoutBttnsContainer}>
@@ -112,7 +118,6 @@ export default function LandingPage({navigation}) {
 			<View style={styles.BodyContainer}>
 				<Text style={styles.bodyHeader}>Your Scheduled Workouts:</Text>
 				{loadTodaysWorkout()}
-				{/* Logic to define how to load the saved workouts */}
 			</View>
 		</SafeAreaView>
 	);

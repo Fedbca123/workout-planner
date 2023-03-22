@@ -73,28 +73,39 @@ export default function Inbox({ navigation }) {
 
     return (
       <View style={styles.container}>
-        <Text style={{ paddingLeft: 20 }}>Incoming friend requests</Text>
+        <Text style={styles.headerText}>Incoming friend requests</Text>
         {filteredFriends.length > 0 ? (
           <FlatList
             data={filteredFriends}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
               <View style={styles.friendRequestContainer}>
-                <Text>{item.email}</Text>
-                <Text>{item.firstName} {item.lastName} wants to be your friend!</Text>
+                <Text style={styles.friendName}>
+                  {item.firstName} {item.lastName}
+                </Text>
+                <Text style={styles.friendEmail}>{item.email}</Text>
+                <Text style={styles.friendRequestText}>
+                  wants to be your friend!
+                </Text>
                 <View style={styles.friendRequestButtons}>
-                  <TouchableOpacity onPress={() => handleAcceptFriendRequest(item._id)}>
-                    <Text style={{ paddingRight: 20 }}>Accept</Text>
+                  <TouchableOpacity
+                    style={styles.acceptButton}
+                    onPress={() => handleAcceptFriendRequest(item._id)}
+                  >
+                    <Text style={styles.acceptButtonText}>Accept</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDeclineFriendRequest(item._id)}>
-                    <Text>Decline</Text>
+                  <TouchableOpacity
+                    style={styles.declineButton}
+                    onPress={() => handleDeclineFriendRequest(item._id)}
+                  >
+                    <Text style={styles.declineButtonText}>Decline</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             )}
           />
         ) : (
-          <Text style={{ paddingLeft: 20 }}>No friend requests</Text>
+          <Text style={styles.noRequestText}>You have no friend requests!</Text>
         )}
       </View>
     );
@@ -105,15 +116,70 @@ export default function Inbox({ navigation }) {
       flex: 1,
       backgroundColor: 'white',
     },
+    headerText: {
+      fontWeight: 'bold',
+      fontSize: 20,
+      alignSelf: 'flex-start',
+      marginTop: 40,
+      marginLeft: 20,
+    },
     friendRequestContainer: {
       flexDirection: 'column',
       justifyContent: 'space-between',
       alignItems: 'center',
-      padding: 10,
+      padding: 20,
       borderBottomWidth: 1,
-      borderBottomColor: 'lightgray',
+      borderBottomColor: '#E0E0E0',
+      backgroundColor: '#F5F5F5',
+      borderRadius: 5,
+      marginHorizontal: 10,
+      marginTop: 10,
+    },
+    friendName: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#333',
+    },
+    friendEmail: {
+      fontSize: 14,
+      color: '#777',
+    },
+    friendRequestText: {
+      fontSize: 16,
+      marginTop: 2,
+      color: '#333',
     },
     friendRequestButtons: {
       flexDirection: 'row',
+      marginTop: 10,
+    },
+    acceptButton: {
+      backgroundColor: '#4CAF50',
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      borderRadius: 5,
+    },
+    acceptButtonText: {
+      fontFamily: 'HelveticaNeue-Bold',
+      color: '#FFFFFF',
+      fontWeight: 'bold',
+    },
+    declineButton: {
+      backgroundColor: '#F44336',
+      paddingHorizontal: 20,
+      paddingVertical: 10,
+      borderRadius: 5,
+      marginLeft: 10,
+    },
+    declineButtonText: {
+      fontFamily: 'HelveticaNeue-Bold',
+      color: '#FFFFFF',
+      fontWeight: 'bold',
+    },
+    noRequestText: {
+      fontSize: 15,
+      alignSelf: 'flex-start',
+      marginTop: 5,
+      marginLeft: 20,
     },
   });
