@@ -118,13 +118,21 @@ export default function DiscoverPage(props) {
   const [exerciseList, setExercises] = useState([]);
   const [workoutList, setWorkouts] = useState([]);
 
-  useEffect((isFocused) => {
-    if(!isFocused){
-      console.log("rendering")
+  // switch useeffects
+  // useEffect((isFocused) => {
+  //   if(!isFocused){
+  //     // console.log("rendering")
+  //     exercisesList();
+  //     workoutsList();
+  //   }
+  // }, [isFocused]);
+
+  useEffect(()=> () => {
+      // console.log("rendering")
       exercisesList();
       workoutsList();
-    }
-  }, [isFocused]);
+    
+  }, []);
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
@@ -141,7 +149,7 @@ export default function DiscoverPage(props) {
     </View>
   );
 
-  const WorkoutItem = ({title, description, location, muscleGroups, tags, duration, exercises, image}) => {
+  const WorkoutItem = ({title, description, muscleGroups, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => {
       setExpanded(!expanded);
@@ -161,9 +169,8 @@ export default function DiscoverPage(props) {
         {expanded && 
           <View style={styles.workoutCardText}>
             <Text style={styles.workoutCardDescription}>{description}</Text>
-            <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
-            <Text style={styles.workoutCardTags}>Tags: {tags.join(", ")}</Text>
             <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
+            <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
           </View>}
       
         {expanded &&
@@ -222,9 +229,13 @@ export default function DiscoverPage(props) {
     })
     .then((response) => {
       if (response.status == 200){
-        //setExercises(response.data);
+        // Comment out setExercises
+        setExercises(response.data);
+        //Comment out below
+        setFilteredWorkoutData(response.data);
         setMasterExerciseData(response.data);
-        setFilteredExerciseData(masterExerciseData);
+        // Uncomment out line below
+        // setFilteredExerciseData(masterExerciseData);
         // toggleExercisesActivityIndicator(isExercisesLoading);
         // console.log(response.data[0].title);
         // console.log(response.data);
@@ -302,41 +313,14 @@ export default function DiscoverPage(props) {
          tagData.some((tag) => tag.indexOf(textData) > -1));
       });
       setFilteredExerciseData(newData);
-      // setFilteredWorkoutData(newData);
       setExerciseSearch(text);
     }
     else {
       setFilteredExerciseData(masterExerciseData);
-      // setFilteredWorkoutData(masterWorkoutData);
       setExerciseSearch(text);
     }
   }
-  // const searchExercisesFilter = (text, selectedTypes) => {
-  //   if (text || selectedTypes.length > 0) {
-  //     const newData = masterExerciseData.filter((item) => {
-  //       const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
-  //       const textData = text.toUpperCase();
-  //       const itemTags = item.tags || [];
-  //       const tagData = itemTags.filter(tag => tag !== null && tag !== undefined).map(tag => tag.toUpperCase());
-  //       const typeData = item.exerciseType ? item.exerciseType.toUpperCase() : '';
-  //       const selectedTypeIds = selectedTypes.map(type => type.id);
-  //       const shouldFilterByType = selectedTypeIds.length > 0;
-  //       const matchesSelectedType = shouldFilterByType && selectedTypeIds.includes(item.exerciseType);
-  
-  //       return (itemData.indexOf(textData) > -1 
-  //         || tagData.some(tag => tag.indexOf(textData) > -1))
-  //         && (!shouldFilterByType || matchesSelectedType);
-  //     });
-  
-  //     setFilteredExerciseData(newData);
-  //     setExerciseSearch(text);
-  //     setTypeFilter(selectedTypes);
-  //   } else {
-  //     setFilteredExerciseData(masterExerciseData);
-  //     setExerciseSearch(text);
-  //     setTypeFilter([]);
-  //   }
-  // }
+
   const searchWorkoutsFilter = (text) => {
     if (text){
       const newData = masterWorkoutData.filter((item) => {
@@ -366,7 +350,8 @@ export default function DiscoverPage(props) {
   function onMultiChangeType() {
     return (item) => {
       setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
-      console.log("bye", filterExercises())
+      // console.log("bye", filterExercises())
+      // Uncomment below
       setFilteredExerciseData(filterExercises());
     }
   }
@@ -398,7 +383,7 @@ export default function DiscoverPage(props) {
         }
       }
     }
-    console.log("retlist", retList);
+    // console.log("retlist", retList);
     return retList;
   }
 
@@ -661,7 +646,7 @@ return (
                 <WorkoutItem title={item.title} 
                 description={item.description}
                 location ={item.location} 
-                muscleGroups={item.muscleGroups} tags={item.tags}
+                muscleGroups={item.muscleGroups} 
                 duration={item.duration} exercises={item.exercises}
                 image={item.image} key={index}
 
@@ -714,10 +699,10 @@ return (
               <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
               <Text style={styles.exerciseInfoMuscleGroups}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text> 
             </View>
-            <View style={styles.exerciseInfoTagsContainer}>
+            {/* <View style={styles.exerciseInfoTagsContainer}>
               <Text style={styles.exerciseInfoTagsTitle}>Tags:</Text>
               <Text style={styles.exerciseInfoTags}>{selectedExerciseTags && selectedExerciseTags.join(", ")}</Text>
-            </View>
+            </View> */}
             <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
               {/* <TouchableOpacity> */}
                 <View style={styles.closeButtonContainer}>
@@ -767,7 +752,7 @@ const styles = StyleSheet.create({
   },
 
   exerciseInfoMuscleGroupsContainer:{
-    marginTop: 0
+    marginTop: 5
     // flex: .5
   },
 
@@ -822,6 +807,7 @@ const styles = StyleSheet.create({
     // marginTop: 0,
     width: "100%",
     flex: .78,
+    marginTop: 10,
     // marginBottom: 10,
     // resizeMode: 'contain'
   },
@@ -1104,6 +1090,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
     textAlign: 'center',     
+    marginVertical: 5,
   },
    workoutTitle:{
       fontWeight: 'bold',
@@ -1119,6 +1106,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
     textAlign: 'center',
+    marginVertical: 5,
   },
 
    exerciseCardDescription:{
@@ -1145,7 +1133,7 @@ const styles = StyleSheet.create({
   workoutCardDuration:{
     fontWeight: 'bold',
     fontSize: 12,
-    paddingBottom: 10,
+    // paddingBottom: 10,
     textAlign: 'center',
   
   },
