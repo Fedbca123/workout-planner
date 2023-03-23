@@ -157,8 +157,8 @@ router.route('/search').post(authenticateToken, async (req, res) => {
   if (searchStr)
   {
     searchArr = searchStr.split(' ');
-    console.log(searchStr);
-    console.log(searchArr);
+    //console.log(searchStr);
+    //console.log(searchArr);
     filters.$and.push({tags: { $in: searchArr}});
   }
 

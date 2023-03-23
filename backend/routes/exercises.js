@@ -155,20 +155,32 @@ router.route('/search').post(authenticateToken, async (req, res) => {
 
   if (searchStr) {
     searchArr = searchStr.split(' ');
+    if(!filters.$and){   filters.$and = []; }
     filters.$and.push({tags: {$in: searchArr}});
   }
 
-  if (exerciseTypeSrch)
+  if (exerciseTypeSrch){
+    if(!filters.$and){   filters.$and = []; }
     filters.$and.push({exerciseType: exerciseTypeSrch});
+  }
 
-  if (muscleGroupsSrch)
+  if (muscleGroupsSrch){
+    if(!filters.$and){   filters.$and = []; }
     filters.$and.push({muscleGroups: {$in: muscleGroupsSrch}});
+  }
+    
 
-  if (equipmentSrch)
+  if (equipmentSrch){
+    if(!filters.$and){   filters.$and = []; }
     filters.$and.push({tags: {$in: equipmentSrch}});
+  }
+    
 
-  if (ownerId)
+  if (ownerId){
+    if(!filters.$and){   filters.$and = []; }
     filters.$or.push({owner:  mongoose.Types.ObjectId(ownerId)});
+  }
+    
 
   const results = Exercise.find(filters)
   .then(exercises => res.json(exercises))
