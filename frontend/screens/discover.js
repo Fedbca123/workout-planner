@@ -480,7 +480,7 @@ return (
                           <SelectBox
                             label="Equipment"
                             labelStyle={styles.filterLabels}
-                            inputPlaceholder = "Show & Hide Equipment"
+                            inputPlaceholder = "Add one or more Equipment"
                             listEmptyText='No Equipment Found'
                             searchInputProps = {{placeholder: "Search..."}}
                             inputFilterStyle={styles.filterSearch}
@@ -527,7 +527,7 @@ return (
                           {/* <Text style={styles.filterLabels}>Select Exercise Types</Text> */}
                           <SelectBox
                             label="Exercise Types"
-                            inputPlaceholder = "Show/Hide Types"
+                            inputPlaceholder = "Add one or more Types"
                             labelStyle = {styles.filterLabels}
                             options = {typeFilters}
                             optionsLabelStyle = {styles.filterOptions}
