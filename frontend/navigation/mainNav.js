@@ -5,6 +5,7 @@ import HomeNav from './homeNav.js';
 import CreateWorkoutNav from "./createWorkoutNav.js";
 import StartWorkout from "../screens/startWorkout.js";
 import HomeHeader from "../component/homeHeader.js";
+import CreateWorkoutHeader from "../component/createWorkoutHeader.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export default function MainNav() {
                 name="createNav"
                 component={CreateWorkoutNav}
                 options={{ headerShown: false }}
+                // options={{ headerShown: true, title: "Create A Workout" }}
             />
             <Stack.Screen
 				name="start"

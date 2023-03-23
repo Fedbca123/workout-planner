@@ -2,11 +2,11 @@ import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInpu
 import React, { useState, useEffect} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {useGlobalState} from '../GlobalState.js';
+import SegmentedControlTab from 'react-native-segmented-control-tab';
 import API_Instance from "../../backend/axios_instance";
 
 const FriendsScreen = () => {
   const [filteredFriends, setFilteredFriends] = useState([]);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
 
@@ -18,7 +18,7 @@ const FriendsScreen = () => {
     setFilteredFriends(filtered);
   };
 
-  const handleDeleteFriend = (deleteFriendID) => {
+  const handleDeleteFriend = (deleteFriendID, deleteFirstName, deleteLastName) => {
     const deleteID = deleteFriendID;
     // console.log(deleteID);
     const sendDeleteFriend = async () => {
@@ -30,7 +30,7 @@ const FriendsScreen = () => {
         });
         if (response.status == 200) {
           console.log(response.data);
-          Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
+          Alert.alert('Unfriended', `You have unfriended ${deleteFirstName} ${deleteLastName}`, [{ text: 'OK' }]);
         }
         fetchFriends();
       } catch (error) {
@@ -45,7 +45,7 @@ const FriendsScreen = () => {
     sendDeleteFriend();
   };
 
-  const handleBlockFriend = (blockedFriendID) => {
+  const handleBlockFriend = (blockedFriendID, blockedFirstName, blockedLastName) => {
     const blockID = blockedFriendID;
     // console.log(block);
     const sendBlockFriend = async () => {
@@ -58,7 +58,7 @@ const FriendsScreen = () => {
       .then((response) => {
         if (response.status == 200) {
           // console.log(response.data);
-          Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
+          Alert.alert('Blocked', `${blockedFirstName} ${blockedLastName} has been blocked`, [{ text: 'OK' }]);
         }
         fetchFriends();
       })
@@ -91,7 +91,7 @@ const FriendsScreen = () => {
       .then((response) => {
         if (response.status == 200) {
           console.log(response.data);
-          Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
+          Alert.alert('Invitation sent', `Your invitation has been sent to ${email}`, [{ text: 'OK' }]);
           setSearchTerm('');
         }
         if (response.status == 496) {
@@ -100,16 +100,18 @@ const FriendsScreen = () => {
         }
       })
       .catch((error) => {
-        console.log("Error is", error)
-        console.log("Error status", error.status)
-        if (error.response.status === 497) {
-          Alert.alert('This user is blocked by you');
+        //console.log("Error is", error)
+        //console.log("Error status", error.status)
+        if(error.response.status === 491){
+          Alert.alert(`You have ${email} in your blocked list. Unblock them to be able to add them.`);
+        } else if (error.response.status === 497) {
+          Alert.alert(`You are blocked by ${email}`);
         } else if (error.response.status === 496) {
-          Alert.alert('Already requested');
+          Alert.alert(`Already requested a friendship from ${email}`);
         }  else if (error.response.status === 498) {
           Alert.alert(`User ${error.message} does not exist`);
         } else if (error.response.status === 493) {
-          Alert.alert('This email does not have a verified account');
+          Alert.alert(`${email} does not have a verified account`);
         } else {
           console.error(error.response.status);
           Alert.alert('An unknown error occurred');
@@ -192,7 +194,7 @@ const FriendsScreen = () => {
                       [{
                           text: 'Yes',
                           onPress: () => {
-                            handleDeleteFriend(user._id)
+                            handleDeleteFriend(user._id, user.firstName, user.lastName)
                           },
                       },
                       {
@@ -210,7 +212,7 @@ const FriendsScreen = () => {
                       [{
                           text: 'Yes',
                           onPress: () => {
-                            handleBlockFriend(user._id)
+                            handleBlockFriend(user._id, user.firstName, user.lastName)
                           },
                       },
                       {
@@ -242,7 +244,7 @@ const BlockFriendScreen = () => {
   const [filteredBlockFriends, setFilteredBlockFriends] = useState([]);
   const [globalState, updateGlobalState] = useGlobalState();
 
-  const handleUnblockFriend = (unblockFriendID) => {
+  const handleUnblockFriend = (unblockFriendID, unblockedFirstName, unblockedLastName) => {
     const unblockID = unblockFriendID;
     console.log(unblockID);
     const sendunblockFriend = async () => {
@@ -255,7 +257,7 @@ const BlockFriendScreen = () => {
       .then((response) => {
         if (response.status == 200) {
           console.log(response.data);
-          Alert.alert('Unblocked', 'Your blocked friend has been unblocked', [{ text: 'OK' }]);
+          Alert.alert('Unblocked', `${unblockedFirstName} ${unblockedLastName} has been unblocked`, [{ text: 'OK' }]);
         }
         fetchBlockedFriends();
       })
@@ -280,7 +282,7 @@ const BlockFriendScreen = () => {
     })
     .then((response) => {  
       setFilteredBlockFriends(response.data.blockedUsers);
-      console.log("Blocked friends are", response.data.blockedUsers);
+      // console.log("Blocked friends are", response.data.blockedUsers);
       return response.data.blockedUsers;
     })
     .catch((error) => {
@@ -298,10 +300,10 @@ const BlockFriendScreen = () => {
   
   return (
     <View>
-      <Text style={styles.Heading}>The following are your blocked friends: </Text>
+      <Text style={styles.Heading}>The following users are blocked by you: </Text>
         
         {!filteredBlockFriends || filteredBlockFriends.length === 0 ? (
-          <Text style={{ paddingLeft: 20 }}>You have no blocked friend!  </Text>
+          <Text style={{ paddingLeft: 20 }}>You have no users in your blocked list!  </Text>
             ) : ( 
               filteredBlockFriends.map((user) => (
                 <View key={user._id} style={styles.cardblock}>
@@ -322,7 +324,7 @@ const BlockFriendScreen = () => {
                       [{
                           text: 'Yes',
                           onPress: () => {
-                            handleUnblockFriend(user._id)
+                            handleUnblockFriend(user._id, user.firstName, user.lastName)
                           },
                       },
                       {
@@ -346,28 +348,29 @@ export default function Friends() {
   const [globalState, updateGlobalState] = useGlobalState();
   const [activeScreen, setActiveScreen] = useState('Friends');
   
-  const handleButtonPress = (button) => {
-    setActiveScreen(button);
+  const handleButtonPress = (screen) => {
+    setActiveScreen(screen);
   };
 
   return  (
     <SafeAreaView style={styles.container}>
-      <KeyboardAwareScrollView contentContainerStyle={styles.container}
-            bounces={false}>
-            <View style={{ flexDirection: 'row' }}>
-            <TouchableOpacity onPress={() => handleButtonPress('Friends')}>
-              <Text style={{ fontFamily: 'HelveticaNeue-Bold', fontSize: 24, paddingLeft: 20, color: activeScreen === 'Friends' ? '#24C8FE' : '#2B2B2B' }}>Friends</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleButtonPress('BlockedFriends')}>
-              <Text style={{ fontFamily: 'HelveticaNeue-Bold', fontSize: 24, color: activeScreen === 'BlockedFriends' ? '#FA7B34' : '#2B2B2B' }}>/Blocked Friends</Text>
-            </TouchableOpacity>
-      </View>
-      {activeScreen === 'Friends' ? <FriendsScreen /> : <BlockFriendScreen />}
-          <View style={{borderColor: 'black', borderWidth: '0px'}}/>
-          </KeyboardAwareScrollView>
-        </SafeAreaView>
+      <KeyboardAwareScrollView contentContainerStyle={styles.container} bounces={false}>
+        <SegmentedControlTab
+          values={['Friends', 'Blocked Users']}
+          selectedIndex={activeScreen === 'Friends' ? 0 : 1}
+          onTabPress={(index) => handleButtonPress(index === 0 ? 'Friends' : 'BlockedFriends')}
+          tabsContainerStyle={styles.tabsContainerStyle}
+          tabStyle={styles.tabStyle}
+          activeTabStyle={styles.activeTabStyle}
+          tabTextStyle={styles.tabTextStyle}
+          activeTabTextStyle={styles.activeTabTextStyle}
+        />
+        {activeScreen === 'Friends' ? <FriendsScreen /> : <BlockFriendScreen />}
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
     )
 }
+
 
 const styles = StyleSheet.create({
     Normal:{
@@ -415,7 +418,7 @@ const styles = StyleSheet.create({
       marginBottom: 5,
       shadowColor: '#000',
       shadowOpacity: 0.2,
-      shadowRadius: 5,
+      shadowRadius: 2,
       shadowOffset: { width: 0, height: 2 },
       elevation: 2,
       borderRadius: 15,
@@ -443,11 +446,11 @@ const styles = StyleSheet.create({
     },
     container:{
       backgroundColor: 'white',
-      flex:1,
-      flexDirection:'column',
+      flex: 1,
+      flexDirection:'column'
     },
     addFriendContainer:{
-      flex:0.1,
+      flex: 0.1,
       width: '95%',
       alignSelf:'center',
       marginBottom: 30
@@ -473,5 +476,39 @@ const styles = StyleSheet.create({
     },
     searchTerm:{
       color: '#FA7B34',
+    },
+    tabsContainerStyle: {
+      alignSelf: 'center',
+      marginBottom: 10,
+    },
+    tabStyle: {
+      backgroundColor: '#F7F7F7',
+      borderColor: '#ccc',
+    },
+    activeTabStyle: {
+      backgroundColor: '#24C8FE',
+    },
+    tabTextStyle: {
+      color: '#2B2B2B',
+    },
+    activeTabTextStyle: {
+      color: 'white',
+    },
+    tabsContainerStyle: {
+      alignSelf: 'center',
+      marginBottom: 10,
+    },
+    tabStyle: {
+      backgroundColor: '#F7F7F7',
+      borderColor: '#ccc',
+    },
+    activeTabStyle: {
+      backgroundColor: '#24C8FE',
+    },
+    tabTextStyle: {
+      color: '#2B2B2B',
+    },
+    activeTabTextStyle: {
+      color: 'white',
     }
 });

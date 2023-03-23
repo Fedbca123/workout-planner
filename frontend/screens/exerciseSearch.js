@@ -70,11 +70,12 @@ export default function ExerciseSearch(props) {
 			/>
 			<Text style={styles.TitleText}>Exercises:</Text>
 			<Button title="Custom Exercise" onPress={() => {
-				navigation.navigate("customExercise");
+				navigation.push("customExercise");
 			}} />
 			<FlatList
 				data={exercises}
 				keyExtractor={(item) => item.title}
+				style={{maxHeight:450}}
 				renderItem={({ item }) => (
 					<View >
 						<TouchableOpacity style={styles.ExerciseCard}

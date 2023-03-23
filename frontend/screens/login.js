@@ -93,8 +93,10 @@ export default function Login({navigation}) {
 			keyboardShouldPersistTaps="handled"
 			bounces={false}>
 			<Image
-				style={styles.image}
-				source={require("../../assets/workout.png")}/>
+				style={[styles.image]}
+				source={require("../../assets/workout.png")}
+      />
+
 			<View style={styles.textcontainer}>
 				<Text style={styles.heading}> Welcome! </Text>
 				<Text style={styles.text}>
@@ -118,6 +120,7 @@ export default function Login({navigation}) {
 					outlineColor="black"
 					activeOutlineColor="#10B9F1"
           autoComplete='off'
+          dense={true}
           autoCorrect={false}
 					style={styles.inputstyle}
 					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
@@ -134,6 +137,7 @@ export default function Login({navigation}) {
 				
 				<TextInput
 					mode='outlined'
+          dense={true}
 					outlineColor="black"
 					activeOutlineColor="#10B9F1"
           autoComplete='off'
@@ -163,7 +167,7 @@ export default function Login({navigation}) {
 				}/>
 			</View>
 
-			<View style={{flex:1, marginTop: 40}}>
+			<View style={{flex:1, width: '50%'}}>
 				<Button
 					title="Login"
 					color="#10B9F1"
@@ -199,17 +203,18 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 	},
 	textcontainer: {
-		flex: 0.5,
+		flex: 0.3,
 		alignSelf: "center",
 		alignItems: "center",
 		justifyContent: "center",
 		width: "90%",
 	},
 	buttoncontainer: {
-		flex: 1,
+		flex: 0.8,
+    marginTop: 16,
+    marginBottom: 15,
 		alignItems: "center",
-		paddingTop: 10,
-    marginBottom: 10,
+		//paddingTop: 5,
 		width: "100%",
 	},
 	heading: {
@@ -217,7 +222,6 @@ const styles = StyleSheet.create({
 		fontFamily: "HelveticaNeue-Bold",
 		fontSize: 36,
 		textAlign: "center",
-		paddingBottom: 5,
 	},
 	text: {
 		fontFamily: "HelveticaNeue",
@@ -229,7 +233,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		top: 0,
-		marginBottom: 10,
+    marginBottom: 5
 	},
 	login: {
 		backgroundColor: "#10B9F1",

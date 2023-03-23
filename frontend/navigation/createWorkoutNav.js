@@ -7,6 +7,7 @@ import Finalize from "../screens/finalizeWorkout.js";
 import startWorkout from "../screens/startWorkout.js";
 import CustomExercise from "../screens/customExercise.js";
 import FinalizedContinued from "../screens/finalizedContinued.js";
+import CreateWorkoutHeader from "../component/createWorkoutHeader.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -16,32 +17,32 @@ export default function CreateWorkoutNav() {
 			<Stack.Screen
 				name="chooseTemplate"
 				component={ChooseTemplate}
-				options={{ headerShown: false }}
+				options={{ header: CreateWorkoutHeader}}
 			/>
 			<Stack.Screen
 				name="start"
 				component={startWorkout}
-				// options={{ headerShown: false }}
+				options={{ headerShown: true, title:"Create A Workout"}}
 			/>
 			<Stack.Screen
 				name="exerciseSearch"
 				component={ExerciseSearch}
-				// options={{ headerShown: false }}
+				options={{ headerShown: true, title:"Create A Workout"}}
 			/>
 			<Stack.Screen 
 				name="finalizeWorkout" 
 				component={Finalize} 
-				// options={{ headerShown: false }}
+				options={{ headerShown: true, title:"Create A Workout"}}
 			/>
 			<Stack.Screen 
 				name="finalizedContinued" 
 				component={FinalizedContinued} 
-				// options={{ headerShown: false }}
+				options={{ headerShown: true, title:"Create A Workout"}}
 			/>
 			<Stack.Screen 
 				name="customExercise" 
 				component={CustomExercise}
-				// options={{ headerShown: false }} 
+				options={{ headerShown: true, title:"Create A Workout"}} 
 			/>
 		</Stack.Navigator>
 	);
