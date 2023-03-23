@@ -33,6 +33,7 @@ export default function ExerciseSearch(props) {
 			ownerId: globalState.user._id
 		}, {
 			headers: {
+				'Content-Type': 'x-www-form-urlencoded',
 				'authorization': `BEARER ${globalState.authToken}`
 			}
 		}).then((response) => {
