@@ -11,12 +11,14 @@ import {
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import {useGlobalState} from '../GlobalState.js';
+import { useIsFocused } from '@react-navigation/native';
 import API_Instance from "../../backend/axios_instance";
 
 export default function Inbox({ navigation }) {
     const [filteredFriends, setFilteredFriends] = useState([]);
     const [globalState, updateGlobalState] = useGlobalState();
-
+    const isFocused = useIsFocused();
+    
     const fetchFriendRequests = async () => {
       try {
         const response = await API_Instance.get(`users/${globalState.user._id}/invites/all`, {
@@ -24,13 +26,13 @@ export default function Inbox({ navigation }) {
             'authorization': `Bearer ${globalState.authToken}`,
           },
         });
-        console.log(response.data.friendInvites);
+        // console.log(response.data.friendInvites);
         const friendRequests = response.data.friendInvites || [];
         
         setFilteredFriends(friendRequests);
       } catch (error) {
         console.error(error);
-        console.log(error);
+        // console.log(error);
         if (error.response?.status === 403) {
           Alert.alert('Failed to authenticate you');
         }
@@ -38,8 +40,10 @@ export default function Inbox({ navigation }) {
     };
   
     useEffect(() => {
+      if (isFocused) {
         fetchFriendRequests();
-    }, []);
+      }
+    }, [isFocused]);
 
     const handleAcceptFriendRequest = async (acceptNewFriendId) => {
         try {

@@ -37,10 +37,14 @@ const CalendarScreen = ({}) => {
         fetchEvents();
       }
     }, [isFocused]);
+    
+    useEffect(() => {
+      handleDayPress({ dateString: selectedDate });
+  }, [weeklyEvents]);
   
     //changes date to yyyy-mm-dd
     const formatEvents = (events) => {
-      console.log(events);
+      // console.log(events);
       const formattedEvents = {};
       events.forEach((event) => {
         let date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
@@ -81,9 +85,15 @@ const CalendarScreen = ({}) => {
     const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
 
     const renderItem = ({ item }) => {
+      const eventDate = item.scheduledDate || item.dateOfCompletion;
+      const dateText = item.scheduledDate ? 'Scheduled' : 'Completed';
+      const startTime = moment(item.scheduledDate).format('hh:mm A');
+
       if (item.ownerEmail === globalState.user?.email) {
         return (
           <View style={styles.myExercise}>
+              {/* <Text>{dateText} {moment(eventDate).format('MMMM D, YYYY')}</Text> */}
+              <Text>{dateText} workout at {startTime} </Text>
               <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
               <Text>Location: {item.location}</Text>
           </View>
@@ -91,6 +101,8 @@ const CalendarScreen = ({}) => {
       } else {
         return (
           <View style={styles.friendExercise}>
+              {/* <Text>{dateText}: {moment(eventDate).format('MMMM D, YYYY')}</Text> */}
+              <Text>{dateText} workout at {startTime}</Text>
               <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
               <Text>Location: {item.location}</Text>
           </View>
@@ -143,11 +155,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     shadowColor: '#000',
     shadowOpacity: 0.2,
-    shadowRadius: 5,
+    shadowRadius: 2,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
     borderRadius: 15,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
@@ -161,7 +173,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
     borderRadius: 15,
-    flexDirection: 'row',
+    flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
