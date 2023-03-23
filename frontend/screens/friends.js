@@ -100,10 +100,12 @@ const FriendsScreen = () => {
         }
       })
       .catch((error) => {
-        console.log("Error is", error)
-        console.log("Error status", error.status)
-        if (error.response.status === 497) {
-          Alert.alert('This user is blocked by you');
+        //console.log("Error is", error)
+        //console.log("Error status", error.status)
+        if(error.response.status === 491){
+          Alert.alert(`You have ${email} in your blocked list. Unblock them to be able to add them.`);
+        } else if (error.response.status === 497) {
+          Alert.alert(`You are blocked by ${email}`);
         } else if (error.response.status === 496) {
           Alert.alert(`Already requested a friendship from ${email}`);
         }  else if (error.response.status === 498) {
@@ -192,7 +194,7 @@ const FriendsScreen = () => {
                       [{
                           text: 'Yes',
                           onPress: () => {
-                            handleDeleteFriend(user._id)
+                            handleDeleteFriend(user._id, user.firstName, user.lastName)
                           },
                       },
                       {
