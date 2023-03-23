@@ -47,7 +47,22 @@ export default function ExerciseReview({ setCurrState, workout}) {
                     
                 )}
             />
-            <Button title="Back" onPress={() =>{ setCurrState("chooseTemplate") }}/>
+            {/* <Button title="Back" onPress={() =>{ setCurrState("chooseTemplate") }}/> */}
+
+            <View style={{ display: "flex", flex: 1, flexDirection: "row", borderWidth: 1, justifyContent: "space-evenly" }}>
+                <View style={{ alignSelf: "center", backgroundColor: "blue", flex: 0.5}}>
+                     <TouchableOpacity onPress={() => {setCurrState("chooseTemplate")}}>
+                        <Text>Back</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ alignSelf: "center", flex:0.5}}>
+                    <TouchableOpacity onPress={() => { setCurrState("BeginFinalizing") }}>
+                        <Text>Finalize</Text>
+                    </TouchableOpacity>  
+                </View>
+
+            </View>
         </View>
     );
 }
@@ -97,6 +112,6 @@ const styles = StyleSheet.create({
     DeleteExerciseBttn: {
         padding: 10,
         borderWidth: 2,
-        borderRadius: 50,
+        borderRadius: 100,
     },
 })
