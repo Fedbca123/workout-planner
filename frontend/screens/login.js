@@ -103,19 +103,11 @@ export default function Login({navigation}) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
-      
-        {/* <Button
+	{/*       
+        <Button
         title="BACKDOOR"
         onPress={() =>
-          backDoorHandler("Test@gmail.com", "password")}/> */}
-
-      {/* <Button
-        title="ADMIN BACKDOOR"
-        onPress={() => props.navigation.navigate("admin")}
-            /> */}
-
-      {/*code will break at the end to home bc name can't be rendered}
-      */}
+          backDoorHandler("Test@gmail.com", "Password1")}/> */}
       
 			<View style={styles.buttoncontainer}>
 				<Text style={styles.error}> {error} </Text>

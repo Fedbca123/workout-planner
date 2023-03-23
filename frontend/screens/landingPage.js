@@ -19,7 +19,7 @@ import WorkOuts from "../component/workout";
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [todaysWorkouts, setTodaysWorkouts] = useState([]);
-  const isFocused = useIsFocused();
+  	const isFocused = useIsFocused();
 
 	const handleScratchPress = () => {
 		// console.log("Scratch Button Pressed");
@@ -34,10 +34,10 @@ export default function LandingPage({navigation}) {
 		// logic to define whether a workout exists today or not
 
 		API_Instance.get(`users/${globalState.user._id}/workouts/today`, {
-				headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'authorization': `BEARER ${globalState.authToken}`
-                }
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				'authorization': `BEARER ${globalState.authToken}`
+			}
 		}).then((response) => {
 
 				// console.log(response.data);
@@ -85,8 +85,8 @@ export default function LandingPage({navigation}) {
     if(isFocused){
       //console.log('rendering landing page in use effect');
       loadCurrentDayWorkouts();
-		  loadTodaysWorkout();
-		  loadCurrentDayWorkoutStatus();
+		loadTodaysWorkout();
+		loadCurrentDayWorkoutStatus();
     }
 	}, [isFocused]);
 
@@ -115,6 +115,7 @@ export default function LandingPage({navigation}) {
 			</View>
 			<View style={styles.BodyContainer}>
 				<Text style={styles.bodyHeader}>Your Scheduled Workouts:</Text>
+				<Button title="start" onPress={() => {navigation.navigate("start", {workout: null})}}/>
 				{loadTodaysWorkout()}
 				{/* Logic to define how to load the saved workouts */}
 			</View>
