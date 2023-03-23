@@ -588,8 +588,9 @@ return (
 
                 value={(toggleValue ? exerciseSearch : workoutSearch)}
                 onChangeText = {(toggleValue ? ((text) => {
-                  //searchExercisesFilter(text)
-                  setExerciseSearch(text);
+                  searchExercisesFilter(text)
+                  // below is for filters
+                  //setExerciseSearch(text);
                 }) :
                  ((text) => searchWorkoutsFilter(text)))}
                 // searchIcon = {false}
