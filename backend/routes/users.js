@@ -229,9 +229,27 @@ router.route('/:id').delete(authenticateToken, async (req, res) => {
       } 
     }
 
+    // Delete workouts and exercises themselves
     await Workout.deleteMany({owner: id});
     await Exercise.deleteMany({owner: id});
 
+    // remove as friend from users that are friend
+    for (const friendId of user.friends)
+    {
+      const friend = await User.findById(friendId);
+      if (!friend)
+      {
+        console.log("Friend could not be found!");
+        continue;
+      }
+
+      friend.friends = removeItem(friend.friends, user._id);
+      friend.save((err, newUser) => {
+        if (err) console.log("There was an issue saving the friend object");
+      });
+    }
+
+    // finally, delete user
     User.findByIdAndDelete(id, function (error, body) {
         if (error)
         {
