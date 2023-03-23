@@ -75,7 +75,8 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         flexDirection: "row",
         // flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "space-between",
     },
     ExerciseImage: {
 		height: 50,
