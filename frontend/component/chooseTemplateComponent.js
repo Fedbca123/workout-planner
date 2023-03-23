@@ -10,6 +10,7 @@ import {
 	FlatList,
 	ScrollView,
 	VirtualizedList,
+	useWindowDimensions
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -19,7 +20,7 @@ import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header, SearchBar } from "react-native-elements";
 
-export default function ChooseTemplateComponent({ setCurrState }) {
+export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, selectedWorkout }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [publicWorkouts, updatePublicWorkouts] = useState([]);
 	const [privateWorkouts, updatePrivateWorkouts] = useState([]);
@@ -101,22 +102,32 @@ export default function ChooseTemplateComponent({ setCurrState }) {
 			}} />
 
 			<SearchBar
-				platform="ios"
+				platform="default"
 				lightTheme={true}
+				containerStyle={{ backgroundColor: "white" }}
+				inputStyle={{color: "black"}}
 				onChangeText={(val) => { setSearchText(val); }}
 				round={true}
 				value={searchText}
 				cancelButtonTitle=""
 				onClear={() => { setSearchText(""); }} onCancel={() => { setSearchText(""); }}
+				placeholder="Search by name or muscle groups"
 			/>
 
 			<Text style={styles.HeaderText}>Workout Templates:</Text>
 			<FlatList
 				data={publicWorkouts}
+				style={{ maxHeight: useWindowDimensions().height * .65}}
 				renderItem={(item) => (
 					<View>
 						{/* {comments(item.item)} */}
-						<Workouts data={[item.item]} showButton={true} showInput={false}  setCurrState={setCurrState}/>
+						<Workouts
+							data={[item.item]}
+							showButton={true}
+							showInput={false}
+							setCurrState={setCurrState}
+							passData={setCurrWorkout}
+						/>
 					</View>
 				)}
 				ListEmptyComponent={<Text style={{ fontSize: 16 }}>NO WORKOUTS</Text>}

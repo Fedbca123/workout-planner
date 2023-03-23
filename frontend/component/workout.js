@@ -8,6 +8,7 @@ import {
 	SafeAreaView,
 	TextInput,
 	FlatList,
+	useWindowDimensions,
 } from "react-native";
 import React from "react";
 import { useState } from "react";
@@ -16,11 +17,16 @@ import Collapsible from "react-native-collapsible";
 import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
+import { AntDesign } from "@expo/vector-icons";
+import Modal from "react-native-modal";
+import ExerciseInfo from "./exerciseInfo.js";
 
-export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState }) {
+export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState, passData }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
-	const navigation = useNavigation();
+	const [modalVisible, setModalVisibility] = useState(false);
+	const [exercise, setExercise] = useState({});
+	// const navigation = useNavigation();
 
 	// function renderSectionTitle(section) {
 	// 	return (
@@ -47,7 +53,8 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 						
 						<TouchableOpacity style={styles.addButton} onPress={() =>{
 							setCurrState("ExerciseReview");
-							updateGlobalState("workout", data);
+							// passData([data]);
+							// updateGlobalState("workout", data);
 						}}>
 
 							<Text style={{ alignSelf: "center" }}>Choose Workout</Text>
@@ -104,7 +111,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 	}
 
 	function renderContent(section) {
-		function itemRender({ item }) {
+		function itemRender({ item, index }) {
 			if (showInput) {
 				return (
 					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
@@ -143,6 +150,13 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 							<Text style={styles.text}>{item.title}</Text>
 						</View>
 
+						<TouchableOpacity onPress={() => {
+							setExercise(item);
+							setModalVisibility(true)
+						}}>
+							<AntDesign name="search1" size={16}/>
+						</TouchableOpacity>
+
 					</View>
 				);
 			}
@@ -159,7 +173,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 	}
 
 	return (
-		<SafeAreaView >
+		<View >
 			<Accordion
 				// containerStyle={styles.Background}
 				// renderAsFlatList={true}
@@ -175,7 +189,16 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 				sectionContainerStyle={styles.collapsePill}
 				containerStyle={styles.collapsedContent}
 			/>
-		</SafeAreaView>
+
+			<Modal
+				isVisible={modalVisible}
+				coverScreen={true}
+				backdropColor="white"
+				backdropOpacity={1}
+			>
+				<ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
+			</Modal>
+		</View>
 	);
 }
 
@@ -221,13 +244,14 @@ const styles = StyleSheet.create({
 		// backgroundColor: "#F1F3FA",
 		// margin: 30,
 		// padding: 15,
+		// backgroundColor: "blue",
 		borderRadius:"30rem",
 	},
 	TitleText: {
 		color: "black",
 		position:"relative",
 		fontWeight: "bold",
-		fontSize: 20,
+		fontSize: 24,
 		display: "flex",
 		textAlignVertical: "center",
 		alignContent: "center",
@@ -239,13 +263,13 @@ const styles = StyleSheet.create({
 		height: 50,
 		width: 50,
 		borderWidth: 1,
-		borderRadius: 20,
+		borderRadius: 10,
 	},
 	ExerciseImage: {
 		height: 50,
 		width: 50,
 		borderWidth: 1,
-		borderRadius: 100,
+		borderRadius: 20,
 		// marginTop: 10
 	},
 });
