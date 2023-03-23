@@ -18,7 +18,7 @@ const FriendsScreen = () => {
     setFilteredFriends(filtered);
   };
 
-  const handleDeleteFriend = (deleteFriendID) => {
+  const handleDeleteFriend = (deleteFriendID, deleteFirstName, deleteLastName) => {
     const deleteID = deleteFriendID;
     // console.log(deleteID);
     const sendDeleteFriend = async () => {
@@ -30,7 +30,7 @@ const FriendsScreen = () => {
         });
         if (response.status == 200) {
           console.log(response.data);
-          Alert.alert('Deleted', 'Your ex-friend has been deleted', [{ text: 'OK' }]);
+          Alert.alert('Deleted', `You have unfriended ${deleteFirstName} ${deleteLastName}`, [{ text: 'OK' }]);
         }
         fetchFriends();
       } catch (error) {
@@ -45,7 +45,7 @@ const FriendsScreen = () => {
     sendDeleteFriend();
   };
 
-  const handleBlockFriend = (blockedFriendID) => {
+  const handleBlockFriend = (blockedFriendID, blockedFirstName, blockedLastName) => {
     const blockID = blockedFriendID;
     // console.log(block);
     const sendBlockFriend = async () => {
@@ -58,7 +58,7 @@ const FriendsScreen = () => {
       .then((response) => {
         if (response.status == 200) {
           // console.log(response.data);
-          Alert.alert('Blocked', 'Your ex-friend has been blocked', [{ text: 'OK' }]);
+          Alert.alert('Blocked', `${blockedFirstName} ${blockedLastName} has been blocked`, [{ text: 'OK' }]);
         }
         fetchFriends();
       })
@@ -91,7 +91,7 @@ const FriendsScreen = () => {
       .then((response) => {
         if (response.status == 200) {
           console.log(response.data);
-          Alert.alert('Invitation sent', 'Your invitation has been sent to your friend', [{ text: 'OK' }]);
+          Alert.alert('Invitation sent', `Your invitation has been sent to ${email}`, [{ text: 'OK' }]);
           setSearchTerm('');
         }
         if (response.status == 496) {
@@ -105,11 +105,11 @@ const FriendsScreen = () => {
         if (error.response.status === 497) {
           Alert.alert('This user is blocked by you');
         } else if (error.response.status === 496) {
-          Alert.alert('Already requested');
+          Alert.alert(`Already requested a friendship from ${email}`);
         }  else if (error.response.status === 498) {
           Alert.alert(`User ${error.message} does not exist`);
         } else if (error.response.status === 493) {
-          Alert.alert('This email does not have a verified account');
+          Alert.alert(`${email} does not have a verified account`);
         } else {
           console.error(error.response.status);
           Alert.alert('An unknown error occurred');
@@ -210,7 +210,7 @@ const FriendsScreen = () => {
                       [{
                           text: 'Yes',
                           onPress: () => {
-                            handleBlockFriend(user._id)
+                            handleBlockFriend(user._id, user.firstName, user.lastName)
                           },
                       },
                       {
@@ -242,7 +242,7 @@ const BlockFriendScreen = () => {
   const [filteredBlockFriends, setFilteredBlockFriends] = useState([]);
   const [globalState, updateGlobalState] = useGlobalState();
 
-  const handleUnblockFriend = (unblockFriendID) => {
+  const handleUnblockFriend = (unblockFriendID, unblockedFirstName, unblockedLastName) => {
     const unblockID = unblockFriendID;
     console.log(unblockID);
     const sendunblockFriend = async () => {
@@ -255,7 +255,7 @@ const BlockFriendScreen = () => {
       .then((response) => {
         if (response.status == 200) {
           console.log(response.data);
-          Alert.alert('Unblocked', 'Your blocked friend has been unblocked', [{ text: 'OK' }]);
+          Alert.alert('Unblocked', `${unblockedFirstName} ${unblockedLastName} has been unblocked`, [{ text: 'OK' }]);
         }
         fetchBlockedFriends();
       })
@@ -298,10 +298,10 @@ const BlockFriendScreen = () => {
   
   return (
     <View>
-      <Text style={styles.Heading}>The following are your blocked friends: </Text>
+      <Text style={styles.Heading}>The following users are blocked by you: </Text>
         
         {!filteredBlockFriends || filteredBlockFriends.length === 0 ? (
-          <Text style={{ paddingLeft: 20 }}>You have no blocked friend!  </Text>
+          <Text style={{ paddingLeft: 20 }}>You have no users in your blocked list!  </Text>
             ) : ( 
               filteredBlockFriends.map((user) => (
                 <View key={user._id} style={styles.cardblock}>
@@ -322,7 +322,7 @@ const BlockFriendScreen = () => {
                       [{
                           text: 'Yes',
                           onPress: () => {
-                            handleUnblockFriend(user._id)
+                            handleUnblockFriend(user._id, user.firstName, user.lastName)
                           },
                       },
                       {
@@ -354,7 +354,7 @@ export default function Friends() {
     <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView contentContainerStyle={styles.container} bounces={false}>
         <SegmentedControlTab
-          values={['Friends', 'Blocked Friends']}
+          values={['Friends', 'Blocked Users']}
           selectedIndex={activeScreen === 'Friends' ? 0 : 1}
           onTabPress={(index) => handleButtonPress(index === 0 ? 'Friends' : 'BlockedFriends')}
           tabsContainerStyle={styles.tabsContainerStyle}
