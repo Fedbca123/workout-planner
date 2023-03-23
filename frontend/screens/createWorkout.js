@@ -30,7 +30,7 @@ export default function CreateWorkout({ navigation }) {
         if (currState === "chooseTemplate") {
             navigation.setOptions({ title: "Create A workout" });
         } else if (currState === "ExerciseReview") {
-            navigation.setOptions({ title: "Edit Your Workout" });
+            navigation.setOptions({ title: "Edit Your Workout",});
         }
 	}, [currState]);
     
@@ -42,7 +42,7 @@ export default function CreateWorkout({ navigation }) {
 
     return (
         <View style={{flex :1}}>
-            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} />}
+            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout}/>}
             {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} workout={currWorkout} />}
         </View>
     );

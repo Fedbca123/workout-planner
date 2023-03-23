@@ -21,7 +21,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import ExerciseInfo from "./exerciseInfo.js";
 
-export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState, passData }) {
+export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState, passData, currWorkout}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const [modalVisible, setModalVisibility] = useState(false);
@@ -51,9 +51,9 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
 						
-						<TouchableOpacity style={styles.addButton} onPress={() =>{
+						<TouchableOpacity style={styles.addButton} onPress={() => {
+							passData(data);
 							setCurrState("ExerciseReview");
-							// passData([data]);
 							// updateGlobalState("workout", data);
 						}}>
 
@@ -164,7 +164,12 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 		return (
 			<View>
-				<FlatList data={section.exercises} renderItem={itemRender} />
+				<FlatList
+					data={section.exercises}
+					renderItem={itemRender}
+					initialNumToRender={3}
+					// style={{backgroundColor: "darkgray"}}
+				/>
 			</View>
 			// <View style={styles.content}>
 			//     <Text>{section.content}</Text>
@@ -214,7 +219,9 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 2 },
 		// elevation: 2,
 		borderRadius: "20rem",
-		width: 390,
+		width: "95%",
+		// maxHeight: "90%",
+		
 	},
 	text: {
 		color: "black",
@@ -245,7 +252,8 @@ const styles = StyleSheet.create({
 		// margin: 30,
 		// padding: 15,
 		// backgroundColor: "blue",
-		borderRadius:"30rem",
+		borderRadius: "30rem",
+		// maxHeight: "10%",
 	},
 	TitleText: {
 		color: "black",
