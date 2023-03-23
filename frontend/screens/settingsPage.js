@@ -9,7 +9,7 @@ import {
     Alert
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
-import { Icon } from 'react-native-elements'
+import { Icon } from 'react-native-elements';
 import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance";
 import * as SecureStore from 'expo-secure-store';
