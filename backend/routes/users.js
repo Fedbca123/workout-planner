@@ -38,6 +38,7 @@ Error Codes:
 401 - error retrieving user(s)
 403 - Failed to authenticate
 405 - No Token Provided
+491 - Current user has other user in blocked list (cant befriend someone in your blocked list)
 492 - exercise id not found in DB
 493 - email provided not in DB
 494 - workout id not found in db
@@ -693,6 +694,10 @@ router.route('/:id/invites/add').post(authenticateToken, async (req,res) => {
     return res.status(493).send({Error: `User with email ${friendEmail} does not exist!`});
   }
 
+  if(userA.blockedUsers.includes(userB._id)) {
+    return res.status(491).send("You have this user blocked");
+  }
+
   // if userB has userA blocked, it won't go through
   if(userB.blockedUsers.includes(userA._id)) {
     return res.status(497).send("Blocked user");
@@ -876,7 +881,13 @@ router.route('/:A_id/blocked/add/:B_id').patch(authenticateToken, async (req,res
   userA.friendRequests = removeItem(userA.friendRequests, userB._id);
   // add B as a blocked user on A's account
   userA.blockedUsers.push(userB._id);
-
+  // need to remove user A from user B's visibility
+  userB.friends = removeItem(userB.friends, userA._id);
+  userB.friendRequests = removeItem(userB.friendRequests, userA._id);
+  // save updated version of userB
+  await userB.save((err, newUser) => {
+    if (err) return res.status(499).send(err);
+  });
   // save updated version of userA
   await userA.save((err, newUser) => {
     if (err) return res.status(499).send(err);
