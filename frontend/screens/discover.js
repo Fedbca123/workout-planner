@@ -119,20 +119,20 @@ export default function DiscoverPage(props) {
   const [workoutList, setWorkouts] = useState([]);
 
   // switch useeffects
-  // useEffect((isFocused) => {
-  //   if(!isFocused){
-  //     // console.log("rendering")
-  //     exercisesList();
-  //     workoutsList();
-  //   }
-  // }, [isFocused]);
-
-  useEffect(()=> () => {
+  useEffect((isFocused) => {
+    if(!isFocused){
       // console.log("rendering")
       exercisesList();
       workoutsList();
+    }
+  }, [isFocused]);
+
+  // useEffect(()=> () => {
+  //     // console.log("rendering")
+  //     exercisesList();
+  //     workoutsList();
     
-  }, []);
+  // }, []);
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
