@@ -30,7 +30,7 @@ const FriendsScreen = () => {
         });
         if (response.status == 200) {
           console.log(response.data);
-          Alert.alert('Deleted', `You have unfriended ${deleteFirstName} ${deleteLastName}`, [{ text: 'OK' }]);
+          Alert.alert('Unfriended', `You have unfriended ${deleteFirstName} ${deleteLastName}`, [{ text: 'OK' }]);
         }
         fetchFriends();
       } catch (error) {
