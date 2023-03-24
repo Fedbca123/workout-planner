@@ -12,6 +12,7 @@ import API_Instance from '../../backend/axios_instance';
 import {useGlobalState} from '../GlobalState.js';
 import {TextInput} from 'react-native-paper';
 import * as SecureStore from 'expo-secure-store';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default function Register({navigation}) {
@@ -186,6 +187,7 @@ export default function Register({navigation}) {
 
   //render(){
     return  (
+      <ScrollView bounces={false} style={{flex:1, backgroundColor: 'white'}}>
       <KeyboardAwareScrollView 
         extraHeight={100}
         contentContainerStyle={styles.container}
@@ -318,6 +320,7 @@ export default function Register({navigation}) {
           </View>
         </View>
       </KeyboardAwareScrollView>
+      </ScrollView>
     )
   //}
 }
@@ -365,7 +368,7 @@ const styles = StyleSheet.create({
       marginBottom: 0,
   },
   login: {
-      borderWidth:1,
+      //borderWidth:1,
       borderColor: 'black',
       color: 'white'
   },
@@ -376,7 +379,8 @@ const styles = StyleSheet.create({
       width: '70%',
       padding:8,
       marginVertical:5,
-      fontSize:16
+      fontSize:16,
+      textAlign:'auto'
   },
   inputerrorstyle:{
     textAlign: 'center',
