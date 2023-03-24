@@ -1,5 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import React, {useState, useEffect} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert } from 'react-native';
 import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
@@ -7,7 +7,7 @@ import Modal from "react-native-modal";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
-import { GlobalState, useGlobalState } from '../GlobalState.js';
+import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 
 const equipmentFilters = [
@@ -85,40 +85,57 @@ export default function DiscoverPage(props) {
 
   const isFocused = useIsFocused();
 
+  // Exercise or Workout List Toggle
   const [toggleValue, setToggleValue] = useState(false);
+  
+  // Filter Modal Popup Visibility
   const [areFiltersVisible, setFiltersVisible] = useState(false);
+  
+  // Exercise Info Page Visibility
   const [isInfoPageVisible, setInfoPageVisible] = useState(false);
+  
+  // Chosen Equipment Filters
   const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
+  
+  // Chosen Muscle Group Filters
   const [selectedMuscleGroupsFilter, setMuscleGroupsFilter] = useState([]);
+  
+  // Chosen Exercise Type Filters
   const [selectedTypeFilter, setTypeFilter] = useState([]);
+  
+  
   const [globalState, updateGlobalState] = useGlobalState();
+  
+  // For Exercise Info Page
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState();
-  const [selectedWorkoutTitle, setSelectedWorkoutTitle] = useState();
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
-  const [selectedExerciseDuration, setSelectedExerciseDuration] = useState();
-  const [selectedExerciseTags, setSelectedExerciseTags] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
-
-  // all items resulting from search and filter
+  const [selectedWorkoutTitle, setSelectedWorkoutTitle] = useState();
+  const [selectedExerciseDuration, setSelectedExerciseDuration] = useState();
+  const [selectedExerciseTags, setSelectedExerciseTags] = useState();
+  
+  // All items resulting from search and filter
   const [filteredExerciseData, setFilteredExerciseData] = useState([]);
-  // all items from DB from search with only ownerID
+  // All items from DB from search with only ownerID
   const [masterExerciseData, setMasterExerciseData] = useState([]);
   
-  // all items resulting from search and filter
+  // All items resulting from search and filter
   const [filteredWorkoutData, setFilteredWorkoutData] = useState([]);
-  // all items from DB from search with only ownerID
+  // All items from DB from search with only ownerID
   const [masterWorkoutData, setMasterWorkoutData] = useState([]);
 
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [workoutSearch, setWorkoutSearch] = useState('');
+
+  // will be used for Activity Indicator
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
   const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true);
 
   const [exerciseList, setExercises] = useState([]);
   const [workoutList, setWorkouts] = useState([]);
 
-  // switch useeffects
+  
   useEffect((isFocused) => {
     if(!isFocused){
       // console.log("rendering")
@@ -126,6 +143,32 @@ export default function DiscoverPage(props) {
       workoutsList();
     }
   }, [isFocused]);
+
+
+  // useEffect(() => {
+  //   exercisesList();
+  //   workoutsList();
+  // }, []);
+  // useEffect(() => {
+  //   setFilteredExerciseData(filterExercises());
+  // // }, []);
+  
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     exercisesList();
+  //     workoutsList();
+  //   }, [])
+  // );
+  
+  // useEffect(() => {
+  //   setFilteredExerciseData(filterExercises());
+  // }, [filterExercises, selectedEquipmentFilter, selectedMuscleGroupsFilter, selectedTypeFilter, exerciseSearch]);
+  
+
+  // useEffect(() => {
+  //   setFilteredExerciseData(filterExercises());
+  // }, [selectedEquipmentFilter, selectedMuscleGroupsFilter, selectedTypeFilter, exerciseSearch]);
+  
 
   // useEffect(()=> () => {
   //     // console.log("rendering")
@@ -230,15 +273,15 @@ export default function DiscoverPage(props) {
     .then((response) => {
       if (response.status == 200){
         // Comment out setExercises
-        setExercises(response.data);
+        // setExercises(response.data);
         //Comment out below
-        setFilteredWorkoutData(response.data);
+        //setFilteredWorkoutData(response.data);
         setMasterExerciseData(response.data);
         // Uncomment out line below
-        // setFilteredExerciseData(masterExerciseData);
+        setFilteredExerciseData(masterExerciseData);
         // toggleExercisesActivityIndicator(isExercisesLoading);
         // console.log(response.data[0].title);
-        // console.log(response.data);
+        // console.log("Filtered Exercises: ", filteredExerciseData);
         //console.log(selectedTypeFilter);
         // console.log('Success!');
       }
@@ -266,7 +309,7 @@ export default function DiscoverPage(props) {
   })
   .then((response) => {
     if (response.status == 200){
-      setWorkouts(response.data);
+      // setWorkouts(response.data);
       setFilteredWorkoutData(response.data);
       setMasterWorkoutData(response.data);
       // toggleWorkoutActivityIndicator(isWorkoutsLoading);
@@ -347,22 +390,42 @@ export default function DiscoverPage(props) {
   function onMultiChangeMuscleGroups() {
     return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
   }
+  // Our code:
+  // function onMultiChangeType() {
+  //   return (item) => {
+  //     setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
+  //     // console.log("bye", filterExercises())
+  //     console.log(selectedTypeFilter);
+  //     setFilteredExerciseData(filterExercises());
+  //     console.log(filteredExerciseData[0]);
+  //     console.log(filteredExerciseData[1]);
+  //   }
+  // }
+
+  // ChatGpt:
   function onMultiChangeType() {
     return (item) => {
       setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
-      // console.log("bye", filterExercises())
-      // Uncomment below
-      setFilteredExerciseData(filterExercises());
     }
   }
+  
+  // useEffect(() => {
+  //   // console.log("Selected types: ", selectedTypeFilter);
+  //   // console.log("Filtered exercises: ", filteredExerciseData);
+  // }, [selectedTypeFilter, filteredExerciseData]);
+  
+  useEffect(() => {
+    
+    setFilteredExerciseData(filterExercises());
+  }, [selectedEquipmentFilter, selectedMuscleGroupsFilter, selectedTypeFilter, exerciseSearch]);
 
-  function filterExercises() {
+  const filterExercises = () => {
     let retList = [];
     let searchVals = exerciseSearch.split(' ');
     let searchTags = [...selectedEquipmentFilter.map(a=>a.item), ...searchVals];
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
     let selectedType = [...selectedTypeFilter.map(a=>a.item)];
-
+    console.log("Types: ", selectedType);
 
     for (const exercise of masterExerciseData)
     {
@@ -385,7 +448,9 @@ export default function DiscoverPage(props) {
     }
     // console.log("retlist", retList);
     return retList;
+
   }
+  
 
   function showWorkout() {
       if (!isWorkoutVisible){
@@ -600,8 +665,8 @@ return (
               style = {styles.boxContainer}
               // extraData ={[selectedTypeFilter,selectedEquipmentFilter, selectedMuscleGroupsFilter]}
               renderItem={({item}) => 
-                (
                 <TouchableOpacity onPress={()=>{
+                  console.log("Rendering item: ", item._id)
                     openExerciseInfo(item);
                     setSelectedExerciseTitle(item.title)
                     setSelectedExerciseDesc(item.description);
@@ -609,15 +674,16 @@ return (
                     setSelectedExerciseImage(item.image);
                     setSelectedExerciseTags(item.tags);
                     showInfoModal();  
+                    
+
                 }}>
                   <ExerciseItem title={item.title} 
                   description={item.description} muscleGroups={item.muscleGroups}
                   type={item.exerciseType} tags={item.tags} image={item.image}
                   />
                 </TouchableOpacity>
-                )
               }
-              //keyExtractor={(item) => item._id}
+              keyExtractor={item => item._id}
              
               /> : <FlatList
               // workoutDummyData doesn't go through filtering
