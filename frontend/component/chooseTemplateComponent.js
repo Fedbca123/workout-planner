@@ -15,7 +15,7 @@ import {
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
 import Workouts from "./workout.js";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header, SearchBar } from "react-native-elements";
@@ -24,44 +24,49 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [publicWorkouts, updatePublicWorkouts] = useState([]);
 	const [privateWorkouts, updatePrivateWorkouts] = useState([]);
+	const [allWorkouts, setAllWorkouts] = useState([]);
 	const [searchText, setSearchText] = useState("");
+	const [searchResults, updateSearchResults] = useState([]);
+	const isFocused = useIsFocused();
+
 	function loadWorkouts() {
 
 		API_Instance.post("workouts/search", {
 			ownerId: globalState.user._id
 		}, {
 			headers: {
-				'Content-Type': 'multipart/form-data',
+				// 'Content-Type': 'multipart/form-data',
 				'authorization': `BEARER ${globalState.authToken}`
 			}
 		}).then((response) => {
 
 			if (response.status == 200) {
 
-				let publicW = [];
-				let privateW = [];
+				// let publicW = [];
+				// let privateW = [];
 
-				for (let data of response.data) {
+				// for (let data of response.data) {
 
-					// console.log(JSON.stringify(data, null, 2));
+				// 	// console.log(JSON.stringify(data, null, 2));
 					
-					if (data.owner != globalState.user._id) {
-						// updatePublicWorkouts(data);
-						// publicWorkouts.push(data);
-						publicW.push(data);
-					} else {
-						// updatePrivateWorkouts(data);
-						// privateWorkouts.push(data);
-						privateW.push(data);
-					}
-				}
+				// 	if (data.owner != globalState.user._id) {
+				// 		// updatePublicWorkouts(data);
+				// 		// publicWorkouts.push(data);
+				// 		publicW.push(data);
+				// 	} else {
+				// 		// updatePrivateWorkouts(data);
+				// 		// privateWorkouts.push(data);
+				// 		privateW.push(data);
+				// 	}
+				// }
 
-				updatePublicWorkouts(publicW);
-				updatePrivateWorkouts(privateW);
+				// updatePublicWorkouts(publicW);
+				// updatePrivateWorkouts(privateW);
+
+				setAllWorkouts(response.data);
+
+				updateSearchResults(response.data);
 				
-				// const newData = response.data.map(obj => [obj]);
-				// updateWorkouts(newData);
-				// updateWorkouts(response.data);
 
 			} else {
 				console.log(response.status);
@@ -72,9 +77,24 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 	}
 
+	function handleSearch(str) {
+
+		updateSearchResults([]);
+		
+		for (let workout of allWorkouts) {
+			if (true /*Figure out herer how to search properly*/ ) {
+				searchResults.push(workout);
+			}
+		}
+	}
+
 	useEffect(() => {
 		loadWorkouts();
-	}, []);
+	}, [isFocused]);
+
+	// useEffect(() => {
+	// 	handleSearch(searchText);
+	// }, [searchText.length]);
 
 	const noTemplate = [
 		{
@@ -97,26 +117,42 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	return (
 		<SafeAreaView style={styles.Background}>
 			<Button title="Create A Custom Workout" onPress={() => {
-				updateGlobalState("workout", noTemplate);
+				setCurrWorkout(noTemplate);
 				setCurrState("ExerciseReview");
 			}} />
+
+			<Text style={{fontSize:20, textAlign:"center"}}>-OR-</Text>
+
+			<Text style={styles.HeaderText}>Select a Workout:</Text>
 
 			<SearchBar
 				platform="default"
 				lightTheme={true}
 				containerStyle={{ backgroundColor: "white" }}
 				inputStyle={{color: "black"}}
-				onChangeText={(val) => { setSearchText(val); }}
+				onChangeText={(val) => {
+					handleSearch(setSearchText(val));
+				}}
 				round={true}
 				value={searchText}
 				cancelButtonTitle=""
-				onClear={() => { setSearchText(""); }} onCancel={() => { setSearchText(""); }}
-				placeholder="Search by name or muscle groups"
+				onClear={() => {
+					setSearchText("");
+					updateSearchResults(allWorkouts);
+					// searchResults.push(publicWorkouts);
+					// searchResults.push(privateWorkouts);
+				}}
+				onCancel={() => {
+					setSearchText("");
+					updateSearchResults(allWorkouts);
+					// searchResults.push(publicWorkouts);
+					// searchResults.push(privateWorkouts);
+				}}
+				placeholder="Search by name, muscle groups, or equipment"
 			/>
 
-			<Text style={styles.HeaderText}>Workout Templates:</Text>
 			<FlatList
-				data={publicWorkouts}
+				data={searchResults}
 				style={{ maxHeight: useWindowDimensions().height * .65}}
 				renderItem={(item) => (
 					<View>

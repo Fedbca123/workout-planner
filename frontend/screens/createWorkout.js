@@ -20,6 +20,7 @@ import API_Instance from "../../backend/axios_instance.js"
 import { Header } from "react-native-elements";
 import ChooseTemplateComponent from "../component/chooseTemplateComponent.js";
 import ExerciseReview from "../component/exerciseReview.js";
+import ExerciseSearch from "../component/exerciseSearch.js";
 
 export default function CreateWorkout({ navigation }) {
     const [currState, setCurrState] = useState("chooseTemplate");
@@ -28,9 +29,11 @@ export default function CreateWorkout({ navigation }) {
     
     useEffect(() => {
         if (currState === "chooseTemplate") {
-            navigation.setOptions({ title: "Create A workout" });
+            navigation.setOptions({ title: "Create A Workout"});
         } else if (currState === "ExerciseReview") {
             navigation.setOptions({ title: "Edit Your Workout",});
+        } else if (currState === "ExerciseSearch") {
+            navigation.setOptions({ title: "Add an Exercise To Your Workout" });
         }
 	}, [currState]);
     
@@ -43,7 +46,8 @@ export default function CreateWorkout({ navigation }) {
     return (
         <View style={{flex :1}}>
             {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout}/>}
-            {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} workout={currWorkout} />}
+            {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} updateWorkout={setCurrWorkout} workout={currWorkout} />}
+            {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} setCurrState={setCurrState} />}
         </View>
     );
 }

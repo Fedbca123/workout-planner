@@ -10,7 +10,8 @@ import {
 	FlatList,
 	ScrollView,
 	VirtualizedList,
-	useWindowDimensions
+	useWindowDimensions,
+    Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -20,25 +21,35 @@ import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function ExerciseReview({ setCurrState, workout}) {
+export default function ExerciseReview({ setCurrState, workout, updateWorkout}) {
     const [globalState, updateGlobalState] = useGlobalState();
-    const [exercises, updateExercises] = useState(workout[0].exercises);
+    const [exercises, updateExercises] = useState(!workout[0].exercises ? [] : workout[0].exercises);
     
+    // useEffect(() => {
+	// 	 loadWorkouts();
+	// }, []);
+
     useEffect(() => {
-		// loadWorkouts();
-	}, []);
+        
+    }, [])
 
     return (
         <View style={styles.Background}>
-            {/* <Workouts data={workout} /> */}
+            <Button title="Add An Exercise" onPress={() => {setCurrState("ExerciseSearch")}}/>
             <FlatList
                 data={workout[0].exercises}
+                style={{height: "70%"}}
+                ListEmptyComponent={<Text>Add A Exercise</Text>}
                 renderItem={({ item, index}) => (
                     <View style={styles.ExerciseCard}>
                         <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
                         <Text style={styles.ExerciseText}>{item.title}</Text>  
                         <TouchableOpacity onPress={() => {
-                            workout[0].exercises.pop[index];
+                            // let tmp = [...workout];
+                            // tmp.exercises.pop(index);
+
+                            
+
                             console.log(JSON.stringify(workout[0].exercises, null, 2));
                         }}>
                             <AntDesign style={styles.DeleteExerciseBttn} name="minus"  size={20}/>
@@ -47,21 +58,26 @@ export default function ExerciseReview({ setCurrState, workout}) {
                     
                 )}
             />
-            {/* <Button title="Back" onPress={() =>{ setCurrState("chooseTemplate") }}/> */}
 
             <View style={{ display: "flex", flex: 1, flexDirection: "row", borderWidth: 1, justifyContent: "space-evenly" }}>
-                <View style={{ alignSelf: "center", backgroundColor: "blue", flex: 0.5}}>
-                     <TouchableOpacity onPress={() => {setCurrState("chooseTemplate")}}>
-                        <Text>Back</Text>
+                <View style={{ backgroundColor: "#FF8C4B", flex: 1}}>
+                     <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("chooseTemplate")}}>
+                        <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/>
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ alignSelf: "center", flex:0.5}}>
-                    <TouchableOpacity onPress={() => { setCurrState("BeginFinalizing") }}>
-                        <Text>Finalize</Text>
+                <View style={{ alignSelf: "center", flex:1}}>
+                    <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#10B9F1" }} onPress={() => {
+                        if (workout[0].exercises.length === 0) {
+                            Alert.alert("Love the enthusiasm, but you have to at least have one exercise if you wanna workout");
+                        } else {
+                            setCurrState("BeginFinalizing"); 
+                        }
+                        
+                    }}>
+                        <AntDesign size={useWindowDimensions().height * 0.08} name="rightcircle" color={"white"}/>
                     </TouchableOpacity>  
                 </View>
-
             </View>
         </View>
     );
@@ -114,4 +130,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 100,
     },
+    BttnText: {
+        color: "white",
+        fontSize: 20,
+    }
 })

@@ -20,6 +20,7 @@ import { useGlobalState } from "../GlobalState.js";
 import { AntDesign } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import ExerciseInfo from "./exerciseInfo.js";
+import { Icon } from "react-native-elements";
 
 export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState, passData, currWorkout}) {
 	const [globalState, updateGlobalState] = useGlobalState();
@@ -49,7 +50,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 					</View>
 
-					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
+					<View style={{ display: "flex", flexDirection: "row", flex: .4, }}>
 						
 						<TouchableOpacity style={styles.addButton} onPress={() => {
 							passData(data);
@@ -57,7 +58,18 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 							// updateGlobalState("workout", data);
 						}}>
 
-							<Text style={{ alignSelf: "center" }}>Choose Workout</Text>
+							{/* <Text style={{ alignSelf: "center" }}>Choose Workout</Text> */}
+							<AntDesign name="pluscircleo"  style={{alignSelf: "center" }} size={24}/>
+							
+						</TouchableOpacity>
+
+						<TouchableOpacity style={styles.addButton} onPress={() => {
+							passData(data);
+							setCurrState("ExerciseReview");
+							// updateGlobalState("workout", data);
+						}}>
+
+							<Icon name="edit" type="material" style={{ justifyContent: "center" }}/>
 							
 						</TouchableOpacity>
 
@@ -111,6 +123,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 	}
 
 	function renderContent(section) {
+
 		function itemRender({ item, index }) {
 			if (showInput) {
 				return (
@@ -168,6 +181,9 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 					data={section.exercises}
 					renderItem={itemRender}
 					initialNumToRender={3}
+					style={{display:"flex"}}
+					// scrollEnabled={true}
+					// stickyHeaderHiddenOnScroll={true}
 					// style={{backgroundColor: "darkgray"}}
 				/>
 			</View>
@@ -193,6 +209,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 				// }}
 				sectionContainerStyle={styles.collapsePill}
 				containerStyle={styles.collapsedContent}
+				underlayColor="transparent"
 			/>
 
 			<Modal
@@ -238,10 +255,12 @@ const styles = StyleSheet.create({
 		// position: "relative",
 		// fontSize: 28,
 		display:"flex",
-		justifyContent:"flex-end",
+		justifyContent: "center",
+		alignItems:"center",
 		flexDirection: "row",
-		flex:1,
-
+		flex: 1,
+		marginHorizontal: 8,
+		// borderWidth:5,
 	},
 	Background: {
 		backgroundColor: "#E5E5E5",
@@ -259,7 +278,7 @@ const styles = StyleSheet.create({
 		color: "black",
 		position:"relative",
 		fontWeight: "bold",
-		fontSize: 24,
+		fontSize: 20,
 		display: "flex",
 		textAlignVertical: "center",
 		alignContent: "center",
