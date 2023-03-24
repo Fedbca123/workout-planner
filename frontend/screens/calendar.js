@@ -47,18 +47,28 @@ const CalendarScreen = ({}) => {
       const formattedEvents = {};
       events.forEach((event) => {
         let date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
+        const isMyWorkout = event.ownerEmail === globalState.user?.email;
+        const dot = {
+          key: isMyWorkout ? 'myWorkout' : 'friendWorkout',
+          color: isMyWorkout ? '#24C8FE' : '#808080',
+          selectedDotColor: isMyWorkout ? 'blue' : 'gray',
+        };
     
         if (event.recurrence) {
           for (let i = 0; i < 12; i++) {
             if (!formattedEvents[date]) {
-              formattedEvents[date] = { marked: true, events: [] }; // Add marked: true
+              formattedEvents[date] = { marked: true, events: [], dots: [dot] };
+            } else if (!formattedEvents[date].dots.some((d) => d.key === dot.key)) {
+              formattedEvents[date].dots.push(dot);
             }
             formattedEvents[date].events.push(event);
             date = moment(date).add(7, 'days').format('YYYY-MM-DD');
           }
         } else {
           if (!formattedEvents[date]) {
-            formattedEvents[date] = { marked: true, events: [] }; // Add marked: true
+            formattedEvents[date] = { marked: true, events: [], dots: [dot] };
+          } else if (!formattedEvents[date].dots.some((d) => d.key === dot.key)) {
+            formattedEvents[date].dots.push(dot);
           }
           formattedEvents[date].events.push(event);
         }
@@ -112,7 +122,8 @@ const CalendarScreen = ({}) => {
         <Calendar
           onDayPress={handleDayPress}
           markedDates={weeklyEvents}
-          selected={[selectedDate]} // add selected prop
+          markingType={'multi-dot'} // add markingType prop
+          selected={[selectedDate]}
         />
       
         {selectedDate !== '' && 
