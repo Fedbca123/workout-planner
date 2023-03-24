@@ -272,6 +272,7 @@ export default function DiscoverPage(props) {
     })
     .then((response) => {
       if (response.status == 200){
+        console.log("resetting filtered data to master")
         // Comment out setExercises
         // setExercises(response.data);
         //Comment out below
@@ -333,6 +334,7 @@ export default function DiscoverPage(props) {
         // we are in exercises
         setFilteredExerciseData(filterExercises());
       }else{
+        // work on this after
         console.log('workouts')
       }
     }
@@ -350,7 +352,7 @@ export default function DiscoverPage(props) {
 
   const searchExercisesFilter = (text) => {
     if (text){
-      const newData = masterExerciseData.filter((item) => {
+      const newData = filteredExerciseData.filter((item) => {
         const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
         const textData = text.toUpperCase();
         const itemTags = item.tags || [];
@@ -363,7 +365,7 @@ export default function DiscoverPage(props) {
       setExerciseSearch(text);
     }
     else {
-      setFilteredExerciseData(masterExerciseData);
+      setFilteredExerciseData(filteredExerciseData);
       setExerciseSearch(text);
     }
   }
@@ -418,36 +420,46 @@ export default function DiscoverPage(props) {
     return idArray.length == 0 ? false : true;
   }
 
+  function exTagHit(exTag, searchTags){
+    for(const term of searchTags){
+      if(exTag.toLowerCase().includes(term.toLowerCase())){
+        console.log(term, 'found in', exTag)
+        return true;
+      }else{
+        console.log('failure')
+      }
+    }
+  }
+
   function tryFilter(exercise, searchTags, muscleGroupVals, selectedType,retList){
     // for every tag in exercise
     for (const exTag of exercise.tags)
     {
-      // if were searching with text or equipment and its included && not in the list
-      if ((searchTags.length == 1 || (searchTags.includes(exTag))))
+      if ((searchTags.length == 0 || exTagHit(exTag, searchTags)))
       {
         for (const exMusc of exercise.muscleGroups)
         {
           //console.log("muscleBool",muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc))
           if ((muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc)) && (selectedType.length === 0 || selectedType.includes(exercise.exerciseType)))
           {
-            if(!retList.includes(exercise)/*filteredListIncludes(retList,exercise.id)*/){
+            if(!retList.includes(exercise)){
               retList.push(exercise);
               return;
             }
           }
         }
       }
+
     }
   }
 
-  const filterExercises = () => {
+  const filterExercises = (term) => {
     let retList = [];
-    let searchVals = exerciseSearch.split(' ');
+    let searchVals =  term ? term.split(' ') : [];
     let searchTags = [...selectedEquipmentFilter.map(a=>a.item), ...searchVals];
+    console.log("searchtags", searchTags);
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
     let selectedType = [...selectedTypeFilter.map(a=>a.item)];
-    console.log("Types: ", selectedType);
-    
     // if no tags or search terms then return masterlist
 
     // for all exercises in masterlist
@@ -455,7 +467,9 @@ export default function DiscoverPage(props) {
     {
       tryFilter(exercise, searchTags, muscleGroupVals, selectedType,retList);
     }
-    // console.log("retlist", retList);
+    
+
+
     return retList;
   }
 
@@ -617,7 +631,7 @@ return (
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
-                data={toggleValue ? exerciseList : workoutList} 
+                data={toggleValue ? filteredExerciseData : workoutList} 
                 lightTheme
                 round
                 // onChangeText={updateSearch}
@@ -631,7 +645,10 @@ return (
 
                 value={(toggleValue ? exerciseSearch : workoutSearch)}
                 onChangeText = {(toggleValue ? ((text) => {
-                  searchExercisesFilter(text)
+                  setExerciseSearch(text);
+                  setFilteredExerciseData(filterExercises(text));
+                  
+                  //searchExercisesFilter(text)
                   // below is for filters
                   //setExerciseSearch(text);
                 }) :
