@@ -3,7 +3,8 @@ import {
 	Button,
 	Text,
 	Image,
-	View
+	View,
+  Dimensions
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState, useRef } from "react";
@@ -21,6 +22,8 @@ export default function Login({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
 	const { setIsLoggedIn } = React.useContext(AuthContext);
+
+  const imageWidth = Dimensions.get('window').width;
 
 	// functions
   	const emailInputHandler = (enteredEmail) => {
@@ -93,7 +96,7 @@ export default function Login({navigation}) {
 			keyboardShouldPersistTaps="handled"
 			bounces={false}>
 			<Image
-				style={[styles.image]}
+				style={[styles.image, {width: imageWidth}]}
 				source={require("../../assets/workout.png")}
       />
 
@@ -243,7 +246,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		top: 0,
-    marginBottom: 5
+    marginBottom: 5,
 	},
 	login: {
 		backgroundColor: "#10B9F1",
