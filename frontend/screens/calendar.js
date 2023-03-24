@@ -122,7 +122,7 @@ const CalendarScreen = ({}) => {
         <Calendar
           onDayPress={handleDayPress}
           markedDates={weeklyEvents}
-          markingType={'multi-dot'} // add markingType prop
+          markingType={'multi-dot'}
           selected={[selectedDate]}
         />
       
