@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { Modal, Button, StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
 import {useGlobalState} from '../GlobalState.js';
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const CalendarScreen = ({}) => {
+
     const [globalState, updateGlobalState] = useGlobalState();
     const [weeklyEvents, setWeeklyEvents] = useState({});
     const isFocused = useIsFocused();
@@ -95,28 +96,35 @@ const CalendarScreen = ({}) => {
       const eventDate = item.scheduledDate || item.dateOfCompletion;
       const dateText = item.scheduledDate ? 'Scheduled' : 'Completed';
       const startTime = moment(item.scheduledDate).format('hh:mm A');
-
-      if (item.ownerEmail === globalState.user?.email) {
+    
+      if (item.ownerEmail === globalState.user?.email && item.scheduledDate) {
         return (
           <View style={styles.myExercise}>
-              {/* <Text>{dateText} {moment(eventDate).format('MMMM D, YYYY')}</Text> */}
-              <Text>{dateText} workout at {startTime} </Text>
-              <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-              <Text>Location: {item.location}</Text>
+            <Text>{dateText} workout at {startTime} </Text>
+            <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+            <Text>Location: {item.location}</Text>
+            <Button title="Edit" onPress={() => handleEdit(item)} />
+          </View>
+        );
+      } else if (item.ownerEmail === globalState.user?.email) {
+        return (
+          <View style={styles.myExercise}>
+            <Text>{dateText} </Text>
+            <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+            <Text>Location: {item.location}</Text>
           </View>
         );
       } else {
         return (
           <View style={styles.friendExercise}>
-              {/* <Text>{dateText}: {moment(eventDate).format('MMMM D, YYYY')}</Text> */}
-              <Text>{dateText} workout at {startTime}</Text>
-              <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-              <Text>Location: {item.location}</Text>
+            <Text>{dateText} workout at {startTime}</Text>
+            <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+            <Text>Location: {item.location}</Text>
           </View>
         );
       }
     };
-  
+
     return (
       <View style ={styles.container}>
         <Calendar
