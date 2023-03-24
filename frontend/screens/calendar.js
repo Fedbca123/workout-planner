@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
@@ -7,7 +7,10 @@ import {useGlobalState} from '../GlobalState.js';
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const CalendarScreen = ({}) => {
-
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [workoutToEdit, setWorkoutToEdit] = useState(null);
+    const [editedScheduledDate, setEditedScheduledDate] = useState('');
+    const [editedRecurrence, setEditedRecurrence] = useState(false);
     const [globalState, updateGlobalState] = useGlobalState();
     const [weeklyEvents, setWeeklyEvents] = useState({});
     const isFocused = useIsFocused();
@@ -88,6 +91,18 @@ const CalendarScreen = ({}) => {
         setSelectedDate(formattedDate);
       }
     };
+
+    const handleEdit = (workout) => {
+      setWorkoutToEdit(workout);
+      setEditedScheduledDate(moment(workout.scheduledDate || workout.dateOfCompletion).format('YYYY-MM-DDTHH:mm'));
+      setEditedRecurrence(workout.recurrence);
+      setEditModalVisible(true);
+    };
+
+    const handleSave = () => {
+      // implement save functionality here
+      setEditModalVisible(false);
+    };
   
     const [events, setEvents] = useState([]);
     const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
@@ -148,6 +163,47 @@ const CalendarScreen = ({}) => {
             <Text style={styles.noEvents}>No events scheduled</Text>
           )}
         />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={editModalVisible}
+          onRequestClose={() => setEditModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+      <View style={styles.modalContent}>
+        {workoutToEdit && (
+          <>
+            <Text style={styles.modalTitle}>Edit Workout</Text>
+            {/* Edit the workout information */}
+            <Text>Date & Time:</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={editedScheduledDate}
+              onChangeText={setEditedScheduledDate}
+              mode="datetime"
+              placeholder="YYYY-MM-DDTHH:mm"
+            />
+            <Text>Recurrence:</Text>
+            <View style={styles.modalSwitch}>
+              <Text>No</Text>
+              <Switch
+                value={editedRecurrence}
+                onValueChange={setEditedRecurrence}
+                trackColor={{ false: '#767577', true: '#81b0ff' }}
+                thumbColor={editedRecurrence ? '#f5dd4b' : '#f4f3f4'}
+              />
+              <Text>Yes</Text>
+            </View>
+
+            <View style={styles.modalButtons}>
+              <Button title="Close" onPress={() => setEditModalVisible(false)} />
+              <Button title="Save" onPress={handleSave} />
+            </View>
+          </>
+              )}
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   };
@@ -198,7 +254,43 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingLeft: 20,
     fontSize: 16,
-  }
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    marginVertical: 5,
+  },
+  modalSwitch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 5,
+  },
 });
 
 export default CalendarScreen;
