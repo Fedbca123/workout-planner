@@ -4,11 +4,14 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {useGlobalState} from '../GlobalState.js';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import API_Instance from "../../backend/axios_instance";
+import { useIsFocused } from '@react-navigation/native';
+
 
 const FriendsScreen = () => {
   const [filteredFriends, setFilteredFriends] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [globalState, updateGlobalState] = useGlobalState();
+  const isFocused = useIsFocused();
 
   const handleSearch = (text) => {
     setSearchTerm(text);
@@ -147,8 +150,12 @@ const FriendsScreen = () => {
   };
 
   useEffect(() => {
-    fetchFriends();
-  }, []);
+    if(isFocused){
+      //console.log('focused on friends');
+      fetchFriends();
+    }
+    
+  }, [isFocused]);
 
   useEffect(() => {
     if (searchTerm === '') {
