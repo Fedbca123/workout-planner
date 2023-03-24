@@ -173,36 +173,36 @@ const CalendarScreen = ({}) => {
           onRequestClose={() => setEditModalVisible(false)}
         >
           <View style={styles.modalContainer}>
-      <View style={styles.modalContent}>
-        {workoutToEdit && (
-          <>
-            <Text style={styles.modalTitle}>Edit Workout</Text>
-            {/* Edit the workout information */}
-            <Text>Date & Time:</Text>
-            <TextInput
-              style={styles.modalInput}
-              value={editedScheduledDate}
-              onChangeText={setEditedScheduledDate}
-              mode="datetime"
-              placeholder="YYYY-MM-DDTHH:mm"
-            />
-            <Text>Recurrence:</Text>
-            <View style={styles.modalSwitch}>
-              <Text>No</Text>
-              <Switch
-                value={editedRecurrence}
-                onValueChange={setEditedRecurrence}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-                thumbColor={editedRecurrence ? '#f5dd4b' : '#f4f3f4'}
-              />
-              <Text>Yes</Text>
-            </View>
+            <View style={styles.modalContent}>
+              {workoutToEdit && (
+                <>
+                  <Text style={styles.modalTitle}>Edit Workout</Text>
+                  {/* Edit the workout information */}
+                  <Text>Date & Time:</Text>
+                  <TextInput
+                    style={styles.modalInput}
+                    value={editedScheduledDate}
+                    onChangeText={setEditedScheduledDate}
+                    mode="datetime"
+                    placeholder="YYYY-MM-DDTHH:mm"
+                  />
+                  <Text>Recurrence:</Text>
+                  <View style={styles.modalSwitch}>
+                    <Text>No</Text>
+                    <Switch
+                      value={editedRecurrence}
+                      onValueChange={setEditedRecurrence}
+                      trackColor={{ false: '#767577', true: '#81b0ff' }}
+                      thumbColor={editedRecurrence ? '#f5dd4b' : '#f4f3f4'}
+                    />
+                    <Text>Yes</Text>
+                  </View>
 
-            <View style={styles.modalButtons}>
-              <Button title="Close" onPress={() => setEditModalVisible(false)} />
-              <Button title="Save" onPress={handleSave} />
-            </View>
-          </>
+                  <View style={styles.modalButtons}>
+                    <Button title="Close" onPress={() => setEditModalVisible(false)} />
+                    <Button title="Save" onPress={handleSave} />
+                  </View>
+                </>
               )}
             </View>
           </View>
