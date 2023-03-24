@@ -44,26 +44,23 @@ const CalendarScreen = ({}) => {
   
     //changes date to yyyy-mm-dd
     const formatEvents = (events) => {
-      // console.log(events);
       const formattedEvents = {};
       events.forEach((event) => {
         let date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
     
         if (event.recurrence) {
-          // repeat the event for the next 12 weeks
           for (let i = 0; i < 12; i++) {
             if (!formattedEvents[date]) {
-              formattedEvents[date] = [];
+              formattedEvents[date] = { marked: true, events: [] }; // Add marked: true
             }
-            formattedEvents[date].push(event);
-            // add 7 days to the date for the next occurrence
+            formattedEvents[date].events.push(event);
             date = moment(date).add(7, 'days').format('YYYY-MM-DD');
           }
         } else {
           if (!formattedEvents[date]) {
-            formattedEvents[date] = [];
+            formattedEvents[date] = { marked: true, events: [] }; // Add marked: true
           }
-          formattedEvents[date].push(event);
+          formattedEvents[date].events.push(event);
         }
       });
       return formattedEvents;
@@ -72,7 +69,7 @@ const CalendarScreen = ({}) => {
     const handleDayPress = (day) => {
       const formattedDate = moment(day.dateString).format('YYYY-MM-DD');
       if (weeklyEvents[formattedDate]) {
-        const events = weeklyEvents[formattedDate];
+        const events = weeklyEvents[formattedDate].events; // Access the events array
         setEvents(events);
         setSelectedDate(formattedDate);
       } else {
@@ -112,9 +109,9 @@ const CalendarScreen = ({}) => {
   
     return (
       <View style ={styles.container}>
-        <Calendar 
-          onDayPress={handleDayPress} 
-          markedDates={weeklyEvents} 
+        <Calendar
+          onDayPress={handleDayPress}
+          markedDates={weeklyEvents}
           selected={[selectedDate]} // add selected prop
         />
       
