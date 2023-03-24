@@ -112,10 +112,8 @@ export default function Login({navigation}) {
           backDoorHandler("Test@gmail.com", "Password1")}/> */}
       
 			<View style={styles.buttoncontainer}>
-				{
-          error != ''?
-          <Text style={styles.error}> {error} </Text> : null
-        }	
+      <Text style={styles.error}> {error} </Text>
+
 				<TextInput
 					mode='outlined'
           autoCapitalize="none"
