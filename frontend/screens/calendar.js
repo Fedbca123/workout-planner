@@ -7,10 +7,13 @@ import {useGlobalState} from '../GlobalState.js';
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 const CalendarScreen = ({}) => {
+
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [workoutToEdit, setWorkoutToEdit] = useState(null);
+
     const [editedScheduledDate, setEditedScheduledDate] = useState('');
     const [editedRecurrence, setEditedRecurrence] = useState(false);
+
     const [globalState, updateGlobalState] = useGlobalState();
     const [weeklyEvents, setWeeklyEvents] = useState({});
     const isFocused = useIsFocused();
@@ -83,7 +86,7 @@ const CalendarScreen = ({}) => {
     const handleDayPress = (day) => {
       const formattedDate = moment(day.dateString).format('YYYY-MM-DD');
       if (weeklyEvents[formattedDate]) {
-        const events = weeklyEvents[formattedDate].events; // Access the events array
+        const events = weeklyEvents[formattedDate].events; // access the events array
         setEvents(events);
         setSelectedDate(formattedDate);
       } else {
@@ -100,7 +103,7 @@ const CalendarScreen = ({}) => {
     };
 
     const handleSave = () => {
-      // implement save functionality here
+      // to do -implement save functionality here
       setEditModalVisible(false);
     };
   
@@ -108,7 +111,7 @@ const CalendarScreen = ({}) => {
     const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
 
     const renderItem = ({ item }) => {
-      const eventDate = item.scheduledDate || item.dateOfCompletion;
+      // const eventDate = item.scheduledDate || item.dateOfCompletion;
       const dateText = item.scheduledDate ? 'Scheduled' : 'Completed';
       const startTime = moment(item.scheduledDate).format('hh:mm A');
     
