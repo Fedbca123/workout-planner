@@ -119,7 +119,7 @@ const FriendsScreen = () => {
       });
     };
 
-    if(email == globalState.user.email){
+    if(email.toLowerCase() == globalState.user.email.toLowerCase()){
       Alert.alert("Adding yourself as a friend is a kind gesture but not supported in this application. Sorry!");
       return;
     }else{
