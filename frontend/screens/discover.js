@@ -136,9 +136,9 @@ export default function DiscoverPage(props) {
   const [workoutList, setWorkouts] = useState([]);
 
   
-  useEffect((isFocused) => {
-    if(!isFocused){
-      // console.log("rendering")
+  useEffect(() => {
+    if(isFocused){
+      //console.log("rendering")
       exercisesList();
       workoutsList();
     }
@@ -283,7 +283,6 @@ export default function DiscoverPage(props) {
         // console.log(response.data[0].title);
         // console.log("Filtered Exercises: ", filteredExerciseData);
         //console.log(selectedTypeFilter);
-        // console.log('Success!');
       }
     })
     .catch((e) => {
@@ -328,9 +327,17 @@ export default function DiscoverPage(props) {
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
-    //exercisesList();
+    // filter on masterList
+    if(areFiltersVisible){
+      if(toggleValue){
+        // we are in exercises
+        setFilteredExerciseData(filterExercises());
+      }else{
+        console.log('workouts')
+      }
+    }
+    
 
-    // console.log(selectedEquipmentFilter);
   }
 
   const toggleExercisesActivityIndicator = () => {
@@ -339,10 +346,7 @@ export default function DiscoverPage(props) {
   
   const toggleWorkoutActivityIndicator = () => {
     setIsLoading(!isLoading);
-}
-  // const updateSearch = (search) => {
-  //   setSearch(search);
-  // }
+  }
 
   const searchExercisesFilter = (text) => {
     if (text){
@@ -409,15 +413,32 @@ export default function DiscoverPage(props) {
     }
   }
   
-  // useEffect(() => {
-  //   // console.log("Selected types: ", selectedTypeFilter);
-  //   // console.log("Filtered exercises: ", filteredExerciseData);
-  // }, [selectedTypeFilter, filteredExerciseData]);
-  
-  useEffect(() => {
-    
-    setFilteredExerciseData(filterExercises());
-  }, [selectedEquipmentFilter, selectedMuscleGroupsFilter, selectedTypeFilter, exerciseSearch]);
+  function filteredListIncludes(list,exID){
+    const idArray = list.filter((item) => item.id == exID);
+    return idArray.length == 0 ? false : true;
+  }
+
+  function tryFilter(exercise, searchTags, muscleGroupVals, selectedType,retList){
+    // for every tag in exercise
+    for (const exTag of exercise.tags)
+    {
+      // if were searching with text or equipment and its included && not in the list
+      if ((searchTags.length == 1 || (searchTags.includes(exTag))))
+      {
+        for (const exMusc of exercise.muscleGroups)
+        {
+          //console.log("muscleBool",muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc))
+          if ((muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc)) && (selectedType.length === 0 || selectedType.includes(exercise.exerciseType)))
+          {
+            if(!retList.includes(exercise)/*filteredListIncludes(retList,exercise.id)*/){
+              retList.push(exercise);
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
 
   const filterExercises = () => {
     let retList = [];
@@ -426,45 +447,18 @@ export default function DiscoverPage(props) {
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
     let selectedType = [...selectedTypeFilter.map(a=>a.item)];
     console.log("Types: ", selectedType);
+    
+    // if no tags or search terms then return masterlist
 
+    // for all exercises in masterlist
     for (const exercise of masterExerciseData)
     {
-      for (const exTag of exercise.tags)
-      {
-        if ((searchTags.length == 1 || (searchTags.includes(exTag))) && !retList.includes(exercise))
-        {
-          //console.log(`${exTag} found in ${exercise.title}`)
-          for (const exMusc of exercise.muscleGroups)
-          {
-            //console.log("muscleBool",muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc))
-            if ((muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc)) && (selectedType.length === 0 || selectedType.includes(exercise.exerciseType)))
-            {
-              //console.log(`${exercise.exerciseType} found`)
-              retList.push(exercise);
-            }
-          }
-        }
-      }
+      tryFilter(exercise, searchTags, muscleGroupVals, selectedType,retList);
     }
     // console.log("retlist", retList);
     return retList;
+  }
 
-  }
-  
-
-  function showWorkout() {
-      if (!isWorkoutVisible){
-        setWorkoutVisible(true);
-        setExerciseVisible(false);
-      }
-  }
-  function showExercise() {
-      if (!isExerciseVisible) {
-        setExerciseVisible(true);
-        setWorkoutVisible(false);
-      }
-  }
-  
   const openExerciseInfo = (item) => {
     return (<View>
       <Text style={{fontSize: 20}}>title: {item.title}</Text>
@@ -477,7 +471,6 @@ export default function DiscoverPage(props) {
 
   function closeInfoModal() {
     setInfoPageVisible(false);
-    exercisesList();
   }
 
 return (
