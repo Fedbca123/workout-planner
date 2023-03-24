@@ -168,26 +168,35 @@ export default function Login({navigation}) {
 			</View>
 
 			<View style={{flex:1, width: '50%'}}>
-				<Button
-					title="Login"
-					color="#10B9F1"
-					onPress={() => loginHandler()}
-				/>
-				<Button
-					title="Create an account"
-					color="#C4C4C4"
-					accessibilityLabel="Create an account"
-					onPress={() => {
-						setError("");
-						navigation.navigate("registration");
-				}}/>
-        		<Button
-					title="Forgot Password?"
-					color="#10B9F1"
-					accessibilityLabel="Forgot Password?"
-					onPress={() => {
-						navigation.navigate("forgot-password");
-				}}/>
+				<View style={{height: '25%'}}>
+          <Button
+				  	title="Login"
+				  	color="#10B9F1"
+				  	onPress={() => loginHandler()}
+				  />
+        </View>
+
+        <View style={{height: '25%'}}>
+          <Button
+				  	title="Create an account"
+				  	color="#C4C4C4"
+				  	accessibilityLabel="Create an account"
+				  	onPress={() => {
+				  		setError("");
+				  		navigation.navigate("registration");
+				  }}/>
+        </View>
+				
+        <View style={{height: '25%'}}>
+          <Button
+				  	title="Forgot Password?"
+				  	color="#10B9F1"
+				  	accessibilityLabel="Forgot Password?"
+				  	onPress={() => {
+				  		navigation.navigate("forgot-password");
+				  }}/>
+        </View>
+
 			</View>
 		</KeyboardAwareScrollView>
 	);
