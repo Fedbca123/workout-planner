@@ -376,7 +376,8 @@ const styles = StyleSheet.create({
       width: '70%',
       padding:8,
       marginVertical:5,
-      fontSize:16
+      fontSize:16,
+      textAlign:'auto'
   },
   inputerrorstyle:{
     textAlign: 'center',

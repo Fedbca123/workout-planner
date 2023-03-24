@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
       marginVertical:5,
       fontSize:16,
       alignSelf:'center',
-      textAlign: 'center'
+      textAlign: 'auto',
   },
   inputerrorstyle:{
     textAlign: 'center',

@@ -112,8 +112,10 @@ export default function Login({navigation}) {
           backDoorHandler("Test@gmail.com", "Password1")}/> */}
       
 			<View style={styles.buttoncontainer}>
-				<Text style={styles.error}> {error} </Text>
-						
+				{
+          error != ''?
+          <Text style={styles.error}> {error} </Text> : null
+        }	
 				<TextInput
 					mode='outlined'
           autoCapitalize="none"
@@ -212,10 +214,11 @@ const styles = StyleSheet.create({
 	buttoncontainer: {
 		flex: 0.8,
     marginTop: 16,
-    marginBottom: 15,
+    //marginBottom: 15,
 		alignItems: "center",
 		//paddingTop: 5,
 		width: "100%",
+    //borderWidth:1
 	},
 	heading: {
 		color: "#2B2B2B",
@@ -239,12 +242,14 @@ const styles = StyleSheet.create({
 		backgroundColor: "#10B9F1",
 	},
 	inputstyle: {
-    display: 'inline-block',
+    display: 'flex',
+    flex:1,
 		//textAlign: "center",
 		width: "70%",
 		padding: 8,
 		marginVertical: 2,
     justifyContent: 'center',
+    textAlign:'auto'
 	},
 	error: {
 		textAlign: "center",
