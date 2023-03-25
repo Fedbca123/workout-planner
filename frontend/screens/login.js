@@ -3,7 +3,8 @@ import {
 	Button,
 	Text,
 	Image,
-	View
+	View,
+  Dimensions
 } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import React, { useState, useRef } from "react";
@@ -21,6 +22,8 @@ export default function Login({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
 	const { setIsLoggedIn } = React.useContext(AuthContext);
+
+  const imageWidth = Dimensions.get('window').width;
 
 	// functions
   	const emailInputHandler = (enteredEmail) => {
@@ -93,10 +96,11 @@ export default function Login({navigation}) {
 			keyboardShouldPersistTaps="handled"
 			bounces={false}>
 			<Image
-				style={[styles.image]}
+				style={[styles.image, {width: imageWidth, flex: .8}]}
 				source={require("../../assets/workout.png")}
       />
 
+		<View style={{flex:1, alignItems: 'center', width: '100%'}}>
 			<View style={styles.textcontainer}>
 				<Text style={styles.heading}> Welcome! </Text>
 				<Text style={styles.text}>
@@ -114,55 +118,55 @@ export default function Login({navigation}) {
       {/*code will break at the end to home bc name can't be rendered}
       */}
       
-			<View style={styles.buttoncontainer}>
-				<Text style={styles.error}> {error} </Text>
-						
+	<View style={styles.buttoncontainer}>
+      <Text style={styles.error}> {error} </Text>
+
 				<TextInput
 					mode='outlined'
-          autoCapitalize="none"
+          			autoCapitalize="none"
 					outlineColor="black"
 					activeOutlineColor="#10B9F1"
-          autoComplete='off'
-          dense={true}
-          autoCorrect={false}
+          			autoComplete='off'
+          			dense={true}
+          			autoCorrect={false}
 					style={styles.inputstyle}
 					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
-								placeholder="username@server.com"
+					placeholder="username@server.com"
 					label="Email"
-								returnKeyType="next"
-								onSubmitEditing={() => {
-									passwordRef.current.focus();
-								}}
+					returnKeyType="next"
+					onSubmitEditing={() => {
+						passwordRef.current.focus();
+					}}
 					right={email != "" ? <TextInput.Icon /> : null}
-								blurOnSubmit={false}
-								keyboardType="email-address"
-								onChangeText={(text) => emailInputHandler(text)}/>
+					blurOnSubmit={false}
+					keyboardType="email-address"
+					onChangeText={(text) => emailInputHandler(text)}/>
 				
 				<TextInput
 					mode='outlined'
-          dense={true}
+          			dense={true}
 					outlineColor="black"
 					activeOutlineColor="#10B9F1"
-          autoComplete='off'
-            autoCorrect={false}
-								style={styles.inputstyle}
+          			autoComplete='off'
+            		autoCorrect={false}
+					style={styles.inputstyle}
 					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
-								label="Password"
+					label="Password"
 					placeholder="***"
-								returnKeyType="go"
-								autoCapitalize="none"
-								ref={passwordRef}
+					returnKeyType="go"
+					autoCapitalize="none"
+					ref={passwordRef}
 					//onFocus={()=>setPWFocus(true)}
 					//onBlur={()=>setPWFocus(false)}
-								secureTextEntry={showPassword}
+					secureTextEntry={showPassword}
 					value={password}
-								onChangeText={(text) => {
-									passwordInputHandler(text);
-								}}
-								onSubmitEditing={() => {
-									passwordRef.current.blur();
-									loginHandler();
-								}}
+					onChangeText={(text) => {
+					passwordInputHandler(text);
+					}}
+					onSubmitEditing={() => {
+						passwordRef.current.blur();
+						loginHandler();
+					}}
 					right={showPassword ? 
 						<TextInput.Icon icon="eye" onPress={()=>setShowPassword(!showPassword)}/>
 						:
@@ -170,29 +174,38 @@ export default function Login({navigation}) {
 				}/>
 			</View>
 
-			<View style={{flex:1, width: '50%'}}>
-				<Button
-					title="Login"
-					color="#10B9F1"
-					onPress={() => loginHandler()}
-				/>
-				<Button
-					title="Create an account"
-					color="#C4C4C4"
-					accessibilityLabel="Create an account"
-					onPress={() => {
-						setError("");
-						navigation.navigate("registration");
-				}}/>
-        		<Button
-					title="Forgot Password?"
-					color="#10B9F1"
-					accessibilityLabel="Forgot Password?"
-					onPress={() => {
-						navigation.navigate("forgot-password");
-				}}/>
+	<View style={{flexDirection: 'column',width: '50%', flex: .8}}>
+		<View style={{}}>
+          <Button
+			title="Login"
+			color="#10B9F1"
+			onPress={() => loginHandler()}
+		/>
+        </View>
+
+        <View style={{}}>
+          <Button
+			title="Create an account"
+			color="#C4C4C4"
+			accessibilityLabel="Create an account"
+			onPress={() => {
+				setError("");
+				navigation.navigate("registration");
+			}}/>
+        </View>
+				
+        <View style={{}}>
+          <Button
+			title="Forgot Password?"
+			color="#10B9F1"
+			accessibilityLabel="Forgot Password?"
+			onPress={() => {
+			navigation.navigate("forgot-password");
+			}}/>
+        </View>
 			</View>
-		</KeyboardAwareScrollView>
+		</View>
+	</KeyboardAwareScrollView>
 	);
 }
 
@@ -206,19 +219,20 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 	},
 	textcontainer: {
-		flex: 0.3,
+		flex: 0.45,
 		alignSelf: "center",
 		alignItems: "center",
 		justifyContent: "center",
 		width: "90%",
+		//borderWidth: 2,
 	},
 	buttoncontainer: {
-		flex: 0.8,
-    marginTop: 16,
-    marginBottom: 15,
+    	//marginBottom: 15,
 		alignItems: "center",
+		justifyContent: 'flex-start',
 		//paddingTop: 5,
 		width: "100%",
+    	//borderWidth:1
 	},
 	heading: {
 		color: "#2B2B2B",
@@ -236,18 +250,20 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		top: 0,
-    marginBottom: 5
+    	marginBottom: 5,
 	},
 	login: {
 		backgroundColor: "#10B9F1",
 	},
 	inputstyle: {
-    display: 'inline-block',
+		display: 'flex',
+		height: 40,
 		//textAlign: "center",
 		width: "70%",
 		padding: 8,
 		marginVertical: 2,
-    justifyContent: 'center',
+		justifyContent: 'center',
+		textAlign:'auto'
 	},
 	error: {
 		textAlign: "center",
