@@ -107,26 +107,28 @@ export default function SettingsPage({ navigation })
             Alert.alert('Email is not valid');
         }
 
-        try
-        {
-            API_Instance
-            .post(`users/emailreset/send/to`, {
-                firstName: globalState.user.firstName,
-                lastName: globalState.user.lastName,
-                email: email,
-                id: globalState.user._id
-            })
-        }
-        catch(error)
-        {
+        API_Instance
+        .post(`users/emailreset/send/to`, {
+            firstName: globalState.user.firstName,
+            lastName: globalState.user.lastName,
+            email: email,
+            id: globalState.user._id
+        }).then((result) => {
+            Alert.alert(`An email is being sent to ${email}`); 
+        }).catch((error) => {
             if (error.response.status === 502)
             {
                 Alert.alert(`${email} Already has an account associated with it`);
-                setUserMessage('');
+                //setUserMessage('');
             }
-        } 
+            else if (error.response.status === 506)
+            {
+                Alert.alert(`Email could not send to ${email}`);
+            }
+        })
 
-        setUserMessage(`A confirmation email has been sent to ${email}`);
+
+        setUserMessage(`A confirmation email has been sent to $asdf@asdf{email}`);
     }
 
     function handleResetPassword()
