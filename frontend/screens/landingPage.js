@@ -117,7 +117,7 @@ export default function LandingPage({navigation}) {
 			</View>
 			<View style={styles.BodyContainer}>
 				<Text style={styles.bodyHeader}>Your Scheduled Workouts:</Text>
-				<Button title="start" onPress={() => {navigation.navigate("start", {workout: null})}}/>
+				{/* <Button title="start" onPress={() => {navigation.navigate("start", {workout: null})}}/> */}
 				{loadTodaysWorkout()}
 			</View>
 		</SafeAreaView>
