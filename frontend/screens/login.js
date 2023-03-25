@@ -117,29 +117,31 @@ export default function Login({navigation}) {
       
 	<View style={styles.buttoncontainer}>
       <Text style={styles.error}> {error} </Text>
-
-				<TextInput
-					mode='outlined'
-          			autoCapitalize="none"
-					outlineColor="black"
-					activeOutlineColor="#10B9F1"
-          			autoComplete='off'
-          			dense={true}
-          			autoCorrect={false}
-					style={styles.inputstyle}
-					theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
-					placeholder="username@server.com"
-					label="Email"
-					returnKeyType="next"
-					onSubmitEditing={() => {
-						passwordRef.current.focus();
-					}}
-					right={email != "" ? <TextInput.Icon /> : null}
-					blurOnSubmit={false}
-					keyboardType="email-address"
-					onChangeText={(text) => emailInputHandler(text)}/>
+        <View style={{display: 'flex',height:60, width: '70%', marginVertical: 2}}>
+        <TextInput
+				  	mode='outlined'
+            			autoCapitalize="none"
+				  	outlineColor="black"
+				  	activeOutlineColor="#10B9F1"
+            			autoComplete='off'
+            			dense={true}
+            			autoCorrect={false}
+				  	style={styles.inputstyle}
+				  	theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
+				  	placeholder="username@server.com"
+				  	label="Email"
+				  	returnKeyType="next"
+				  	onSubmitEditing={() => {
+				  		passwordRef.current.focus();
+				  	}}
+				  	right={email != "" ? <TextInput.Icon /> : null}
+				  	blurOnSubmit={false}
+				  	keyboardType="email-address"
+				  	onChangeText={(text) => emailInputHandler(text)}/>
+        </View>
 				
-				<TextInput
+				<View style={{display: 'flex',height:60, width:'70%', marginVertical: 2}}>
+        <TextInput
 					mode='outlined'
           			dense={true}
 					outlineColor="black"
@@ -169,6 +171,9 @@ export default function Login({navigation}) {
 						:
 						<TextInput.Icon icon="eye-off" onPress={()=>setShowPassword(!showPassword)}/>
 				}/>
+        </View>
+				
+        
 			</View>
 
 	<View style={{flexDirection: 'column',width: '50%', flex: .8}}>
@@ -221,7 +226,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "center",
 		width: "90%",
-		//borderWidth: 2,
+		//borderWidth: 1,
 	},
 	buttoncontainer: {
     	//marginBottom: 15,
@@ -229,7 +234,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 		//paddingTop: 5,
 		width: "100%",
-    	//borderWidth:1
+    //borderWidth:1
 	},
 	heading: {
 		color: "#2B2B2B",
@@ -253,12 +258,11 @@ const styles = StyleSheet.create({
 		backgroundColor: "#10B9F1",
 	},
 	inputstyle: {
-		display: 'flex',
-		height: 40,
+		//display: 'flex',
+		//height: 40,
 		//textAlign: "center",
-		width: "70%",
+		//width: "70%",
 		padding: 8,
-		marginVertical: 2,
 		justifyContent: 'center',
 		textAlign:'auto'
 	},
