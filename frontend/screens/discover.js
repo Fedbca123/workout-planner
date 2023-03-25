@@ -135,47 +135,22 @@ export default function DiscoverPage(props) {
   const [exerciseList, setExercises] = useState([]);
   const [workoutList, setWorkouts] = useState([]);
 
-  
+  /*
+  ONLY UNCOMMENT IF WE EVEN WANT THIS TO MAKE AN API CALL EVERY TIME
+  IT RENDERS
   useEffect(() => {
     if(isFocused){
-      //console.log("rendering")
       exercisesList();
       workoutsList();
     }
   }, [isFocused]);
+  */
 
-
-  // useEffect(() => {
-  //   exercisesList();
-  //   workoutsList();
-  // }, []);
-  // useEffect(() => {
-  //   setFilteredExerciseData(filterExercises());
-  // // }, []);
-  
-  // useFocusEffect(
-  //   React.useCallback(() => {
-  //     exercisesList();
-  //     workoutsList();
-  //   }, [])
-  // );
-  
-  // useEffect(() => {
-  //   setFilteredExerciseData(filterExercises());
-  // }, [filterExercises, selectedEquipmentFilter, selectedMuscleGroupsFilter, selectedTypeFilter, exerciseSearch]);
-  
-
-  // useEffect(() => {
-  //   setFilteredExerciseData(filterExercises());
-  // }, [selectedEquipmentFilter, selectedMuscleGroupsFilter, selectedTypeFilter, exerciseSearch]);
-  
-
-  // useEffect(()=> () => {
-  //     // console.log("rendering")
-  //     exercisesList();
-  //     workoutsList();
-    
-  // }, []);
+  // only make API call on first render. Info gets stored regardless
+  useEffect(()=>{
+    exercisesList();
+    workoutsList();
+  },[]);
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
@@ -272,25 +247,12 @@ export default function DiscoverPage(props) {
     })
     .then((response) => {
       if (response.status == 200){
-        console.log("resetting filtered data to master")
-        // Comment out setExercises
-        // setExercises(response.data);
-        //Comment out below
-        //setFilteredWorkoutData(response.data);
-        setMasterExerciseData(response.data);
-        // Uncomment out line below
-        setFilteredExerciseData(masterExerciseData);
-        // toggleExercisesActivityIndicator(isExercisesLoading);
-        // console.log(response.data[0].title);
-        // console.log("Filtered Exercises: ", filteredExerciseData);
-        //console.log(selectedTypeFilter);
+        setFilteredExerciseData(response.data/*filterExercises(null)*/);
+        setMasterExerciseData(response.data)
       }
     })
     .catch((e) => {
-      // console.log(e);
-      // console.log(globalState.authToken);
-      //Alert.alert('Error!');
-    
+      console.log(e); 
     })
   }
 
@@ -420,7 +382,7 @@ export default function DiscoverPage(props) {
     return idArray.length == 0 ? false : true;
   }
 
-  function exTagHit(exTag, searchTags){
+  function exerciseTagFound(exTag, searchTags){
     for(const term of searchTags){
       if(exTag.toLowerCase().includes(term.toLowerCase())){
         console.log(term, 'found in', exTag)
@@ -435,7 +397,7 @@ export default function DiscoverPage(props) {
     // for every tag in exercise
     for (const exTag of exercise.tags)
     {
-      if ((searchTags.length == 0 || exTagHit(exTag, searchTags)))
+      if ((searchTags.length == 0 || exerciseTagFound(exTag, searchTags)))
       {
         for (const exMusc of exercise.muscleGroups)
         {
@@ -449,7 +411,6 @@ export default function DiscoverPage(props) {
           }
         }
       }
-
     }
   }
 
@@ -457,18 +418,19 @@ export default function DiscoverPage(props) {
     let retList = [];
     let searchVals =  term ? term.split(' ') : [];
     let searchTags = [...selectedEquipmentFilter.map(a=>a.item), ...searchVals];
-    console.log("searchtags", searchTags);
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
     let selectedType = [...selectedTypeFilter.map(a=>a.item)];
     // if no tags or search terms then return masterlist
+    if(searchTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0){
+      console.log('no filter but still ate');
+      return masterExerciseData;
+    }
 
     // for all exercises in masterlist
     for (const exercise of masterExerciseData)
     {
       tryFilter(exercise, searchTags, muscleGroupVals, selectedType,retList);
     }
-    
-
 
     return retList;
   }
