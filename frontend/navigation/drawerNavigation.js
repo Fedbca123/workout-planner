@@ -16,7 +16,7 @@ function CustomDrawerContent(props) {
     const [ globalState, updateGlobalState ] = useGlobalState();
     const { isLoggedIn, setIsLoggedIn } = React.useContext(AuthContext);
     const onLogoutButton = () => {
-        Alert.alert( 'Are you sure?','',
+        Alert.alert( 'Are you sure you wish to log out?','',
         [{
             text: 'Yes',
             onPress: () => {
