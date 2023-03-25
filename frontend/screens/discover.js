@@ -247,8 +247,8 @@ export default function DiscoverPage(props) {
     })
     .then((response) => {
       if (response.status == 200){
-        setFilteredExerciseData(response.data/*filterExercises(null)*/);
-        setMasterExerciseData(response.data)
+        setFilteredExerciseData(response.data);
+        setMasterExerciseData(response.data);
       }
     })
     .catch((e) => {
@@ -294,7 +294,7 @@ export default function DiscoverPage(props) {
     if(areFiltersVisible){
       if(toggleValue){
         // we are in exercises
-        setFilteredExerciseData(filterExercises());
+        setFilteredExerciseData(filterExercises(exerciseSearch));
       }else{
         // work on this after
         console.log('workouts')
@@ -387,19 +387,83 @@ export default function DiscoverPage(props) {
       if(exTag.toLowerCase().includes(term.toLowerCase())){
         console.log(term, 'found in', exTag)
         return true;
-      }else{
-        console.log('failure')
       }
     }
+    return false;
   }
 
-  function tryFilter(exercise, searchTags, muscleGroupVals, selectedType,retList){
-    // for every tag in exercise
-    for (const exTag of exercise.tags)
+  function tryFilter(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType){
+    let success = true;
+
+    // type
+    if(selectedType.length > 0){
+      //console.log(selectedType)
+      let matches = false;
+
+      for(const type of selectedType){
+        if(type.toLowerCase() == exercise.exerciseType.toLowerCase()){
+          matches = true;
+          break;
+        }
+      }
+
+      success = success && matches;
+    }
+
+    // for all muscle groups if they exist or are included
+    if(success && muscleGroupVals.length > 0){
+      let matches = false;
+      for(const mg of exercise.muscleGroups){
+        for(const tag of muscleGroupVals){
+          if(mg.toLowerCase() == tag.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // equipment
+    if(success && equipmentTags.length > 0){
+      //console.log("et",equipmentTags)
+      let matches = false;
+      for(const tag of exercise.tags){
+        for(const eq of equipmentTags){
+          if(tag.toLowerCase() == eq.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // search
+    if(success && searchTags.length > 0){
+      //console.log("st",searchTags)
+      let matches = false;
+      for(const tag of exercise.tags){
+        if(exerciseTagFound(tag, searchTags)){
+          matches = true;
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    return success;
+
+    /*for (const exMusc of exercise.muscleGroups)
     {
-      if ((searchTags.length == 0 || exerciseTagFound(exTag, searchTags)))
-      {
-        for (const exMusc of exercise.muscleGroups)
+      for (const exTag of exercise.tags) {
+        if ((searchTags.length == 0 || stringInList(exTag, searchTags)))
         {
           //console.log("muscleBool",muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc))
           if ((muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc)) && (selectedType.length === 0 || selectedType.includes(exercise.exerciseType)))
@@ -411,17 +475,17 @@ export default function DiscoverPage(props) {
           }
         }
       }
-    }
+    }*/
   }
 
   const filterExercises = (term) => {
     let retList = [];
     let searchVals =  term ? term.split(' ') : [];
-    let searchTags = [...selectedEquipmentFilter.map(a=>a.item), ...searchVals];
+    let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
     let selectedType = [...selectedTypeFilter.map(a=>a.item)];
     // if no tags or search terms then return masterlist
-    if(searchTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0){
+    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0){
       console.log('no filter but still ate');
       return masterExerciseData;
     }
@@ -429,7 +493,9 @@ export default function DiscoverPage(props) {
     // for all exercises in masterlist
     for (const exercise of masterExerciseData)
     {
-      tryFilter(exercise, searchTags, muscleGroupVals, selectedType,retList);
+      if (tryFilter(exercise, searchVals, equipmentTags, muscleGroupVals, selectedType)){
+        retList.push(exercise);
+      }
     }
 
     return retList;
