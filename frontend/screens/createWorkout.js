@@ -47,7 +47,7 @@ export default function CreateWorkout({ navigation }) {
         <View style={{flex :1}}>
             {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout}/>}
             {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} updateWorkout={setCurrWorkout} workout={currWorkout} />}
-            {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} setCurrState={setCurrState} />}
+            {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
         </View>
     );
 }

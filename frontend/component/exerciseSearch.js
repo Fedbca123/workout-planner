@@ -18,11 +18,20 @@ import reactDom, { render } from "react-dom";
 import API_Instance from "../../backend/axios_instance.js";
 import { AntDesign } from "@expo/vector-icons";
 import { useGlobalState } from "../GlobalState.js";
+import { useIsFocused } from '@react-navigation/native';
+// import { Icon } from 'react-native-elements';
+import Modal from "react-native-modal";
+import ExerciseInfo from "./exerciseInfo.js";
+import { Header, SearchBar } from "react-native-elements";
 
-export default function ExerciseSearch({ workout, setCurrState }) {
+export default function ExerciseSearch({ workout, updateWorkout, setCurrState }) {
 
     const [exercises, updateExercises] = useState([]);
+    const [modalVisible, setModalVisibility] = useState(false);
+    const [exercise, setExercise] = useState({});
+    const [searchText, setSearchText] = useState('');
     const [globalState, updateGlobalState] = useGlobalState();
+    const isFocused = useIsFocused();
     
 
 	function loadExercises(){
@@ -46,33 +55,76 @@ export default function ExerciseSearch({ workout, setCurrState }) {
 
 	useEffect(() => {
 		loadExercises();
-    }, []);
+    }, [isFocused]);
     
-  return (
+    function handleSearch(val)
+    {
+        /* TO-DO */
+    }
+
+    return (
     <View style={styles.Background}>
+        <SearchBar
+				platform="default"
+				lightTheme={true}
+				containerStyle={{ backgroundColor: "white" }}
+				inputStyle={{color: "black"}}
+				onChangeText={(val) => {
+                    setSearchText(val);
+					handleSearch(val);
+				}}
+				round={true}
+				value={searchText}
+				cancelButtonTitle=""
+                autoCorrect={false}
+				onClear={() => {
+					setSearchText("");
+				}}
+				onCancel={() => {
+					setSearchText("");
+				}}
+				placeholder="Search exercises by name"
+	    />
       <FlatList
         data={exercises}
         keyExtractor={(item) => item.title}
-        style={{maxHeight:450}}
+        style={{flex: 1}}
         renderItem={({ item }) => (
-            <View >
+            <View>
                 <TouchableOpacity style={styles.ExerciseCard}
                     onPress={() => {
-                        let workout = [...globalState.workout];
-                        workout[0].exercises.push(item);
-                        updateGlobalState("workout", workout);
-                        Alert.alert("Exercise Added to workout!");
-                        
+                        // const temp = {...workout[0]};
+                        // console.log(temp.exercises)
+                        // temp.exercises.push(item);
+
+                        workout[0].exercises.push(item)
+                        updateWorkout(workout);
+                        setCurrState('ExerciseReview');
                     }}
                 >
-                    <Image source={{ uri: item.image }} style={styles.ImageStyle} />
+                    <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
                     <Text style={styles.ExerciseText}>{item.title}</Text>
                     {/* Button to take user to page about info for the workout */}
+                    <TouchableOpacity onPress={() => {
+                        setExercise(item); 
+                        setModalVisibility(true)}
+                    }>
+                    <AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
                 </TouchableOpacity>
+                </TouchableOpacity>
+                
             </View>
         )}
-          />
-          <View style={{ display: "flex", flexDirection: "row", borderWidth: 1, justifyContent: "space-evenly", height:"15%", bottom:-88 }}>
+        />
+        <Modal
+			isVisible={modalVisible}
+			coverScreen={true}
+			backdropColor="white"
+			backdropOpacity={1}
+		>
+		    <ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
+		</Modal>
+          <View style={{ display: "flex", flexDirection: "row", borderWidth: 1, justifyContent: "space-evenly", height:"15%"}}>
                 <View style={{ backgroundColor: "#FF8C4B", flex: 1}}>
                      <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("ExerciseReview")}}>
                       {/* <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/> */}
@@ -102,8 +154,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
         flex: 1,
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-evenly",
+        justifyContent: 'space-between',
         alignContent: "space-between",
         // alignItems: "flex-end",
 	},
@@ -119,7 +170,6 @@ const styles = StyleSheet.create({
         elevation: 2,
         borderRadius: 15,
         flexDirection: "row",
-        // flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
     },
@@ -137,6 +187,8 @@ const styles = StyleSheet.create({
 		// top: 30,
 		// marginVertical: "auto"
 		textAlignVertical: "bottom",
+        flex: 1,
+        textAlign: 'center',
 		// flex:0.5
     },
     DeleteExerciseBttn: {

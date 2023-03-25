@@ -162,6 +162,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 							showButton={true}
 							showInput={false}
 							setCurrState={setCurrState}
+							setCurrWorkout={setCurrWorkout}
 							passData={setCurrWorkout}
 						/>
 					</View>

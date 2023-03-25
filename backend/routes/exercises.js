@@ -177,7 +177,7 @@ router.route('/search').post(authenticateToken, async (req, res) => {
     
 
   if (ownerId){
-    if(!filters.$and){   filters.$and = []; }
+    //if(!filters.$and){   filters.$and = []; }
     filters.$or.push({owner:  mongoose.Types.ObjectId(ownerId)});
   }
     
