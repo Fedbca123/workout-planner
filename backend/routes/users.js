@@ -52,6 +52,7 @@ Error Codes:
 501 - password not of 8 chars long
 502 - email already exists
 505 - failed to send email
+506 - Email does not exist
 */
 
 
@@ -1378,8 +1379,9 @@ router.route('/emailreset/send/to').post(async (req,res) => {
       },
     };
     var response = await client.beginSend(emailMessage);
+    return res.status(200).send("Success!");
   } catch (e) {
-    console.log(e);
+    return res.status(506).send("Email could not be sent");
   }
 });
 
