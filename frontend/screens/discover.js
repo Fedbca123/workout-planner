@@ -258,34 +258,26 @@ export default function DiscoverPage(props) {
 
   const workoutsList = async()=> {
     API_Instance.post('workouts/search',
-  {
-    muscleGroupsStr: selectedMuscleGroupsFilter,
-    exerciseTypeSrch : selectedTypeFilter,
-    equipmentFilters : selectedEquipmentFilter
-  },   
-  {
-    headers: {
-      'authorization': `BEARER ${globalState.authToken}`,
-      'Content-Type':'multipart/form-data'
-    }
-  })
-  .then((response) => {
-    if (response.status == 200){
-      // setWorkouts(response.data);
-      setFilteredWorkoutData(response.data);
-      setMasterWorkoutData(response.data);
-      // toggleWorkoutActivityIndicator(isWorkoutsLoading);
-      // console.log(response.data[0].title);
-      // console.log(response.data);
-      // console.log('Success!');
-    }
-  })
-  .catch((e) => {
-    // console.log(e);
-    // console.log(globalState.authToken);
-    //Alert.alert('Error!');
-  
-  })
+    {
+      muscleGroupsStr: selectedMuscleGroupsFilter,
+      exerciseTypeSrch : selectedTypeFilter,
+      equipmentFilters : selectedEquipmentFilter
+    },   
+    {
+      headers: {
+        'authorization': `BEARER ${globalState.authToken}`,
+        'Content-Type':'multipart/form-data'
+      }
+    })
+    .then((response) => {
+      if (response.status == 200){
+        setFilteredWorkoutData(response.data);
+        setMasterWorkoutData(response.data);
+      }
+    })
+    .catch((e) => {
+      console.log(e);  
+    })
 }
 
   const toggleFiltersShowing = () =>{
@@ -296,12 +288,9 @@ export default function DiscoverPage(props) {
         // we are in exercises
         setFilteredExerciseData(filterExercises(exerciseSearch));
       }else{
-        // work on this after
-        console.log('workouts')
+        setFilteredWorkoutData(filterWorkouts(workoutSearch));
       }
     }
-    
-
   }
 
   const toggleExercisesActivityIndicator = () => {
@@ -310,26 +299,6 @@ export default function DiscoverPage(props) {
   
   const toggleWorkoutActivityIndicator = () => {
     setIsLoading(!isLoading);
-  }
-
-  const searchExercisesFilter = (text) => {
-    if (text){
-      const newData = filteredExerciseData.filter((item) => {
-        const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        const itemTags = item.tags || [];
-        const tagData = itemTags.filter(tag => tag !== null && tag !== undefined).map(tag => tag.toUpperCase());
-        return (itemData.indexOf(textData) > -1 
-         || 
-         tagData.some((tag) => tag.indexOf(textData) > -1));
-      });
-      setFilteredExerciseData(newData);
-      setExerciseSearch(text);
-    }
-    else {
-      setFilteredExerciseData(filteredExerciseData);
-      setExerciseSearch(text);
-    }
   }
 
   const searchWorkoutsFilter = (text) => {
@@ -358,28 +327,11 @@ export default function DiscoverPage(props) {
   function onMultiChangeMuscleGroups() {
     return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
   }
-  // Our code:
-  // function onMultiChangeType() {
-  //   return (item) => {
-  //     setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
-  //     // console.log("bye", filterExercises())
-  //     console.log(selectedTypeFilter);
-  //     setFilteredExerciseData(filterExercises());
-  //     console.log(filteredExerciseData[0]);
-  //     console.log(filteredExerciseData[1]);
-  //   }
-  // }
 
-  // ChatGpt:
   function onMultiChangeType() {
     return (item) => {
       setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
     }
-  }
-  
-  function filteredListIncludes(list,exID){
-    const idArray = list.filter((item) => item.id == exID);
-    return idArray.length == 0 ? false : true;
   }
 
   function exerciseTagFound(exTag, searchTags){
@@ -392,7 +344,7 @@ export default function DiscoverPage(props) {
     return false;
   }
 
-  function tryFilter(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType){
+  function tryFilterExercise(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType){
     let success = true;
 
     // type
@@ -459,23 +411,6 @@ export default function DiscoverPage(props) {
     }
 
     return success;
-
-    /*for (const exMusc of exercise.muscleGroups)
-    {
-      for (const exTag of exercise.tags) {
-        if ((searchTags.length == 0 || stringInList(exTag, searchTags)))
-        {
-          //console.log("muscleBool",muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc))
-          if ((muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc)) && (selectedType.length === 0 || selectedType.includes(exercise.exerciseType)))
-          {
-            if(!retList.includes(exercise)){
-              retList.push(exercise);
-              return;
-            }
-          }
-        }
-      }
-    }*/
   }
 
   const filterExercises = (term) => {
@@ -486,15 +421,91 @@ export default function DiscoverPage(props) {
     let selectedType = [...selectedTypeFilter.map(a=>a.item)];
     // if no tags or search terms then return masterlist
     if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0){
-      console.log('no filter but still ate');
+      //console.log('no filter but still ate');
       return masterExerciseData;
     }
 
     // for all exercises in masterlist
     for (const exercise of masterExerciseData)
     {
-      if (tryFilter(exercise, searchVals, equipmentTags, muscleGroupVals, selectedType)){
+      if (tryFilterExercise(exercise, searchVals, equipmentTags, muscleGroupVals, selectedType)){
         retList.push(exercise);
+      }
+    }
+
+    return retList;
+  }
+
+  function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals){
+    let success = true;
+
+    // for all muscle groups if they exist or are included
+    if(muscleGroupVals.length > 0){
+      let matches = false;
+      for(const mg of workout.muscleGroups){
+        for(const tag of muscleGroupVals){
+          if(mg.toLowerCase() == tag.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // equipment
+    if(success && equipmentTags.length > 0){
+      //console.log("et",equipmentTags)
+      let matches = false;
+      for(const tag of workout.tags){
+        for(const eq of equipmentTags){
+          if(tag.toLowerCase() == eq.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // search
+    if(success && searchVals.length > 0){
+      //console.log("st",searchTags)
+      let matches = false;
+      for(const tag of workout.tags){
+        if(exerciseTagFound(tag, searchVals)){
+          matches = true;
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    return success;
+  }
+
+  const filterWorkouts = (term) => {
+    let retList = [];
+    let searchVals =  term ? term.split(' ') : [];
+    let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
+    let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
+    // if no tags or search terms then return masterlist
+    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0){
+      //console.log('no filter but still ate');
+      return masterWorkoutData;
+    }
+
+    // for all exercises in masterlist
+    for (const workout of masterWorkoutData)
+    {
+      if (tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals)){
+        retList.push(workout);
       }
     }
 
@@ -672,15 +683,21 @@ return (
                 keyboardShouldPersistTaps='handled'
 
                 value={(toggleValue ? exerciseSearch : workoutSearch)}
-                onChangeText = {(toggleValue ? ((text) => {
+                onChangeText = {(toggleValue ? 
+                  (
+                    (text) => {
                   setExerciseSearch(text);
                   setFilteredExerciseData(filterExercises(text));
-                  
-                  //searchExercisesFilter(text)
                   // below is for filters
                   //setExerciseSearch(text);
-                }) :
-                 ((text) => searchWorkoutsFilter(text)))}
+                  }
+                  ) :  (
+                    (text) => {
+                      setWorkoutSearch(text);
+                      setFilteredWorkoutData(filterWorkouts(text));
+                    }
+                  )
+                )}
                 // searchIcon = {false}
                 inputStyle={{
                     color: "black",
@@ -738,14 +755,8 @@ return (
               renderItem={({item,index}) => 
                 (
                 <TouchableOpacity onPress={()=>{
-                    //openExerciseInfo(item);
                     setSelectedWorkoutTitle(item.title);
-                    //setSelectedExerciseMuscleGroups(item.muscleGroups);
-                    //setSelectedExerciseImage(item.image);
                     setSelectedExerciseDuration(item.duration);
-                    //showInfoModal();
-                    // key={index}
-                    
               }}>
                 <WorkoutItem title={item.title} 
                 description={item.description}
