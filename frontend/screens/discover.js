@@ -337,7 +337,7 @@ export default function DiscoverPage(props) {
   function exerciseTagFound(exTag, searchTags){
     for(const term of searchTags){
       if(exTag.toLowerCase().includes(term.toLowerCase())){
-        console.log(term, 'found in', exTag)
+        //console.log(term, 'found in', exTag)
         return true;
       }
     }
@@ -721,7 +721,7 @@ return (
               // extraData ={[selectedTypeFilter,selectedEquipmentFilter, selectedMuscleGroupsFilter]}
               renderItem={({item}) => 
                 <TouchableOpacity onPress={()=>{
-                  console.log("Rendering item: ", item._id)
+                  //console.log("Rendering item: ", item._id)
                     openExerciseInfo(item);
                     setSelectedExerciseTitle(item.title)
                     setSelectedExerciseDesc(item.description);
