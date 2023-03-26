@@ -18,6 +18,8 @@ import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 import { AntDesign } from "@expo/vector-icons";
+// import { Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import Modal from "react-native-modal";
 import ExerciseInfo from "./exerciseInfo.js";
 import { Icon } from "react-native-elements";
@@ -40,7 +42,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 	function renderHeader(sections) {
 		if (showButton) {
 			return (
-				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+				<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", alignItems: 'center'}}>
 					
 					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
 
@@ -50,18 +52,16 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 					</View>
 
-					<View style={{ display: "flex", flexDirection: "row", flex: .4, }}>
 						
-						<TouchableOpacity style={styles.addButton} onPress={() => {
+						{/* <TouchableOpacity style={styles.addButton} onPress={() => {
 							passData(data);
 							setCurrState("ExerciseReview");
 							// updateGlobalState("workout", data);
 						}}>
 
-							{/* <Text style={{ alignSelf: "center" }}>Choose Workout</Text> */}
 							<AntDesign name="pluscircleo"  style={{alignSelf: "center" }} size={24}/>
 							
-						</TouchableOpacity>
+						</TouchableOpacity> */}
 
 						<TouchableOpacity style={styles.addButton} onPress={() => {
 							passData(data);
@@ -70,13 +70,14 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 							// updateGlobalState("workout", data);
 						}}>
 
-							<Icon name="edit" type="material" style={{ justifyContent: "center" }}/>
+							{/* <Icon name="edit" type="material" style={{ justifyContent: "center" }}/> */}
+							{/* <AntDesign name="forward"  style={{alignSelf: "center" }} size={24}/> */}
+							{/* <Entypo name="forward" size={24} color="black" /> */}
+							<Ionicons name="arrow-forward-circle-outline" size={34} style={{alignSelf: "center" }}  color="black" />
 							
 						</TouchableOpacity>
 
-					</View>
-					
-					
+							
 				</View>
 			);
 		} else if (startButton) {
@@ -133,7 +134,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ImageStyle} />
 
-						<Text style={styles.text}>{item.title}</Text>
+						<Text style={styles.headerText}>{item.title}</Text>
 
 						<TextInput
 							placeholder="sets"
@@ -155,20 +156,18 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 				);
 			}else{
 				return (
-					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row", marginTop: 10}}>
+					<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", marginTop: 10, alignItems: 'center'}}>
 						
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ExerciseImage} />
 
-						<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column"}}>
-							<Text style={styles.text}>{item.title}</Text>
-						</View>
+						<Text style={styles.text}>{item.title}</Text>
 
 						<TouchableOpacity onPress={() => {
 							setExercise(item);
 							setModalVisibility(true)
 						}}>
-							<AntDesign name="search1" size={16}/>
+						<AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
 						</TouchableOpacity>
 
 					</View>
@@ -243,6 +242,20 @@ const styles = StyleSheet.create({
 	},
 	text: {
 		color: "black",
+		//fontWeight: "bold",
+		fontSize: 16,
+		display: "flex",
+		textAlignVertical: "center",
+		alignContent: "center",
+		flexDirection: "row",
+		justifyContent:"space-around",
+		flex: 1,
+		textAlign: 'center',
+		//marginHorizontal: 10
+		// left: 5,
+	},
+	headerText: {
+		color: "black",
 		fontWeight: "bold",
 		fontSize: 16,
 		display: "flex",
@@ -259,9 +272,8 @@ const styles = StyleSheet.create({
 		justifyContent: "center",
 		alignItems:"center",
 		flexDirection: "row",
-		flex: 1,
-		marginHorizontal: 8,
-		// borderWidth:5,
+		//marginHorizontal: 8,
+		//borderWidth:5,
 	},
 	Background: {
 		backgroundColor: "#E5E5E5",
@@ -279,13 +291,14 @@ const styles = StyleSheet.create({
 		color: "black",
 		position:"relative",
 		fontWeight: "bold",
-		fontSize: 20,
+		fontSize: 22,
 		display: "flex",
 		textAlignVertical: "center",
 		alignContent: "center",
 		flexDirection: "row",
 		justifyContent:"space-around",
 		left: 5,
+		textAlign: 'center'
 	},
 	ImageStyle:{
 		height: 50,

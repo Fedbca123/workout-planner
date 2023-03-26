@@ -116,12 +116,25 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 	return (
 		<SafeAreaView style={styles.Background}>
-			<Button title="Create A Custom Workout" onPress={() => {
-				setCurrWorkout(noTemplate);
-				setCurrState("ExerciseReview");
-			}} />
+			{/* <View style={{marginVertical: 10, borderWidth: 1}}>
+				<Button title="Create A Custom Workout" onPress={() => {
+					setCurrWorkout(noTemplate);
+					setCurrState("ExerciseReview");
+				}} />
+			</View> */}
 
-			<Text style={{fontSize:20, textAlign:"center"}}>-OR-</Text>
+			<TouchableOpacity 
+				style={styles.createButton}
+				onPress={() => {
+					setCurrWorkout(noTemplate);
+					setCurrState("ExerciseReview");
+				}}
+			>
+				<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create A Custom Workout</Text>
+			</TouchableOpacity>
+			
+
+			<Text style={{fontSize:20, textAlign:"center", fontWeight: 'bold'}}>-OR-</Text>
 
 			<Text style={styles.HeaderText}>Select a Workout:</Text>
 
@@ -178,9 +191,23 @@ const styles = StyleSheet.create({
 	Background: {
 		backgroundColor: "white",
 		flex: 1,
+		justifyContent: 'space-between'
 	},
 	HeaderText: {
 		fontSize: 20,
     	fontWeight: 'bold',
 	},
+	createButton: {
+		borderWidth: .5, 
+		width: '60%', 
+		alignSelf: 'center',
+		marginTop: 15, 
+		backgroundColor: '#DDF2FF',
+		borderRadius: 8,
+		shadowColor: 'rgba(0,0,0, .4)', // IOS
+		shadowOffset: { height: 2, width: 2 }, // IOS
+		shadowOpacity: 1, // IOS
+		shadowRadius: 1, //IOS
+		elevation: 2,
+	}
 });

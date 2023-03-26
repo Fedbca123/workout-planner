@@ -93,10 +93,6 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
             <View>
                 <TouchableOpacity style={styles.ExerciseCard}
                     onPress={() => {
-                        // const temp = {...workout[0]};
-                        // console.log(temp.exercises)
-                        // temp.exercises.push(item);
-
                         workout[0].exercises.push(item)
                         updateWorkout(workout);
                         setCurrState('ExerciseReview');
