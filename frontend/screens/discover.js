@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, {useState, useEffect, useCallback} from 'react';
-import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert } from 'react-native';
+import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert , Animated} from 'react-native';
 import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import Modal from "react-native-modal";
@@ -47,40 +47,6 @@ const typeFilters = [
   {id: 2,item:'AMRAP'}
 ];
 
-const exerciseDummyData = [
-  {title: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
-  {title: 'Benchpress', id: 2, Sets: 3, Reps: 5},
-  {title: 'Lunges', id: 3, Sets: 5, Reps: 5},
-  {title: 'Deadlift', id: 4, Sets: 1, Reps: 3},
-  {title: 'Skullcrusher', id: 5, Sets: 4, Reps: 3},
-  {title: 'Squats', id: 6, Sets: 2, Reps: 3},
-  {title: 'Benchpress', id: 7, Sets: 3, Reps: 5},
-  {title: 'Lunges', id: 8, Sets: 5, Reps: 5},
-  {title: 'Deadlift', id: 9, Sets: 1, Reps: 3},
-  {title: 'Skullcrusher', id: 10, Sets: 4, Reps: 3},
-  {title: 'Squats', id: 11, Sets: 2, Reps: 3},
-  {title: 'Benchpress', id: 12, Sets: 3, Reps: 5},
-  {title: 'Lunges', id: 13, Sets: 5, Reps: 5},
-  {title: 'Deadlift', id: 14, Sets: 1, Reps: 3},
-  {title: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
-];
-const oldworkoutDummyData = [
-  {title: 'Top Workout', id: 1, Exercises: 5},
-  {title: 'Legs', id: 2, Exercises: 6},
-  {title: 'Full Body', id: 3, Exercises: 9},
-  {title: 'Arms', id: 4, Exercises: 5},
-  {title: 'Legs', id: 5, Exercises: 6},
-  {title: 'Full Body', id: 6, Exercises: 8},
-  {title: 'Arms', id: 7, Exercises: 5},
-  {title: 'Legs', id: 8, Exercises: 6},
-  {title: 'Full Body', id: 9, Exercises: 11},
-  {title: 'Arms', id: 10, Exercises: 2},
-  {title: 'Legs', id: 11, Exercises: 15},
-  {title: 'Full Body', id: 12, Exercises: 3},
-  {title: 'Bottom Workout', id: 13, Exercises: 7},
-];
-
-
 export default function DiscoverPage(props) {
 
   const isFocused = useIsFocused();
@@ -103,7 +69,6 @@ export default function DiscoverPage(props) {
   // Chosen Exercise Type Filters
   const [selectedTypeFilter, setTypeFilter] = useState([]);
   
-  
   const [globalState, updateGlobalState] = useGlobalState();
   
   // For Exercise Info Page
@@ -111,10 +76,7 @@ export default function DiscoverPage(props) {
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
-  const [selectedWorkoutTitle, setSelectedWorkoutTitle] = useState();
-  const [selectedExerciseDuration, setSelectedExerciseDuration] = useState();
-  const [selectedExerciseTags, setSelectedExerciseTags] = useState();
-  
+
   // All items resulting from search and filter
   const [filteredExerciseData, setFilteredExerciseData] = useState([]);
   // All items from DB from search with only ownerID
@@ -169,9 +131,33 @@ export default function DiscoverPage(props) {
 
   const WorkoutItem = ({title, description, muscleGroups, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
+    const spinValue = React.useState(new Animated.Value(0))[0]; // Makes animated value
     const handlePress = () => {
       setExpanded(!expanded);
     };
+
+    // When button is pressed in, make spinValue go through and up to 1
+    const onPressIn = () => {
+      Animated.spring(spinValue, {
+          toValue: 1,
+          useNativeDriver: true,
+      }).start();
+    };
+
+    // When button is pressed out, make spinValue go through and down to 0
+    const onPressOut = () => {
+      Animated.spring(spinValue, {
+          toValue: 0,
+          useNativeDriver: true,
+      }).start();
+    };
+
+    const spinDeg = spinValue.interpolate({
+      useNativeDriver: true,
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+  })
+
     return(
     <View style={styles.workoutItems}>
     <TouchableOpacity onPress={handlePress} activeOpacity=".4">
@@ -181,6 +167,13 @@ export default function DiscoverPage(props) {
         </View>
         <View style={styles.workoutCardTitleContainer}>
           <Text style={styles.workoutCardTitle}>{title}</Text>
+        </View>
+        <View style={styles.expandableIndicatorContainer}>
+          <Image source ={ require("../../assets/expandable.png")}
+                  style={[
+                    styles.expandableIndicator,
+                    expanded ? {transform: [{rotate: "180deg"}]} : {},
+                    ]} />
         </View>
       </View>
 
@@ -193,14 +186,14 @@ export default function DiscoverPage(props) {
       
         {expanded &&
             exercises.map((exercise) => (
-              <View style = {styles.workoutExerciseCard}>
+              <View style = {styles.workoutExerciseCard} key={exercise._id}>
               <TouchableOpacity onPress={()=>{
+                    // Commenting out openExerciseInfo doesn't break it 
                     openExerciseInfo(exercise);
                     setSelectedExerciseTitle(exercise.title);
                     setSelectedExerciseDesc(exercise.description);
                     setSelectedExerciseMuscleGroups(exercise.muscleGroups);
                     setSelectedExerciseImage(exercise.image);
-                    setSelectedExerciseTags(exercise.tags);
                     showInfoModal();  
               }
               }>             
@@ -249,6 +242,7 @@ export default function DiscoverPage(props) {
       if (response.status == 200){
         setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
+        exercisesLoaded();
       }
     })
     .catch((e) => {
@@ -273,6 +267,7 @@ export default function DiscoverPage(props) {
       if (response.status == 200){
         setFilteredWorkoutData(response.data);
         setMasterWorkoutData(response.data);
+        workoutsLoaded();
       }
     })
     .catch((e) => {
@@ -293,45 +288,26 @@ export default function DiscoverPage(props) {
     }
   }
 
-  const toggleExercisesActivityIndicator = () => {
-      setIsLoading(!isLoading);
+  const exercisesLoaded = async () => {
+      setIsExercisesLoading(false);
+      // console.log("Changing Exercises Activity Indicator");
   }
   
-  const toggleWorkoutActivityIndicator = () => {
-    setIsLoading(!isLoading);
+  const workoutsLoaded = async () => {
+    setIsWorkoutsLoading(false);
+    // console.log("Changing Workouts Activity Indicator");
   }
 
-  const searchWorkoutsFilter = (text) => {
-    if (text){
-      const newData = masterWorkoutData.filter((item) => {
-        const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        const itemTags = item.tags || [];
-        const tagData = itemTags.filter(tag => tag !== null && tag !== undefined).map(tag => tag.toUpperCase());
-        return (itemData.indexOf(textData) > -1 
-         || 
-         tagData.some((tag) => tag.indexOf(textData) > -1));
-      });
-      setFilteredWorkoutData(newData);
-      setWorkoutSearch(text);
-    }
-    else {
-      setFilteredWorkoutData(masterWorkoutData);
-      setWorkoutSearch(text);
-    }
-  }
-  
   function onMultiChangeEquipment() {
     return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
   }
+
   function onMultiChangeMuscleGroups() {
     return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
   }
 
   function onMultiChangeType() {
-    return (item) => {
-      setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
-    }
+    return (item) => {setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));}
   }
 
   function exerciseTagFound(exTag, searchTags){
@@ -548,6 +524,7 @@ return (
                     //borderWidth: -1,
                     // borderColor: "black",
                     activeBackgroundColor: "#E5DAE7",
+                    // activeBackgroundColor: "#FEE2CF",
                     inActiveBackgroundColor: "#88CAE7",
                     }}
                     trackBarStyle={{
@@ -564,6 +541,7 @@ return (
                       // borderWidth: 1,
                       activeBackgroundColor: "#34A5D5",
                       inActiveBackgroundColor: "#BFBCC8"
+                      // inActiveBackgroundColor: "#FAD5A5"
                       }}
                       
                     />
@@ -714,24 +692,31 @@ return (
       </View>
       <View style={styles.discoverContainer}>
       
-              {toggleValue ? <FlatList
+              {toggleValue ? 
+              //Exercises
+              isExercisesLoading ? 
+              
+              <ActivityIndicator size ="large"/>
+              : (<FlatList
               data = {filteredExerciseData}
-              ListEmptyComponent={<View style={styles.emptyList}><Text style={{fontSize:20, alignItems: 'center'}}>No Exercises Found</Text></View>}
+              ListEmptyComponent={
+                <View style={styles.emptyList}>
+                  <Text style={{fontSize:20, alignItems: 'center'}}>
+                  No Exercises Found
+                  </Text>
+                </View>
+              }
               style = {styles.boxContainer}
-              // extraData ={[selectedTypeFilter,selectedEquipmentFilter, selectedMuscleGroupsFilter]}
               renderItem={({item}) => 
                 <TouchableOpacity onPress={()=>{
-                  //console.log("Rendering item: ", item._id)
                     openExerciseInfo(item);
                     setSelectedExerciseTitle(item.title)
                     setSelectedExerciseDesc(item.description);
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
-                    setSelectedExerciseTags(item.tags);
                     showInfoModal();  
-                    
-
                 }}>
+
                   <ExerciseItem title={item.title} 
                   description={item.description} muscleGroups={item.muscleGroups}
                   type={item.exerciseType} tags={item.tags} image={item.image}
@@ -739,15 +724,17 @@ return (
                 </TouchableOpacity>
               }
               keyExtractor={item => item._id}
-             
-              /> : <FlatList
-              // workoutDummyData doesn't go through filtering
-              // data = {workoutDummyData}
+              /> )
+              : // Workouts 
+              isWorkoutsLoading ? 
+              <ActivityIndicator size = "large"/>
+              :
+              <FlatList
               data = {filteredWorkoutData}
               ListEmptyComponent={
                 <View style={styles.emptyList}>
                   <Text style={{fontSize:20, alignItems: 'center'}}>
-                    No Workouts Found
+                  No Workouts Found
                   </Text>
                 </View>
               }
@@ -755,9 +742,10 @@ return (
               renderItem={({item,index}) => 
                 (
                 <TouchableOpacity onPress={()=>{
-                    setSelectedWorkoutTitle(item.title);
-                    setSelectedExerciseDuration(item.duration);
+                    // setSelectedWorkoutTitle(item.title);
+                    // setSelectedExerciseDuration(item.duration);
               }}>
+                
                 <WorkoutItem title={item.title} 
                 description={item.description}
                 location ={item.location} 
@@ -797,33 +785,31 @@ return (
             >
 
             <SafeAreaView style={styles.exerciseInfoHeader}>
-            <View style={styles.exerciseInfoTitleContainer}>
-              <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
-            </View>
-            <View style={styles.exerciseInfoCardImageContainer}>
-              <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
-            </View>
+              <View style={styles.exerciseInfoTitleContainer}>
+                <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
+              </View>
+              <View style={styles.exerciseInfoCardImageContainer}>
+                <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
+              </View>
             </SafeAreaView>
 
             <SafeAreaView style={styles.exerciseInfoBody}>
-            <View style={styles.exerciseInfoDescriptionContainer}>
-              <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
-              <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
-            </View>
-            <View style={styles.exerciseInfoMuscleGroupsContainer}>
-              <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
-              <Text style={styles.exerciseInfoMuscleGroups}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text> 
-            </View>
-            {/* <View style={styles.exerciseInfoTagsContainer}>
-              <Text style={styles.exerciseInfoTagsTitle}>Tags:</Text>
-              <Text style={styles.exerciseInfoTags}>{selectedExerciseTags && selectedExerciseTags.join(", ")}</Text>
-            </View> */}
-            <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
-              {/* <TouchableOpacity> */}
-                <View style={styles.closeButtonContainer}>
-                  <Text style={styles.closeText}>Close</Text>
-                </View>
-              </TouchableOpacity> 
+
+              <View style={styles.exerciseInfoDescriptionContainer}>
+                <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
+                <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
+              </View>
+              <View style={styles.exerciseInfoMuscleGroupsContainer}>
+                <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
+                <Text style={styles.exerciseInfoMuscleGroups}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text> 
+              </View>
+            
+              <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
+                  <View style={styles.closeButtonContainer}>
+                    <Text style={styles.closeText}>Close</Text>
+                  </View>
+                </TouchableOpacity>
+
             </SafeAreaView>
           </Modal>
       </View>
@@ -837,6 +823,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    textDecorationLine: 'underline'
   },
   exerciseInfoDescription:{
     fontSize: 16,
@@ -888,11 +875,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   exerciseInfoTitleContainer:{
-    borderColor: 'black',
-    borderRadius: "20rem",
-    backgroundColor: 'white',
+    // borderColor: 'black',
+    // borderRadius: "20rem",
+    // backgroundColor: 'white',
     overflow: 'hidden',
-    borderWidth: 3,
+    // borderWidth: 3,
     // bottom: -375,
     alignItems: 'center',
     paddingHorizontal: 10,
@@ -973,7 +960,8 @@ const styles = StyleSheet.create({
   workoutHeader:{
     // resizeMode: 'contain',
     flex: 1,
-    // flexDirection: 'row',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     paddingVertical: 30,
   },
 
@@ -1048,6 +1036,15 @@ const styles = StyleSheet.create({
     borderRadius: "15rem",
     flex: 1
   },
+  expandableIndicatorContainer:{
+    position: 'absolute',
+    right: 10,
+    bottom: 0,
+  },
+  expandableIndicator:{
+    width: 15, 
+    height: 15,
+  },
   filterOptions:{
     color: '#000',
     flex: 3,
@@ -1080,6 +1077,7 @@ const styles = StyleSheet.create({
   },
   workoutItems:{
     backgroundColor: '#E5DAE7',
+    // backgroundColor: "#FEE2CF",
     color: "#333",
     fontWeight: "500",
     justifyContent: 'center',
