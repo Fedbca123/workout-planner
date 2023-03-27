@@ -26,10 +26,25 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import config from "../../backend/config.js"
 
 export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrState}) {
-	const [imageUri, setImageUri] = useState(config.DEFAULTEXIMAGE);
+	const [imageUri, setImageUri] = useState(workout[0].image || config.DEFAULTEXIMAGE);
 	const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions(ImagePicker.PermissionStatus.UNDETERMINED);
 	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
 	const [isVisible, setIsVisible] = useState(false);
+
+	useEffect(() => {
+		let temp = {...workout};
+		if (imageUri !== config.DEFAULTEXIMAGE)
+		{
+			let filename = imageUri.split('/').pop();
+			let match = /\.(\w+)$/.exec(filename);
+			let type = match ? `image/${match[1]}` : `image`;
+			temp.image = { uri: imageUri, name: filename, type };	
+		}
+		else{
+			temp.image = null;
+		}
+		updateWorkout(temp);
+	}, [imageUri])
 
 	const getPhotoForExercise = async () => {
 
@@ -80,11 +95,70 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 
     return (
 		<View style={styles.container}>
-			<Image source={{ uri: imageUri }} style={styles.imageStyle} />
-			<Button title = "Choose image"
-			onPress={async () => {
-				setIsVisible(true);
-			}}/> 
+			<View style={styles.imageContainer}>
+				<Image source={{ uri: imageUri }} style={styles.imageStyle} />
+				<Button title = "Choose image"
+				onPress={async () => {
+					setIsVisible(true);
+				}}/> 
+			</View>
+			
+			<View style={styles.inputContainer}>
+				<View style={{width: '70%'}}>
+					<Text style={styles.text}>Title</Text>
+					<TextInput style={styles.inputfield}
+						maxLength= {40}
+						multiline = {false}
+						minHeight = {40}
+						maxHeight = {40}
+						placeholder="Title"
+						placeholderTextColor='#636362'
+						onChangeText={(text) => {
+							let temp = {...workout[0]}
+							temp.title = text;
+							updateWorkout([temp])
+					}}/>
+				</View>
+				
+				<View style={{width: '70%'}}>
+					<Text style={styles.text}>Description</Text>
+					<TextInput style={styles.inputfield}
+						maxLength= {200}
+						multiline = {true}
+						numberOfLines = {4}
+						minHeight = {80}
+						maxHeight = {80}
+						placeholder="Description"
+						placeholderTextColor='#636362'
+						onChangeText={(text) => {
+							let temp = {...workout[0]}
+							temp.description = text;
+							updateWorkout([temp])
+					}}/>
+				</View>
+			</View>
+
+			<View style={styles.navButtonContainer}>
+                <View style={{ backgroundColor: "#FF8C4B", flex: 1}}>
+                     <TouchableOpacity 
+					 	style={{ flex:1, alignItems:"center", justifyContent: "center"}}
+						onPress={() => {
+							setCurrState("ExerciseReview")
+						}}>
+                        <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ alignSelf: "center", flex:1}}>
+                    <TouchableOpacity 
+						style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#10B9F1" }} 
+						onPress={() => {
+                        	setCurrState("Schedule");        
+                    }}>
+                        <AntDesign size={useWindowDimensions().height * 0.08} name="rightcircle" color={"white"}/>
+                    </TouchableOpacity>  
+                </View>
+            </View>
 
 			<Modal
 				isVisible={isVisible}
@@ -139,7 +213,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		backgroundColor: 'white',
-		alignItems: 'center',
+		justifyContent: "space-between",
 	},
 	modalButton: {
 		display: "flex",
@@ -153,11 +227,40 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		textAlign: "center"
 	},
+	imageContainer: {
+		alignItems: 'center',
+		marginTop: '10%',
+	},
 	imageStyle: {
-		width: 200, 
-		height: 200,
+		width: '40%', 
+		aspectRatio: 1,
 		borderRadius: 20,
 		borderWidth: 2,
-		marginTop: 40
+	},
+	inputContainer: {
+		alignItems: 'center',
+		// borderWidth: 2,
+	},
+	inputfield: {
+        textAlign: 'center',
+        borderWidth: .5,
+        shadowColor: 'rgba(0,0,0, .4)', // IOS
+		shadowOffset: { height: 1, width: 1 }, // IOS
+		shadowOpacity: 1, // IOS
+		shadowRadius: 1, //IOS
+        padding: 2,
+        backgroundColor: 'white',
+		marginVertical: 10
+    },
+	navButtonContainer: {
+		height: '15%',
+		display: "flex", 
+		flexDirection: "row",
+		borderWidth: 1, 
+		justifyContent: "space-evenly"
+	},
+	text: {
+		fontSize: 16,
+		fontWeight: 'bold'
 	}
 });

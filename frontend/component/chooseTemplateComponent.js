@@ -131,7 +131,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 					setCurrState("ExerciseReview");
 				}}
 			>
-				<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create A Custom Workout</Text>
+				<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a custom workout</Text>
 			</TouchableOpacity>
 			
 

@@ -23,6 +23,7 @@ import ExerciseReview from "../component/exerciseReview.js";
 import ExerciseSearch from "../component/exerciseSearch.js";
 import BeginFinalizeWorkout from "../component/beginFinalizeWorkout.js";
 import CreateWorkoutHeader from "../component/createWorkoutHeader.js";
+import ScheduleWorkout from "../component/scheduleWorkout.js";
 
 export default function CreateWorkout({ navigation }) {
     const [currState, setCurrState] = useState("chooseTemplate");
@@ -52,6 +53,12 @@ export default function CreateWorkout({ navigation }) {
             })
             //navigation.setOptions({ title: "Finalize Workout" });
         }
+        else if (currState === "Schedule") {
+            navigation.setOptions({
+                header: () => <CreateWorkoutHeader title={"Schedule Workout"} navigation={navigation}/>,
+            })
+            //navigation.setOptions({ title: "Finalize Workout" });
+        }
 	}, [currState]);
     
     // navigation.setOptions({ headertitle: "TEMP" });
@@ -66,6 +73,7 @@ export default function CreateWorkout({ navigation }) {
             {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} updateWorkout={setCurrWorkout} workout={currWorkout} setCreateNew={setCreateNew}/>}
             {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "BeginFinalizing" && <BeginFinalizeWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
+            {currState === "Schedule" && <ScheduleWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
         </View>
     );
 }

@@ -130,7 +130,7 @@ export default function ExerciseReview({ setCurrState, workout, updateWorkout })
                 )}
             />
 
-            <View style={{ display: "flex", flex: 1, flexDirection: "row", borderWidth: 1, justifyContent: "space-evenly" }}>
+            <View style={styles.navButtonContainer}>
                 <View style={{ backgroundColor: "#FF8C4B", flex: 1}}>
                      <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("chooseTemplate")}}>
                         <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/>
@@ -244,5 +244,12 @@ const styles = StyleSheet.create({
     dropdown: {
 		width: 120,
         borderBottomWidth: 0.5,
+	},
+    navButtonContainer: {
+        height: '15%',
+		display: "flex", 
+		flexDirection: "row",
+		borderWidth: 1, 
+		justifyContent: "space-evenly"
 	},
 })
