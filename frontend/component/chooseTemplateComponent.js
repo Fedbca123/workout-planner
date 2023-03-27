@@ -20,7 +20,7 @@ import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header, SearchBar } from "react-native-elements";
 
-export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, selectedWorkout }) {
+export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, selectedWorkout, setCreateNew }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [publicWorkouts, updatePublicWorkouts] = useState([]);
 	const [privateWorkouts, updatePrivateWorkouts] = useState([]);
@@ -127,6 +127,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 				style={styles.createButton}
 				onPress={() => {
 					setCurrWorkout(noTemplate);
+					setCreateNew(true);
 					setCurrState("ExerciseReview");
 				}}
 			>
@@ -177,6 +178,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 							setCurrState={setCurrState}
 							setCurrWorkout={setCurrWorkout}
 							passData={setCurrWorkout}
+							setCreateNew={setCreateNew}
 						/>
 					</View>
 				)}
@@ -196,6 +198,7 @@ const styles = StyleSheet.create({
 	HeaderText: {
 		fontSize: 20,
     	fontWeight: 'bold',
+		marginLeft: 10
 	},
 	createButton: {
 		borderWidth: .5, 

@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDrawerStatus } from '@react-navigation/drawer';
 import { AntDesign } from '@expo/vector-icons';
 
-export default function CreateWorkoutHeader ({ navigation }) {
+export default function CreateWorkoutHeader ({ navigation, title }) {
     const [globalState, updateGlobalState] = useGlobalState();
 
     return (
@@ -21,7 +21,7 @@ export default function CreateWorkoutHeader ({ navigation }) {
                 </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.text}>Create A Workout</Text>
+                <Text style={styles.text}>{title}</Text>
             </View>
         </View>
     )

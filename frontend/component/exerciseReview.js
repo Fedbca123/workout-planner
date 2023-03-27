@@ -13,18 +13,14 @@ import {
 	useWindowDimensions,
     Alert
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import reactDom, { render } from "react-dom";
-import Workouts from "./workout.js";
-import { useNavigation } from "@react-navigation/native";
-import { useGlobalState } from "../GlobalState.js";
-import API_Instance from "../../backend/axios_instance.js";
+import React, { useEffect, useRef, useState } from "react";
+import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function ExerciseReview({ setCurrState, workout, updateWorkout}) {
+export default function ExerciseReview({ setCurrState, workout, updateWorkout }) {
     // const [globalState, updateGlobalState] = useGlobalState();
     const [exercises, updateExercises] = useState(!workout[0].exercises ? [] : workout[0].exercises);
-    
+
     // useEffect(() => {
 	// 	 loadWorkouts();
 	// }, []);
@@ -55,15 +51,76 @@ export default function ExerciseReview({ setCurrState, workout, updateWorkout}) 
                 }
                 renderItem={({ item, index}) => (
                     <View style={styles.ExerciseCard}>
-                        <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
-                        <Text style={styles.ExerciseText}>{item.title}</Text>  
-                        <TouchableOpacity onPress={() => {
-                            let temp = [...exercises];
-                            temp.splice(index, 1);
-                            updateExercises(temp);
-                        }}>
-                            <AntDesign style={styles.DeleteExerciseBttn} name="minus"  size={20}/>
-                        </TouchableOpacity>
+                        <View style={styles.ExerciseCardTop}>
+                            <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
+                            <Text style={styles.ExerciseText}>{item.title}</Text>  
+                            <TouchableOpacity onPress={() => {
+                                let temp = [...exercises];
+                                temp.splice(index, 1);
+                                updateExercises(temp);
+                            }}>
+                                <AntDesign style={styles.DeleteExerciseBttn} name="minus"  size={20}/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{alignItems: 'center'}}>
+                            <Dropdown
+                                style={styles.dropdown}
+                                data= {[{label: 'Cardio', value: "CARDIO"},
+                                        {label: 'Sets x Reps', value: "SETSXREPS"},
+                                        {label: 'AMRAP', value: "AMRAP"}]
+                                        }
+                                labelField="label"
+                                valueField="value"
+                                value={item.exerciseType}
+                                onChange={(val) => {
+                                    let temp = [...exercises];
+                                    temp[index].exerciseType = val.value;
+                                    updateExercises(temp);
+                                }}
+							/>
+                        </View>
+                        <View style={styles.ExerciseCardBottom}>
+                            {item.exerciseType === 'SETSXREPS' &&
+                            <TextInput style={styles.inputfield}
+                                keyboardType='numeric'
+                                placeholder="Sets"
+                                onChangeText={(text) => {                  
+                                    let temp = [...exercises];
+                                    let str = text.split('.');
+                                    // target.value = str[0];
+                                    temp[index].sets = str[0];
+                                    // console.log(temp[index].sets = str[0])
+                                    updateExercises(temp);
+                                }}/>}
+                            {item.exerciseType === 'SETSXREPS' &&
+                            <TextInput style={styles.inputfield}
+                                keyboardType='numeric'
+                                placeholder="Reps"
+                                onChangeText={(text) => {
+                                    let temp = [...exercises];
+                                    let str = text.split('.');
+                                    temp[index].reps = str[0];
+                                    updateExercises(temp);
+                                }}/>}
+                            {(item.exerciseType === 'SETSXREPS' || item.exerciseType === 'AMRAP') &&
+                            <TextInput style={styles.inputfield}
+                                keyboardType='numeric'
+                                placeholder="Weight"
+                                onChangeText={(text) => {
+                                    let temp = [...exercises];
+                                    temp[index].weight = text;
+                                    updateExercises(temp);
+                                }}/>}
+                            {(item.exerciseType === 'AMRAP' || item.exerciseType === 'CARDIO') &&
+                            <TextInput style={styles.inputfield}
+                                keyboardType='numeric'
+                                placeholder="Time"
+                                onChangeText={(text) => {
+                                    let temp = [...exercises];
+                                    temp[index].time = text;
+                                    updateExercises(temp);
+                                }}/>}
+                        </View>
                     </View>
                     
                 )}
@@ -82,8 +139,7 @@ export default function ExerciseReview({ setCurrState, workout, updateWorkout}) 
                             Alert.alert("Love the enthusiasm, but you have to at least have one exercise if you wanna workout");
                         } else {
                             setCurrState("BeginFinalizing"); 
-                        }
-                        
+                        }       
                     }}>
                         <AntDesign size={useWindowDimensions().height * 0.08} name="rightcircle" color={"white"}/>
                     </TouchableOpacity>  
@@ -114,14 +170,38 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         elevation: 2,
         borderRadius: 15,
-        flexDirection: "row",
-        // flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
+        alignItems: 'center'
+        
+    },
+    ExerciseCardTop: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    ExerciseCardBottom: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignContent: 'center',
+        marginTop: 20
+    },
+    inputfield: {
+        marginHorizontal: 20,
+        width: '20%',
+        textAlign: 'center',
+        borderWidth: .5,
+        shadowColor: 'rgba(0,0,0, .4)', // IOS
+		shadowOffset: { height: 1, width: 1 }, // IOS
+		shadowOpacity: 1, // IOS
+		shadowRadius: 1, //IOS
+        padding: 2,
+        backgroundColor: 'white',
     },
     ExerciseImage: {
-		height: 50,
-		width: 50,
+		height: 70,
+		width: 70,
 		borderWidth: 1,
 		borderRadius: 20,
 		// marginTop: 10
@@ -156,5 +236,9 @@ const styles = StyleSheet.create({
 		shadowOpacity: 1, // IOS
 		shadowRadius: 1, //IOS
 		elevation: 2,
-	}
+	},
+    dropdown: {
+		width: 120,
+        borderBottomWidth: 0.5,
+	},
 })

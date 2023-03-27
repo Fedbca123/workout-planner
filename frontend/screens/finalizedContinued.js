@@ -80,9 +80,7 @@ export default function FinalizedContinued({ navigation }) {
 				setImageUri(result.assets[0].uri);
 				return result.assets[0].uri;
 			}
-		}
-		
-		
+		}	
 	}
 
 	function scheduledWorkout() {
