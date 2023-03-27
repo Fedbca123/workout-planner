@@ -84,6 +84,7 @@ export default function ExerciseReview({ setCurrState, workout, updateWorkout })
                             <TextInput style={styles.inputfield}
                                 keyboardType='numeric'
                                 placeholder="Sets"
+                                placeholderTextColor='#636362'
                                 onChangeText={(text) => {                  
                                     let temp = [...exercises];
                                     let str = text.split('.');
@@ -96,6 +97,7 @@ export default function ExerciseReview({ setCurrState, workout, updateWorkout })
                             <TextInput style={styles.inputfield}
                                 keyboardType='numeric'
                                 placeholder="Reps"
+                                placeholderTextColor='#636362'
                                 onChangeText={(text) => {
                                     let temp = [...exercises];
                                     let str = text.split('.');
@@ -106,6 +108,7 @@ export default function ExerciseReview({ setCurrState, workout, updateWorkout })
                             <TextInput style={styles.inputfield}
                                 keyboardType='numeric'
                                 placeholder="Weight"
+                                placeholderTextColor='#636362'
                                 onChangeText={(text) => {
                                     let temp = [...exercises];
                                     temp[index].weight = text;
@@ -115,6 +118,7 @@ export default function ExerciseReview({ setCurrState, workout, updateWorkout })
                             <TextInput style={styles.inputfield}
                                 keyboardType='numeric'
                                 placeholder="Time"
+                                placeholderTextColor='#636362'
                                 onChangeText={(text) => {
                                     let temp = [...exercises];
                                     temp[index].time = text;
