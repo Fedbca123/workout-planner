@@ -97,7 +97,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 					}}/> 
                 </View> 
                 <View style={{width: "70%", marginBottom: "10%"}}>
-                    <Text style={styles.text}>Duration of the Workout:</Text>
+                    <Text style={styles.text}>{'Estimated duration (in minutes):'}</Text>
                     <TextInput
                         keyboardType="numeric"
                         placeholder="60 min."

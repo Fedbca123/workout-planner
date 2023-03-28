@@ -186,144 +186,117 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 									<Text style={styles.workoutCardTitle}>
 										{workout[0].title}
 									</Text>
-								</View>
-								<View
-									style={styles.expandableIndicatorContainer}
-								>
-									<Image
-										// source={require("../../assets/expandable.png")}
-										source={null}
-										style={[
-											styles.expandableIndicator,
-											expanded
-												? {
-														transform: [
-															{
-																rotate: "180deg",
-															},
-														],
-												  }
-												: {},
-											,
-											{
-												height: 90,
-												width: 90,
-											},
-										]}
-									/>
-								</View>
-							</View>
-
-							{true && (
-								<View style={styles.workoutCardText}>
 									<Text style={styles.workoutCardDescription}>
 										{workout[0].description}
 									</Text>
-									<Text style={styles.workoutCardDuration}>
-										Duration: {workout[0].duration} min
-									</Text>
-									{workout[0].location && (
-										<Text
-											style={styles.workoutCardDuration}
-										>
-											Location: {workout[0].location}
-										</Text>
-									)}
-									<Text style={styles.workoutCardDuration}>
-										Time:{" "}
-										{new Date(
-											workout[0].scheduledDate,
-										).toDateString() +
-											" " +
-											new Date(
-												workout[0].scheduledDate,
-											).toLocaleTimeString()}
-									</Text>
-									<Text
-										style={styles.workoutCardMuscleGroups}
-									>
-										Muscle Groups:{" "}
-										{workout[0].muscleGroups.join(", ")}
-									</Text>
 								</View>
-							)}
+							</View>
+							
+							<View style={styles.workoutCardText}>
+								
+								<Text style={styles.workoutCardDuration}>
+									Duration: {workout[0].duration} min
+								</Text>
+								{workout[0].location && (
+								<Text
+									style={styles.workoutCardDuration}
+								>
+									Location: {workout[0].location}
+								</Text>
+								)}
+								<Text style={styles.workoutCardDuration}>
+									Time:{" "}
+									{new Date(
+										workout[0].scheduledDate,
+									).toDateString() +
+										" " +
+										new Date(
+											workout[0].scheduledDate,
+										).toLocaleTimeString()}
+								</Text>
+								<Text
+									style={styles.workoutCardMuscleGroups}
+								>
+									Muscle Groups:{" "}
+									{workout[0].muscleGroups.join(", ")}
+								</Text>
+							</View>
+							
 
-							{true &&
-								workout[0].exercises.map((exercise) => (
+							{workout[0].exercises.map((exercise) => (
+							<View
+								style={styles.workoutExerciseCard}
+								key={exercise._id}
+							>
+								<TouchableOpacity
+									activeOpacity={1}
+									onPress={() => {
+										// Commenting out openExerciseInfo doesn't break it
+									}}
+								>
 									<View
-										style={styles.workoutExerciseCard}
-										key={exercise._id}
+										style={
+											styles.workoutExerciseContainer
+										}
 									>
-										<TouchableOpacity
-											activeOpacity={1}
-											onPress={() => {
-												// Commenting out openExerciseInfo doesn't break it
-											}}
+										<View
+											style={
+												styles.workoutExerciseCardContent
+											}
 										>
 											<View
 												style={
-													styles.workoutExerciseContainer
+													styles.workoutExerciseCardImageContainer
 												}
 											>
-												<View
+												<Image
 													style={
-														styles.workoutExerciseCardContent
+														styles.workoutExerciseCardImage
+													}
+													src={exercise.image}
+												/>
+											</View>
+											<View
+												style={
+													styles.workoutExerciseCardTextContainer
+												}
+											>
+												<Text
+													style={
+														styles.workoutExerciseCardTitle
 													}
 												>
-													<View
-														style={
-															styles.workoutExerciseCardImageContainer
-														}
-													>
-														<Image
-															style={
-																styles.workoutExerciseCardImage
-															}
-															src={exercise.image}
-														/>
-													</View>
-													<View
-														style={
-															styles.workoutExerciseCardTextContainer
-														}
-													>
-														<Text
-															style={
-																styles.workoutExerciseCardTitle
-															}
-														>
-															{exercise.title}
-														</Text>
-														<Text>
-															{/* {exercise.exerciseType +
-																"\t"} */}
-															{exercise.exerciseType ===
-																"SETSXREPS" &&
-																exercise.sets +
-																	" x " +
-																	exercise.reps +
-																	" with " +
-																	exercise.weight +
-																	"lbs"}
-															{exercise.exerciseType ===
-																"AMRAP" &&
-																exercise.sets +
-																	" sets with " +
-																	exercise.weight +
-																	"lbs for " +
-																	exercise.time +
-																	" seconds"}
-															{exercise.exerciseType ===
-																"CARDIO" &&
-																exercise.time +
-																	" seconds"}
-														</Text>
-													</View>
-												</View>
+													{exercise.title}
+												</Text>
+												<Text>
+													{/* {exercise.exerciseType +
+														"\t"} */}
+													{exercise.exerciseType ===
+														"SETSXREPS" &&
+														exercise.sets +
+															" x " +
+															exercise.reps +
+															" with " +
+															exercise.weight +
+															"lbs"}
+													{exercise.exerciseType ===
+														"AMRAP" &&
+														exercise.sets +
+															" sets with " +
+															exercise.weight +
+															"lbs for " +
+															exercise.time +
+															" seconds"}
+													{exercise.exerciseType ===
+														"CARDIO" &&
+														exercise.time +
+															" seconds"}
+												</Text>
 											</View>
-										</TouchableOpacity>
+										</View>
 									</View>
-								))}
+								</TouchableOpacity>
+							</View>))}
 						</TouchableOpacity>
 					</View>
 				)}
@@ -371,14 +344,13 @@ const styles = StyleSheet.create({
 	workoutExerciseCard: {
 		// backgroundColor: "#E5DAE7",
 		// color: "#333",
-		fontWeight: "500",
+		// fontWeight: "500",
 		justifyContent: "center",
-		textAlign: "center",
-		padding: 0.5,
-		resizeMode: "contain",
+		// textAlign: "center",
+		// resizeMode: "contain",
 		//height: Dimensions.get('window') / numColumns,
 		flex: 1,
-		margin: 1,
+		margin: 2,
 	},
 	workoutExerciseCardTextContainer: {
 		alignItems: "center",
@@ -398,18 +370,22 @@ const styles = StyleSheet.create({
 	},
 	workoutCardText: {
 		alignItems: "center",
-		marginLeft: 0,
-		paddingTop: 15,
+		// marginLeft: 0,
 		textAlign: "center",
+		// borderWidth: 2
 	},
 	workoutCardTitleContainer: {
-		alignItems: "center",
-		// marginLeft: 120,
-		textAlign: "center",
+		// alignItems: "center",
+		// // marginLeft: 120,
+		// textAlign: "center",
+		// borderWidth: 2,
+		flex: 1,
+		marginRight: 5
 	},
 	workoutCardTitle: {
-		fontSize: 18,
+		fontSize: 22,
 		fontWeight: "bold",
+		
 	},
 	exerciseCardSets: {
 		fontWeight: "bold",
@@ -419,16 +395,17 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		fontSize: 12,
 		textAlign: "center",
-		marginVertical: 5,
+		marginVertical: 2,
+		marginBottom: 10,
 	},
 	workoutTitle: {
 		fontWeight: "bold",
-		fontSize: 13,
+		fontSize: 16,
 	},
 	workoutCardDescription: {
-		fontWeight: "bold",
+		// fontWeight: "bold",
 		fontSize: 14,
-		textAlign: "center",
+		// textAlign: "center",
 		marginVertical: 5,
 	},
 	workoutCardTags: {
@@ -442,11 +419,12 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		// paddingBottom: 10,
 		textAlign: "center",
+		marginVertical: 2,
 	},
 	workoutExerciseContainer: {
 		backgroundColor: "#67BBE0",
-		color: "#333",
-		fontWeight: "500",
+		// color: "#333",
+		// fontWeight: "500",
 		// alignContent: 'center',
 		// alignItems: 'center',
 		// justifyContent: 'center',
@@ -458,16 +436,16 @@ const styles = StyleSheet.create({
 		//height: Dimensions.get('window') / numColumns,
 		// flex: 1,
 		// flexDirection: 'row',
-		alignSelf: "stretch",
+		// alignSelf: "stretch",
 		margin: 2,
 		// flex: 1,
 		flexDirection: "row",
 		borderColor: "black",
-		borderWidth: 2,
+		borderWidth: 1,
 		borderRadius: "15rem",
 		borderRadius: 20,
 		shadowColor: "#000",
-		shadowOffset: { width: 0, height: 0 },
+		shadowOffset: { width: 1, height: 1 },
 		shadowOpacity: 1,
 		shadowRadius: 2,
 	},
@@ -485,26 +463,24 @@ const styles = StyleSheet.create({
 		bottom: 0,
 	},
 	workoutCardImageContainer: {
-		position: "absolute",
-		left: 10,
-		top: 0,
-		marginRight: 20,
-		borderColor: "black",
-		borderWidth: 1.5,
-		borderRadius: 20,
+		marginHorizontal: 30,
+		// borderWidth: 2,
 	},
 	workoutCardImage: {
 		width: 90,
 		height: 90,
 		resizeMode: "stretch", // can be changed to contain if needed
 		borderRadius: 20,
+		borderColor: "black",
+		borderWidth: 1.5,
+		borderRadius: 20,
 	},
 	workoutHeader: {
 		// resizeMode: 'contain',
 		flex: 1,
 		flexDirection: "row",
-		justifyContent: "space-evenly",
-		paddingVertical: 30,
+		paddingTop: 15,
+		// borderWidth: 2,
 	},
 	expandableIndicator: {
 		width: 15,
@@ -514,14 +490,14 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		left: 10,
 		marginRight: 20,
-		borderColor: "black",
-		borderWidth: 1.5,
-		borderRadius: 20,
 	},
 	workoutExerciseCardImage: {
 		width: 60,
 		height: 60,
 		resizeMode: "stretch", // can be changed to contain if needed
+		borderRadius: 20,
+		borderColor: "black",
+		borderWidth: 1.5,
 		borderRadius: 20,
 	},
 });
