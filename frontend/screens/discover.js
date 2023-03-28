@@ -129,34 +129,29 @@ export default function DiscoverPage(props) {
     </View>
   );
 
-  const WorkoutItem = ({title, description, muscleGroups, duration, exercises, image}) => {
+  const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
-    const spinValue = React.useState(new Animated.Value(0))[0]; // Makes animated value
     const handlePress = () => {
       setExpanded(!expanded);
     };
-
-    // When button is pressed in, make spinValue go through and up to 1
-    const onPressIn = () => {
-      Animated.spring(spinValue, {
-          toValue: 1,
-          useNativeDriver: true,
-      }).start();
-    };
-
-    // When button is pressed out, make spinValue go through and down to 0
-    const onPressOut = () => {
-      Animated.spring(spinValue, {
-          toValue: 0,
-          useNativeDriver: true,
-      }).start();
-    };
-
-    const spinDeg = spinValue.interpolate({
-      useNativeDriver: true,
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg']
-  })
+    function addWorkout(workout){
+      console.log("Adding Workout", workout.title)
+    }
+    function deleteWorkout(workout){
+      Alert.alert(
+        '',
+        'Are you sure you want to delete\n' + workout.title + '?',
+        [
+           {text: 'Cancel',
+            onPress: () => 
+              console.log('Cancel Pressed'),},
+           {text: 'Delete', 
+            onPress: () => 
+              console.log('Deleting ', title, '...')},
+        ],
+        { cancelable: false }
+   )
+    }
 
     return(
     <View style={styles.workoutItems}>
@@ -178,11 +173,20 @@ export default function DiscoverPage(props) {
       </View>
 
         {expanded && 
-          <View style={styles.workoutCardText}>
-            <Text style={styles.workoutCardDescription}>{description}</Text>
-            <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
-            <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
-          </View>}
+          <View>
+            <View style={styles.workoutCardText}>
+              <Text style={styles.workoutCardDescription}>{description}</Text>
+              <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
+              <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
+            </View>
+            <TouchableOpacity onPress={()=>
+              addWorkout(workout)}>
+              <View style={styles.scheduleWorkoutButton}>
+                <Text style={styles.scheduleWorkoutText}>SCHEDULE WORKOUT</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          }
       
         {expanded &&
             exercises.map((exercise) => (
@@ -218,6 +222,15 @@ export default function DiscoverPage(props) {
             </TouchableOpacity>
             </View>
             ))}
+
+          {expanded &&
+            <TouchableOpacity onPress={()=>
+              deleteWorkout(workout)}>
+              <View style={styles.deleteWorkoutButton}>
+                <Text style={styles.deleteWorkoutText}>DELETE WORKOUT</Text>
+              </View>
+            </TouchableOpacity>}
+
       </TouchableOpacity>
     </View>
     );
@@ -465,6 +478,8 @@ export default function DiscoverPage(props) {
 
     return success;
   }
+
+  
 
   const filterWorkouts = (term) => {
     let retList = [];
@@ -746,7 +761,9 @@ return (
                     // setSelectedExerciseDuration(item.duration);
               }}>
                 
-                <WorkoutItem title={item.title} 
+                <WorkoutItem 
+                workout={item}
+                title={item.title} 
                 description={item.description}
                 location ={item.location} 
                 muscleGroups={item.muscleGroups} 
@@ -1191,6 +1208,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
  },
+
+ scheduleWorkoutText:{
+  fontSize: 18,
+  fontWeight: 'bold',
+  textAlign: 'center',
+  
+},
+
+deleteWorkoutText:{
+  fontSize: 18,
+  fontWeight: 'bold',
+  alignItems: 'center',
+  alignContent: 'center',
+  textAlign: 'center',
+  justifyContent: 'center'
+},
    emptyList:{
     alignItems: 'center'
    },
@@ -1336,6 +1369,42 @@ const styles = StyleSheet.create({
     shadowRadius: 2
  },
 
+ scheduleWorkoutButton:{
+  backgroundColor: 'lightgreen',
+  color: "#333",
+  fontWeight: "500",
+  paddingVertical: 15,
+  alignSelf: 'stretch',
+  margin: 2,
+  borderColor: 'black',
+  borderWidth: 2,
+  borderRadius: "15rem",
+  borderRadius: 20,
+  shadowColor: "#000",
+  shadowOffset: {width: 0, height: 0},
+  shadowOpacity: 1,
+  shadowRadius: 2
+},
+
+
+deleteWorkoutButton:{
+  backgroundColor: 'red',
+  color: "#333",
+  fontWeight: "500",
+  paddingVertical: 15,
+  alignSelf: 'stretch',
+  margin: 2,
+  justifyContent: 'center',
+  borderColor: 'black',
+  borderWidth: 2,
+  borderRadius: "15rem",
+  borderRadius: 20,
+  shadowColor: "#000",
+  shadowOffset: {width: 0, height: 0},
+  shadowOpacity: 1,
+  shadowRadius: 2
+},
+
   workoutExerciseCardContent:{
     // alignContent: 'center',
     alignItems: 'center',
@@ -1344,15 +1413,5 @@ const styles = StyleSheet.create({
     
     flex: 1,
     flexDirection: 'row',
-  },
-
-  page:{
-    //height: 600,
-  },
-  container: {
-  //  height: 700,
-    //backgroundColor: '#fff',
-    //alignItems: 'stretch',
-    //justifyContent: 'space-evenly',
   },
 });
