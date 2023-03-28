@@ -1013,6 +1013,7 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
       }
 
       const workout = {
+        _id: workoutID,
         title: workoutObj.title,
         description: workoutObj.description,
         image: workoutObj.image,

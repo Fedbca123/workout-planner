@@ -5,6 +5,7 @@ import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
 import {useGlobalState} from '../GlobalState.js';
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const CalendarScreen = ({}) => {
 
@@ -13,7 +14,8 @@ const CalendarScreen = ({}) => {
 
     const [editedScheduledDate, setEditedScheduledDate] = useState('');
     const [editedRecurrence, setEditedRecurrence] = useState(false);
-
+    const [datePickerVisible, setDatePickerVisible] = useState(false);
+    
     const [globalState, updateGlobalState] = useGlobalState();
     const [weeklyEvents, setWeeklyEvents] = useState({});
     const isFocused = useIsFocused();
@@ -102,9 +104,89 @@ const CalendarScreen = ({}) => {
       setEditModalVisible(true);
     };
 
-    const handleSave = () => {
-      // to do -implement save functionality here
-      setEditModalVisible(false);
+    const handleConfirm = (date) => {
+      const formattedDate = moment(date).format('YYYY-MM-DDTHH:mm');
+      setEditedScheduledDate(formattedDate);
+      hideDatePicker();
+    };
+
+    const updateWorkout = async (workout, updatedInfo) => {
+      try {
+        const response = await API_Instance.patch(
+          `workouts/${workout._id}`,
+          updatedInfo,
+          {
+            headers: {
+              'authorization': `Bearer ${globalState.authToken}`,
+            },
+          }
+        );
+        return response.data;
+      } catch (error) {
+        console.error('Error updating workout:', error);
+        return null;
+      }
+    };
+
+    const showDatePicker = () => {
+      setDatePickerVisible(true);
+    };
+    
+    const hideDatePicker = () => {
+      setDatePickerVisible(false);
+    };
+
+    const handleSave = async () => {
+      const updatedInfo = {
+        scheduledDate: editedScheduledDate,
+        recurrence: editedRecurrence,
+      };
+
+      const updatedWorkout = await updateWorkout(workoutToEdit._id, updatedInfo);
+    
+      if (updatedWorkout) {
+        // Update the workout information in the calendar and close the modal
+        handleEditModalClose();
+        fetchEvents(); // Refetch the events to reflect the updated workout information
+      } else {
+        Alert.alert('Error', 'Failed to update the workout. Please try again.');
+      }
+    };
+    
+    // const deleteScheduledWorkout = async (workout) => {
+    //   try {
+    //     const response = await API_Instance.patch(
+    //       `users/${userId}/workouts/remove/${workout._id}`,
+    //       {},
+    //       {
+    //         headers: {
+    //           'authorization': `Bearer ${globalState.authToken}`,
+    //         },
+    //       }
+    //     );
+    //     return response.data;
+    //   } catch (error) {
+    //     console.error('Error deleting scheduled workout:', error);
+    //     return null;
+    //   }
+    // };
+
+    const handleDelete = async (workout) => {
+      // console.log(workout);
+      try {
+        await API_Instance.patch(`users/${globalState.user._id}/workouts/remove/${workout._id}`, {}, {
+          headers: {
+            'authorization': `Bearer ${globalState.authToken}`,
+          },
+        });
+        Alert.alert('Workout deleted');
+        fetchEvents(); 
+      } catch (error) {
+        if (error.response && error.response.status === 403) {
+          Alert.alert('Failed to authenticate you');
+        }
+        console.log(error);
+      }
     };
   
     const [events, setEvents] = useState([]);
@@ -121,7 +203,10 @@ const CalendarScreen = ({}) => {
             <Text>{dateText} workout at {startTime} </Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
             <Text>Location: {item.location}</Text>
-            <Button title="Edit" onPress={() => handleEdit(item)} />
+            <View style={{ flexDirection: 'row' }}>
+              <Button title="Edit" onPress={() => handleEdit(item)} />
+              <Button title="Delete workout" onPress={() => handleDelete(item)}/>
+            </View>
           </View>
         );
       } else if (item.ownerEmail === globalState.user?.email) {
@@ -174,17 +259,17 @@ const CalendarScreen = ({}) => {
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              {workoutToEdit && (
+                  {workoutToEdit && (
                 <>
                   <Text style={styles.modalTitle}>Edit Workout</Text>
                   {/* Edit the workout information */}
                   <Text>Date & Time:</Text>
-                  <TextInput
-                    style={styles.modalInput}
-                    value={editedScheduledDate}
-                    onChangeText={setEditedScheduledDate}
+                  <Button title="Select Date & Time" onPress={showDatePicker} />
+                  <DateTimePickerModal
+                    isVisible={datePickerVisible}
                     mode="datetime"
-                    placeholder="YYYY-MM-DDTHH:mm"
+                    onConfirm={handleConfirm}
+                    onCancel={hideDatePicker}
                   />
                   <Text>Recurrence:</Text>
                   <View style={styles.modalSwitch}>
