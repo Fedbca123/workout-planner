@@ -134,6 +134,24 @@ export default function DiscoverPage(props) {
     const handlePress = () => {
       setExpanded(!expanded);
     };
+    function addWorkout(workout){
+      console.log("Adding Workout", workout.title)
+    }
+    function deleteWorkout(workout){
+      Alert.alert(
+        '',
+        'Are you sure you want to delete\n' + workout.title + '?',
+        [
+           {text: 'Cancel',
+            onPress: () => 
+              console.log('Cancel Pressed'),},
+           {text: 'Delete', 
+            onPress: () => 
+              console.log('Deleting ', title, '...')},
+        ],
+        { cancelable: false }
+   )
+    }
 
     return(
     <View style={styles.workoutItems}>
@@ -161,7 +179,8 @@ export default function DiscoverPage(props) {
               <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
               <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
             </View>
-            <TouchableOpacity onPress={addWorkout(workout)}>
+            <TouchableOpacity onPress={()=>
+              addWorkout(workout)}>
               <View style={styles.scheduleWorkoutButton}>
                 <Text style={styles.scheduleWorkoutText}>SCHEDULE WORKOUT</Text>
               </View>
@@ -203,6 +222,15 @@ export default function DiscoverPage(props) {
             </TouchableOpacity>
             </View>
             ))}
+
+          {expanded &&
+            <TouchableOpacity onPress={()=>
+              deleteWorkout(workout)}>
+              <View style={styles.deleteWorkoutButton}>
+                <Text style={styles.deleteWorkoutText}>DELETE WORKOUT</Text>
+              </View>
+            </TouchableOpacity>}
+
       </TouchableOpacity>
     </View>
     );
@@ -451,9 +479,7 @@ export default function DiscoverPage(props) {
     return success;
   }
 
-  function addWorkout(workout){
-    console.log("Adding Workout", workout)
-  }
+  
 
   const filterWorkouts = (term) => {
     let retList = [];
@@ -1186,6 +1212,13 @@ const styles = StyleSheet.create({
  scheduleWorkoutText:{
   fontSize: 18,
   fontWeight: 'bold',
+  textAlign: 'center',
+  
+},
+
+deleteWorkoutText:{
+  fontSize: 18,
+  fontWeight: 'bold',
   alignItems: 'center',
   alignContent: 'center',
   textAlign: 'center',
@@ -1338,6 +1371,24 @@ const styles = StyleSheet.create({
 
  scheduleWorkoutButton:{
   backgroundColor: 'lightgreen',
+  color: "#333",
+  fontWeight: "500",
+  paddingVertical: 15,
+  alignSelf: 'stretch',
+  margin: 2,
+  borderColor: 'black',
+  borderWidth: 2,
+  borderRadius: "15rem",
+  borderRadius: 20,
+  shadowColor: "#000",
+  shadowOffset: {width: 0, height: 0},
+  shadowOpacity: 1,
+  shadowRadius: 2
+},
+
+
+deleteWorkoutButton:{
+  backgroundColor: 'red',
   color: "#333",
   fontWeight: "500",
   paddingVertical: 15,
