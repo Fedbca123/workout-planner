@@ -20,7 +20,7 @@ import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header, SearchBar } from "react-native-elements";
 
-export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, selectedWorkout, setCreateNew }) {
+export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, setCreateNew }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [publicWorkouts, updatePublicWorkouts] = useState([]);
 	const [privateWorkouts, updatePrivateWorkouts] = useState([]);

@@ -25,10 +25,11 @@ import BeginFinalizeWorkout from "../component/beginFinalizeWorkout.js";
 import CreateWorkoutHeader from "../component/createWorkoutHeader.js";
 import ScheduleWorkout from "../component/scheduleWorkout.js";
 import FinalizeReview from "../component/finalizeReview.js";
+import CreateExercise from "../component/createExercise.js";
 
-export default function CreateWorkout({ navigation }) {
-    const [currState, setCurrState] = useState("chooseTemplate");
-    const [currWorkout, setCurrWorkout] = useState([]);
+export default function CreateWorkout({ navigation, workoutData }) {
+    const [currState, setCurrState] = useState((workoutData) ? "ExerciseReview" : "chooseTemplate");
+    const [currWorkout, setCurrWorkout] = useState((workoutData) ? [workoutData] : []);
     const [createNew, setCreateNew] = useState(false);
     // const navigation = useNavigation();
     
@@ -45,7 +46,7 @@ export default function CreateWorkout({ navigation }) {
             //navigation.setParams({ title: "Edit Your Workout",});
         } else if (currState === "ExerciseSearch") {
             navigation.setOptions({
-                header: () => <CreateWorkoutHeader title={"Create A Workout"} navigation={navigation}/>,
+                header: () => <CreateWorkoutHeader title={"Add an Exercise"} navigation={navigation}/>,
             })
             //navigation.setParams({ title: "Begin Finalizing" });
         } else if (currState === "BeginFinalizing") {
@@ -55,12 +56,17 @@ export default function CreateWorkout({ navigation }) {
             //navigation.setOptions({ title: "Finalize Workout" });
         } else if (currState === "Schedule") {
             navigation.setOptions({
-                header: () => <CreateWorkoutHeader title={`Scheule ${currWorkout[0].title}`} navigation={navigation}/>,
+                header: () => <CreateWorkoutHeader title={`Schedule ${currWorkout[0].title}`} navigation={navigation}/>,
             })
             //navigation.setOptions({ title: "Finalize Workout" });
         } else if (currState === "FinalizeReview") {
             navigation.setOptions({
                 header: () => <CreateWorkoutHeader title={"Almost There!"}
+                navigation={navigation} />,
+            })
+        } else if (currState === "CustomExercise") {
+            navigation.setOptions({
+                header: () => <CreateWorkoutHeader title={"Custom Exercise"}
                 navigation={navigation} />,
             })
         }
@@ -74,12 +80,13 @@ export default function CreateWorkout({ navigation }) {
 
     return (
         <View style={{flex: 1}}>
-            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} setCreateNew={setCreateNew}/>}
+            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} setCreateNew={setCreateNew} workoutData={workoutData}/>}
             {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} updateWorkout={setCurrWorkout} workout={currWorkout} setCreateNew={setCreateNew}/>}
             {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "BeginFinalizing" && <BeginFinalizeWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "Schedule" && <ScheduleWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "FinalizeReview" && <FinalizeReview workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} navigation={navigation} />}
+            {currState === "CustomExercise" && <CreateExercise workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} navigation={navigation} />}
         </View>
     );
 }

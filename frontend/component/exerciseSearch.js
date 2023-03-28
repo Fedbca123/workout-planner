@@ -64,6 +64,19 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 
     return (
     <View style={styles.Background}>
+        <TouchableOpacity 
+				style={styles.createButton}
+				onPress={() => {
+					setCurrState("CustomExercise");
+				}}
+			>
+			<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a custom exercise</Text>
+		</TouchableOpacity>
+			
+
+		<Text style={{fontSize:20, textAlign:"center", fontWeight: 'bold'}}>-OR-</Text>
+
+		<Text style={styles.HeaderText}>Select an Exercise:</Text>
         <SearchBar
 				platform="default"
 				lightTheme={true}
@@ -120,26 +133,11 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 		>
 		    <ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
 		</Modal>
-          <View style={{ display: "flex", flexDirection: "row", borderWidth: 1, justifyContent: "space-evenly", height:"15%"}}>
-                <View style={{ backgroundColor: "#FF8C4B", flex: 1}}>
-                     <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("ExerciseReview")}}>
-                      {/* <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/> */}
-                      <Text style={styles.BttnText}>Return to Review</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {/* <View style={{ alignSelf: "center", flex:1}}>
-                    <TouchableOpacity style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#10B9F1" }} onPress={() => {
-                        if (workout[0].exercises.length === 0) {
-                            Alert.alert("Love the enthusiasm, but you have to at least have one exercise if you wanna workout");
-                        } else {
-                            setCurrState("BeginFinalizing"); 
-                        }
-                        
-                    }}>
-                        <AntDesign size={useWindowDimensions().height * 0.08} name="rightcircle" color={"white"}/>
-                    </TouchableOpacity>  
-                </View> */}
+            <View style={{ height: '15%', backgroundColor: "#FF8C4B"}}>
+                    <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("ExerciseReview")}}>
+                    {/* <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/> */}
+                    <Text style={styles.BttnText}>Return to Review</Text>
+                </TouchableOpacity>
             </View>
     </View>
   )
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
         flex: 1,
         display: "flex",
         justifyContent: 'space-between',
-        alignContent: "space-between",
+        // alignContent: "space-between",
         // alignItems: "flex-end",
 	},
     ExerciseCard: {
@@ -193,7 +191,26 @@ const styles = StyleSheet.create({
         borderRadius: 100,
     },
     BttnText: {
-        color: "white",
         fontSize: 20,
-    }
+        fontWeight: 'bold'
+    },
+    HeaderText: {
+		fontSize: 20,
+    	fontWeight: 'bold',
+		marginLeft: 10
+	},
+	createButton: {
+		borderWidth: .5, 
+		width: '60%', 
+		alignSelf: 'center',
+		marginVertical: 15, 
+		backgroundColor: '#DDF2FF',
+		borderRadius: 8,
+		shadowColor: 'rgba(0,0,0, .4)', // IOS
+		shadowOffset: { height: 2, width: 2 }, // IOS
+		shadowOpacity: 1, // IOS
+		shadowRadius: 1, //IOS
+		elevation: 2,
+	},
+
 })
