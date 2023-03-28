@@ -15,10 +15,13 @@ import API_Instance from "../../backend/axios_instance";
 import { useGlobalState } from "../GlobalState.js";
 import { useIsFocused } from "@react-navigation/native";
 import WorkOuts from "../component/workout";
+import * as SecureStore from 'expo-secure-store';
+import { AuthContext } from '../AuthProvider';
 
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [todaysWorkouts, setTodaysWorkouts] = useState([]);
+	const { isLoggedIn, setIsLoggedIn } = React.useContext(AuthContext);
   	const isFocused = useIsFocused();
 
 	const handleScratchPress = () => {
@@ -85,8 +88,16 @@ export default function LandingPage({navigation}) {
 
 	useEffect(() => {
     if(isFocused){
-      //console.log('rendering landing page in use effect');
-      loadCurrentDayWorkouts();
+		if (!globalState.user)
+		{
+			updateGlobalState("authToken", null);
+            updateGlobalState("user", null);
+            SecureStore.deleteItemAsync("authKey");
+            SecureStore.deleteItemAsync("userId");
+            setIsLoggedIn(false);
+		}
+      	//console.log('rendering landing page in use effect');
+		loadCurrentDayWorkouts();
 		loadTodaysWorkout();
 		loadCurrentDayWorkoutStatus();
     }

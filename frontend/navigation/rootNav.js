@@ -22,12 +22,11 @@ export default function RootNav()
 
     React.useEffect(() => {
         const checkIfUserIsLoggedIn = async () => {
-        const authToken = await SecureStore.getItemAsync("authKey");
-        const id = await SecureStore.getItemAsync("userId");
+            const authToken = await SecureStore.getItemAsync("authKey");
+            const id = await SecureStore.getItemAsync("userId");
     
           // user is logged in
           if (authToken !== null && id !== null) {
-            setIsLoggedIn(true);
             API_Instance
                 .get(`users/${id}`, {
                     headers: {
@@ -37,6 +36,7 @@ export default function RootNav()
                 .then((response) => {
                     updateGlobalState("user", response.data);
           			updateGlobalState("authToken", authToken);
+                    setIsLoggedIn(true);
                 })
                 .catch((e) => {
                     console.log(e)

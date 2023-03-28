@@ -1,13 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import React, {useState, useEffect} from 'react';
-import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert , Animated} from 'react-native';
 import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import Modal from "react-native-modal";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
-import { GlobalState, useGlobalState } from '../GlobalState.js';
+import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 
 const equipmentFilters = [
@@ -47,92 +47,72 @@ const typeFilters = [
   {id: 2,item:'AMRAP'}
 ];
 
-const exerciseDummyData = [
-  {title: 'Top Exercise', id: 1, Sets: 2, Reps: 3},
-  {title: 'Benchpress', id: 2, Sets: 3, Reps: 5},
-  {title: 'Lunges', id: 3, Sets: 5, Reps: 5},
-  {title: 'Deadlift', id: 4, Sets: 1, Reps: 3},
-  {title: 'Skullcrusher', id: 5, Sets: 4, Reps: 3},
-  {title: 'Squats', id: 6, Sets: 2, Reps: 3},
-  {title: 'Benchpress', id: 7, Sets: 3, Reps: 5},
-  {title: 'Lunges', id: 8, Sets: 5, Reps: 5},
-  {title: 'Deadlift', id: 9, Sets: 1, Reps: 3},
-  {title: 'Skullcrusher', id: 10, Sets: 4, Reps: 3},
-  {title: 'Squats', id: 11, Sets: 2, Reps: 3},
-  {title: 'Benchpress', id: 12, Sets: 3, Reps: 5},
-  {title: 'Lunges', id: 13, Sets: 5, Reps: 5},
-  {title: 'Deadlift', id: 14, Sets: 1, Reps: 3},
-  {title: 'Bottom Exercise', id: 15, Sets: 4, Reps: 3},
-];
-const oldworkoutDummyData = [
-  {title: 'Top Workout', id: 1, Exercises: 5},
-  {title: 'Legs', id: 2, Exercises: 6},
-  {title: 'Full Body', id: 3, Exercises: 9},
-  {title: 'Arms', id: 4, Exercises: 5},
-  {title: 'Legs', id: 5, Exercises: 6},
-  {title: 'Full Body', id: 6, Exercises: 8},
-  {title: 'Arms', id: 7, Exercises: 5},
-  {title: 'Legs', id: 8, Exercises: 6},
-  {title: 'Full Body', id: 9, Exercises: 11},
-  {title: 'Arms', id: 10, Exercises: 2},
-  {title: 'Legs', id: 11, Exercises: 15},
-  {title: 'Full Body', id: 12, Exercises: 3},
-  {title: 'Bottom Workout', id: 13, Exercises: 7},
-];
-
-
 export default function DiscoverPage(props) {
 
   const isFocused = useIsFocused();
 
+  // Exercise or Workout List Toggle
   const [toggleValue, setToggleValue] = useState(false);
+  
+  // Filter Modal Popup Visibility
   const [areFiltersVisible, setFiltersVisible] = useState(false);
+  
+  // Exercise Info Page Visibility
   const [isInfoPageVisible, setInfoPageVisible] = useState(false);
+  
+  // Chosen Equipment Filters
   const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
+  
+  // Chosen Muscle Group Filters
   const [selectedMuscleGroupsFilter, setMuscleGroupsFilter] = useState([]);
+  
+  // Chosen Exercise Type Filters
   const [selectedTypeFilter, setTypeFilter] = useState([]);
+  
   const [globalState, updateGlobalState] = useGlobalState();
+  
+  // For Exercise Info Page
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState();
-  const [selectedWorkoutTitle, setSelectedWorkoutTitle] = useState();
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
-  const [selectedExerciseDuration, setSelectedExerciseDuration] = useState();
-  const [selectedExerciseTags, setSelectedExerciseTags] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
 
-  // all items resulting from search and filter
+  // All items resulting from search and filter
   const [filteredExerciseData, setFilteredExerciseData] = useState([]);
-  // all items from DB from search with only ownerID
+  // All items from DB from search with only ownerID
   const [masterExerciseData, setMasterExerciseData] = useState([]);
   
-  // all items resulting from search and filter
+  // All items resulting from search and filter
   const [filteredWorkoutData, setFilteredWorkoutData] = useState([]);
-  // all items from DB from search with only ownerID
+  // All items from DB from search with only ownerID
   const [masterWorkoutData, setMasterWorkoutData] = useState([]);
 
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [workoutSearch, setWorkoutSearch] = useState('');
+
+  // will be used for Activity Indicator
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
   const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true);
 
   const [exerciseList, setExercises] = useState([]);
   const [workoutList, setWorkouts] = useState([]);
 
-  // switch useeffects
-  useEffect((isFocused) => {
-    if(!isFocused){
-      // console.log("rendering")
+  /*
+  ONLY UNCOMMENT IF WE EVEN WANT THIS TO MAKE AN API CALL EVERY TIME
+  IT RENDERS
+  useEffect(() => {
+    if(isFocused){
       exercisesList();
       workoutsList();
     }
   }, [isFocused]);
+  */
 
-  // useEffect(()=> () => {
-  //     // console.log("rendering")
-  //     exercisesList();
-  //     workoutsList();
-    
-  // }, []);
+  // only make API call on first render. Info gets stored regardless
+  useEffect(()=>{
+    exercisesList();
+    workoutsList();
+  },[]);
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
@@ -151,9 +131,33 @@ export default function DiscoverPage(props) {
 
   const WorkoutItem = ({title, description, muscleGroups, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
+    const spinValue = React.useState(new Animated.Value(0))[0]; // Makes animated value
     const handlePress = () => {
       setExpanded(!expanded);
     };
+
+    // When button is pressed in, make spinValue go through and up to 1
+    const onPressIn = () => {
+      Animated.spring(spinValue, {
+          toValue: 1,
+          useNativeDriver: true,
+      }).start();
+    };
+
+    // When button is pressed out, make spinValue go through and down to 0
+    const onPressOut = () => {
+      Animated.spring(spinValue, {
+          toValue: 0,
+          useNativeDriver: true,
+      }).start();
+    };
+
+    const spinDeg = spinValue.interpolate({
+      useNativeDriver: true,
+      inputRange: [0, 1],
+      outputRange: ['0deg', '360deg']
+  })
+
     return(
     <View style={styles.workoutItems}>
     <TouchableOpacity onPress={handlePress} activeOpacity=".4">
@@ -163,6 +167,13 @@ export default function DiscoverPage(props) {
         </View>
         <View style={styles.workoutCardTitleContainer}>
           <Text style={styles.workoutCardTitle}>{title}</Text>
+        </View>
+        <View style={styles.expandableIndicatorContainer}>
+          <Image source ={ require("../../assets/expandable.png")}
+                  style={[
+                    styles.expandableIndicator,
+                    expanded ? {transform: [{rotate: "180deg"}]} : {},
+                    ]} />
         </View>
       </View>
 
@@ -175,14 +186,14 @@ export default function DiscoverPage(props) {
       
         {expanded &&
             exercises.map((exercise) => (
-              <View style = {styles.workoutExerciseCard}>
+              <View style = {styles.workoutExerciseCard} key={exercise._id}>
               <TouchableOpacity onPress={()=>{
+                    // Commenting out openExerciseInfo doesn't break it 
                     openExerciseInfo(exercise);
                     setSelectedExerciseTitle(exercise.title);
                     setSelectedExerciseDesc(exercise.description);
                     setSelectedExerciseMuscleGroups(exercise.muscleGroups);
                     setSelectedExerciseImage(exercise.image);
-                    setSelectedExerciseTags(exercise.tags);
                     showInfoModal();  
               }
               }>             
@@ -229,177 +240,254 @@ export default function DiscoverPage(props) {
     })
     .then((response) => {
       if (response.status == 200){
-        // Comment out setExercises
-        setExercises(response.data);
-        //Comment out below
-        setFilteredWorkoutData(response.data);
+        setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
-        // Uncomment out line below
-        // setFilteredExerciseData(masterExerciseData);
-        // toggleExercisesActivityIndicator(isExercisesLoading);
-        // console.log(response.data[0].title);
-        // console.log(response.data);
-        //console.log(selectedTypeFilter);
-        // console.log('Success!');
+        exercisesLoaded();
       }
     })
     .catch((e) => {
-      // console.log(e);
-      // console.log(globalState.authToken);
-      //Alert.alert('Error!');
-    
+      console.log(e); 
     })
   }
 
   const workoutsList = async()=> {
     API_Instance.post('workouts/search',
-  {
-    muscleGroupsStr: selectedMuscleGroupsFilter,
-    exerciseTypeSrch : selectedTypeFilter,
-    equipmentFilters : selectedEquipmentFilter
-  },   
-  {
-    headers: {
-      'authorization': `BEARER ${globalState.authToken}`,
-      'Content-Type':'multipart/form-data'
-    }
-  })
-  .then((response) => {
-    if (response.status == 200){
-      setWorkouts(response.data);
-      setFilteredWorkoutData(response.data);
-      setMasterWorkoutData(response.data);
-      // toggleWorkoutActivityIndicator(isWorkoutsLoading);
-      // console.log(response.data[0].title);
-      // console.log(response.data);
-      // console.log('Success!');
-    }
-  })
-  .catch((e) => {
-    // console.log(e);
-    // console.log(globalState.authToken);
-    //Alert.alert('Error!');
-  
-  })
+    {
+      muscleGroupsStr: selectedMuscleGroupsFilter,
+      exerciseTypeSrch : selectedTypeFilter,
+      equipmentFilters : selectedEquipmentFilter
+    },   
+    {
+      headers: {
+        'authorization': `BEARER ${globalState.authToken}`,
+        'Content-Type':'multipart/form-data'
+      }
+    })
+    .then((response) => {
+      if (response.status == 200){
+        setFilteredWorkoutData(response.data);
+        setMasterWorkoutData(response.data);
+        workoutsLoaded();
+      }
+    })
+    .catch((e) => {
+      console.log(e);  
+    })
 }
 
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
-    //exercisesList();
-
-    // console.log(selectedEquipmentFilter);
-  }
-
-  const toggleExercisesActivityIndicator = () => {
-      setIsLoading(!isLoading);
-  }
-  
-  const toggleWorkoutActivityIndicator = () => {
-    setIsLoading(!isLoading);
-}
-  // const updateSearch = (search) => {
-  //   setSearch(search);
-  // }
-
-  const searchExercisesFilter = (text) => {
-    if (text){
-      const newData = masterExerciseData.filter((item) => {
-        const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        const itemTags = item.tags || [];
-        const tagData = itemTags.filter(tag => tag !== null && tag !== undefined).map(tag => tag.toUpperCase());
-        return (itemData.indexOf(textData) > -1 
-         || 
-         tagData.some((tag) => tag.indexOf(textData) > -1));
-      });
-      setFilteredExerciseData(newData);
-      setExerciseSearch(text);
-    }
-    else {
-      setFilteredExerciseData(masterExerciseData);
-      setExerciseSearch(text);
+    // filter on masterList
+    if(areFiltersVisible){
+      if(toggleValue){
+        // we are in exercises
+        setFilteredExerciseData(filterExercises(exerciseSearch));
+      }else{
+        setFilteredWorkoutData(filterWorkouts(workoutSearch));
+      }
     }
   }
 
-  const searchWorkoutsFilter = (text) => {
-    if (text){
-      const newData = masterWorkoutData.filter((item) => {
-        const itemData = item.title ? item.title.toUpperCase() : ''.toUpperCase();
-        const textData = text.toUpperCase();
-        const itemTags = item.tags || [];
-        const tagData = itemTags.filter(tag => tag !== null && tag !== undefined).map(tag => tag.toUpperCase());
-        return (itemData.indexOf(textData) > -1 
-         || 
-         tagData.some((tag) => tag.indexOf(textData) > -1));
-      });
-      setFilteredWorkoutData(newData);
-      setWorkoutSearch(text);
-    }
-    else {
-      setFilteredWorkoutData(masterWorkoutData);
-      setWorkoutSearch(text);
-    }
+  const exercisesLoaded = async () => {
+      setIsExercisesLoading(false);
+      // console.log("Changing Exercises Activity Indicator");
   }
   
+  const workoutsLoaded = async () => {
+    setIsWorkoutsLoading(false);
+    // console.log("Changing Workouts Activity Indicator");
+  }
+
   function onMultiChangeEquipment() {
     return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
   }
+
   function onMultiChangeMuscleGroups() {
     return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
   }
+
   function onMultiChangeType() {
-    return (item) => {
-      setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));
-      // console.log("bye", filterExercises())
-      // Uncomment below
-      setFilteredExerciseData(filterExercises());
-    }
+    return (item) => {setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));}
   }
 
-  function filterExercises() {
-    let retList = [];
-    let searchVals = exerciseSearch.split(' ');
-    let searchTags = [...selectedEquipmentFilter.map(a=>a.item), ...searchVals];
-    let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
-    let selectedType = [...selectedTypeFilter.map(a=>a.item)];
-
-
-    for (const exercise of masterExerciseData)
-    {
-      for (const exTag of exercise.tags)
-      {
-        if ((searchTags.length == 1 || (searchTags.includes(exTag))) && !retList.includes(exercise))
-        {
-          //console.log(`${exTag} found in ${exercise.title}`)
-          for (const exMusc of exercise.muscleGroups)
-          {
-            //console.log("muscleBool",muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc))
-            if ((muscleGroupVals.length == 0 || muscleGroupVals.includes(exMusc)) && (selectedType.length === 0 || selectedType.includes(exercise.exerciseType)))
-            {
-              //console.log(`${exercise.exerciseType} found`)
-              retList.push(exercise);
-            }
-          }
-        }
+  function exerciseTagFound(exTag, searchTags){
+    for(const term of searchTags){
+      if(exTag.toLowerCase().includes(term.toLowerCase())){
+        //console.log(term, 'found in', exTag)
+        return true;
       }
     }
-    // console.log("retlist", retList);
+    return false;
+  }
+
+  function tryFilterExercise(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType){
+    let success = true;
+
+    // type
+    if(selectedType.length > 0){
+      //console.log(selectedType)
+      let matches = false;
+
+      for(const type of selectedType){
+        if(type.toLowerCase() == exercise.exerciseType.toLowerCase()){
+          matches = true;
+          break;
+        }
+      }
+
+      success = success && matches;
+    }
+
+    // for all muscle groups if they exist or are included
+    if(success && muscleGroupVals.length > 0){
+      let matches = false;
+      for(const mg of exercise.muscleGroups){
+        for(const tag of muscleGroupVals){
+          if(mg.toLowerCase() == tag.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // equipment
+    if(success && equipmentTags.length > 0){
+      //console.log("et",equipmentTags)
+      let matches = false;
+      for(const tag of exercise.tags){
+        for(const eq of equipmentTags){
+          if(tag.toLowerCase() == eq.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // search
+    if(success && searchTags.length > 0){
+      //console.log("st",searchTags)
+      let matches = false;
+      for(const tag of exercise.tags){
+        if(exerciseTagFound(tag, searchTags)){
+          matches = true;
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    return success;
+  }
+
+  const filterExercises = (term) => {
+    let retList = [];
+    let searchVals =  term ? term.split(' ') : [];
+    let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
+    let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
+    let selectedType = [...selectedTypeFilter.map(a=>a.item)];
+    // if no tags or search terms then return masterlist
+    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0){
+      //console.log('no filter but still ate');
+      return masterExerciseData;
+    }
+
+    // for all exercises in masterlist
+    for (const exercise of masterExerciseData)
+    {
+      if (tryFilterExercise(exercise, searchVals, equipmentTags, muscleGroupVals, selectedType)){
+        retList.push(exercise);
+      }
+    }
+
     return retList;
   }
 
-  function showWorkout() {
-      if (!isWorkoutVisible){
-        setWorkoutVisible(true);
-        setExerciseVisible(false);
+  function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals){
+    let success = true;
+
+    // for all muscle groups if they exist or are included
+    if(muscleGroupVals.length > 0){
+      let matches = false;
+      for(const mg of workout.muscleGroups){
+        for(const tag of muscleGroupVals){
+          if(mg.toLowerCase() == tag.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
       }
-  }
-  function showExercise() {
-      if (!isExerciseVisible) {
-        setExerciseVisible(true);
-        setWorkoutVisible(false);
+      success = success && matches;
+    }
+
+    // equipment
+    if(success && equipmentTags.length > 0){
+      //console.log("et",equipmentTags)
+      let matches = false;
+      for(const tag of workout.tags){
+        for(const eq of equipmentTags){
+          if(tag.toLowerCase() == eq.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
       }
+      success = success && matches;
+    }
+
+    // search
+    if(success && searchVals.length > 0){
+      //console.log("st",searchTags)
+      let matches = false;
+      for(const tag of workout.tags){
+        if(exerciseTagFound(tag, searchVals)){
+          matches = true;
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    return success;
   }
-  
+
+  const filterWorkouts = (term) => {
+    let retList = [];
+    let searchVals =  term ? term.split(' ') : [];
+    let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
+    let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
+    // if no tags or search terms then return masterlist
+    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0){
+      //console.log('no filter but still ate');
+      return masterWorkoutData;
+    }
+
+    // for all exercises in masterlist
+    for (const workout of masterWorkoutData)
+    {
+      if (tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals)){
+        retList.push(workout);
+      }
+    }
+
+    return retList;
+  }
+
   const openExerciseInfo = (item) => {
     return (<View>
       <Text style={{fontSize: 20}}>title: {item.title}</Text>
@@ -412,7 +500,6 @@ export default function DiscoverPage(props) {
 
   function closeInfoModal() {
     setInfoPageVisible(false);
-    exercisesList();
   }
 
 return (
@@ -437,6 +524,7 @@ return (
                     //borderWidth: -1,
                     // borderColor: "black",
                     activeBackgroundColor: "#E5DAE7",
+                    // activeBackgroundColor: "#FEE2CF",
                     inActiveBackgroundColor: "#88CAE7",
                     }}
                     trackBarStyle={{
@@ -453,6 +541,7 @@ return (
                       // borderWidth: 1,
                       activeBackgroundColor: "#34A5D5",
                       inActiveBackgroundColor: "#BFBCC8"
+                      // inActiveBackgroundColor: "#FAD5A5"
                       }}
                       
                     />
@@ -559,7 +648,7 @@ return (
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
-                data={toggleValue ? exerciseList : workoutList} 
+                data={toggleValue ? filteredExerciseData : workoutList} 
                 lightTheme
                 round
                 // onChangeText={updateSearch}
@@ -572,12 +661,21 @@ return (
                 keyboardShouldPersistTaps='handled'
 
                 value={(toggleValue ? exerciseSearch : workoutSearch)}
-                onChangeText = {(toggleValue ? ((text) => {
-                  searchExercisesFilter(text)
+                onChangeText = {(toggleValue ? 
+                  (
+                    (text) => {
+                  setExerciseSearch(text);
+                  setFilteredExerciseData(filterExercises(text));
                   // below is for filters
                   //setExerciseSearch(text);
-                }) :
-                 ((text) => searchWorkoutsFilter(text)))}
+                  }
+                  ) :  (
+                    (text) => {
+                      setWorkoutSearch(text);
+                      setFilteredWorkoutData(filterWorkouts(text));
+                    }
+                  )
+                )}
                 // searchIcon = {false}
                 inputStyle={{
                     color: "black",
@@ -594,39 +692,49 @@ return (
       </View>
       <View style={styles.discoverContainer}>
       
-              {toggleValue ? <FlatList
+              {toggleValue ? 
+              //Exercises
+              isExercisesLoading ? 
+              
+              <ActivityIndicator size ="large"/>
+              : (<FlatList
               data = {filteredExerciseData}
-              ListEmptyComponent={<View style={styles.emptyList}><Text style={{fontSize:20, alignItems: 'center'}}>No Exercises Found</Text></View>}
+              ListEmptyComponent={
+                <View style={styles.emptyList}>
+                  <Text style={{fontSize:20, alignItems: 'center'}}>
+                  No Exercises Found
+                  </Text>
+                </View>
+              }
               style = {styles.boxContainer}
-              // extraData ={[selectedTypeFilter,selectedEquipmentFilter, selectedMuscleGroupsFilter]}
               renderItem={({item}) => 
-                (
                 <TouchableOpacity onPress={()=>{
                     openExerciseInfo(item);
                     setSelectedExerciseTitle(item.title)
                     setSelectedExerciseDesc(item.description);
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
-                    setSelectedExerciseTags(item.tags);
                     showInfoModal();  
                 }}>
+
                   <ExerciseItem title={item.title} 
                   description={item.description} muscleGroups={item.muscleGroups}
                   type={item.exerciseType} tags={item.tags} image={item.image}
                   />
                 </TouchableOpacity>
-                )
               }
-              //keyExtractor={(item) => item._id}
-             
-              /> : <FlatList
-              // workoutDummyData doesn't go through filtering
-              // data = {workoutDummyData}
+              keyExtractor={item => item._id}
+              /> )
+              : // Workouts 
+              isWorkoutsLoading ? 
+              <ActivityIndicator size = "large"/>
+              :
+              <FlatList
               data = {filteredWorkoutData}
               ListEmptyComponent={
                 <View style={styles.emptyList}>
                   <Text style={{fontSize:20, alignItems: 'center'}}>
-                    No Workouts Found
+                  No Workouts Found
                   </Text>
                 </View>
               }
@@ -634,15 +742,10 @@ return (
               renderItem={({item,index}) => 
                 (
                 <TouchableOpacity onPress={()=>{
-                    //openExerciseInfo(item);
-                    setSelectedWorkoutTitle(item.title);
-                    //setSelectedExerciseMuscleGroups(item.muscleGroups);
-                    //setSelectedExerciseImage(item.image);
-                    setSelectedExerciseDuration(item.duration);
-                    //showInfoModal();
-                    // key={index}
-                    
+                    // setSelectedWorkoutTitle(item.title);
+                    // setSelectedExerciseDuration(item.duration);
               }}>
+                
                 <WorkoutItem title={item.title} 
                 description={item.description}
                 location ={item.location} 
@@ -682,33 +785,31 @@ return (
             >
 
             <SafeAreaView style={styles.exerciseInfoHeader}>
-            <View style={styles.exerciseInfoTitleContainer}>
-              <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
-            </View>
-            <View style={styles.exerciseInfoCardImageContainer}>
-              <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
-            </View>
+              <View style={styles.exerciseInfoTitleContainer}>
+                <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
+              </View>
+              <View style={styles.exerciseInfoCardImageContainer}>
+                <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
+              </View>
             </SafeAreaView>
 
             <SafeAreaView style={styles.exerciseInfoBody}>
-            <View style={styles.exerciseInfoDescriptionContainer}>
-              <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
-              <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
-            </View>
-            <View style={styles.exerciseInfoMuscleGroupsContainer}>
-              <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
-              <Text style={styles.exerciseInfoMuscleGroups}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text> 
-            </View>
-            {/* <View style={styles.exerciseInfoTagsContainer}>
-              <Text style={styles.exerciseInfoTagsTitle}>Tags:</Text>
-              <Text style={styles.exerciseInfoTags}>{selectedExerciseTags && selectedExerciseTags.join(", ")}</Text>
-            </View> */}
-            <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
-              {/* <TouchableOpacity> */}
-                <View style={styles.closeButtonContainer}>
-                  <Text style={styles.closeText}>Close</Text>
-                </View>
-              </TouchableOpacity> 
+
+              <View style={styles.exerciseInfoDescriptionContainer}>
+                <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
+                <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
+              </View>
+              <View style={styles.exerciseInfoMuscleGroupsContainer}>
+                <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
+                <Text style={styles.exerciseInfoMuscleGroups}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text> 
+              </View>
+            
+              <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
+                  <View style={styles.closeButtonContainer}>
+                    <Text style={styles.closeText}>Close</Text>
+                  </View>
+                </TouchableOpacity>
+
             </SafeAreaView>
           </Modal>
       </View>
@@ -722,6 +823,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    textDecorationLine: 'underline'
   },
   exerciseInfoDescription:{
     fontSize: 16,
@@ -773,11 +875,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   exerciseInfoTitleContainer:{
-    borderColor: 'black',
-    borderRadius: "20rem",
-    backgroundColor: 'white',
+    // borderColor: 'black',
+    // borderRadius: "20rem",
+    // backgroundColor: 'white',
     overflow: 'hidden',
-    borderWidth: 3,
+    // borderWidth: 3,
     // bottom: -375,
     alignItems: 'center',
     paddingHorizontal: 10,
@@ -858,7 +960,8 @@ const styles = StyleSheet.create({
   workoutHeader:{
     // resizeMode: 'contain',
     flex: 1,
-    // flexDirection: 'row',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
     paddingVertical: 30,
   },
 
@@ -933,6 +1036,15 @@ const styles = StyleSheet.create({
     borderRadius: "15rem",
     flex: 1
   },
+  expandableIndicatorContainer:{
+    position: 'absolute',
+    right: 10,
+    bottom: 0,
+  },
+  expandableIndicator:{
+    width: 15, 
+    height: 15,
+  },
   filterOptions:{
     color: '#000',
     flex: 3,
@@ -965,6 +1077,7 @@ const styles = StyleSheet.create({
   },
   workoutItems:{
     backgroundColor: '#E5DAE7',
+    // backgroundColor: "#FEE2CF",
     color: "#333",
     fontWeight: "500",
     justifyContent: 'center',
