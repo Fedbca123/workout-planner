@@ -306,7 +306,7 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
 // req.body = { workoutId, date }
 // (PATCH) API_Instance.post("users/{$id}/workouts/schedule")
 // returns { newuser }
-router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) => {
+router.route('/:id/workouts/schedule').post(authenticateToken, async (req,res) => {
   const id = req.params.id;
 
   if (req.user._id != id)
@@ -328,6 +328,21 @@ router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) =>
     return res.status(498).send({Error: "Workout does not exist!"});
   }
 
+  var image = null;
+  var imageId = null;
+  if (workout.image){
+    await cloudinary.v2.uploader.upload(workout.image,{folder: "workouts"},function(err, result) {
+      if (err)
+        return res.status(402).send({Error: err});
+      image = result.url;
+      imageId = result.public_id;
+    });
+  } else{
+    // Defualt Cloudinary Workout Image, UPDATE IF CHANGED!!
+    image = config.DEFAULTWORKIMAGE;
+    imageId = config.DEFAULTWORKIMAGEID;
+  }
+
   // var workoutDate;
   // if(dateString){
   //   // format of date in body "YYYY/MM/DD EST"
@@ -339,8 +354,8 @@ router.route('/:id/workouts/schedule').post(authenticateToken,async (req,res) =>
   const newWorkout = new Workout({
     title: workout.title,
     description: workout.description,
-    image: workout.image,
-    imageId: workout.imageId,
+    image: image,
+    imageId: imageId,
     exercises: workout.exercises,
     duration: workout.duration,
     location: workout.location,
@@ -431,6 +446,21 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
     recurrence
   });
 
+  var image = null;
+  var imageId = null;
+  if(req.file){
+    await cloudinary.v2.uploader.upload(req.file.path,{folder: "workouts"},function(err, result) {
+      if (err)
+        return res.status(402).send({Error: err});
+      image = result.url;
+      imageId = result.public_id;
+    });
+  } else{
+    // Defualt Cloudinary Workout Image, UPDATE IF CHANGED!!
+    image = config.DEFAULTWORKIMAGE;
+    imageId = config.DEFAULTWORKIMAGEID;
+  }
+
   // custom workouts dont have a scheduled date and recurrence
   const newCustomWorkout = new Workout({
     title,
@@ -520,14 +550,27 @@ router.route('/:id/workouts/remove/:w_id').patch(authenticateToken,async (req,re
     return res.status(498).send({Error: "User does not exist!"});
   }
 
+  const workout = await Workout.findById(w_id);
   // grab workout from body
   //const workout = req.body.workout;
 
   // remove workout from user's scheduledWorkouts section
   user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
+
+  if (workout.imageId != config.DEFAULTWORKIMAGEID)
+  {
+    await cloudinary.v2.uploader.destroy(workout.imageId, function(err, result) {
+      if (err)
+        console.log("There was an error deleting the workout Photo")
+      else{
+        console.log("Photo deleted");
+      }
+    });
+  }
+
   Workout.findByIdAndDelete(w_id)
     .catch(err => res.status(400).json('Error: ' + err));
-
+  
   await user.save((err, newUser) => {
     if (err) return res.status(499).send(err);
     res.status(200).json(newUser);
@@ -564,8 +607,21 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
     workout.scheduledDate = date;
     await workout.save();
   } else {
+    // remove image from cloudinary
+    if (workout.imageId != config.DEFAULTWORKIMAGEID)
+    {
+      await cloudinary.v2.uploader.destroy(workout.imageId, function(err, result) {
+        if (err)
+          console.log("There was an error deleting the workout Photo")
+        else{
+          console.log("Photo deleted");
+        }
+      });
+    }
+
     Workout.findByIdAndDelete(w_id)
     .catch(err => res.status(400).json('Error: ' + err));
+
     user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
   }
   workout.recurrence = false;
