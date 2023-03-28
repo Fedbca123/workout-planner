@@ -34,7 +34,7 @@ function CustomDrawerContent(props) {
     }
 
     return (
-        <DrawerContentScrollView {...props}>
+        <DrawerContentScrollView {...props} bounces={false}>
             <DrawerItemList {...props} />
             <DrawerItem
                 label="Logout"

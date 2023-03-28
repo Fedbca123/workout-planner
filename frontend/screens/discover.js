@@ -47,7 +47,7 @@ const typeFilters = [
   {id: 2,item:'AMRAP'}
 ];
 
-export default function DiscoverPage(props) {
+export default function DiscoverPage({navigation}) {
 
   const isFocused = useIsFocused();
 
@@ -97,22 +97,12 @@ export default function DiscoverPage(props) {
   const [exerciseList, setExercises] = useState([]);
   const [workoutList, setWorkouts] = useState([]);
 
-  /*
-  ONLY UNCOMMENT IF WE EVEN WANT THIS TO MAKE AN API CALL EVERY TIME
-  IT RENDERS
   useEffect(() => {
     if(isFocused){
       exercisesList();
       workoutsList();
     }
   }, [isFocused]);
-  */
-
-  // only make API call on first render. Info gets stored regardless
-  useEffect(()=>{
-    exercisesList();
-    workoutsList();
-  },[]);
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
@@ -138,19 +128,24 @@ export default function DiscoverPage(props) {
       console.log("Adding Workout", workout.title)
     }
     function deleteWorkout(workout){
-      Alert.alert(
+      try{
+        Alert.alert(`Are you sure you want to delete ${workout.title}?`,
         '',
-        'Are you sure you want to delete\n' + workout.title + '?',
-        [
-           {text: 'Cancel',
-            onPress: () => 
-              console.log('Cancel Pressed'),},
-           {text: 'Delete', 
-            onPress: () => 
-              console.log('Deleting ', title, '...')},
-        ],
-        { cancelable: false }
-   )
+        [{
+            text: 'Yes',
+            onPress: () => {
+                console.log('deleting workout');
+            },
+        },
+        {
+            text: 'No',
+        }],
+        { cancelable: false});
+      }catch(e){
+        console.log(e);
+      }
+      
+      
     }
 
     return(
@@ -223,7 +218,7 @@ export default function DiscoverPage(props) {
             </View>
             ))}
 
-          {expanded &&
+          {expanded && workout.owner == globalState.user._id &&
             <TouchableOpacity onPress={()=>
               deleteWorkout(workout)}>
               <View style={styles.deleteWorkoutButton}>
