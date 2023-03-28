@@ -11,7 +11,8 @@ import {
 	ScrollView,
 	VirtualizedList,
 	useWindowDimensions,
-	Alert
+	Alert,
+	KeyboardAvoidingView
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
@@ -24,6 +25,7 @@ import { Header, SearchBar } from "react-native-elements";
 import Modal from "react-native-modal";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import config from "../../backend/config.js"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrState}) {
 	const [imageUri, setImageUri] = useState(workout[0].image || config.DEFAULTEXIMAGE);
@@ -94,7 +96,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 	}
 
     return (
-		<View style={styles.container}>
+		<KeyboardAwareScrollView contentContainerStyle={styles.container}>
 			<View style={styles.imageContainer}>
 				<Image source={{ uri: imageUri }} style={styles.imageStyle} />
 				<Button title = "Choose image"
@@ -113,6 +115,9 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 						maxHeight = {40}
 						placeholder="Title"
 						placeholderTextColor='#636362'
+						autoComplete="off"
+						defaultValue={workout[0].title}
+						autoCorrect={false}
 						onChangeText={(text) => {
 							let temp = {...workout[0]}
 							temp.title = text;
@@ -130,6 +135,9 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 						maxHeight = {80}
 						placeholder="Description"
 						placeholderTextColor='#636362'
+						autoComplete="off"
+						defaultValue={workout[0].description}
+						autoCorrect={false}
 						onChangeText={(text) => {
 							let temp = {...workout[0]}
 							temp.description = text;
@@ -205,13 +213,15 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 					</TouchableOpacity>
    				</View>
 			</Modal>
-		</View>
+		</KeyboardAwareScrollView>
 	)
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		flexDirection: "column",
+		// alignContent:"space-between",
 		backgroundColor: 'white',
 		justifyContent: "space-between",
 	},
@@ -250,14 +260,16 @@ const styles = StyleSheet.create({
 		shadowRadius: 1, //IOS
         padding: 2,
         backgroundColor: 'white',
-		marginVertical: 10
+		marginVertical: 10,
+		borderRadius: 15,
     },
 	navButtonContainer: {
 		height: '15%',
 		display: "flex", 
 		flexDirection: "row",
 		borderWidth: 1, 
-		justifyContent: "space-evenly"
+		justifyContent: "space-evenly",
+		// alignSelf:"flex-end",
 	},
 	text: {
 		fontSize: 16,

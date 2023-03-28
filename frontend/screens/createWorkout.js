@@ -24,6 +24,7 @@ import ExerciseSearch from "../component/exerciseSearch.js";
 import BeginFinalizeWorkout from "../component/beginFinalizeWorkout.js";
 import CreateWorkoutHeader from "../component/createWorkoutHeader.js";
 import ScheduleWorkout from "../component/scheduleWorkout.js";
+import FinalizeReview from "../component/finalizeReview.js";
 
 export default function CreateWorkout({ navigation }) {
     const [currState, setCurrState] = useState("chooseTemplate");
@@ -52,12 +53,16 @@ export default function CreateWorkout({ navigation }) {
                 header: () => <CreateWorkoutHeader title={"Finalize Workout"} navigation={navigation}/>,
             })
             //navigation.setOptions({ title: "Finalize Workout" });
-        }
-        else if (currState === "Schedule") {
+        } else if (currState === "Schedule") {
             navigation.setOptions({
-                header: () => <CreateWorkoutHeader title={"Schedule Workout"} navigation={navigation}/>,
+                header: () => <CreateWorkoutHeader title={`Scheule ${currWorkout[0].title}`} navigation={navigation}/>,
             })
             //navigation.setOptions({ title: "Finalize Workout" });
+        } else if (currState === "FinalizeReview") {
+            navigation.setOptions({
+                header: () => <CreateWorkoutHeader title={"Almost There!"}
+                navigation={navigation} />,
+            })
         }
 	}, [currState]);
     
@@ -74,6 +79,7 @@ export default function CreateWorkout({ navigation }) {
             {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "BeginFinalizing" && <BeginFinalizeWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "Schedule" && <ScheduleWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
+            {currState === "FinalizeReview" && <FinalizeReview workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
         </View>
     );
 }
