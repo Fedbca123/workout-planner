@@ -28,14 +28,14 @@ import config from "../../backend/config.js"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrState}) {
-	const [imageUri, setImageUri] = useState(workout[0].image || config.DEFAULTEXIMAGE);
+	const [imageUri, setImageUri] = useState(workout[0].image || config.DEFAULTWORKIMAGE);
 	const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions(ImagePicker.PermissionStatus.UNDETERMINED);
 	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
 	const [isVisible, setIsVisible] = useState(false);
 
 	useEffect(() => {
-		let temp = {...workout};
-		if (imageUri !== config.DEFAULTEXIMAGE)
+		let temp = {...workout[0]};
+		if (imageUri !== config.DEFAULTWORKIMAGE)
 		{
 			let filename = imageUri.split('/').pop();
 			let match = /\.(\w+)$/.exec(filename);
@@ -45,7 +45,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 		else{
 			temp.image = null;
 		}
-		updateWorkout(temp);
+		updateWorkout([temp]);
 	}, [imageUri])
 
 	const getPhotoForExercise = async () => {
@@ -66,7 +66,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 				return result.assets[0].uri;
 			}
 			else{
-				return config.DEFAULTEXIMAGE;
+				return config.DEFAULTWORKIMAGE;
 			}
 		}
 		
@@ -90,7 +90,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 				return result.assets[0].uri;
 			}
 			else{
-				return config.DEFAULTEXIMAGE
+				return config.DEFAULTWORKIMAGE;
 			}
 		}	
 	}
@@ -121,7 +121,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 						onChangeText={(text) => {
 							let temp = {...workout[0]}
 							temp.title = text;
-							updateWorkout([temp])
+							updateWorkout([temp]);
 					}}/>
 				</View>
 				
@@ -141,7 +141,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 						onChangeText={(text) => {
 							let temp = {...workout[0]}
 							temp.description = text;
-							updateWorkout([temp])
+							updateWorkout([temp]);
 					}}/>
 				</View>
 			</View>

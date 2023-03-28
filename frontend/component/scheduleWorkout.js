@@ -24,8 +24,9 @@ import { Header, SearchBar } from "react-native-elements";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-export default function ScheduleWorkout({workout, updateWorkout, setCurrState}) {
+export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    const [globalState, updateGlobalState] = useGlobalState();
 
     // const [isReoccurring, setReoccurring] = useState(false);
     // const toggleSwitch = () => setReoccurring(previousState => !previousState);

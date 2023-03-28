@@ -79,7 +79,7 @@ export default function CreateWorkout({ navigation }) {
             {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "BeginFinalizing" && <BeginFinalizeWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "Schedule" && <ScheduleWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
-            {currState === "FinalizeReview" && <FinalizeReview workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
+            {currState === "FinalizeReview" && <FinalizeReview workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} navigation={navigation} />}
         </View>
     );
 }

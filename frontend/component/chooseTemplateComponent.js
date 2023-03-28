@@ -103,7 +103,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 			description: "",
 			exercises: [],
 			location:"",
-			scheduledDate: new Date("2022-01-01"),
+			scheduledDate: "",
 			tags: [],
 			muscleGroups: [],
 		}
