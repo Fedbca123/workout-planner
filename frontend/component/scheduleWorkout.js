@@ -31,6 +31,12 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
     // const [isReoccurring, setReoccurring] = useState(false);
     // const toggleSwitch = () => setReoccurring(previousState => !previousState);
 
+    useEffect(() => {
+        let temp = {...workout[0]};
+        temp.recurrence = false;
+        updateWorkout([temp]);
+    }, [])
+
     const showDatePicker = () => {
     	setDatePickerVisibility(true);
   	};

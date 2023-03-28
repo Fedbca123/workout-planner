@@ -24,7 +24,7 @@ import Modal from "react-native-modal";
 import ExerciseInfo from "./exerciseInfo.js";
 import { Icon } from "react-native-elements";
 
-export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState, passData, currWorkout, setCurrWorkout, setCreateNew}) {
+export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState, passData, currWorkout, setCurrWorkout, setCreateNew, navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
 	const [modalVisible, setModalVisibility] = useState(false);
