@@ -136,27 +136,27 @@ export default function DiscoverPage(props) {
       setExpanded(!expanded);
     };
 
-    // When button is pressed in, make spinValue go through and up to 1
-    const onPressIn = () => {
-      Animated.spring(spinValue, {
-          toValue: 1,
-          useNativeDriver: true,
-      }).start();
-    };
+  //   // When button is pressed in, make spinValue go through and up to 1
+  //   const onPressIn = () => {
+  //     Animated.spring(spinValue, {
+  //         toValue: 1,
+  //         useNativeDriver: true,
+  //     }).start();
+  //   };
 
-    // When button is pressed out, make spinValue go through and down to 0
-    const onPressOut = () => {
-      Animated.spring(spinValue, {
-          toValue: 0,
-          useNativeDriver: true,
-      }).start();
-    };
+  //   // When button is pressed out, make spinValue go through and down to 0
+  //   const onPressOut = () => {
+  //     Animated.spring(spinValue, {
+  //         toValue: 0,
+  //         useNativeDriver: true,
+  //     }).start();
+  //   };
 
-    const spinDeg = spinValue.interpolate({
-      useNativeDriver: true,
-      inputRange: [0, 1],
-      outputRange: ['0deg', '360deg']
-  })
+  //   const spinDeg = spinValue.interpolate({
+  //     useNativeDriver: true,
+  //     inputRange: [0, 1],
+  //     outputRange: ['0deg', '360deg']
+  // })
 
     return(
     <View style={styles.workoutItems}>
