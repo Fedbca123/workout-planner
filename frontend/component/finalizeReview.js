@@ -63,12 +63,12 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 			formData.append('title', workout[0].title);
 			formData.append('description', workout[0].description);
 			
-			if (workout[0].image !== null)
+			if (workout[0].image)
 			{
-				// let filename = imageUri.split('/').pop();
-				// let match = /\.(\w+)$/.exec(filename);
-				// let type = match ? `image/${match[1]}` : `image`;
-				formData.append('image', workout[0].image);
+				let filename = workout[0].image.split('/').pop();
+				let match = /\.(\w+)$/.exec(filename);
+				let type = match ? `image/${match[1]}` : `image`;
+				formData.append('image', { uri: workout[0].image, name: filename, type });
 			}
 
 			formData.append('owner', globalState.user._id);
@@ -179,7 +179,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 								<View style={styles.workoutCardImageContainer}>
 									<Image
 										style={styles.workoutCardImage}
-										src={workout[0].image || config.DEFAULTWORKIMAGE}
+										src={(workout[0].image) ? (workout[0].image.uri || config.DEFAULTWORKIMAGE) : config.DEFAULTWORKIMAGE}
 									/>
 								</View>
 								<View style={styles.workoutCardTitleContainer}>
@@ -337,7 +337,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "white",
 		flexDirection: "column-reverse",
-		borderWidth: 1,
+		borderTopWidth: 1,
+		// borderWidth: 1,
 		// justifyContent:"space-between"
 	},
 	navButtonContainer: {

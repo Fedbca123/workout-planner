@@ -37,10 +37,10 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 		let temp = {...workout[0]};
 		if (imageUri !== config.DEFAULTWORKIMAGE)
 		{
-			let filename = imageUri.split('/').pop();
-			let match = /\.(\w+)$/.exec(filename);
-			let type = match ? `image/${match[1]}` : `image`;
-			temp.image = { uri: imageUri, name: filename, type };	
+			// let filename = imageUri.split('/').pop();
+			// let match = /\.(\w+)$/.exec(filename);
+			// let type = match ? `image/${match[1]}` : `image`;
+			temp.image = imageUri;	
 		}
 		else{
 			temp.image = null;

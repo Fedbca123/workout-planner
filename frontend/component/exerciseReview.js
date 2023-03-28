@@ -17,15 +17,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
 
-export default function ExerciseReview({
-	setCurrState,
-	workout,
-	updateWorkout,
-}) {
+export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
-	const [exercises, updateExercises] = useState(
-		!workout[0].exercises ? [] : workout[0].exercises,
-	);
+	const [exercises, updateExercises] = useState(!workout[0].exercises ? [] : workout[0].exercises);
 
 	// useEffect(() => {
 	// 	 loadWorkouts();
