@@ -206,6 +206,7 @@ export default function SettingsPage({ navigation })
                     {editFirstName && 
                     <TextInput style={styles.inputfield}
                     placeholder={globalState.user.firstName}
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setFirstName(text)}
                     autoComplete='off'
                     autoCorrect={false}
@@ -242,6 +243,7 @@ export default function SettingsPage({ navigation })
                     {editLastName && 
                     <TextInput style={styles.inputfield}
                     placeholder={globalState.user.lastName}
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setLastName(text)}
                     autoComplete='off'
                     autoCorrect={false}
@@ -276,6 +278,7 @@ export default function SettingsPage({ navigation })
                     {editEmail && 
                     <TextInput style={styles.inputfield}
                     placeholder={globalState.user.email}
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setEmail(text)}
                     autoCapitalize='none'
                     autoComplete='off'

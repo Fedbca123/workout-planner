@@ -169,6 +169,7 @@ const FriendsScreen = () => {
       <TextInput
         style={styles.searchBar}
         placeholder="Search by email"
+        placeholderTextColor={"#808080"}
         value={searchTerm}
         onChangeText={handleSearch}
         keyboardType="email-address"
