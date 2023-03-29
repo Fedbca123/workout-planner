@@ -111,9 +111,11 @@ const CalendarScreen = ({}) => {
     };
 
     const updateWorkout = async (workout, updatedInfo) => {
+      // console.log(updatedInfo);
+      // console.log(workout);
       try {
         const response = await API_Instance.patch(
-          `workouts/${workout._id}`,
+          `workouts/${workout}`,
           updatedInfo,
           {
             headers: {
@@ -136,6 +138,10 @@ const CalendarScreen = ({}) => {
       setDatePickerVisible(false);
     };
 
+    const handleEditModalClose = () => {
+      setEditModalVisible(false);
+    };
+
     const handleSave = async () => {
       const updatedInfo = {
         scheduledDate: editedScheduledDate,
@@ -152,24 +158,6 @@ const CalendarScreen = ({}) => {
         Alert.alert('Error', 'Failed to update the workout. Please try again.');
       }
     };
-    
-    // const deleteScheduledWorkout = async (workout) => {
-    //   try {
-    //     const response = await API_Instance.patch(
-    //       `users/${userId}/workouts/remove/${workout._id}`,
-    //       {},
-    //       {
-    //         headers: {
-    //           'authorization': `Bearer ${globalState.authToken}`,
-    //         },
-    //       }
-    //     );
-    //     return response.data;
-    //   } catch (error) {
-    //     console.error('Error deleting scheduled workout:', error);
-    //     return null;
-    //   }
-    // };
 
     const handleDelete = async (workout) => {
       // console.log(workout);
@@ -205,7 +193,22 @@ const CalendarScreen = ({}) => {
             {item.location && <Text>Location: {item.location}</Text>}
             <View style={{ flexDirection: 'row' }}>
               <Button title="Edit" onPress={() => handleEdit(item)} />
-              <Button title="Delete workout" onPress={() => handleDelete(item)}/>
+              <Button title="Delete workout" onPress={ 
+                () => {
+                  Alert.alert( `Are you sure you want to delete ${item.title}?`,'',
+                    [{
+                        text: 'Yes',
+                        onPress: () => {
+                          handleDelete(item)
+                        },
+                    },
+                    {
+                        text: 'No',
+                    }],
+                    { cancelable: false}
+                  ); 
+                }}
+              />
             </View>
           </View>
         );
