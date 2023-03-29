@@ -15,6 +15,7 @@ const { EmailClient } = require("@azure/communication-email");
 const fs = require('fs');
 const { promisify } = require('util');
 const unlinkAsync = promisify(fs.unlink);
+const sharp = require('sharp');
 
 /* 
 ADDING JWT TO YOUR AXIOS CALLS w/ Nestor :) :
@@ -485,7 +486,7 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
   })
 
   // store scheduled workout
-  newWorkout.save()
+  await newWorkout.save()
     .then(async () => {
       if (newWorkout.owner) {
         const user = await User.findById(newWorkout.owner);
@@ -515,8 +516,7 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
   newCustomWorkout.save()
     .then(async()=>{
       const user = await User.findById(newWorkout.owner);
-      // user.scheduledWorkouts.push(newWorkout._id);
-        
+      user.customWorkouts.push(newWorkout._id);
       await user.save((err, newUser) => {
         if (err) return res.status(495).send(err);
       });

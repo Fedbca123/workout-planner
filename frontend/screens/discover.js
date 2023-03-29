@@ -513,7 +513,7 @@ export default function DiscoverPage({navigation}) {
   }
 
 return (
-    <SafeAreaView style = {styles.page}>
+    <SafeAreaView style = {{flex: 1, backgroundColor: "white"}}>
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
           <Text style={styles.discoverTitle}>Discover</Text>

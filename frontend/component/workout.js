@@ -8,6 +8,7 @@ import {
 	SafeAreaView,
 	TextInput,
 	FlatList,
+	useWindowDimensions,
 } from "react-native";
 import React from "react";
 import { useState } from "react";
@@ -16,11 +17,19 @@ import Collapsible from "react-native-collapsible";
 import Accordion from "react-native-collapsible/Accordion";
 import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
+import { AntDesign } from "@expo/vector-icons";
+// import { Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import Modal from "react-native-modal";
+import ExerciseInfo from "./exerciseInfo.js";
+import { Icon } from "react-native-elements";
 
-export default function WorkOuts({ data, showButton, showInput, startButton }) {
+export default function WorkOuts({ data, showButton, showInput, startButton, setCurrState, passData, currWorkout, setCurrWorkout, setCreateNew, navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [activeSections, setActiveSections] = useState([]);
-	const navigation = useNavigation();
+	const [modalVisible, setModalVisibility] = useState(false);
+	const [exercise, setExercise] = useState({});
+	// const navigation = useNavigation();
 
 	// function renderSectionTitle(section) {
 	// 	return (
@@ -33,7 +42,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 	function renderHeader(sections) {
 		if (showButton) {
 			return (
-				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+				<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", alignItems: 'center'}}>
 					
 					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
 
@@ -43,41 +52,40 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 
 					</View>
 
-					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
-						
-						<TouchableOpacity style={styles.addButton} onPress={() =>{
-							navigation.push("exerciseSearch");
-							updateGlobalState("workout", data);
+						<TouchableOpacity style={styles.addButton} onPress={() => {
+							passData(data);
+							setCurrWorkout(data);
+							setCreateNew(false);
+							setCurrState("ExerciseReview");
 						}}>
 
-							<Text style={{ alignSelf: "center" }}>Choose Workout</Text>
+							<Ionicons name="arrow-forward-circle-outline" size={34} style={{alignSelf: "center" }}  color="black" />
 							
 						</TouchableOpacity>
 
-					</View>
-					
-					
+							
 				</View>
 			);
 		} else if (startButton) {
 			return (
-				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+				<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", alignItems: 'center' }}>
 					
 					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
 
-					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1 }}>
 						
 						<Text style={styles.TitleText}>{sections.title}</Text>
 
 					</View>
 
-					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
+					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "column",}}>
 						
-						<TouchableOpacity style={styles.addButton} onPress={() =>{
+						<TouchableOpacity style={[styles.addButton,]} onPress={() =>{
 							navigation.navigate("start", { workout: data[0] });
 						}}>
 
-							<Text style={{ alignSelf: "center" }}>Start!</Text>
+							{/* <Text style={{ alignSelf: "center" }}>Start!</Text> */}
+							<AntDesign name="playcircleo" size={34}/>
 							
 						</TouchableOpacity>
 
@@ -104,7 +112,8 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 	}
 
 	function renderContent(section) {
-		function itemRender({ item }) {
+
+		function itemRender({ item, index }) {
 			if (showInput) {
 				return (
 					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
@@ -112,7 +121,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ImageStyle} />
 
-						<Text style={styles.text}>{item.title}</Text>
+						<Text style={styles.headerText}>{item.title}</Text>
 
 						<TextInput
 							placeholder="sets"
@@ -134,14 +143,19 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 				);
 			}else{
 				return (
-					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row", marginTop: 10}}>
+					<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", marginTop: 10, alignItems: 'center'}}>
 						
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ExerciseImage} />
 
-						<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column"}}>
-							<Text style={styles.text}>{item.title}</Text>
-						</View>
+						<Text style={styles.text}>{item.title}</Text>
+
+						<TouchableOpacity onPress={() => {
+							setExercise(item);
+							setModalVisibility(true)
+						}}>
+						<AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
+						</TouchableOpacity>
 
 					</View>
 				);
@@ -150,7 +164,12 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 
 		return (
 			<View>
-				<FlatList data={section.exercises} renderItem={itemRender} />
+				<FlatList
+					data={section.exercises}
+					renderItem={itemRender}
+					initialNumToRender={3}
+					style={{display:"flex"}}
+				/>
 			</View>
 			// <View style={styles.content}>
 			//     <Text>{section.content}</Text>
@@ -159,14 +178,12 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 	}
 
 	return (
-		<SafeAreaView >
+		<View >
 			<Accordion
 				// containerStyle={styles.Background}
-				// renderAsFlatList={true}
 				sections={data}
 				renderContent={renderContent}
 				renderHeader={renderHeader}
-				// renderSectionTitle={renderSectionTitle}
 				activeSections={activeSections}
 				onChange={setActiveSections}
 				// keyExtractor={(item) => {
@@ -174,8 +191,18 @@ export default function WorkOuts({ data, showButton, showInput, startButton }) {
 				// }}
 				sectionContainerStyle={styles.collapsePill}
 				containerStyle={styles.collapsedContent}
+				underlayColor="transparent"
 			/>
-		</SafeAreaView>
+
+			<Modal
+				isVisible={modalVisible}
+				coverScreen={true}
+				backdropColor="white"
+				backdropOpacity={1}
+			>
+				<ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
+			</Modal>
+		</View>
 	);
 }
 
@@ -191,9 +218,25 @@ const styles = StyleSheet.create({
 		shadowOffset: { width: 0, height: 2 },
 		// elevation: 2,
 		borderRadius: "20rem",
-		width: 390,
+		width: "95%",
+		// maxHeight: "90%",
+		
 	},
 	text: {
+		color: "black",
+		//fontWeight: "bold",
+		fontSize: 16,
+		display: "flex",
+		textAlignVertical: "center",
+		alignContent: "center",
+		flexDirection: "row",
+		justifyContent:"space-around",
+		flex: 1,
+		textAlign: 'center',
+		//marginHorizontal: 10
+		// left: 5,
+	},
+	headerText: {
 		color: "black",
 		fontWeight: "bold",
 		fontSize: 16,
@@ -208,10 +251,11 @@ const styles = StyleSheet.create({
 		// position: "relative",
 		// fontSize: 28,
 		display:"flex",
-		justifyContent:"flex-end",
+		justifyContent: "center",
+		alignItems:"center",
 		flexDirection: "row",
-		flex:1,
-
+		//marginHorizontal: 8,
+		//borderWidth:5,
 	},
 	Background: {
 		backgroundColor: "#E5E5E5",
@@ -221,31 +265,34 @@ const styles = StyleSheet.create({
 		// backgroundColor: "#F1F3FA",
 		// margin: 30,
 		// padding: 15,
-		borderRadius:"30rem",
+		// backgroundColor: "blue",
+		borderRadius: "30rem",
+		// maxHeight: "10%",
 	},
 	TitleText: {
 		color: "black",
 		position:"relative",
 		fontWeight: "bold",
-		fontSize: 20,
+		fontSize: 22,
 		display: "flex",
 		textAlignVertical: "center",
 		alignContent: "center",
 		flexDirection: "row",
 		justifyContent:"space-around",
 		left: 5,
+		textAlign: 'center'
 	},
 	ImageStyle:{
 		height: 50,
 		width: 50,
 		borderWidth: 1,
-		borderRadius: 20,
+		borderRadius: 10,
 	},
 	ExerciseImage: {
 		height: 50,
 		width: 50,
 		borderWidth: 1,
-		borderRadius: 100,
+		borderRadius: 20,
 		// marginTop: 10
 	},
 });

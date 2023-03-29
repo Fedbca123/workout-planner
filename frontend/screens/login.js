@@ -109,11 +109,14 @@ export default function Login({navigation}) {
 					fitness goals - for free!{" "}
 				</Text>
 			</View>
-	{/*       
-        <Button
+      
+        {/* <Button
         title="BACKDOOR"
         onPress={() =>
           backDoorHandler("Test@gmail.com", "Password1")}/> */}
+
+      {/*code will break at the end to home bc name can't be rendered}
+      */}
       
 	<View style={styles.buttoncontainer}>
       <Text style={styles.error}> {error} </Text>

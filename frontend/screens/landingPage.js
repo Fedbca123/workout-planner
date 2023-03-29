@@ -30,7 +30,7 @@ export default function LandingPage({navigation}) {
 	};
 	const handleTemplatePress = () => {
 		// console.log("Template Button Pressed");
-		navigation.push("createNav");
+		navigation.push("createWorkout");
 	};
 
 	const loadCurrentDayWorkouts = () => {
@@ -75,7 +75,7 @@ export default function LandingPage({navigation}) {
 					data={todaysWorkouts}
 					renderItem={(item) => (
 						<View>
-							<WorkOuts data={[item.item]} startButton={true}/>
+							<WorkOuts data={[item.item]} startButton={true} navigation={navigation}/>
 						</View>
 					)}
 					ListEmptyComponent={<Text>Nothing</Text>}
