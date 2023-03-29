@@ -30,6 +30,8 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	function checkExercises() {
 		
 		for (let exercise of workout[0].exercises) {
+
+			console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight)
 			
 			if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.sets === undefined || exercise.sets === 0)) {
 				console.log(exercise.title);
@@ -135,7 +137,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Sets"
 									placeholderTextColor="#636362"
-									defaultValue={item.sets ? item.sets : null}
+									defaultValue={item.sets ? item.sets : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										let str = text.split(".");
@@ -152,7 +154,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Reps"
 									placeholderTextColor="#636362"
-									defaultValue={item.reps ? item.reps : null}
+									defaultValue={item.reps ? item.reps : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										let str = text.split(".");
@@ -168,7 +170,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Weight"
 									placeholderTextColor="#636362"
-									defaultValue={item.weight ? item.weight : null}
+									defaultValue={item.weight ? item.weight : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										temp[index].weight = text;
@@ -183,7 +185,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Time"
 									placeholderTextColor="#636362"
-									defaultValue={item.time ? item.time : null}
+									defaultValue={item.time ? item.time : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										temp[index].time = text;
