@@ -42,27 +42,6 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 			if (response.status == 200) {
 
-				// let publicW = [];
-				// let privateW = [];
-
-				// for (let data of response.data) {
-
-				// 	// console.log(JSON.stringify(data, null, 2));
-					
-				// 	if (data.owner != globalState.user._id) {
-				// 		// updatePublicWorkouts(data);
-				// 		// publicWorkouts.push(data);
-				// 		publicW.push(data);
-				// 	} else {
-				// 		// updatePrivateWorkouts(data);
-				// 		// privateWorkouts.push(data);
-				// 		privateW.push(data);
-				// 	}
-				// }
-
-				// updatePublicWorkouts(publicW);
-				// updatePrivateWorkouts(privateW);
-
 				setAllWorkouts(response.data);
 
 				updateSearchResults(response.data);
@@ -237,6 +216,7 @@ const styles = StyleSheet.create({
 	Background: {
 		backgroundColor: "white",
 		flex: 1,
+				borderWidth:.5,
 		justifyContent: 'space-between'
 	},
 	HeaderText: {

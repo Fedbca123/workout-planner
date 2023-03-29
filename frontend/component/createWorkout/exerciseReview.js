@@ -30,6 +30,8 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	function checkExercises() {
 		
 		for (let exercise of workout[0].exercises) {
+
+			// console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight)
 			
 			if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.sets === undefined || exercise.sets === 0)) {
 				console.log(exercise.title);
@@ -130,12 +132,14 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 						<View style={styles.ExerciseCardBottom}>
 							{(item.exerciseType === "SETSXREPS" ||
 								item.exerciseType === "AMRAP") && (
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
+								<Text>Sets:</Text>
 								<TextInput
 									style={styles.inputfield}
 									keyboardType="numeric"
-									placeholder="Sets"
-									placeholderTextColor="#636362"
-									defaultValue={item.sets ? item.sets : null}
+									placeholder={item.sets ? `${item.sets}` : "Sets"}
+									placeholderTextColor="#808080"
+									// defaultValue={item.sets ? item.sets : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										let str = text.split(".");
@@ -145,51 +149,65 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 										updateExercises(temp);
 									}}
 								/>
+								</View>
+								
 							)}
 							{item.exerciseType === "SETSXREPS" && (
-								<TextInput
-									style={styles.inputfield}
-									keyboardType="numeric"
-									placeholder="Reps"
-									placeholderTextColor="#636362"
-									defaultValue={item.reps ? item.reps : null}
-									onChangeText={(text) => {
-										let temp = [...exercises];
-										let str = text.split(".");
-										temp[index].reps = str[0];
-										updateExercises(temp);
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
+									<Text>Reps:</Text>
+									<TextInput
+										style={styles.inputfield}
+										keyboardType="numeric"
+										placeholder={item.reps ? `${item.reps}`  : "Reps"}
+										placeholderTextColor="#808080"
+										// defaultValue={item.reps ? item.reps : undefined}
+										onChangeText={(text) => {
+											let temp = [...exercises];
+											let str = text.split(".");
+											temp[index].reps = str[0];
+											updateExercises(temp);
 									}}
-								/>
+									/>
+								</View>
+								
 							)}
 							{(item.exerciseType === "SETSXREPS" ||
 								item.exerciseType === "AMRAP") && (
-								<TextInput
-									style={styles.inputfield}
-									keyboardType="numeric"
-									placeholder="Weight"
-									placeholderTextColor="#636362"
-									defaultValue={item.weight ? item.weight : null}
-									onChangeText={(text) => {
-										let temp = [...exercises];
-										temp[index].weight = text;
-										updateExercises(temp);
-									}}
-								/>
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
+									<Text>Weight:</Text>
+									<TextInput
+										style={styles.inputfield}
+										keyboardType="numeric"
+										placeholder={item.weight ? `${item.weight}`  : "Weight"}
+										placeholderTextColor="#808080"
+										// defaultValue={item.weight ? item.weight : undefined}
+										onChangeText={(text) => {
+											let temp = [...exercises];
+											temp[index].weight = text;
+											updateExercises(temp);
+										}}
+									/>
+								</View>
+								
 							)}
 							{(item.exerciseType === "AMRAP" ||
 								item.exerciseType === "CARDIO") && (
-								<TextInput
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
+									<Text>Time:</Text>
+									<TextInput
 									style={styles.inputfield}
 									keyboardType="numeric"
-									placeholder="Time"
-									placeholderTextColor="#636362"
-									defaultValue={item.time ? item.time : null}
+									placeholder={item.time ? `${item.time}` : "Time"}
+									placeholderTextColor="#808080"
+									// defaultValue={item.time ? item.time : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										temp[index].time = text;
 										updateExercises(temp);
 									}}
 								/>
+								</View>
+								
 							)}
 						</View>
 					</View>
@@ -287,15 +305,15 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	inputfield: {
-		marginHorizontal: 20,
-		width: "20%",
+		marginHorizontal: 50,
+		width: "60%",
 		textAlign: "center",
 		borderWidth: 0.5,
 		shadowColor: "rgba(0,0,0, .4)", // IOS
 		shadowOffset: { height: 1, width: 1 }, // IOS
 		shadowOpacity: 1, // IOS
 		shadowRadius: 1, //IOS
-		padding: 2,
+		padding: 4,
 		backgroundColor: "white",
 	},
 	ExerciseImage: {
