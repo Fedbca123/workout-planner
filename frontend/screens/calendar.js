@@ -111,8 +111,8 @@ const CalendarScreen = ({}) => {
     };
 
     const updateWorkout = async (workout, updatedInfo) => {
-      console.log(updatedInfo);
-      console.log(workout);
+      // console.log(updatedInfo);
+      // console.log(workout);
       try {
         const response = await API_Instance.patch(
           `workouts/${workout}`,
