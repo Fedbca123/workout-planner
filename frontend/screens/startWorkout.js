@@ -334,10 +334,11 @@ const StartWorkout = ({ navigation, route }) => {
             <View style={{flex: 1, marginTop: 20, alignContent: 'center'}}>
               <Text style={styles.heading}>{exercises[currentExerciseIndex].title}</Text>
               {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' ? (
-                <>
-                  <Text style={styles.text}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
-                  <Text style={styles.text}>{`${exercises[currentExerciseIndex].reps} reps`}</Text>
-                </>
+                <View style={{flex: 1, marginTop: '20%'}}>
+                  
+                  <Text style={styles.text2}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
+                  <Text style={styles.text2}>{`${exercises[currentExerciseIndex].reps} reps`}</Text>
+                </View>
               ) : (
                 <>
                   <View style={{alignItems: 'center'}}>
@@ -428,6 +429,15 @@ const styles = StyleSheet.create({
 		fontWeight: 400,
 		fontSize: 16,
 		fontWeight: "normal",
+		color: "#2B2B2B",
+		textAlign: "center",
+    marginBottom: 20
+	},
+  text2: {
+		fontFamily: "HelveticaNeue",
+		fontWeight: 400,
+		fontSize: 20,
+		fontWeight: "bold",
 		color: "#2B2B2B",
 		textAlign: "center",
     marginBottom: 20
