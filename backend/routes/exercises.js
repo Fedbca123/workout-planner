@@ -11,6 +11,7 @@ const config = require("../config.js");
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const authenticateToken = require('../middleware/authenticateToken.js');
+const sharp = require('sharp');
 
 /*
 Error Codes:
@@ -64,7 +65,13 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
   var imageId = null;
 
   if(req.file){
-    await cloudinary.v2.uploader.upload(req.file.path,{folder: "exercises"},function(err, result) {
+    var imgPath = __dirname + '/../middleware/temp/';
+    await sharp(imgPath + req.file.filename).resize(150, 150)
+        .rotate()
+        .resize(320,320)
+        .toFile(imgPath + req.file.filename + "-cmp");
+        
+    await cloudinary.v2.uploader.upload(req.file.path + "-cmp",{folder: "exercises"},function(err, result) {
       if (err)
         return res.status(402).send({Error: err});
       image = result.url;
@@ -133,6 +140,7 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
 
   if(req.file){
     await unlinkAsync(req.file.path);
+    await unlinkAsync(req.file.path + "-cmp");
   }
 });
 
@@ -215,7 +223,12 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
   var image = null;
   var imageId = null;
   if(req.file){
-    await cloudinary.v2.uploader.upload(req.file.path,{folder: "exercises"},function(err, result) {
+    var imgPath = __dirname + '/../middleware/temp/';
+    await sharp(imgPath + req.file.filename).resize(150, 150)
+        .rotate()
+        .resize(320,320)
+        .toFile(imgPath + req.file.filename + "-cmp");
+    await cloudinary.v2.uploader.upload(req.file.path + "-cmp",{folder: "exercises"},function(err, result) {
       if (err)
         return res.status(402).send({Error: err});
       image = result.url;
@@ -253,6 +266,7 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
 
   if(req.file){
     await unlinkAsync(req.file.path);
+    await unlinkAsync(req.file.path + "-cmp");
   }
 });
 

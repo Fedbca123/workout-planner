@@ -389,10 +389,19 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
     return res.sendStatus(403);
   }
 
+  if (req.file)
+  {
+    var imgPath = __dirname + '/../middleware/temp/';
+    await sharp(imgPath + req.file.filename).resize(150, 150)
+        .rotate()
+        .resize(320,320)
+        .toFile(imgPath + req.file.filename + "-cmp");
+  }
+
   var image = null;
   var imageId = null;
   if(req.file){
-    await cloudinary.v2.uploader.upload(req.file.path,{folder: "workouts"},function(err, result) {
+    await cloudinary.v2.uploader.upload(req.file.path + "-cmp",{folder: "workouts"},function(err, result) {
       if (err)
         return res.status(402).send({Error: err});
       image = result.url;
@@ -449,7 +458,7 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
   var image = null;
   var imageId = null;
   if(req.file){
-    await cloudinary.v2.uploader.upload(req.file.path,{folder: "workouts"},function(err, result) {
+    await cloudinary.v2.uploader.upload(req.file.path + "-cmp",{folder: "workouts"},function(err, result) {
       if (err)
         return res.status(402).send({Error: err});
       image = result.url;
@@ -529,6 +538,7 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
 
   if(req.file){
      await unlinkAsync(req.file.path);
+     await unlinkAsync(req.file.path + "-cmp");
   }
 });
 
