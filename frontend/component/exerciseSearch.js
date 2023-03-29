@@ -30,6 +30,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
     const [modalVisible, setModalVisibility] = useState(false);
     const [exercise, setExercise] = useState({});
     const [searchText, setSearchText] = useState('');
+    const [searchResults, updateSearchResults] = useState([]);
     const [globalState, updateGlobalState] = useGlobalState();
     const isFocused = useIsFocused();
     
@@ -56,10 +57,53 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	useEffect(() => {
 		loadExercises();
     }, [isFocused]);
+
+    function TryFilterExercise(ex, searchVals){
+    	let success = true;
     
-    function handleSearch(val)
+		// search
+		if(success && searchVals.length > 0){
+		//console.log("st",searchTags)
+		let matches = false;
+		for(const tag of ex.tags){
+			if(exerciseTagFound(tag, searchVals)){
+			matches = true;
+			break;
+			}
+		}
+		success = success && matches;
+		}
+
+		return success;
+    }
+
+    function exerciseTagFound(exTag, searchTags){
+		for(const term of searchTags){
+			if(exTag.toLowerCase().includes(term.toLowerCase())){
+				//console.log(term, 'found in', exTag)
+				return true;
+			}
+		}
+		return false;
+	}
+    
+    function handleSearch(str)
     {
-        /* TO-DO */
+        let retList = [];
+		let searchVals = str ? str.split(' ') : [];
+		
+		if(searchVals.length == 0 ){
+      		//console.log('no filter but still ate');
+      		return exercises;
+    	}
+
+        for (const ex of exercises){
+			if (TryFilterExercise(ex, searchVals)){
+				retList.push(ex);
+			}
+		}
+
+		return retList;
     }
 
     return (
@@ -83,8 +127,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 				containerStyle={{ backgroundColor: "white" }}
 				inputStyle={{color: "black"}}
 				onChangeText={(val) => {
-                    setSearchText(val);
-					handleSearch(val);
+					setSearchText(val);
+					updateSearchResults(handleSearch(val));
 				}}
 				round={true}
 				value={searchText}
@@ -99,7 +143,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 				placeholder="Search exercises by name"
 	    />
       <FlatList
-        data={exercises}
+        data={searchResults}
         keyExtractor={(item) => item._id}
         style={{flex: 1}}
         renderItem={({ item }) => (
