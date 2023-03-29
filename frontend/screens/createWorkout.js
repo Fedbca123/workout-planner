@@ -18,14 +18,14 @@ import { useNavigation } from "@react-navigation/native";
 import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance.js"
 import { Header } from "react-native-elements";
-import ChooseTemplateComponent from "../component/chooseTemplateComponent.js";
-import ExerciseReview from "../component/exerciseReview.js";
-import ExerciseSearch from "../component/exerciseSearch.js";
-import BeginFinalizeWorkout from "../component/beginFinalizeWorkout.js";
+import ChooseTemplateComponent from "../component/createWorkout/chooseTemplateComponent.js";
+import ExerciseReview from "../component/createWorkout/exerciseReview.js";
+import ExerciseSearch from "../component/createWorkout/exerciseSearch.js";
+import BeginFinalizeWorkout from "../component/createWorkout/beginFinalizeWorkout.js";
 import CreateWorkoutHeader from "../component/createWorkoutHeader.js";
-import ScheduleWorkout from "../component/scheduleWorkout.js";
-import FinalizeReview from "../component/finalizeReview.js";
-import CreateExercise from "../component/createExercise.js";
+import ScheduleWorkout from "../component/createWorkout/scheduleWorkout.js";
+import FinalizeReview from "../component/createWorkout/finalizeReview.js";
+import CreateExercise from "../component/createWorkout/createExercise.js";
 
 export default function CreateWorkout({ navigation, workoutData }) {
     const [currState, setCurrState] = useState((workoutData) ? "ExerciseReview" : "chooseTemplate");
