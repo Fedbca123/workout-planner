@@ -132,12 +132,14 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 						<View style={styles.ExerciseCardBottom}>
 							{(item.exerciseType === "SETSXREPS" ||
 								item.exerciseType === "AMRAP") && (
+								<>
+								<Text>Sets:</Text>
 								<TextInput
 									style={styles.inputfield}
 									keyboardType="numeric"
-									placeholder="Sets"
-									placeholderTextColor="#636362"
-									defaultValue={item.sets ? item.sets : undefined}
+									placeholder={item.sets ? `${item.sets}` : "Sets"}
+									placeholderTextColor="#57514E"
+									// defaultValue={item.sets ? item.sets : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										let str = text.split(".");
@@ -147,45 +149,55 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 										updateExercises(temp);
 									}}
 								/>
+								</>
+								
 							)}
 							{item.exerciseType === "SETSXREPS" && (
-								<TextInput
-									style={styles.inputfield}
-									keyboardType="numeric"
-									placeholder="Reps"
-									placeholderTextColor="#636362"
-									defaultValue={item.reps ? item.reps : undefined}
-									onChangeText={(text) => {
-										let temp = [...exercises];
-										let str = text.split(".");
-										temp[index].reps = str[0];
-										updateExercises(temp);
+								<>
+									<Text>Reps:</Text>
+									<TextInput
+										style={styles.inputfield}
+										keyboardType="numeric"
+										placeholder={item.reps ? `${item.reps}`  : "Reps"}
+										placeholderTextColor="#808080"
+										// defaultValue={item.reps ? item.reps : undefined}
+										onChangeText={(text) => {
+											let temp = [...exercises];
+											let str = text.split(".");
+											temp[index].reps = str[0];
+											updateExercises(temp);
 									}}
-								/>
+									/>
+								</>
+								
 							)}
 							{(item.exerciseType === "SETSXREPS" ||
 								item.exerciseType === "AMRAP") && (
-								<TextInput
-									style={styles.inputfield}
-									keyboardType="numeric"
-									placeholder="Weight"
-									placeholderTextColor="#636362"
-									defaultValue={item.weight ? item.weight : undefined}
-									onChangeText={(text) => {
-										let temp = [...exercises];
-										temp[index].weight = text;
-										updateExercises(temp);
-									}}
-								/>
+								<>
+									<Text>Weight:</Text>
+									<TextInput
+										style={styles.inputfield}
+										keyboardType="numeric"
+										placeholder={item.weight ? `${item.weight}`  : "Weight"}
+										placeholderTextColor="#808080"
+										// defaultValue={item.weight ? item.weight : undefined}
+										onChangeText={(text) => {
+											let temp = [...exercises];
+											temp[index].weight = text;
+											updateExercises(temp);
+										}}
+									/>
+								</>
+								
 							)}
 							{(item.exerciseType === "AMRAP" ||
 								item.exerciseType === "CARDIO") && (
 								<TextInput
 									style={styles.inputfield}
 									keyboardType="numeric"
-									placeholder="Time"
-									placeholderTextColor="#636362"
-									defaultValue={item.time ? item.time : undefined}
+									placeholder={item.time ? `${item.time}` : "Time"}
+									placeholderTextColor="#808080"
+									// defaultValue={item.time ? item.time : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										temp[index].time = text;
@@ -289,7 +301,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	inputfield: {
-		marginHorizontal: 20,
+		marginHorizontal: 8,
 		width: "20%",
 		textAlign: "center",
 		borderWidth: 0.5,
@@ -297,7 +309,7 @@ const styles = StyleSheet.create({
 		shadowOffset: { height: 1, width: 1 }, // IOS
 		shadowOpacity: 1, // IOS
 		shadowRadius: 1, //IOS
-		padding: 2,
+		padding: 4,
 		backgroundColor: "white",
 	},
 	ExerciseImage: {
