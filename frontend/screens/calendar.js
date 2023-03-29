@@ -9,6 +9,8 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const CalendarScreen = ({}) => {
 
+    const [datePickerText, setDatePickerText] = useState("Select Date & Time");
+
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [workoutToEdit, setWorkoutToEdit] = useState(null);
 
@@ -107,6 +109,8 @@ const CalendarScreen = ({}) => {
     const handleConfirm = (date) => {
       const formattedDate = moment(date).format('YYYY-MM-DDTHH:mm');
       setEditedScheduledDate(formattedDate);
+      //This updates what is selected
+      setDatePickerText(moment(date).format("MMMM D, YYYY hh:mm A"));
       hideDatePicker();
     };
 
@@ -255,19 +259,23 @@ const CalendarScreen = ({}) => {
           )}
         />
         <Modal
-          animationType="slide"
-          transparent={true}
-          visible={editModalVisible}
-          onRequestClose={() => setEditModalVisible(false)}
+        animationType="slide"
+        transparent={true}
+        visible={editModalVisible}
+        onRequestClose={() => setEditModalVisible(false)}
         >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-                  {workoutToEdit && (
-                <>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            {workoutToEdit && (
+              <>
                   <Text style={styles.modalTitle}>Edit Workout</Text>
                   {/* Edit the workout information */}
                   <Text>Date & Time:</Text>
-                  <Button title="Select Date & Time" onPress={showDatePicker} />
+                  <View style={styles.timedate}>
+                    <TouchableOpacity onPress={showDatePicker} style={styles.datePickerContainer}>
+                      <Text style={styles.datePickerText}>{datePickerText}</Text>
+                    </TouchableOpacity>
+                  </View>
                   <DateTimePickerModal
                     isVisible={datePickerVisible}
                     mode="datetime"
@@ -281,7 +289,7 @@ const CalendarScreen = ({}) => {
                       value={editedRecurrence}
                       onValueChange={setEditedRecurrence}
                       trackColor={{ false: '#767577', true: '#81b0ff' }}
-                      thumbColor={editedRecurrence ? '#f5dd4b' : '#f4f3f4'}
+                      thumbColor={editedRecurrence ? '#FFFFFF' : '#f4f3f4'}
                     />
                     <Text>Yes</Text>
                   </View>
@@ -312,6 +320,12 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     padding: 10,
 },
+  datePickerText:{
+    color: '#9FA2AE',
+    fontSize: 15,
+    textAlign: 'left',
+    padding: 10,
+  },
   myExercise:{
     backgroundColor: '#DDF2FF',
     padding: 20,
@@ -378,6 +392,11 @@ const styles = StyleSheet.create({
   },
   modalSwitch: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 5,
+  },
+  timedate: {
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: 5,
