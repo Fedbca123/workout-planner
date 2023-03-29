@@ -77,24 +77,56 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 	}
 
-	function handleSearch(str) {
-
-		updateSearchResults([]);
-		
-		for (let workout of allWorkouts) {
-			if (true /*Figure out herer how to search properly*/ ) {
-				searchResults.push(workout);
+	function exerciseTagFound(exTag, searchTags){
+		for(const term of searchTags){
+			if(exTag.toLowerCase().includes(term.toLowerCase())){
+				//console.log(term, 'found in', exTag)
+				return true;
 			}
 		}
+		return false;
+	}
+
+	function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals){
+    	let success = true;
+    
+		// search
+		if(success && searchVals.length > 0){
+		//console.log("st",searchTags)
+		let matches = false;
+		for(const tag of workout.tags){
+			if(exerciseTagFound(tag, searchVals)){
+			matches = true;
+			break;
+			}
+		}
+		success = success && matches;
+		}
+
+		return success;
+  }
+
+	function handleSearch(str) {
+		let retList = [];
+		let searchVals = str ? str.split(' ') : [];
+		
+		if(searchVals.length == 0 ){
+      		//console.log('no filter but still ate');
+      		return allWorkouts;
+    	}
+
+		for (const workout of allWorkouts){
+			if (tryFilterWorkout(workout, searchVals)){
+				retList.push(workout);
+			}
+		}
+
+		return retList;
 	}
 
 	useEffect(() => {
 		loadWorkouts();
 	}, [isFocused]);
-
-	// useEffect(() => {
-	// 	handleSearch(searchText);
-	// }, [searchText.length]);
 
 	const noTemplate = [
 		{
@@ -143,26 +175,29 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 				platform="default"
 				lightTheme={true}
 				containerStyle={{ backgroundColor: "white" }}
-				inputStyle={{color: "black"}}
+				inputStyle={{ color: "black" }}
 				onChangeText={(val) => {
-					handleSearch(setSearchText(val));
+					// console.log("val "+ val);
+					setSearchText(val);
+					// console.log(searchText);
+					
+					updateSearchResults(handleSearch(val));
 				}}
 				round={true}
 				value={searchText}
-				cancelButtonTitle=""
+				// showLoading
+				// cancelButtonTitle=""
+				// showCancel={false}
+				keyboardShouldPersistTaps='handled'
 				onClear={() => {
 					setSearchText("");
 					updateSearchResults(allWorkouts);
-					// searchResults.push(publicWorkouts);
-					// searchResults.push(privateWorkouts);
 				}}
 				onCancel={() => {
 					setSearchText("");
 					updateSearchResults(allWorkouts);
-					// searchResults.push(publicWorkouts);
-					// searchResults.push(privateWorkouts);
 				}}
-				placeholder="Search by name, muscle groups, or equipment"
+				placeholder="Search by name or equipment"
 			/>
 
 			<FlatList

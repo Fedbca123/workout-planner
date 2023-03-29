@@ -35,7 +35,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 
     useEffect(() => {
         let temp = {...workout[0]};
-        temp.recurrence = false;
+        temp.recurrence = temp.recurrence ? temp.recurrence : false;
         updateWorkout([temp]);
     }, [])
 
@@ -107,6 +107,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <TextInput
                         // keyboardType="numeric"
                         placeholder="Planet Fitness"
+                        defaultValue={workout[0].location ? workout[0].location : ""}
                         style={styles.inputfield}
                         onChangeText={(text) => {
 							let temp = {...workout[0]}
@@ -119,7 +120,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <TextInput
                         keyboardType="numeric"
                         placeholder="60 min."
-                        // defaultValue={workout[0].duration}
+                        defaultValue={workout[0].duration ? workout[0].duration : null}
                         style={styles.inputfield}
                         onChangeText={(text) => {
 							let temp = {...workout[0]}

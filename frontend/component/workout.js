@@ -52,28 +52,13 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 					</View>
 
-						
-						{/* <TouchableOpacity style={styles.addButton} onPress={() => {
-							passData(data);
-							setCurrState("ExerciseReview");
-							// updateGlobalState("workout", data);
-						}}>
-
-							<AntDesign name="pluscircleo"  style={{alignSelf: "center" }} size={24}/>
-							
-						</TouchableOpacity> */}
-
 						<TouchableOpacity style={styles.addButton} onPress={() => {
 							passData(data);
 							setCurrWorkout(data);
 							setCreateNew(false);
 							setCurrState("ExerciseReview");
-							// updateGlobalState("workout", data);
 						}}>
 
-							{/* <Icon name="edit" type="material" style={{ justifyContent: "center" }}/> */}
-							{/* <AntDesign name="forward"  style={{alignSelf: "center" }} size={24}/> */}
-							{/* <Entypo name="forward" size={24} color="black" /> */}
 							<Ionicons name="arrow-forward-circle-outline" size={34} style={{alignSelf: "center" }}  color="black" />
 							
 						</TouchableOpacity>
@@ -83,23 +68,24 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 			);
 		} else if (startButton) {
 			return (
-				<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+				<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", alignItems: 'center' }}>
 					
 					<Image source={{ uri: sections.image }} style={styles.ImageStyle} />
 
-					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
+					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1 }}>
 						
 						<Text style={styles.TitleText}>{sections.title}</Text>
 
 					</View>
 
-					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row-reverse", flex: 0.6}}>
+					<View style={{ display: "flex", justifyContent: "flex-end", flexDirection: "column",}}>
 						
-						<TouchableOpacity style={styles.addButton} onPress={() =>{
+						<TouchableOpacity style={[styles.addButton,]} onPress={() =>{
 							navigation.navigate("start", { workout: data[0] });
 						}}>
 
-							<Text style={{ alignSelf: "center" }}>Start!</Text>
+							{/* <Text style={{ alignSelf: "center" }}>Start!</Text> */}
+							<AntDesign name="playcircleo" size={34}/>
 							
 						</TouchableOpacity>
 
@@ -183,9 +169,6 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 					renderItem={itemRender}
 					initialNumToRender={3}
 					style={{display:"flex"}}
-					// scrollEnabled={true}
-					// stickyHeaderHiddenOnScroll={true}
-					// style={{backgroundColor: "darkgray"}}
 				/>
 			</View>
 			// <View style={styles.content}>
@@ -198,11 +181,9 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 		<View >
 			<Accordion
 				// containerStyle={styles.Background}
-				// renderAsFlatList={true}
 				sections={data}
 				renderContent={renderContent}
 				renderHeader={renderHeader}
-				// renderSectionTitle={renderSectionTitle}
 				activeSections={activeSections}
 				onChange={setActiveSections}
 				// keyExtractor={(item) => {

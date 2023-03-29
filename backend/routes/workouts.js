@@ -12,6 +12,7 @@ const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const config = require("../config.js");
 const mongoose = require('mongoose');
 const authenticateToken = require('../middleware/authenticateToken');
+const sharp = require('sharp');
 
 /*
 Error Codes:

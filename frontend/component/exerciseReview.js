@@ -31,7 +31,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 		
 		for (let exercise of workout[0].exercises) {
 
-			console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight + " time: " + exercise.time);
+			// console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight + " time: " + exercise.time);
 			
 			if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.sets === null || exercise.sets === 0)) {
 				return false;
@@ -136,7 +136,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Sets"
 									placeholderTextColor="#636362"
-									// defaultValue={item.sets}
+									defaultValue={item.sets ? item.sets : null}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										let str = text.split(".");
@@ -153,6 +153,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Reps"
 									placeholderTextColor="#636362"
+									defaultValue={item.reps ? item.reps : null}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										let str = text.split(".");
@@ -168,6 +169,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Weight"
 									placeholderTextColor="#636362"
+									defaultValue={item.weight ? item.weight : null}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										temp[index].weight = text;
@@ -182,6 +184,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder="Time"
 									placeholderTextColor="#636362"
+									defaultValue={item.time ? item.time : null}
 									onChangeText={(text) => {
 										let temp = [...exercises];
 										temp[index].time = text;

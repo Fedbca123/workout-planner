@@ -15,6 +15,7 @@ const { EmailClient } = require("@azure/communication-email");
 const fs = require('fs');
 const { promisify } = require('util');
 const unlinkAsync = promisify(fs.unlink);
+const sharp = require('sharp');
 
 /* 
 ADDING JWT TO YOUR AXIOS CALLS w/ Nestor :) :
