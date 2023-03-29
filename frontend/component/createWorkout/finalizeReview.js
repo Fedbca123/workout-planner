@@ -17,15 +17,15 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
-import Workouts from "./workout.js";
+import Workouts from "../workout.js";
 import { useIsFocused } from "@react-navigation/native";
-import { useGlobalState } from "../GlobalState.js";
-import API_Instance from "../../backend/axios_instance.js";
+import { useGlobalState } from "../../GlobalState.js";
+import API_Instance from "../../../backend/axios_instance.js";
 import { AntDesign } from "@expo/vector-icons";
 import { Header, SearchBar } from "react-native-elements";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import config from "../../backend/config.js"
+import config from "../../../backend/config.js"
 
 export default function FinalizeReview({ workout, updateWorkout, setCurrState, navigation, }) {
 	const [expanded, setExpanded] = useState(false);

@@ -15,12 +15,11 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
-import API_Instance from "../../backend/axios_instance.js";
+import API_Instance from "../../../backend/axios_instance.js";
 import { AntDesign } from "@expo/vector-icons";
-import { useGlobalState } from "../GlobalState.js";
+import { useGlobalState } from "../../GlobalState.js";
 import { useIsFocused } from '@react-navigation/native';
 import Modal from "react-native-modal";
-import ExerciseInfo from "./exerciseInfo.js";
 import { Header, SearchBar } from "react-native-elements";
 import * as ImagePicker from 'expo-image-picker';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
