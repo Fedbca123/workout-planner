@@ -30,16 +30,15 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	function checkExercises() {
 		
 		for (let exercise of workout[0].exercises) {
-
-			// console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight + " time: " + exercise.time);
 			
-			if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.sets === null || exercise.sets === 0)) {
+			if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.sets === undefined || exercise.sets === 0)) {
+				console.log(exercise.title);
 				return false;
-			} else if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && exercise.weight === null) {
+			} else if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && exercise.weight === undefined) {
 				return false;
-			} else if ((exercise.exerciseType === "CARDIO" || exercise.exerciseType === "AMRAP") && (exercise.time === null || exercise.time === 0)) {
+			} else if ((exercise.exerciseType === "CARDIO" || exercise.exerciseType === "AMRAP") && (exercise.time === undefined || exercise.time === 0)) {
 				return false;
-			} else if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.reps === null || exercise.reps === 0)) {
+			} else if ((exercise.exerciseType === "SETSXREPS") && (exercise.reps === undefined || exercise.reps === 0)) {
 				return false;
 			} 
 			
@@ -253,6 +252,7 @@ const styles = StyleSheet.create({
 	Background: {
 		backgroundColor: "white",
 		flex: 1,
+		borderWidth:.5,
 		display: "flex",
 		flexDirection: "column",
 		justifyContent: "space-evenly",

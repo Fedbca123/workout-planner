@@ -202,7 +202,7 @@ const CalendarScreen = ({}) => {
           <View style={styles.myExercise}>
             <Text>{dateText} workout at {startTime} </Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-            <Text>Location: {item.location}</Text>
+            {item.location && <Text>Location: {item.location}</Text>}
             <View style={{ flexDirection: 'row' }}>
               <Button title="Edit" onPress={() => handleEdit(item)} />
               <Button title="Delete workout" onPress={() => handleDelete(item)}/>
@@ -214,7 +214,7 @@ const CalendarScreen = ({}) => {
           <View style={styles.myExercise}>
             <Text>{dateText} </Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-            <Text>Location: {item.location}</Text>
+            {item.location && <Text>Location: {item.location}</Text>}
           </View>
         );
       } else {
@@ -222,7 +222,7 @@ const CalendarScreen = ({}) => {
           <View style={styles.friendExercise}>
             <Text>{dateText} workout at {startTime}</Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-            <Text>Location: {item.location}</Text>
+            {item.location && <Text>Location: {item.location}</Text>}
           </View>
         );
       }

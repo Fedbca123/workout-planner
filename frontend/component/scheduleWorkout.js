@@ -79,9 +79,9 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                             console.log(workout[0].scheduledDate);
                             if (workout[0].duration === 0) {
                                 Alert.alert("Please fill in how long this workout will take roughly");
-                            } else if(workout[0].location === ""){
+                            } /*else if(workout[0].location === ""){
                                 Alert.alert("Please list where this workout will be at");
-                            } else if (workout[0].scheduledDate === "") {
+                            }*/ else if (workout[0].scheduledDate === "") {
                                 Alert.alert("Please pick when this workout will happen");
                             } else {
                                 setCurrState("FinalizeReview");   
@@ -116,7 +116,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 					}}/> 
                 </View> 
                 <View style={{width: "70%", marginBottom: "10%"}}>
-                    <Text style={styles.text}>{'Estimated duration (in minutes):'}</Text>
+                    <Text style={styles.text}>{'Estimated duration\n(in minutes):'}</Text>
                     <TextInput
                         keyboardType="numeric"
                         placeholder="60 min."
@@ -139,7 +139,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                    <Button title="Choose a Day and Time" onPress={showDatePicker} /> 
                 </View>
                 
-                <Text style={styles.text}>Reoccurring? {"\t"}
+                <Text style={styles.text}>Reoccurring Weekly? {"\t"}
                     <Switch
                         value={workout[0].recurrence}
                         onValueChange={(val) => {
@@ -158,6 +158,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        borderWidth:.5,
         backgroundColor: 'white',
         flexDirection: 'column-reverse',
         // justifyContent:"space-between"

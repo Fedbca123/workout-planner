@@ -423,7 +423,8 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+        flex: 1,
+        borderWidth:.5,
 		flexDirection: "column",
 		backgroundColor: 'white',
 		justifyContent: "space-between",

@@ -44,8 +44,9 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 				'authorization': `BEARER ${globalState.authToken}`
 			}
 		}).then((response) => {
-			if (response.status == 200) {
-				updateExercises(response.data);
+            if (response.status == 200) {
+                updateExercises(response.data);
+                updateSearchResults(response.data);
 			} else {
 				console.log(response.status);
 			}
@@ -125,7 +126,9 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 				platform="default"
 				lightTheme={true}
 				containerStyle={{ backgroundColor: "white" }}
-				inputStyle={{color: "black"}}
+                inputStyle={{ color: "black" }}
+                autoComplete='off'
+                autoCapitalize='none'
 				onChangeText={(val) => {
 					setSearchText(val);
 					updateSearchResults(handleSearch(val));
@@ -145,14 +148,27 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
       <FlatList
         data={searchResults}
         keyExtractor={(item) => item._id}
-        style={{flex: 1}}
+        style={{ flex: 1 }}
+        ListEmptyComponent={
+        <View style={{alignItems: 'center'}}>
+            <Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
+                No Exercises Found
+            </Text>
+        </View>
+        }
         renderItem={({ item }) => (
             <View>
                 <TouchableOpacity style={styles.ExerciseCard}
                     onPress={() => {
-                        workout[0].exercises.push(item)
-                        updateWorkout(workout);
-                        setCurrState('ExerciseReview');
+                        if (workout[0].exercises.filter(a => (
+                            a._id == item._id
+                        )).length > 0) {
+                            Alert.alert(`${item.title} is already in your workout`);
+                        } else {
+                            workout[0].exercises.push(item)
+                            updateWorkout(workout);
+                            setCurrState('ExerciseReview'); 
+                        }
                     }}
                 >
                     <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
@@ -191,6 +207,7 @@ const styles = StyleSheet.create({
     Background: {
 		backgroundColor: "white",
         flex: 1,
+        borderWidth:.5,
         display: "flex",
         justifyContent: 'space-between',
         // alignContent: "space-between",

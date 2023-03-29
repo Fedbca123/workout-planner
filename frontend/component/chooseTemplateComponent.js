@@ -184,6 +184,9 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 					updateSearchResults(handleSearch(val));
 				}}
 				round={true}
+				autoComplete='off'
+				autoCorrect={false}
+				autoCapitalize='none'
 				value={searchText}
 				// showLoading
 				// cancelButtonTitle=""
@@ -217,7 +220,13 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 						/>
 					</View>
 				)}
-				ListEmptyComponent={<Text style={{ fontSize: 16 }}>NO WORKOUTS</Text>}
+				ListEmptyComponent={
+				<View style={{alignItems: 'center'}}>
+					<Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
+					No Workouts Found
+					</Text>
+                </View>
+				}
 				refreshing={true}
 			/>
 		</SafeAreaView>
