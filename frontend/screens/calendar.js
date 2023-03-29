@@ -155,9 +155,8 @@ const CalendarScreen = ({}) => {
       const updatedWorkout = await updateWorkout(workoutToEdit._id, updatedInfo);
     
       if (updatedWorkout) {
-        // Update the workout information in the calendar and close the modal
         handleEditModalClose();
-        fetchEvents(); // Refetch the events to reflect the updated workout information
+        fetchEvents(); 
       } else {
         Alert.alert('Error', 'Failed to update the workout. Please try again.');
       }
