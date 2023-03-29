@@ -111,26 +111,26 @@ export default function LandingPage({navigation}) {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<View style={styles.Header}>
-				<Text style={styles.HeaderText}>
-					You have {loadCurrentDayWorkoutStatus()}
-				</Text>
-			</View>
 			{/*<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>*/}
 			<View style={styles.CreateWorkoutCntnr}>	
 				<View>
 					<TouchableOpacity onPress={handleTemplatePress} style={styles.CreateWorkoutBttnsContainer}>
-						<Text style={styles.CreateWorkoutBttns}>Add A Workout</Text>
+						<Text style={styles.CreateWorkoutBttns}>Create A Workout</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
-			<View style={styles.BodyContainer}>
+			<View style={styles.Header}>
+				<Text style={styles.HeaderText}>
+					You have {loadCurrentDayWorkoutStatus()}
+				</Text>
+			</View>
+			{todaysWorkouts.length != 0 && <View style={styles.BodyContainer}>
 				<Text style={styles.bodyHeader}>Your Scheduled Workouts:</Text>
 				{/* <Button title="start" onPress={() => {navigation.navigate("start", {workout: null})}}/> */}
 				{loadTodaysWorkout()}
-			</View>
+			</View>}
 		</SafeAreaView>
 	);
 	//}
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
 	CreateWorkoutBttnsContainer: {
 		alignItems: "center",
 		backgroundColor: "#E0F0FE",
-		margin: 30,
+		marginTop: 15,
 		padding: 25,
 		borderRadius: 20,
 		// flex: 2,
@@ -199,6 +199,9 @@ const styles = StyleSheet.create({
 		width: 50,
 		height: 20,
 	},
+	Header: {
+		marginBottom: 20
+	}
 });
 
 //export default LandingPage;
