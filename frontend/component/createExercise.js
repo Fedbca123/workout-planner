@@ -144,8 +144,18 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
         formData.append('description', description);
         formData.append('exerciseType', type);
         formData.append('owner', globalState.user._id);
-        formData.append('muscleGroups', selectedMuscleGroups);
-        formData.append('tags', selectedEquipment);
+        // formData.append('muscleGroups', selectedMuscleGroups);
+
+        for (let mg of selectedMuscleGroups) {
+            formData.append("muscleGroups[]", mg);
+        }
+
+        // formData.append('tags', selectedEquipment);
+
+        for (let eq of selectedEquipment) {
+            formData.append("tags[]", eq);
+        }
+
         if (imageUri !== config.DEFAULTEXIMAGE)
 		{
             let filename = imageUri.split('/').pop();
@@ -208,7 +218,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                     </View>
                     
                     <View style={{width: '70%'}}>
-                        <Text style={styles.text}>Description</Text>
+                        <Text style={styles.text}>Description {"(optional)"}</Text>
                         <TextInput style={styles.inputfield}
                             maxLength= {200}
                             multiline = {true}
@@ -335,13 +345,26 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                 {pageTwo && <TouchableOpacity 
                     style={{ flex:1, alignItems:"center", justifyContent: "center", backgroundColor: "#10B9F1"}} 
                     onPress={() => {
-                        createExercise();
-                        }}>
+                        // console.log(selectedMuscleGroups);
+                        if (selectedMuscleGroups.length === 0) {
+                            Alert.alert("Even if it's cardio, it has to workout at least one muscle");
+                        } else if (selectedEquipment.length === 0) { 
+                            Alert.alert("Even if you're using no equipment, you're body counts as one");
+                        } else if (type === '') { 
+                            Alert.alert("Please pick an exercise type");
+                        } else {
+                            createExercise();
+                        }       
+                    }}>
                     {/* <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/> */}
                     <Text style={styles.BttnText}>Complete</Text>
                 </TouchableOpacity>}
                 {!pageTwo && <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center", backgroundColor: "#10B9F1"}} onPress={() => {
-                    setPageTwo(true)
+                            if (title !== "") {
+                                setPageTwo(true);  
+                            } else {
+                                Alert.alert("Please name the exercise");
+                            }
                     }}>
                     {/* <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/> */}
                     <Text style={styles.BttnText}>Next</Text>

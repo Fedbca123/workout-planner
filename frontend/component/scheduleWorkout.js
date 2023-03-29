@@ -12,6 +12,7 @@ import {
 	VirtualizedList,
     useWindowDimensions,
     Switch,
+    Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -23,6 +24,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { Header, SearchBar } from "react-native-elements";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { duration } from "moment";
 
 export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -74,7 +76,17 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <TouchableOpacity 
                         style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#10B9F1" }} 
                         onPress={() => {
-                        setCurrState("FinalizeReview");     
+                            console.log(workout[0].scheduledDate);
+                            if (workout[0].duration === 0) {
+                                Alert.alert("Please fill in how long this workout will take roughly");
+                            } else if(workout[0].location === ""){
+                                Alert.alert("Please list where this workout will be at");
+                            } else if (workout[0].scheduledDate === "") {
+                                Alert.alert("Please pick when this workout will happen");
+                            } else {
+                                setCurrState("FinalizeReview");   
+                            }
+                            
                     }}>
                         <AntDesign size={useWindowDimensions().height * 0.08} name="rightcircle" color={"white"}/>
                     </TouchableOpacity>  

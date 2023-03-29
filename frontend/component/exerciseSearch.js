@@ -100,7 +100,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	    />
       <FlatList
         data={exercises}
-        keyExtractor={(item) => item.title}
+        keyExtractor={(item) => item._id}
         style={{flex: 1}}
         renderItem={({ item }) => (
             <View>
@@ -116,8 +116,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                     {/* Button to take user to page about info for the workout */}
                     <TouchableOpacity onPress={() => {
                         setExercise(item); 
-                        setModalVisibility(true)}
-                    }>
+                        setModalVisibility(true);
+                    }}>
                     <AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
                 </TouchableOpacity>
                 </TouchableOpacity>

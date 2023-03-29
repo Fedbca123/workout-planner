@@ -126,7 +126,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 				</View>
 				
 				<View style={{width: '70%'}}>
-					<Text style={styles.text}>Description</Text>
+					<Text style={styles.text}>Description {"(optional)"}</Text>
 					<TextInput style={styles.inputfield}
 						maxLength= {200}
 						multiline = {true}
@@ -161,7 +161,11 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
                     <TouchableOpacity 
 						style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#10B9F1" }} 
 						onPress={() => {
-                        	setCurrState("Schedule");        
+							if (workout[0].title === "") {
+								Alert.alert("Please name your workout");
+							} else {
+								setCurrState("Schedule");  
+							}	      
                     }}>
                         <AntDesign size={useWindowDimensions().height * 0.08} name="rightcircle" color={"white"}/>
                     </TouchableOpacity>  

@@ -21,15 +21,32 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
 	const [exercises, updateExercises] = useState(!workout[0].exercises ? [] : workout[0].exercises);
 
-	// useEffect(() => {
-	// 	 loadWorkouts();
-	// }, []);
-
 	useEffect(() => {
 		let temp = { ...workout };
 		temp[0].exercises = exercises;
 		updateWorkout(temp);
 	}, [exercises]);
+
+	function checkExercises() {
+		
+		for (let exercise of workout[0].exercises) {
+
+			console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight + " time: " + exercise.time);
+			
+			if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.sets === null || exercise.sets === 0)) {
+				return false;
+			} else if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && exercise.weight === null) {
+				return false;
+			} else if ((exercise.exerciseType === "CARDIO" || exercise.exerciseType === "AMRAP") && (exercise.time === null || exercise.time === 0)) {
+				return false;
+			} else if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.reps === null || exercise.reps === 0)) {
+				return false;
+			} 
+			
+		}
+
+		return true;
+	}
 
 	return (
 		<View style={styles.Background}>
@@ -210,6 +227,8 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 								Alert.alert(
 									"Love the enthusiasm, but you have to at least have one exercise if you wanna workout",
 								);
+							} else if(!checkExercises()){
+								Alert.alert("Please fill all the appropriate fields for each exercise");
 							} else {
 								setCurrState("BeginFinalizing");
 							}
