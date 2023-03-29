@@ -234,11 +234,11 @@ export default function DiscoverPage({navigation}) {
   const exercisesList = async()=> {
       API_Instance.post('exercises/search',
     {
-      muscleGroupsSrch: selectedMuscleGroupsFilter.map(a => a.item),
-      exerciseTypeSrch : selectedTypeFilter.map(a => a.item),
-      equipmentSrch : selectedEquipmentFilter.map(a => a.item),
+      // muscleGroupsSrch: selectedMuscleGroupsFilter.map(a => a.item),
+      // exerciseTypeSrch : selectedTypeFilter.map(a => a.item),
+      // equipmentSrch : selectedEquipmentFilter.map(a => a.item),
       ownerId : globalState.user._id,
-      searchStr : exerciseSearch
+      // searchStr : exerciseSearch
     },   
     {
       headers: {
@@ -261,18 +261,20 @@ export default function DiscoverPage({navigation}) {
   const workoutsList = async()=> {
     API_Instance.post('workouts/search',
     {
-      muscleGroupsStr: selectedMuscleGroupsFilter,
-      exerciseTypeSrch : selectedTypeFilter,
-      equipmentFilters : selectedEquipmentFilter
+      // muscleGroupsStr: selectedMuscleGroupsFilter,
+      // exerciseTypeSrch : selectedTypeFilter,
+      // equipmentFilters : selectedEquipmentFilter
+      ownerId: globalState.user._id
     },   
     {
       headers: {
         'authorization': `BEARER ${globalState.authToken}`,
-        'Content-Type':'multipart/form-data'
+        // 'Content-Type':'multipart/form-data'
       }
     })
     .then((response) => {
-      if (response.status == 200){
+      if (response.status == 200) {
+        // console.log(JSON.stringify(response.data, null, 2));
         setFilteredWorkoutData(response.data);
         setMasterWorkoutData(response.data);
         workoutsLoaded();

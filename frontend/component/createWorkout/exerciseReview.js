@@ -31,7 +31,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 		
 		for (let exercise of workout[0].exercises) {
 
-			console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight)
+			// console.log("sets: " + exercise.sets + " reps: " + exercise.reps + " weight: " + exercise.weight)
 			
 			if ((exercise.exerciseType === "SETSXREPS" || exercise.exerciseType === "AMRAP") && (exercise.sets === undefined || exercise.sets === 0)) {
 				console.log(exercise.title);
@@ -138,7 +138,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									style={styles.inputfield}
 									keyboardType="numeric"
 									placeholder={item.sets ? `${item.sets}` : "Sets"}
-									placeholderTextColor="#57514E"
+									placeholderTextColor="#808080"
 									// defaultValue={item.sets ? item.sets : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
