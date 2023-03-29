@@ -15,7 +15,7 @@ import API_Instance from "../../backend/axios_instance";
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from '../AuthProvider';
 
-const text_field_width = '41%';
+const text_field_width = '80%';
 
 
 // TO DO: Handle Various Naming Errors
@@ -199,114 +199,128 @@ export default function SettingsPage({ navigation })
     return(
         <View style={styles.container}>
             <View style={styles.contentArea}>
-                <View style={styles.rowView}>
+                <View style={{flex: 1, width: '90%', alignItems: 'flex-start'}}>
                     <Text style={styles.text}>First Name:{"\t\t"}</Text>
-                    {!editFirstName && 
-                    <Text style={styles.text2}>{globalState.user.firstName}</Text>}
-                    {editFirstName && 
-                    <TextInput style={styles.inputfield}
-                    placeholder={globalState.user.firstName}
-                    placeholderTextColor={"#808080"}
-                    onChangeText={(text) => setFirstName(text)}
-                    autoComplete='off'
-                    autoCorrect={false}
-                    autoFocus
-                    />}
-                    {!editFirstName && <TouchableOpacity
-                        onPress={() => {
-                          setEditFirstName(true);
-                        }}>
-                        <Icon
-                            name='edit'
-                            type='material'/>
-                    </TouchableOpacity>}
-                    {editFirstName && <TouchableOpacity
-                        onPress={() => {
-                            updateFirstName();
-                            setEditFirstName(false);
-                        }}> 
-                        <Icon
-                            name='done'
-                            type='material'/>
-                    </TouchableOpacity>}
-                    {editFirstName && <TouchableOpacity
-                        onPress={() => setEditFirstName(!editFirstName)}>
+                    <View style={styles.rowView}>
+                        {!editFirstName && 
+                        <Text style={styles.text2}>{globalState.user.firstName}</Text>}
+                        {editFirstName && 
+                        <TextInput style={styles.inputfield}
+                        placeholder={globalState.user.firstName}
+                        placeholderTextColor={"#808080"}
+                        onChangeText={(text) => setFirstName(text)}
+                        autoComplete='off'
+                        autoCorrect={false}
+                        autoFocus
+                        />}
+                        {!editFirstName && <TouchableOpacity
+                            onPress={() => {
+                            setEditFirstName(true);
+                            }}>
                             <Icon
-                            name='close'
-                            type='material'/>
-                    </TouchableOpacity>}
-                </View>
-                <View style={styles.rowView}>
+                                name='edit'
+                                type='material'/>
+                        </TouchableOpacity>}
+                        {editFirstName && <View style={{flexDirection: 'row'}}>
+                             <TouchableOpacity
+                                onPress={() => {
+                                    updateFirstName();
+                                    setEditFirstName(false);
+                                }}
+                                style={{marginRight: 10}}> 
+                                <Icon
+                                    name='done'
+                                    type='material'/>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setEditFirstName(!editFirstName)}>
+                                    <Icon
+                                    name='close'
+                                    type='material'/>
+                            </TouchableOpacity>
+                        </View> }
+                    </View>
+                
                     <Text style={styles.text}>Last Name:{"\t\t"}</Text>
-                    {!editLastName && 
-                    <Text style={styles.text2}>{globalState.user.lastName}</Text>}
-                    {editLastName && 
-                    <TextInput style={styles.inputfield}
-                    placeholder={globalState.user.lastName}
-                    placeholderTextColor={"#808080"}
-                    onChangeText={(text) => setLastName(text)}
-                    autoComplete='off'
-                    autoCorrect={false}
-                    autoFocus
-                    />}
-                    {!editLastName && <TouchableOpacity
-                        onPress={() => setEditLastName(true)}>
-                        <Icon
-                            name='edit'
-                            type='material'/>
-                    </TouchableOpacity>}
-                    {editLastName && <TouchableOpacity
-                        onPress={() => {
-                             updateLastName();
-                            setEditLastName(false);
-                        }}> 
-                        <Icon
-                            name='done'
-                            type='material'/>
-                    </TouchableOpacity>}
-                    {editLastName && <TouchableOpacity
-                        onPress={() => setEditLastName(!editLastName)}>
+                    <View style={styles.rowView}>  
+                        {!editLastName && 
+                        <Text style={styles.text2}>{globalState.user.lastName}</Text>}
+                        {editLastName && 
+                        <TextInput style={styles.inputfield}
+                        placeholder={globalState.user.lastName}
+                        placeholderTextColor={"#808080"}
+                        onChangeText={(text) => setLastName(text)}
+                        autoComplete='off'
+                        autoCorrect={false}
+                        autoFocus
+                        />}
+                        {!editLastName && <TouchableOpacity
+                            onPress={() => setEditLastName(true)}>
                             <Icon
-                            name='close'
-                            type='material'/>
-                    </TouchableOpacity>}
-                </View>
-                <View style={styles.rowView}>
+                                name='edit'
+                                type='material'/>
+                        </TouchableOpacity>}
+                        {editLastName && <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    updateLastName();
+                                    setEditLastName(false);
+                                }}
+                                style={{marginRight: 10}}> 
+                                <Icon
+                                    name='done'
+                                    type='material'/>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setEditLastName(!editLastName)}>
+                                    <Icon
+                                    name='close'
+                                    type='material'/>
+                            </TouchableOpacity>
+                        </View>}
+                    </View>
+
                     <Text style={styles.text}>Email: {"\t\t\t"}</Text>
-                    {!editEmail && 
-                    <Text style={styles.text2}>{globalState.user.email}</Text>}
-                    {editEmail && 
-                    <TextInput style={styles.inputfield}
-                    placeholder={globalState.user.email}
-                    placeholderTextColor={"#808080"}
-                    onChangeText={(text) => setEmail(text)}
-                    autoCapitalize='none'
-                    autoComplete='off'
-                    autoCorrect={false}
-                    autoFocus
-                    />}
-                    {!editEmail && <TouchableOpacity
-                        onPress={() => setEditEmail(true)}>
-                        <Icon
-                            name='edit'
-                            type='material'/>
-                    </TouchableOpacity>}
-                    {editEmail && <TouchableOpacity
-                        onPress={() => {
-                            updateEmail();
-                            setEditEmail(false);
-                        }}> 
-                        <Icon
-                            name='done'
-                            type='material'/>
-                    </TouchableOpacity>}
-                    {editEmail && <TouchableOpacity
-                        onPress={() => setEditEmail(!editEmail)}>
+                    <View style={styles.rowView}>      
+                        {!editEmail && 
+                        <Text style={styles.text2}>{globalState.user.email}</Text>}
+                        {editEmail && 
+                        <TextInput style={styles.inputfield}
+                        placeholder={globalState.user.email}
+                        placeholderTextColor={"#808080"}
+                        onChangeText={(text) => setEmail(text)}
+                        autoCapitalize='none'
+                        autoComplete='off'
+                        autoCorrect={false}
+                        autoFocus
+                        />}
+                        {!editEmail && <TouchableOpacity
+                            onPress={() => setEditEmail(true)}>
                             <Icon
-                            name='close'
-                            type='material'/>
-                    </TouchableOpacity>}
+                                name='edit'
+                                type='material'/>
+                        </TouchableOpacity>}
+                        {editEmail && <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    updateEmail();
+                                    setEditEmail(false);
+                                }}
+                                style={{marginRight: 10}}> 
+                                <Icon
+                                    name='done'
+                                    type='material'/>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setEditEmail(!editEmail)}>
+                                    <Icon
+                                    name='close'
+                                    type='material'/>
+                            </TouchableOpacity>
+                        </View>}
+                    </View>
                 </View>
+
                 <View style={styles.belowFieldView}>
                     <Text style={styles.text3}>{userMessage}</Text>
                     <Button
@@ -332,18 +346,19 @@ styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     rowView: {
-        width: '90%',
         flexDirection: 'row',
         alignItems: 'center',
-        height: 50,
         borderBottomColor:'black',
         borderBottomWidth: .4,
-        marginLeft: 30,
-        marginRight: 30
+        justifyContent: 'space-between',
+        width: '100%',
+        marginVertical: 10,
+        // borderWidth: 2
     },
     contentArea: {
-        marginTop: 80,
-        alignItems: 'center'
+        marginTop: '10%',
+        alignItems: 'center',
+        flex: 1
     },
     text: {
         fontWeight: 'bold',
@@ -353,26 +368,31 @@ styles = StyleSheet.create({
     text2: {
         fontSize: 16,
         marginRight: 10,
-        width: text_field_width
+        width: text_field_width,
+        marginBottom: 5,
+        paddingVertical: 8,
+        marginLeft: 5,
     },
     inputfield: {
 		borderWidth: 1,
 		borderColor: "#C4C4C4",
 		width: text_field_width,
 		paddingVertical: 8,
-        paddingLeft: 5,
-		marginVertical: 2,
+        paddingLeft: 10,
+		marginBottom: 5,
         marginRight: 10
     },
     bottomView: {
-        flex: 1,
+        flex: .2,
         justifyContent: 'flex-end',
         marginBottom: 100
     },
     belowFieldView: {
         marginTop: 10, 
         width: '100%',
-        alignItems: 'center'
+        alignItems: 'center',
+        flex: .2,
+        // borderWidth: 2,
     },
     text3: {
         fontSize: 12
