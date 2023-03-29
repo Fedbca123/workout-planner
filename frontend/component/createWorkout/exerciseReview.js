@@ -132,7 +132,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 						<View style={styles.ExerciseCardBottom}>
 							{(item.exerciseType === "SETSXREPS" ||
 								item.exerciseType === "AMRAP") && (
-								<>
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
 								<Text>Sets:</Text>
 								<TextInput
 									style={styles.inputfield}
@@ -149,11 +149,11 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 										updateExercises(temp);
 									}}
 								/>
-								</>
+								</View>
 								
 							)}
 							{item.exerciseType === "SETSXREPS" && (
-								<>
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
 									<Text>Reps:</Text>
 									<TextInput
 										style={styles.inputfield}
@@ -168,12 +168,12 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 											updateExercises(temp);
 									}}
 									/>
-								</>
+								</View>
 								
 							)}
 							{(item.exerciseType === "SETSXREPS" ||
 								item.exerciseType === "AMRAP") && (
-								<>
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
 									<Text>Weight:</Text>
 									<TextInput
 										style={styles.inputfield}
@@ -187,12 +187,14 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 											updateExercises(temp);
 										}}
 									/>
-								</>
+								</View>
 								
 							)}
 							{(item.exerciseType === "AMRAP" ||
 								item.exerciseType === "CARDIO") && (
-								<TextInput
+								<View style={{flexDirection: "column", alignItems: 'center'}}>
+									<Text>Time:</Text>
+									<TextInput
 									style={styles.inputfield}
 									keyboardType="numeric"
 									placeholder={item.time ? `${item.time}` : "Time"}
@@ -204,6 +206,8 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 										updateExercises(temp);
 									}}
 								/>
+								</View>
+								
 							)}
 						</View>
 					</View>
@@ -301,8 +305,8 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	inputfield: {
-		marginHorizontal: 8,
-		width: "20%",
+		marginHorizontal: 50,
+		width: "60%",
 		textAlign: "center",
 		borderWidth: 0.5,
 		shadowColor: "rgba(0,0,0, .4)", // IOS
