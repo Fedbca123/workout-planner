@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
 	Background: {
 		backgroundColor: "white",
 		flex: 1,
+				borderWidth:.5,
 		justifyContent: 'space-between'
 	},
 	HeaderText: {
