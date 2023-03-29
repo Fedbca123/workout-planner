@@ -17,14 +17,14 @@ import {
 import React, { useEffect, useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import reactDom, { render } from "react-dom";
-import Workouts from "./workout.js";
+import Workouts from "../workout.js";
 import { useIsFocused } from "@react-navigation/native";
-import { useGlobalState } from "../GlobalState.js";
-import API_Instance from "../../backend/axios_instance.js"
+import { useGlobalState } from "../../GlobalState.js";
+import API_Instance from "../../../backend/axios_instance.js"
 import { Header, SearchBar } from "react-native-elements";
 import Modal from "react-native-modal";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import config from "../../backend/config.js"
+import config from "../../../backend/config.js"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrState}) {
