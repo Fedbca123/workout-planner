@@ -183,7 +183,7 @@ const StartWorkout = ({ navigation, route }) => {
     displayExercises.push("");
     for (let i = 0; i < rawExercises.length; i++)
     {
-      if (rawExercises[i].exerciseType === 'SETSXREPS')
+      if (rawExercises[i].exerciseType === 'SETSXREPS' || rawExercises[i].exerciseType === 'AMRAP' )
       {
         for (let j = 0; j < rawExercises[i].sets; j++)
         {
@@ -333,15 +333,14 @@ const StartWorkout = ({ navigation, route }) => {
             <Image source={{uri: exercises[currentExerciseIndex].image}} style={styles.image} />
             <View style={{flex: 1, marginTop: 20, alignContent: 'center'}}>
               <Text style={styles.heading}>{exercises[currentExerciseIndex].title}</Text>
-              {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' ? (
-                <>
-                  <Text style={styles.text}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
-                  <Text style={styles.text}>{`${exercises[currentExerciseIndex].reps} reps`}</Text>
-                </>
-              ) : (
-                <>
-                  <View style={{alignItems: 'center'}}>
-                    <Text style={styles.text}>As many reps as possible!</Text>
+              {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' &&
+                <View style={{flex: 1, marginTop: '20%'}}>
+                  <Text style={[styles.text2, {marginBottom: 40}]}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
+                  <Text style={styles.text2}>{`${exercises[currentExerciseIndex].weight} lbs for ${exercises[currentExerciseIndex].reps} reps`}</Text>
+                </View>}
+              {exercises[currentExerciseIndex].exerciseType === 'CARDIO' &&
+                <View style={{alignItems: 'center', justifyContent: 'space-between', flex: 1}}>
+                    <Text style={styles.text}>Cardio!</Text>
                     <CircularProgress
                       value={remainingTime}
                       radius={80}
@@ -357,23 +356,43 @@ const StartWorkout = ({ navigation, route }) => {
                         return value;
                       }}
                     />
-                    <View style={{flexDirection:'row', justifyContent:'center', marginTop:45, height:"30%"}}>
+                    <View style={{flexDirection:'row', justifyContent:'center', height:"20%"}}>
                       <Button title="start" onPress={() => handleStart()}/>
                       <Button title="pause" onPress={() => handlePause()}/>
                       <Button title="reset" onPress={() => handleReset()}/>
                     </View>
-                    {/* <View style={{flex:3, flexDirection:'row', justifyContent:'center', alignItems: 'flex-start'}}>
-                      <Button title="Back" onPress={() => handleBack()}/>
-                      <Button title="Skip" onPress={() => handleNext()}/> 
-                    </View> */}
+                </View>}
+              {exercises[currentExerciseIndex].exerciseType === 'AMRAP' &&
+                <View style={{alignItems: 'center', justifyContent: 'space-between', flex: 1}}>
+                  <Text style={[styles.text2, {marginBottom: 0}]}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
+                  <Text style={[styles.text2, {marginBottom: 0}]}>{`${exercises[currentExerciseIndex].weight}lbs`}</Text>
+                  <Text style={styles.text}>As many reps as possible!</Text>
+                  <CircularProgress
+                    value={remainingTime}
+                    radius={80}
+                    duration={0}
+                    progressValueColor={'black'}
+                    activeStrokeColor={'#FA7B34'}
+                    maxValue={timerDuration}
+                    title={'Seconds'}
+                    titleColor={'black'}
+                    progressFormatter={(value) => {
+                      'worklet';
+            
+                      return value;
+                    }}
+                  />
+                  <View style={{flexDirection:'row', justifyContent:'center', height:"20%"}}>
+                    <Button title="start" onPress={() => handleStart()}/>
+                    <Button title="pause" onPress={() => handlePause()}/>
+                    <Button title="reset" onPress={() => handleReset()}/>
                   </View>
-                </>
-              )}
+              </View>}
             </View>
           </View>
 
           {/* Touch and move icons for setsXreps (no timer) */}
-          {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' && <View style={[styles.touch, { marginTop: 40}]}>
+          <View style={[styles.touch, { marginTop: 40, height: '85%'}]}>
             <TouchableOpacity
               style={[styles.opacity, {alignItems: 'flex-start'}]}
               onPress={handleBack}>
@@ -384,21 +403,7 @@ const StartWorkout = ({ navigation, route }) => {
               onPress={handleNext}>
               <Text style={styles.moveIcon}>{'>'}</Text>
             </TouchableOpacity>
-          </View>}
-
-          {/* Touch and move icons for timer exercises */}
-          {exercises[currentExerciseIndex].exerciseType !== 'SETSXREPS' && <View style={[styles.touch, {height: '85%', marginTop: 40}]}>
-            <TouchableOpacity
-              style={[styles.opacity, {alignItems: 'flex-start'}]}
-              onPress={handleBack}>
-              <Text style={[styles.moveIcon, {marginTop: 95}]}>{'<'}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.opacity, {alignItems: 'flex-end'}]}
-              onPress={handleNext}>
-              <Text style={[styles.moveIcon, {marginTop: 95}]}>{'>'}</Text>
-            </TouchableOpacity>
-          </View>}
+          </View>
         </View>
       );
     }
@@ -432,6 +437,15 @@ const styles = StyleSheet.create({
 		textAlign: "center",
     marginBottom: 20
 	},
+  text2: {
+		fontFamily: "HelveticaNeue",
+		fontWeight: 400,
+		fontSize: 20,
+		fontWeight: "bold",
+		color: "#2B2B2B",
+		textAlign: "center",
+    marginBottom: 20
+	},
   touch: {
     flexDirection: 'row',
     position: 'absolute',
@@ -445,9 +459,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     zIndex: 0,
     justifyContent: 'center',
+    // borderWidth: 2,
   },
   image: {
-    width: '80%', 
+    height: '40%', 
     aspectRatio: 1, 
     borderRadius: 10, 
     borderColor: 'black', 

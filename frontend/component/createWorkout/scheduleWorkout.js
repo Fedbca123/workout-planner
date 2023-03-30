@@ -120,7 +120,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <TextInput
                         keyboardType="numeric"
                         placeholder="60 min."
-                        defaultValue={workout[0].duration ? workout[0].duration : null}
+                        defaultValue={workout[0].duration ? `${workout[0].duration}` : null}
                         style={styles.inputfield}
                         onChangeText={(text) => {
 							let temp = {...workout[0]}
