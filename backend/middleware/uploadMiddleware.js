@@ -1,5 +1,5 @@
 const multer = require('multer');
-const fs = require("fs"); 
+const fs = require("fs");
 
 if (!fs.existsSync(__dirname + '/temp')) {
   fs.mkdirSync(__dirname + '/temp');
