@@ -243,7 +243,7 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
   if(imageId != null) {workout.imageId = imageId;}
   if(exercises) {workout.exercises = exercises;}
   if(location) {workout.location = location;}
-  if(recurrence) {workout.recurrence = recurrence;}
+  if(recurrence != null) {workout.recurrence = recurrence;}
   if(scheduledDate) {workout.scheduledDate = scheduledDate;}
   if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
 
