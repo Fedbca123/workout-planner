@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   Title:{
-    fontFamily: 'HelveticaNeue-Bold',
+    // fontFamily: 'HelveticaNeue-Bold',
     color: '#2B2B2B',
     fontSize: 24,
     textAlign: 'left',

@@ -423,13 +423,13 @@ const styles = StyleSheet.create({
   },
   heading: {
 		color: "#2B2B2B",
-		fontFamily: "HelveticaNeue-Bold",
+		// fontFamily: "HelveticaNeue-Bold",
 		fontSize: 24,
 		textAlign: "center",
     marginBottom: 10
 	},
 	text: {
-		fontFamily: "HelveticaNeue",
+		// fontFamily: "HelveticaNeue",
 		fontWeight: 400,
 		fontSize: 16,
 		fontWeight: "normal",
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
     marginBottom: 20
 	},
   text2: {
-		fontFamily: "HelveticaNeue",
+		// fontFamily: "HelveticaNeue",
 		fontWeight: 400,
 		fontSize: 20,
 		fontWeight: "bold",

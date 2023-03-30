@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
 		height:82
 	},
 	CreateWorkoutText: {
-		fontFamily: "HelveticaNeue",
+		// fontFamily: "HelveticaNeue",
 		fontWeight: 400,
 		fontSize: 12,
 		fontWeight: "normal",

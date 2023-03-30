@@ -382,7 +382,7 @@ export default function Friends() {
 
 const styles = StyleSheet.create({
     Normal:{
-        fontFamily: 'HelveticaNeue',
+        // fontFamily: 'HelveticaNeue',
         color: '#2B2B2B',
         fontSize: 15,
         textAlign: 'left',
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5
     },
     Title:{
-        fontFamily: 'HelveticaNeue-Bold',
+        // fontFamily: 'HelveticaNeue-Bold',
         color: '#2B2B2B',
         fontSize: 24,
         textAlign: 'left',
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     Heading:{
-        fontFamily: 'HelveticaNeue-Bold',
+        // fontFamily: 'HelveticaNeue-Bold',
         color: '#2B2B2B',
         fontSize: 18,
         textAlign: 'left',

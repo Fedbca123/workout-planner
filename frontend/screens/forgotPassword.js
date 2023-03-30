@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   },
   heading:{
       color: '#2B2B2B',
-      fontFamily: 'HelveticaNeue-Bold',
+      // fontFamily: 'HelveticaNeue-Bold',
       fontSize: 36,
       textAlign: 'center',
       paddingVertical: 10,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     paddingTop: '10%'
   },
   text:{
-      fontFamily: 'HelveticaNeue',
+      // fontFamily: 'HelveticaNeue',
       fontWeight: 400,
       fontSize: 16,
       fontWeight: 'normal',
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
   },
   buttontext: {
     color: 'white',
-    fontFamily: 'HelveticaNeue',
+    // fontFamily: 'HelveticaNeue',
     fontWeight: 400,
     fontSize: 16,
     fontWeight: 'normal',

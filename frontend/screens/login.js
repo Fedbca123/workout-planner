@@ -241,12 +241,12 @@ const styles = StyleSheet.create({
 	},
 	heading: {
 		color: "#2B2B2B",
-		fontFamily: "HelveticaNeue-Bold",
+		// fontFamily: "HelveticaNeue-Bold",
 		fontSize: 36,
 		textAlign: "center",
 	},
 	text: {
-		fontFamily: "HelveticaNeue",
+		// fontFamily: "HelveticaNeue",
 		fontWeight: 400,
 		fontSize: 16,
 		fontWeight: "normal",
