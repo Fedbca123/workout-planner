@@ -135,7 +135,18 @@ export default function DiscoverPage({navigation}) {
         [{
             text: 'Yes',
             onPress: () => {
-                console.log('deleting workout');
+              API_Instance.delete(`workouts/${workout._id}`,
+              {
+                headers: {
+                    'authorization': `BEARER ${globalState.authToken}`
+                  }
+                }).then((response) => {
+                  Alert.alert(`${workout.title} deleted successfully!`);
+                  workoutsList();
+                }).catch((e) => {
+                  Alert.alert(`${e}`);
+                  console.log(e);
+                });
             },
         },
         {
