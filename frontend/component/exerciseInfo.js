@@ -9,6 +9,7 @@ import {
 	TextInput,
 	FlatList,
     useWindowDimensions,
+    Platform,
 } from "react-native";
 import React from "react";
 import { useState } from "react";
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
         borderColor: "black",
         overflow: 'hidden',
         borderWidth: 3,
-        borderRadius: "20rem",
+        borderRadius: 20,
         // bottom: -375,
         alignItems: 'center',
         paddingHorizontal: 10,

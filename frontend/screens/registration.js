@@ -5,7 +5,9 @@ import {
   View,
   //TextInput,
   Pressable,
-  Alert      } from 'react-native';
+  Alert,
+  Platform,
+} from 'react-native';
 import React, {useState, useRef} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import API_Instance from '../../backend/axios_instance';
@@ -389,7 +391,15 @@ const styles = StyleSheet.create({
     width: '70%',
     padding:8,
     marginVertical:5,
-    borderRadius: '10rem'
+    // borderRadius: '10rem'
+    ...Platform.select({
+      ios: {
+        borderRadius: '10rem'
+      },
+      android: {
+        borderRadius: 10
+      },
+    }),
 },
   form:{
     margin: 'auto',
@@ -403,7 +413,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: '10rem',
+    ...Platform.select({
+      ios: {
+        borderRadius: '10rem'
+      },
+      android: {
+        borderRadius: 10
+      },
+    }),
     elevation: 20,
     backgroundColor: "#10B9F1",
     width: '100%'

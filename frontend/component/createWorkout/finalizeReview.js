@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		borderColor: "black",
 		borderWidth: 1,
-		borderRadius: "15rem",
+		// borderRadius: 15,
 		borderRadius: 20,
 		shadowColor: "#000",
 		shadowOffset: { width: 1, height: 1 },
@@ -470,7 +470,7 @@ const styles = StyleSheet.create({
 		width: 90,
 		height: 90,
 		resizeMode: "stretch", // can be changed to contain if needed
-		borderRadius: 20,
+		// borderRadius: 20,
 		borderColor: "black",
 		borderWidth: 1.5,
 		borderRadius: 20,
@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
 		width: 60,
 		height: 60,
 		resizeMode: "stretch", // can be changed to contain if needed
-		borderRadius: 20,
+		// borderRadius: 20,
 		borderColor: "black",
 		borderWidth: 1.5,
 		borderRadius: 20,
