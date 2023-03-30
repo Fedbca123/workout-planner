@@ -27,9 +27,10 @@ import ScheduleWorkout from "../component/createWorkout/scheduleWorkout.js";
 import FinalizeReview from "../component/createWorkout/finalizeReview.js";
 import CreateExercise from "../component/createWorkout/createExercise.js";
 
-export default function CreateWorkout({ navigation, workoutData }) {
-    const [currState, setCurrState] = useState((workoutData) ? "ExerciseReview" : "chooseTemplate");
-    const [currWorkout, setCurrWorkout] = useState((workoutData) ? [workoutData] : []);
+export default function CreateWorkout({ navigation, route }) {
+    const workoutData = (route.params ? route.params.workoutData : null);
+    const [currState, setCurrState] = useState(workoutData ? "ExerciseReview" : "chooseTemplate");
+    const [currWorkout, setCurrWorkout] = useState(workoutData ? [workoutData] : []);
     const [createNew, setCreateNew] = useState(false);
     // const navigation = useNavigation();
     
@@ -80,7 +81,7 @@ export default function CreateWorkout({ navigation, workoutData }) {
 
     return (
         <View style={{flex: 1}}>
-            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} setCreateNew={setCreateNew} workoutData={workoutData}/>}
+            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} setCreateNew={setCreateNew} />}
             {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} updateWorkout={setCurrWorkout} workout={currWorkout} setCreateNew={setCreateNew}/>}
             {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
             {currState === "BeginFinalizing" && <BeginFinalizeWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
