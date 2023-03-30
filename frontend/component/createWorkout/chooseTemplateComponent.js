@@ -58,7 +58,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 	function exerciseTagFound(exTag, searchTags){
 		for(const term of searchTags){
-			if(exTag.toLowerCase().includes(term.toLowerCase())){
+			if(exTag && exTag.toLowerCase().includes(term.toLowerCase())){
 				//console.log(term, 'found in', exTag)
 				return true;
 			}

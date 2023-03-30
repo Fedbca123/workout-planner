@@ -81,7 +81,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                                 Alert.alert("Please fill in how long this workout will take roughly");
                             } /*else if(workout[0].location === ""){
                                 Alert.alert("Please list where this workout will be at");
-                            }*/ else if (workout[0].scheduledDate === "") {
+                            }*/ else if (!workout[0].scheduledDate) {
                                 Alert.alert("Please pick when this workout will happen");
                             } else {
                                 setCurrState("FinalizeReview");   

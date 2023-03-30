@@ -125,7 +125,8 @@ export default function DiscoverPage({navigation}) {
       setExpanded(!expanded);
     };
     function addWorkout(workout){
-      console.log("Adding Workout", workout.title)
+      // console.log("Adding Workout", workout.title);
+      navigation.navigate("createWorkout", { workoutData: workout });
     }
     function deleteWorkout(workout){
       try{

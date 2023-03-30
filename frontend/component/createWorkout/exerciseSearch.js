@@ -79,8 +79,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
     }
 
     function exerciseTagFound(exTag, searchTags){
-		for(const term of searchTags){
-			if(exTag.toLowerCase().includes(term.toLowerCase())){
+        for (const term of searchTags) {
+			if(exTag && exTag.toLowerCase().includes(term.toLowerCase())){
 				//console.log(term, 'found in', exTag)
 				return true;
 			}
