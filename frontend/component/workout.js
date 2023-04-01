@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
 		// borderRadius: 10,
 		...Platform.select({
 			ios: {
-				borderRadius: '10rem'
+				borderRadius: 10
 			},
 			android: {
 				borderRadius: 10
