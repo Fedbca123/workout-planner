@@ -47,6 +47,12 @@ const typeFilters = [
   {id: 2,item:'AMRAP'}
 ];
 
+const ownerFilters = [
+  {id: 0, item:'public'},
+  {id: 1, item: 'personal'},
+  {id: 2, item: 'friends'}
+]
+
 export default function DiscoverPage({navigation}) {
 
   const isFocused = useIsFocused();
@@ -68,7 +74,11 @@ export default function DiscoverPage({navigation}) {
   
   // Chosen Exercise Type Filters
   const [selectedTypeFilter, setTypeFilter] = useState([]);
-  
+
+  // Chosen Owner Type Filters
+  const [selectedOwnerFilter, setOwnerFilter] = useState([]);
+
+  // globalState
   const [globalState, updateGlobalState] = useGlobalState();
   
   // For Exercise Info Page
@@ -99,6 +109,7 @@ export default function DiscoverPage({navigation}) {
 
   useEffect(() => {
     if(isFocused){
+      //console.log('friends', globalState.user.friends)
       exercisesList();
       workoutsList();
     }
@@ -250,12 +261,13 @@ export default function DiscoverPage({navigation}) {
       // exerciseTypeSrch : selectedTypeFilter.map(a => a.item),
       // equipmentSrch : selectedEquipmentFilter.map(a => a.item),
       ownerId : globalState.user._id,
+      friendIDs : globalState.user.friends
       // searchStr : exerciseSearch
     },   
     {
       headers: {
         'authorization': `BEARER ${globalState.authToken}`,
-        'Content-Type':'multipart/form-data'
+        //'Content-Type':'multipart/form-data'
       }
     })
     .then((response) => {
@@ -276,7 +288,8 @@ export default function DiscoverPage({navigation}) {
       // muscleGroupsStr: selectedMuscleGroupsFilter,
       // exerciseTypeSrch : selectedTypeFilter,
       // equipmentFilters : selectedEquipmentFilter
-      ownerId: globalState.user._id
+      ownerId: globalState.user._id,
+      friendIDs : globalState.user.friends
     },   
     {
       headers: {
@@ -332,17 +345,20 @@ export default function DiscoverPage({navigation}) {
     return (item) => {setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));}
   }
 
+  function onMultiChangeOwner(){
+    return (item) => {setOwnerFilter(xorBy(selectedOwnerFilter, [item], 'id'));}
+  }
+
   function exerciseTagFound(exTag, searchTags){
     for(const term of searchTags){
-      if(exTag.toLowerCase().includes(term.toLowerCase())){
-        //console.log(term, 'found in', exTag)
+      if(exTag && exTag.toLowerCase().includes(term.toLowerCase())){
         return true;
       }
     }
     return false;
   }
 
-  function tryFilterExercise(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType){
+  function tryFilterExercise(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType, selectedOwner){
     let success = true;
 
     // type
@@ -355,6 +371,23 @@ export default function DiscoverPage({navigation}) {
           matches = true;
           break;
         }
+      }
+
+      success = success && matches;
+    }
+
+    // for owner types
+    if(success && selectedOwner.length > 0){
+      let matches = false;
+
+      if(selectedOwner.includes('public') && !exercise.owner){
+        matches = true;
+      }
+      if(!matches && selectedOwner.includes('personal') && exercise.owner == globalState.user._id){
+        matches = true;
+      }
+      if(!matches && selectedOwner.includes('friends') && globalState.user.friends.includes(exercise.owner)){
+        matches = true;
       }
 
       success = success && matches;
@@ -417,8 +450,10 @@ export default function DiscoverPage({navigation}) {
     let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
     let selectedType = [...selectedTypeFilter.map(a=>a.item)];
+    let selectedOwner = [...selectedOwnerFilter.map(a=>a.item)];
+
     // if no tags or search terms then return masterlist
-    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0){
+    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0 && selectedOwner.length == 0){
       //console.log('no filter but still ate');
       return masterExerciseData;
     }
@@ -426,7 +461,7 @@ export default function DiscoverPage({navigation}) {
     // for all exercises in masterlist
     for (const exercise of masterExerciseData)
     {
-      if (tryFilterExercise(exercise, searchVals, equipmentTags, muscleGroupVals, selectedType)){
+      if (tryFilterExercise(exercise, searchVals, equipmentTags, muscleGroupVals, selectedType, selectedOwner)){
         retList.push(exercise);
       }
     }
@@ -434,9 +469,8 @@ export default function DiscoverPage({navigation}) {
     return retList;
   }
 
-  function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals){
+  function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals, selectedOwner){
     let success = true;
-
     // for all muscle groups if they exist or are included
     if(muscleGroupVals.length > 0){
       let matches = false;
@@ -451,6 +485,23 @@ export default function DiscoverPage({navigation}) {
           break;
         }
       }
+      success = success && matches;
+    }
+
+    // for owner types
+    if(success && selectedOwner.length > 0){
+      let matches = false;
+
+      if(selectedOwner.includes('public') && !workout.owner){
+        matches = true;
+      }
+      if(!matches && selectedOwner.includes('personal') && workout.owner == globalState.user._id){
+        matches = true;
+      }
+      if(!matches && selectedOwner.includes('friends') && globalState.user.friends.includes(workout.owner)){
+        matches = true;
+      }
+
       success = success && matches;
     }
 
@@ -495,8 +546,10 @@ export default function DiscoverPage({navigation}) {
     let searchVals =  term ? term.split(' ') : [];
     let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
+    let selectedOwner = [...selectedOwnerFilter.map(a=>a.item)];
+
     // if no tags or search terms then return masterlist
-    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0){
+    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedOwner.length == 0){
       //console.log('no filter but still ate');
       return masterWorkoutData;
     }
@@ -504,7 +557,7 @@ export default function DiscoverPage({navigation}) {
     // for all exercises in masterlist
     for (const workout of masterWorkoutData)
     {
-      if (tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals)){
+      if (tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals, selectedOwner)){
         retList.push(workout);
       }
     }
@@ -654,6 +707,27 @@ return (
                             selectedValues = {selectedTypeFilter}
                             onMultiSelect = {onMultiChangeType()}
                             onTapClose = {onMultiChangeType()}
+                            isMulti
+                          />
+                        </SafeAreaView>
+                        <SafeAreaView style={styles.filterButtonContainer}>                      
+                          {/* <Text style={styles.filterLabels}>Select Exercise Types</Text> */}
+                          <SelectBox
+                            label="Owner Types"
+                            inputPlaceholder = "Add one or more owner types"
+                            labelStyle = {styles.filterLabels}
+                            options = {ownerFilters}
+                            optionsLabelStyle = {styles.filterOptions}
+                            hideInputFilter = 'true'
+                            //containerStyle={{backgroundColor:"black"}}
+                            toggleIconColor = "#2193BC"
+                            arrowIconColor = '#000'
+                            
+                            multiOptionsLabelStyle={styles.selectedFilterLabels}
+                            multiOptionContainerStyle={styles.selectedFilterContainers}
+                            selectedValues = {selectedOwnerFilter}
+                            onMultiSelect = {onMultiChangeOwner()}
+                            onTapClose = {onMultiChangeOwner()}
                             isMulti
                           />
                         </SafeAreaView>
@@ -1327,6 +1401,7 @@ deleteWorkoutText:{
 
   hidden:{
     opacity: 0,
+    display: 'none'
   },
 
   discoverTitle:{

@@ -38,7 +38,9 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	function loadExercises(){
 
 		API_Instance.post("exercises/search", {
-			ownerId: globalState.user._id
+			ownerId: globalState.user._id,
+      // if don't want friend exercises here, comment next line
+      friendIDs : globalState.user.friends
 		}, {
 			headers: {
 				'authorization': `BEARER ${globalState.authToken}`
