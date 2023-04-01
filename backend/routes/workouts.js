@@ -100,6 +100,9 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
   tags = tags.concat(req.body.tags)
   if (title)
     tags = tags.concat(title.split(' '));
+  
+  tags.filter(elm => elm);
+  muscleGroups.filter(elm => elm);
 
   const newWorkout = new Workout({
     title,
