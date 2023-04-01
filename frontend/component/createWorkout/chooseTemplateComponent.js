@@ -32,7 +32,9 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	function loadWorkouts() {
 
 		API_Instance.post("workouts/search", {
-			ownerId: globalState.user._id
+			ownerId: globalState.user._id,
+      // if we want friend workouts to appear in workout creation use line below
+      friendIDs : globalState.user.friends
 		}, {
 			headers: {
 				// 'Content-Type': 'multipart/form-data',

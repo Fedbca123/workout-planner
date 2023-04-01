@@ -151,7 +151,7 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
 // (GET) API_Instance.post("workouts/search")
 // returns [{ workouts }]
 router.route('/search').post(authenticateToken, async (req, res) => {
-  let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId} = req.body;
+  let {searchStr, muscleGroupsSrch, equipmentSrch, ownerId, friendIDs} = req.body;
 
   if ((ownerId && req.user._id != ownerId) && !req.user.isAdmin)
   {
@@ -178,6 +178,12 @@ router.route('/search').post(authenticateToken, async (req, res) => {
 
   if (ownerId) {
     filters.$or.push({owner: mongoose.Types.ObjectId(ownerId)});
+  }
+
+  if(friendIDs){
+    for(const friendID of friendIDs){
+      filters.$or.push({owner: mongoose.Types.ObjectId(friendID)});
+    }
   }
 
   Workout.find(filters)
