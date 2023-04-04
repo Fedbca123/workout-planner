@@ -426,6 +426,7 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
   const dateStr = req.body.scheduledDate;
   const scheduledDate = dateStr;
 
+  // console.log(req.body.recurrence)
   const recurrence = req.body.recurrence;
 
   for (let str of exercisesString) {
@@ -473,7 +474,7 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
     image = config.DEFAULTWORKIMAGE;
     imageId = config.DEFAULTWORKIMAGEID;
   }
-
+    
   // custom workouts dont have a scheduled date and recurrence
   const newCustomWorkout = new Workout({
     title,
@@ -516,33 +517,39 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
       res.status(497).send({Error: err})
     });
 
-  newCustomWorkout.save()
-    .then(async()=>{
-      const user = await User.findById(newWorkout.owner);
-      user.customWorkouts.push(newWorkout._id);
-      await user.save((err, newUser) => {
-        if (err) return res.status(495).send(err);
-      });
-    })
-    .catch(async err => {
-      if (newCustomWorkout.imageId != config.DEFAULTWORKIMAGEID) 
-      {
-        await cloudinary.v2.uploader.destroy(newCustomWorkout.imageId, function() {
-          if (err)
-            console.log("There was an error deleting the exercise Photo")
-          else{
-            console.log("Photo deleted");
-          }
+  let saveBool = req.body.save === "true" ? true : false;
+  if (saveBool)
+  {
+    newCustomWorkout.save()
+      .then(async()=>{
+        const user = await User.findById(newWorkout.owner);
+        user.customWorkouts.push(newWorkout._id);
+        await user.save((err, newUser) => {
+          if (err) return res.status(495).send(err);
         });
-      }
-      console.log(err);
-      return res.status(497).send({ Error: err });
-    });
+      })
+      .catch(async err => {
+        if (newCustomWorkout.imageId != config.DEFAULTWORKIMAGEID) 
+        {
+          await cloudinary.v2.uploader.destroy(newCustomWorkout.imageId, function() {
+            if (err)
+              console.log("There was an error deleting the exercise Photo")
+            else{
+              console.log("Photo deleted");
+            }
+          });
+        }
+        console.log(err);
+        return res.status(497).send({ Error: err });
+      });
+  }
 
   if(req.file){
      await unlinkAsync(req.file.path);
      await unlinkAsync(req.file.path + "-cmp");
   }
+
+  return res.status(200);
 });
 
 // Remove a scheduled workout

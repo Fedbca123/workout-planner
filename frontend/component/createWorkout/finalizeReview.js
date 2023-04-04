@@ -34,7 +34,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 	const handlePress = () => {
 		setExpanded(!expanded);
 	};
-
+	// console.log("Finalize Review: ", workout[0].save);
 	// When button is pressed in, make spinValue go through and up to 1
 	const onPressIn = () => {
 		Animated.spring(spinValue, {
@@ -59,69 +59,72 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 
 	function scheduledWorkout() {
 
-			let formData = new FormData();
-			formData.append('title', workout[0].title);
-			formData.append('description', workout[0].description);
-			
-			if (workout[0].image)
-			{
-				let filename = workout[0].image.split('/').pop();
-				let match = /\.(\w+)$/.exec(filename);
-				let type = match ? `image/${match[1]}` : `image`;
-				formData.append('image', { uri: workout[0].image, name: filename, type });
-			}
+		
+		let formData = new FormData();
+		formData.append('title', workout[0].title);
+		formData.append('description', workout[0].description);
+	
+		if (workout[0].image)
+		{
+			let filename = workout[0].image.split('/').pop();
+			let match = /\.(\w+)$/.exec(filename);
+			let type = match ? `image/${match[1]}` : `image`;
+			formData.append('image', { uri: workout[0].image, name: filename, type });
+		}
+		
+		// console.log("Finalize Review2: ", workout[0].save)
+		formData.append('owner', globalState.user._id);
+		formData.append('location', workout[0].location);
+		formData.append('duration', workout[0].duration);
+		formData.append('recurrence', workout[0].recurrence);
+		formData.append('scheduledDate', workout[0].scheduledDate);
+		formData.append('save', workout[0].save);
+	
+		let workoutTags = [];
+		let muscleGroups = [];
 
-			formData.append('owner', globalState.user._id);
-			formData.append('location', workout[0].location);
-			formData.append('duration', workout[0].duration);
-			formData.append('recurrence', workout[0].recurrence);
-			formData.append('scheduledDate', workout[0].scheduledDate);
+		for (let i = 0; i < workout[0].exercises.length; i++){
+			// console.log(exercises[i]);
+			formData.append('exercises[]', JSON.stringify(workout[0].exercises[i]));
+		}
 
-			let workoutTags = [];
-			let muscleGroups = [];
+		for (let i = 0; i < workout[0].exercises.length; i++){
 
-			for (let i = 0; i < workout[0].exercises.length; i++){
-				// console.log(exercises[i]);
-				formData.append('exercises[]', JSON.stringify(workout[0].exercises[i]));
-			}
-
-			for (let i = 0; i < workout[0].exercises.length; i++){
-
-				for (let j = 0; j < workout[0].exercises[i].tags.length; j++){
-					if (!workoutTags.includes(workout[0].exercises[i].tags[j])) {
-						workoutTags.push(workout[0].exercises[i].tags[j]);
-						formData.append('tags[]', workout[0].exercises[i].tags[j])
-					}
-				}
-
-				for (let j = 0; j < workout[0].exercises[i].muscleGroups.length; j++){
-					if (!muscleGroups.includes(workout[0].exercises[i].muscleGroups[j])) {
-						muscleGroups.push(workout[0].exercises[i].muscleGroups[j]);
-						formData.append('muscleGroups[]', workout[0].exercises[i].muscleGroups[j]);
-					}
+			for (let j = 0; j < workout[0].exercises[i].tags.length; j++){
+				if (!workoutTags.includes(workout[0].exercises[i].tags[j])) {
+					workoutTags.push(workout[0].exercises[i].tags[j]);
+					formData.append('tags[]', workout[0].exercises[i].tags[j])
 				}
 			}
-;
-			API_Instance.post(`users/${globalState.user._id}/workouts/create/schedule`, formData, {
-				headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'authorization': `BEARER ${globalState.authToken}`
-                }
-			}).then((response) => {
-				if (response.status == 200) {
-					// console.log(response.data);
-                    Alert.alert('Success!', 'Workout scheduled!', [
-                        {text: 'OK', onPress: () => {}},
-					]);
 
-					navigation.navigate("Home");
+			for (let j = 0; j < workout[0].exercises[i].muscleGroups.length; j++){
+				if (!muscleGroups.includes(workout[0].exercises[i].muscleGroups[j])) {
+					muscleGroups.push(workout[0].exercises[i].muscleGroups[j]);
+					formData.append('muscleGroups[]', workout[0].exercises[i].muscleGroups[j]);
 				}
-			}).catch((e) => {
-                Alert.alert('Error!', 'Workout not created', [
-                    {text: 'OK', onPress: () => {}},
-                ]);
-				console.log(e);
-			});
+			}
+		}
+
+		API_Instance.post(`users/${globalState.user._id}/workouts/create/schedule`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				'authorization': `BEARER ${globalState.authToken}`
+			}
+		}).then((response) => {
+			if (response.status == 200) {
+				// console.log(response.data);
+				Alert.alert('Success!', 'Workout scheduled!', [
+					{text: 'OK', onPress: () => {}},
+				]);
+
+				navigation.navigate("Home");
+			}
+		}).catch((e) => {
+			Alert.alert('Error!', 'Workout not created', [
+				{text: 'OK', onPress: () => {}},
+			]);
+			console.log(e);
+		});
 	}
 
 	return (
@@ -155,6 +158,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 							backgroundColor: "#10B9F1",
 						}}
 						onPress={() => {
+							// console.log(workout[0].save);
 							scheduledWorkout();
 						}}
 					>
