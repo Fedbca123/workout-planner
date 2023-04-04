@@ -48,9 +48,9 @@ const typeFilters = [
 ];
 
 const ownerFilters = [
-  {id: 0, item:'public'},
-  {id: 1, item: 'personal'},
-  {id: 2, item: 'friends'}
+  {id: 0, item:'Public'},
+  {id: 1, item: 'Personal'},
+  {id: 2, item: 'Friends'}
 ]
 
 export default function DiscoverPage({navigation}) {
@@ -109,11 +109,20 @@ export default function DiscoverPage({navigation}) {
 
   useEffect(() => {
     if(isFocused){
-      //console.log('friends', globalState.user.friends)
       exercisesList();
       workoutsList();
     }
   }, [isFocused]);
+
+  const getWorkoutOwner = (exercise, user) => {
+    if (exercise.owner === user._id) {
+      return "You";
+    } else if (user.friends.includes(exercise.owner)) {
+      return exercise.owner;
+    } else {
+      return "Public";
+    }
+  };
 
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
@@ -196,6 +205,7 @@ export default function DiscoverPage({navigation}) {
               <Text style={styles.workoutCardDescription}>{description}</Text>
               <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
               <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
+              <Text style={styles.workoutCardOwner}>Workout Owner: {getWorkoutOwner(workout, globalState.user)} </Text>
             </View>
             <TouchableOpacity onPress={()=>
               addWorkout(workout)}>
@@ -272,6 +282,7 @@ export default function DiscoverPage({navigation}) {
     })
     .then((response) => {
       if (response.status == 200){
+        console.log(response.data[0]);
         setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
         exercisesLoaded();
@@ -300,6 +311,7 @@ export default function DiscoverPage({navigation}) {
     .then((response) => {
       if (response.status == 200) {
         // console.log(JSON.stringify(response.data, null, 2));
+        console.log(response.data[0].owner);
         setFilteredWorkoutData(response.data);
         setMasterWorkoutData(response.data);
         workoutsLoaded();
@@ -380,13 +392,13 @@ export default function DiscoverPage({navigation}) {
     if(success && selectedOwner.length > 0){
       let matches = false;
 
-      if(selectedOwner.includes('public') && !exercise.owner){
+      if(selectedOwner.includes('Public') && !exercise.owner){
         matches = true;
       }
-      if(!matches && selectedOwner.includes('personal') && exercise.owner == globalState.user._id){
+      if(!matches && selectedOwner.includes('Personal') && exercise.owner == globalState.user._id){
         matches = true;
       }
-      if(!matches && selectedOwner.includes('friends') && globalState.user.friends.includes(exercise.owner)){
+      if(!matches && selectedOwner.includes('Friends') && globalState.user.friends.includes(exercise.owner)){
         matches = true;
       }
 
@@ -492,13 +504,13 @@ export default function DiscoverPage({navigation}) {
     if(success && selectedOwner.length > 0){
       let matches = false;
 
-      if(selectedOwner.includes('public') && !workout.owner){
+      if(selectedOwner.includes('Public') && !workout.owner){
         matches = true;
       }
-      if(!matches && selectedOwner.includes('personal') && workout.owner == globalState.user._id){
+      if(!matches && selectedOwner.includes('Personal') && workout.owner == globalState.user._id){
         matches = true;
       }
-      if(!matches && selectedOwner.includes('friends') && globalState.user.friends.includes(workout.owner)){
+      if(!matches && selectedOwner.includes('Friends') && globalState.user.friends.includes(workout.owner)){
         matches = true;
       }
 
@@ -1093,14 +1105,7 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     bottom: "2%",
     width: "100%",
-    // bottom: -375,
-    // width: "90%",
-    // justifyContent: 'center',
-    // alignContent:'center',
-    //width:"100%",
-    //borderColor: "black"
-    // right: -170,
-    // backgroundColor: 'gray',
+
   },
   closeButtonContainer:{
     backgroundColor: 'white',
@@ -1108,11 +1113,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 3,
     borderRadius: 20,
-    // bottom: -375,
     alignItems: 'center',
     paddingHorizontal: 10,
     marginHorizontal: 1,
-    //width: "35%",
     justifyContent: 'center',
     alignContent: 'center',
   },
@@ -1320,6 +1323,12 @@ deleteWorkoutText:{
     fontSize: 12,
     textAlign: 'center',     
     marginVertical: 5,
+  },
+  workoutCardOwner:{
+    fontWeight: 'bold',
+    fontSize: 12,
+    textAlign: 'center',     
+    marginBottom: 5,
   },
    workoutTitle:{
       fontWeight: 'bold',
