@@ -28,7 +28,7 @@ import FinalizeReview from "../component/createWorkout/finalizeReview.js";
 import CreateExercise from "../component/createWorkout/createExercise.js";
 
 export default function CreateWorkout({ navigation, route }) {
-    const workoutData = (route.params ? route.params.workoutData : null);
+    const [workoutData, _] = useState(route.params ? route.params.workoutData : null);
     const [currState, setCurrState] = useState(workoutData ? "ExerciseReview" : "chooseTemplate");
     const [currWorkout, setCurrWorkout] = useState(workoutData ? [workoutData] : []);
     const [createNew, setCreateNew] = useState(false);
@@ -78,7 +78,7 @@ export default function CreateWorkout({ navigation, route }) {
 
     // let currState = { current: "chooseTemplate" };
 
-
+    // console.log("every render: ", currWorkout[0] ? currWorkout[0].save : "none");
     return (
         <View style={{flex: 1}}>
             {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} setCreateNew={setCreateNew} />}

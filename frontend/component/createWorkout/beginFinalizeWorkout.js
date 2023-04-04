@@ -164,6 +164,10 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 							if (workout[0].title === "") {
 								Alert.alert("Please name your workout");
 							} else {
+								let temp = {...workout[0]};
+								temp.recurrence = temp.recurrence ? temp.recurrence : false;
+								temp.save = temp.save ? temp.save : false;
+								updateWorkout([temp]);
 								setCurrState("Schedule");  
 							}	      
                     }}>

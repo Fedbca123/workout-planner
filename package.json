@@ -16,6 +16,7 @@
     "@azure/communication-email": "^1.0.0-beta.2",
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^18.0.1",
+    "@react-native-community/checkbox": "^0.5.15",
     "@react-native-community/datetimepicker": "6.7.3",
     "@react-navigation/bottom-tabs": "^6.5.3",
     "@react-navigation/drawer": "^6.5.8",
@@ -50,6 +51,7 @@
     "react-dom": "18.2.0",
     "react-native": "0.71.4",
     "react-native-accordion-list-view": "^2.0.1",
+    "react-native-bouncy-checkbox": "^3.0.7",
     "react-native-calendar-picker": "^6.1.5",
     "react-native-calendars": "^1.1275.0",
     "react-native-circular-progress-indicator": "^4.4.2",
@@ -81,7 +83,8 @@
     "react-native-toggle-element": "^2.0.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.11",
-    "use-event-callback": "^0.1.0"
+    "use-event-callback": "^0.1.0",
+    "expo-checkbox": "~2.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
