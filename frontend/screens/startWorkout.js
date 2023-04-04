@@ -422,14 +422,30 @@ const styles = StyleSheet.create({
     backgroundColor: "white"
   },
   heading: {
-		color: "#2B2B2B",
-		fontFamily: "HelveticaNeue-Bold",
+    color: "#2B2B2B",
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+		// fontFamily: "HelveticaNeue-Bold",
 		fontSize: 24,
 		textAlign: "center",
     marginBottom: 10
 	},
-	text: {
-		fontFamily: "HelveticaNeue",
+  text: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+		// fontFamily: "HelveticaNeue",
 		fontWeight: 400,
 		fontSize: 16,
 		fontWeight: "normal",
@@ -438,7 +454,15 @@ const styles = StyleSheet.create({
     marginBottom: 20
 	},
   text2: {
-		fontFamily: "HelveticaNeue",
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+		// fontFamily: "HelveticaNeue",
 		fontWeight: 400,
 		fontSize: 20,
 		fontWeight: "bold",

@@ -1250,6 +1250,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
       },
     };
     var response = await client.beginSend(emailMessage);
+    return res.status(200).send("Success!");
   } catch (e) {
     console.log(e);
   }

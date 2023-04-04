@@ -9,6 +9,7 @@ import {
 	TextInput,
 	FlatList,
 	useWindowDimensions,
+	Platform,
 } from "react-native";
 import React from "react";
 import { useState } from "react";
@@ -217,7 +218,15 @@ const styles = StyleSheet.create({
 		shadowRadius: 4,
 		shadowOffset: { width: 0, height: 2 },
 		// elevation: 2,
-		borderRadius: "20rem",
+		// borderRadius: "20rem",
+		...Platform.select({
+			ios: {
+				borderRadius: 20
+			},
+			android: {
+				borderRadius: 20
+			},
+		}),
 		width: "95%",
 		// maxHeight: "90%",
 		
@@ -266,7 +275,15 @@ const styles = StyleSheet.create({
 		// margin: 30,
 		// padding: 15,
 		// backgroundColor: "blue",
-		borderRadius: "30rem",
+		// borderRadius: "30rem",
+		...Platform.select({
+			ios: {
+				borderRadius: 30
+			},
+			android: {
+				borderRadius: 30
+			},
+		}),
 		// maxHeight: "10%",
 	},
 	TitleText: {
@@ -286,13 +303,29 @@ const styles = StyleSheet.create({
 		height: 50,
 		width: 50,
 		borderWidth: 1,
-		borderRadius: 10,
+		// borderRadius: 10,
+		...Platform.select({
+			ios: {
+				borderRadius: 10
+			},
+			android: {
+				borderRadius: 10
+			},
+		}),
 	},
 	ExerciseImage: {
 		height: 50,
 		width: 50,
 		borderWidth: 1,
-		borderRadius: 20,
+		// borderRadius: 20,
+		...Platform.select({
+			ios: {
+				borderRadius: 20
+			},
+			android: {
+				borderRadius: 20
+			},
+   		 }),
 		// marginTop: 10
 	},
 });

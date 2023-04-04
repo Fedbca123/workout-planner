@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert } from 'react-native';
+import { Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
@@ -195,7 +195,10 @@ const CalendarScreen = ({}) => {
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
             {item.location && <Text>Location: {item.location}</Text>}
             <View style={{ flexDirection: 'row' }}>
-              <Button title="Edit" onPress={() => handleEdit(item)} />
+              <View style={{marginRight: 10,}}>
+                <Button title="Edit" onPress={() => handleEdit(item)} />
+              </View>
+              
               <Button title="Delete workout" onPress={ 
                 () => {
                   Alert.alert( `Are you sure you want to delete ${item.title}?`,'',
@@ -312,8 +315,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  Title:{
-    fontFamily: 'HelveticaNeue-Bold',
+  Title: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
     color: '#2B2B2B',
     fontSize: 24,
     textAlign: 'left',

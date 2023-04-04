@@ -164,7 +164,15 @@ export default function Inbox({ navigation }) {
       borderRadius: 5,
     },
     acceptButtonText: {
-      fontFamily: 'HelveticaNeue-Bold',
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue-Bold',
       color: '#FFFFFF',
       fontWeight: 'bold',
     },
@@ -176,7 +184,15 @@ export default function Inbox({ navigation }) {
       marginLeft: 10,
     },
     declineButtonText: {
-      fontFamily: 'HelveticaNeue-Bold',
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue-Bold',
       color: '#FFFFFF',
       fontWeight: 'bold',
     },

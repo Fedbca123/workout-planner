@@ -16,6 +16,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
+import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 
 export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
@@ -68,9 +69,11 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					Add an Exercise
 				</Text>
 			</TouchableOpacity>
-			<FlatList
+			<KeyboardAwareFlatList
 				data={exercises}
+
 				style={{ height: "70%" }}
+				enableOnAndroid={true}
 				ListEmptyComponent={
 					<View
 						style={{
@@ -139,6 +142,8 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder={item.sets ? `${item.sets}` : "Sets"}
 									placeholderTextColor="#808080"
+									value={`${item.sets}`}
+									maxLength={2}
 									// defaultValue={item.sets ? item.sets : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];
@@ -160,6 +165,8 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 										keyboardType="numeric"
 										placeholder={item.reps ? `${item.reps}`  : "Reps"}
 										placeholderTextColor="#808080"
+										maxLength={3}
+										value={`${item.reps}`}
 										// defaultValue={item.reps ? item.reps : undefined}
 										onChangeText={(text) => {
 											let temp = [...exercises];
@@ -178,8 +185,10 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									<TextInput
 										style={styles.inputfield}
 										keyboardType="numeric"
+										maxLength={3}
 										placeholder={item.weight ? `${item.weight}`  : "Weight"}
 										placeholderTextColor="#808080"
+										value={item.weight ? `${item.weight}` : ""}
 										// defaultValue={item.weight ? item.weight : undefined}
 										onChangeText={(text) => {
 											let temp = [...exercises];
@@ -197,8 +206,10 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									<TextInput
 									style={styles.inputfield}
 									keyboardType="numeric"
+									maxLength={4}
 									placeholder={item.time ? `${item.time}` : "Time"}
-									placeholderTextColor="#808080"
+										placeholderTextColor="#808080"
+										value={`${item.time}`}
 									// defaultValue={item.time ? item.time : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];

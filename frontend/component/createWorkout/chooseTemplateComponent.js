@@ -232,7 +232,15 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		marginTop: 15, 
 		backgroundColor: '#DDF2FF',
-		borderRadius: 8,
+		// borderRadius: 8,
+		...Platform.select({
+			ios: {
+				borderRadius: '8rem'
+			},
+			android: {
+				borderRadius: 8
+			},
+		}),
 		shadowColor: 'rgba(0,0,0, .4)', // IOS
 		shadowOffset: { height: 2, width: 2 }, // IOS
 		shadowOpacity: 1, // IOS

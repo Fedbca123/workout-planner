@@ -31,7 +31,7 @@ const FriendsScreen = () => {
             Authorization : `Bearer ${globalState.authToken}`,
           },
         });
-        if (response.status == 200) {
+        if (response.status === 200) {
           console.log(response.data);
           Alert.alert('Unfriended', `You have unfriended ${deleteFirstName} ${deleteLastName}`, [{ text: 'OK' }]);
         }
@@ -194,43 +194,49 @@ const FriendsScreen = () => {
                 </View>
 
                 {/* right side */}
-               <View style={styles.buttons}>
-                <Button style = {styles.buttonslook}
-                  title="Unfriend"
-                  onPress={() => {
-                    Alert.alert( `Are you sure you wish to unfriend ${user.firstName + " " + user.lastName}?`,'',
-                      [{
-                          text: 'Yes',
-                          onPress: () => {
-                            handleDeleteFriend(user._id, user.firstName, user.lastName)
+                <View style={styles.buttons}>
+                  <View>
+                    <Button style = {styles.buttonslook}
+                      title="Unfriend"
+                      onPress={() => {
+                        Alert.alert( `Are you sure you wish to unfriend ${user.firstName + " " + user.lastName}?`,'',
+                          [{
+                              text: 'Yes',
+                              onPress: () => {
+                                handleDeleteFriend(user._id, user.firstName, user.lastName)
+                              },
                           },
-                      },
-                      {
-                          text: 'No',
-                      }],
-                      { cancelable: false}
-                    );
-                    
-                  }}
-                />
-                <Button style = {styles.buttonlook}
-                  title="Block"
-                  onPress={() => {
-                    Alert.alert( `Are you sure you wish to block ${user.firstName + " " + user.lastName}?`,'',
-                      [{
-                          text: 'Yes',
-                          onPress: () => {
-                            handleBlockFriend(user._id, user.firstName, user.lastName)
+                          {
+                              text: 'No',
+                          }],
+                          { cancelable: false}
+                        );
+                        
+                      }}
+                    />
+                  </View>
+                  
+                  <View style={{marginLeft:5}}>
+                    <Button style = {styles.buttonlook}
+                      title="Block"
+                      onPress={() => {
+                        Alert.alert( `Are you sure you wish to block ${user.firstName + " " + user.lastName}?`,'',
+                          [{
+                              text: 'Yes',
+                              onPress: () => {
+                                handleBlockFriend(user._id, user.firstName, user.lastName)
+                              },
                           },
-                      },
-                      {
-                          text: 'No',
-                      }],
-                      { cancelable: false}
-                    );
-                    
-                  }}
-                />
+                          {
+                              text: 'No',
+                          }],
+                          { cancelable: false}
+                        );
+                        
+                      }}
+                    />
+                </View>
+                
                </View>
 
               </View>
@@ -263,7 +269,7 @@ const BlockFriendScreen = () => {
         },
       })
       .then((response) => {
-        if (response.status == 200) {
+        if (response.status === 200) {
           console.log(response.data);
           Alert.alert('Unblocked', `${unblockedFirstName} ${unblockedLastName} has been unblocked`, [{ text: 'OK' }]);
         }
@@ -381,30 +387,54 @@ export default function Friends() {
 
 
 const styles = StyleSheet.create({
-    Normal:{
-        fontFamily: 'HelveticaNeue',
-        color: '#2B2B2B',
-        fontSize: 15,
-        textAlign: 'left',
-        paddingLeft: 20,
-        paddingVertical: 5
+  Normal: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue',
+      color: '#2B2B2B',
+      fontSize: 15,
+      textAlign: 'left',
+      paddingLeft: 20,
+      paddingVertical: 5
     },
-    Title:{
-        fontFamily: 'HelveticaNeue-Bold',
-        color: '#2B2B2B',
-        fontSize: 24,
-        textAlign: 'left',
-        paddingLeft: 20,
-        paddingVertical: 5,
-        paddingBottom: 20
+  Title: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue-Bold',
+      color: '#2B2B2B',
+      fontSize: 24,
+      textAlign: 'left',
+      paddingLeft: 20,
+      paddingVertical: 5,
+      paddingBottom: 20
     },
-    Heading:{
-        fontFamily: 'HelveticaNeue-Bold',
-        color: '#2B2B2B',
-        fontSize: 18,
-        textAlign: 'left',
-        paddingLeft: 20,
-        marginVertical: 5
+  Heading: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue-Bold',
+      color: '#2B2B2B',
+      fontSize: 18,
+      textAlign: 'left',
+      paddingLeft: 20,
+      marginVertical: 5
     },
     CardContainer:{
       borderColor: 'black',
@@ -466,7 +496,9 @@ const styles = StyleSheet.create({
     buttons: {
       flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'flex-end',
+      justifyContent: "flex-end",
+      margin: 10,
+      // borderWidth:20,
     },
     iconButton: {
       backgroundColor: '#F7F7F7',
@@ -480,7 +512,7 @@ const styles = StyleSheet.create({
       alignContent: 'center',
     },
     info: {
-      alignContent: 'left',
+      alignContent: 'flex-end',
     },
     searchTerm:{
       color: '#FA7B34',
@@ -518,5 +550,8 @@ const styles = StyleSheet.create({
     },
     activeTabTextStyle: {
       color: 'white',
+  },
+  buttonlook: {
+
     }
 });

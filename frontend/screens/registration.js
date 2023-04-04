@@ -5,7 +5,9 @@ import {
   View,
   //TextInput,
   Pressable,
-  Alert      } from 'react-native';
+  Alert,
+  Platform,
+} from 'react-native';
 import React, {useState, useRef} from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import API_Instance from '../../backend/axios_instance';
@@ -153,12 +155,18 @@ export default function Register({navigation}) {
         lastName: lastName,
         email: email,
         password: password
-    }).catch((e)=>{
+      }).then((response) => {
+        if (response.status === 200) {
+          Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
+          [{text:"Back to Login", onPress: () => navigation.goBack()}]);
+        }
+      }).catch((e) => {
+        if (e.response.status === 502) {
+          Alert.alert("Email already has an account associated with it");
+        }
       console.log(e);
     });
 
-  Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
-  [{text:"Back to Login", onPress: () => navigation.goBack()}]);
     /*
     .then((response) => {
         if (response.status == 200)
@@ -348,15 +356,31 @@ const styles = StyleSheet.create({
       flex:1
   },
   heading:{
-      color: '#2B2B2B',
-      fontFamily: 'HelveticaNeue-Bold',
-      fontSize: 36,
-      textAlign: 'center',
-      paddingVertical: 10,
-      marginTop: 60
+    color: '#2B2B2B',
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+    // fontFamily: 'HelveticaNeue-Bold',
+    fontSize: 36,
+    textAlign: 'center',
+    paddingVertical: 10,
+    marginTop: 60
   },
-  text:{
-      fontFamily: 'HelveticaNeue',
+  text: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue',
+      },
+      android: {
+        fontFamily: "Roboto",
+      },
+    }),
+      // fontFamily: 'HelveticaNeue',
       fontWeight: 400,
       fontSize: 16,
       fontWeight: 'normal',
@@ -389,7 +413,15 @@ const styles = StyleSheet.create({
     width: '70%',
     padding:8,
     marginVertical:5,
-    borderRadius: '10rem'
+    // borderRadius: '10rem'
+    ...Platform.select({
+      ios: {
+        borderRadius: '10rem'
+      },
+      android: {
+        borderRadius: 10
+      },
+    }),
 },
   form:{
     margin: 'auto',
@@ -403,14 +435,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: '10rem',
+    ...Platform.select({
+      ios: {
+        borderRadius: '10rem'
+      },
+      android: {
+        borderRadius: 10
+      },
+    }),
     elevation: 20,
     backgroundColor: "#10B9F1",
     width: '100%'
   },
   buttontext: {
     color: 'white',
-    fontFamily: 'HelveticaNeue',
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+    // fontFamily: 'HelveticaNeue',
     fontWeight: 400,
     fontSize: 16,
     fontWeight: 'normal',

@@ -120,26 +120,42 @@ const styles = StyleSheet.create({
       flex:1
   },
   heading:{
-      color: '#2B2B2B',
-      fontFamily: 'HelveticaNeue-Bold',
-      fontSize: 36,
-      textAlign: 'center',
-      paddingVertical: 10,
-      marginTop: 60,
-      color: 'white'
+    color: '#2B2B2B',
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+    // fontFamily: 'HelveticaNeue-Bold',
+    fontSize: 36,
+    textAlign: 'center',
+    paddingVertical: 10,
+    marginTop: 60,
+    color: 'white'
   },
   subHeader:{
     paddingTop: '10%'
   },
-  text:{
-      fontFamily: 'HelveticaNeue',
-      fontWeight: 400,
-      fontSize: 16,
-      fontWeight: 'normal',
-      color: 'black',
-      textAlign: 'center',
-      paddingVertical: 5,
-      color:"white"
+  text: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+    // fontFamily: 'HelveticaNeue',
+    fontWeight: 400,
+    fontSize: 16,
+    fontWeight: 'normal',
+    color: 'black',
+    textAlign: 'center',
+    paddingVertical: 5,
+    color:"white"
   },
   image: {
       top: 0,
@@ -165,7 +181,7 @@ const styles = StyleSheet.create({
     width: '70%',
     padding:8,
     marginVertical:5,
-    borderRadius: '10rem'
+    borderRadius: 10,
 },
   form:{
     margin: 'auto',
@@ -179,14 +195,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 32,
-    borderRadius: '10rem',
+    borderRadius: 10,
     elevation: 20,
     backgroundColor: "#10B9F1",
     width: '100%'
   },
   buttontext: {
     color: 'white',
-    fontFamily: 'HelveticaNeue',
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+    // fontFamily: 'HelveticaNeue',
     fontWeight: 400,
     fontSize: 16,
     fontWeight: 'normal',

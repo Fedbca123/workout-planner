@@ -33,6 +33,7 @@
     "ejs": "^3.1.9",
     "expo": "^48.0.0",
     "expo-asset": "^8.9.1",
+    "expo-checkbox": "~2.3.1",
     "expo-image-picker": "~14.1.1",
     "expo-secure-store": "~12.1.1",
     "expo-status-bar": "~1.4.4",
@@ -77,14 +78,13 @@
     "react-native-screens": "~3.20.0",
     "react-native-segmented-control-tab": "^4.0.0",
     "react-native-stopwatch-timer": "^0.0.21",
-    "react-native-svg": "^12.5.1",
+    "react-native-svg": "13.4.0",
     "react-native-switch": "^1.5.1",
     "react-native-switch-selector": "^2.3.0",
     "react-native-toggle-element": "^2.0.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.11",
-    "use-event-callback": "^0.1.0",
-    "expo-checkbox": "~2.3.1"
+    "use-event-callback": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

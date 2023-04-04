@@ -185,15 +185,23 @@ const styles = StyleSheet.create({
 		height:82
 	},
 	CreateWorkoutText: {
-		fontFamily: "HelveticaNeue",
-		fontWeight: 400,
-		fontSize: 12,
-		fontWeight: "normal",
-		color: "#C4C4C4",
-		textAlign: "center",
-		position: "absolute",
-		// justifyContent:"center"
-		// left: 300
+		...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+	// fontFamily: "HelveticaNeue",
+	fontWeight: 400,
+	fontSize: 12,
+	fontWeight: "normal",
+	color: "#C4C4C4",
+	textAlign: "center",
+	position: "absolute",
+	// justifyContent:"center"
+	// left: 300
 	},
 	space: {
 		width: 50,
