@@ -439,6 +439,9 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
   tags = tags.concat(req.body.tags)
   if (title)
     tags = tags.concat(title.split(' '));
+  
+  tags.filter(elm => elm);
+  muscleGroups.filter(elm => elm);
 
   // scheduled workout has date and recurrence
   const newWorkout = new Workout({

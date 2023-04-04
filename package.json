@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "dev": "concurrently -r \"NODE_ENV=development expo start\" \" NODE_ENV=development npm run server\"",
-    "prod": "NODE_ENV=production expo start"
+    "prod": "NODE_ENV=production expo start",
+    "host": "node backend/server.js"
   },
   "dependencies": {
     "@azure/communication-email": "^1.0.0-beta.2",

@@ -96,12 +96,12 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 
 				for (let j = 0; j < workout[0].exercises[i].muscleGroups.length; j++){
 					if (!muscleGroups.includes(workout[0].exercises[i].muscleGroups[j])) {
-						workoutTags.push(workout[0].exercises[i].muscleGroups[j]);
+						muscleGroups.push(workout[0].exercises[i].muscleGroups[j]);
 						formData.append('muscleGroups[]', workout[0].exercises[i].muscleGroups[j]);
 					}
 				}
 			}
-
+;
 			API_Instance.post(`users/${globalState.user._id}/workouts/create/schedule`, formData, {
 				headers: {
                     'Content-Type': 'multipart/form-data',
