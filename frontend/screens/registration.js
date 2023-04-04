@@ -155,12 +155,18 @@ export default function Register({navigation}) {
         lastName: lastName,
         email: email,
         password: password
-    }).catch((e)=>{
+      }).then((response) => {
+        if (response.status === 200) {
+          Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
+          [{text:"Back to Login", onPress: () => navigation.goBack()}]);
+        }
+      }).catch((e) => {
+        if (e.response.status === 502) {
+          Alert.alert("Email already has an account associated with it");
+        }
       console.log(e);
     });
 
-  Alert.alert("Email Verification Link Sent",`Verify your account through the link sent to ${email} and return to login through the app!`,
-  [{text:"Back to Login", onPress: () => navigation.goBack()}]);
     /*
     .then((response) => {
         if (response.status == 200)

@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
 		// borderRadius: "20rem",
 		...Platform.select({
 			ios: {
-				borderRadius: '20rem'
+				borderRadius: 20
 			},
 			android: {
 				borderRadius: 20
@@ -275,10 +275,10 @@ const styles = StyleSheet.create({
 		// margin: 30,
 		// padding: 15,
 		// backgroundColor: "blue",
-		borderRadius: "30rem",
+		// borderRadius: "30rem",
 		...Platform.select({
 			ios: {
-				borderRadius: '30rem'
+				borderRadius: 30
 			},
 			android: {
 				borderRadius: 30
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
 		// borderRadius: 20,
 		...Platform.select({
 			ios: {
-				borderRadius: '20rem'
+				borderRadius: 20
 			},
 			android: {
 				borderRadius: 20
