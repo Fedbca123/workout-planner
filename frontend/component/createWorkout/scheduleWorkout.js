@@ -12,9 +12,10 @@ import {
 	VirtualizedList,
     useWindowDimensions,
     Switch,
-    Alert,
+    Alert
 } from "react-native";
 import React, { useEffect, useState } from "react";
+import Checkbox from 'expo-checkbox';
 import reactDom, { render } from "react-dom";
 import Workouts from "../workout.js";
 import { useIsFocused } from "@react-navigation/native";
@@ -28,7 +29,9 @@ import { duration } from "moment";
 
 export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+    // const [save, setSave] = useState(workout[0].save ? workout[0].save : false);
     const [globalState, updateGlobalState] = useGlobalState();
+    // console.log("every render: ", workout[0].save);
 
     // const [isReoccurring, setReoccurring] = useState(false);
     // const toggleSwitch = () => setReoccurring(previousState => !previousState);
@@ -36,8 +39,16 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
     useEffect(() => {
         let temp = {...workout[0]};
         temp.recurrence = temp.recurrence ? temp.recurrence : false;
-        updateWorkout([temp]);
+        temp.save = temp.save ? temp.save : false;
+        updateWorkout([ temp ]);
     }, [])
+
+    // useEffect(() => {
+    //     let temp = {...workout[0]};
+    //     temp.save = save;
+    //     console.log("save change to: ",temp.save);
+    //     updateWorkout([temp]);
+    // }, [save])
 
     const showDatePicker = () => {
     	setDatePickerVisibility(true);
@@ -106,7 +117,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <Text style={styles.text}>Location of workout?</Text>
                     <TextInput
                         // keyboardType="numeric"
-                        placeholder="Planet Fitness"
+                        placeholder="Home"
                         defaultValue={workout[0].location ? workout[0].location : ""}
                         style={styles.inputfield}
                         onChangeText={(text) => {
@@ -119,7 +130,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <Text style={styles.text}>{'Estimated duration\n(in minutes):'}</Text>
                     <TextInput
                         keyboardType="numeric"
-                        placeholder="60 min."
+                        placeholder="60"
                         defaultValue={workout[0].duration ? `${workout[0].duration}` : null}
                         style={styles.inputfield}
                         onChangeText={(text) => {
@@ -148,9 +159,17 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                             updateWorkout([temp]);
                         }}/>
                 </Text>
+                <View style={{flexDirection: 'row', marginTop: 40, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={[styles.text, {marginRight: 10}]}>Save Workout For Later Use?</Text>
+                    <Switch
+                        value={workout[0].save}
+                        onValueChange={(val) => {
+                            let temp = { ...workout[0] }
+							temp.save = val;
+                            updateWorkout([temp]);
+                        }}/> 
+                </View>
             </KeyboardAwareScrollView>
-
-
         </View>
     );
 };
