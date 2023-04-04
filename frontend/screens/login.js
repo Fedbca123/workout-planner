@@ -241,11 +241,27 @@ const styles = StyleSheet.create({
 	},
 	heading: {
 		color: "#2B2B2B",
+		...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
 		// fontFamily: "HelveticaNeue-Bold",
 		fontSize: 36,
 		textAlign: "center",
 	},
 	text: {
+		...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
 		// fontFamily: "HelveticaNeue",
 		fontWeight: 400,
 		fontSize: 16,

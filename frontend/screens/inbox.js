@@ -164,6 +164,14 @@ export default function Inbox({ navigation }) {
       borderRadius: 5,
     },
     acceptButtonText: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
       // fontFamily: 'HelveticaNeue-Bold',
       color: '#FFFFFF',
       fontWeight: 'bold',
@@ -176,6 +184,14 @@ export default function Inbox({ navigation }) {
       marginLeft: 10,
     },
     declineButtonText: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
       // fontFamily: 'HelveticaNeue-Bold',
       color: '#FFFFFF',
       fontWeight: 'bold',

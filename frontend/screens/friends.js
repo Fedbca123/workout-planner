@@ -387,30 +387,54 @@ export default function Friends() {
 
 
 const styles = StyleSheet.create({
-    Normal:{
-        // fontFamily: 'HelveticaNeue',
-        color: '#2B2B2B',
-        fontSize: 15,
-        textAlign: 'left',
-        paddingLeft: 20,
-        paddingVertical: 5
+  Normal: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue',
+      color: '#2B2B2B',
+      fontSize: 15,
+      textAlign: 'left',
+      paddingLeft: 20,
+      paddingVertical: 5
     },
-    Title:{
-        // fontFamily: 'HelveticaNeue-Bold',
-        color: '#2B2B2B',
-        fontSize: 24,
-        textAlign: 'left',
-        paddingLeft: 20,
-        paddingVertical: 5,
-        paddingBottom: 20
+  Title: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue-Bold',
+      color: '#2B2B2B',
+      fontSize: 24,
+      textAlign: 'left',
+      paddingLeft: 20,
+      paddingVertical: 5,
+      paddingBottom: 20
     },
-    Heading:{
-        // fontFamily: 'HelveticaNeue-Bold',
-        color: '#2B2B2B',
-        fontSize: 18,
-        textAlign: 'left',
-        paddingLeft: 20,
-        marginVertical: 5
+  Heading: {
+      ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+      // fontFamily: 'HelveticaNeue-Bold',
+      color: '#2B2B2B',
+      fontSize: 18,
+      textAlign: 'left',
+      paddingLeft: 20,
+      marginVertical: 5
     },
     CardContainer:{
       borderColor: 'black',

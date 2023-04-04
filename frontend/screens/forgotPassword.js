@@ -120,26 +120,42 @@ const styles = StyleSheet.create({
       flex:1
   },
   heading:{
-      color: '#2B2B2B',
-      // fontFamily: 'HelveticaNeue-Bold',
-      fontSize: 36,
-      textAlign: 'center',
-      paddingVertical: 10,
-      marginTop: 60,
-      color: 'white'
+    color: '#2B2B2B',
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue-Bold'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+    // fontFamily: 'HelveticaNeue-Bold',
+    fontSize: 36,
+    textAlign: 'center',
+    paddingVertical: 10,
+    marginTop: 60,
+    color: 'white'
   },
   subHeader:{
     paddingTop: '10%'
   },
-  text:{
-      // fontFamily: 'HelveticaNeue',
-      fontWeight: 400,
-      fontSize: 16,
-      fontWeight: 'normal',
-      color: 'black',
-      textAlign: 'center',
-      paddingVertical: 5,
-      color:"white"
+  text: {
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
+    // fontFamily: 'HelveticaNeue',
+    fontWeight: 400,
+    fontSize: 16,
+    fontWeight: 'normal',
+    color: 'black',
+    textAlign: 'center',
+    paddingVertical: 5,
+    color:"white"
   },
   image: {
       top: 0,
@@ -186,6 +202,14 @@ const styles = StyleSheet.create({
   },
   buttontext: {
     color: 'white',
+    ...Platform.select({
+      ios: {
+        fontFamily: 'HelveticaNeue'
+      },
+      android: {
+        fontFamily: "Roboto"
+      },
+    }),
     // fontFamily: 'HelveticaNeue',
     fontWeight: 400,
     fontSize: 16,
