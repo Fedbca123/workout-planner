@@ -16,6 +16,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
+import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 
 export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
@@ -68,9 +69,11 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					Add an Exercise
 				</Text>
 			</TouchableOpacity>
-			<FlatList
+			<KeyboardAwareFlatList
 				data={exercises}
+				
 				style={{ height: "70%" }}
+				enableOnAndroid={true}
 				ListEmptyComponent={
 					<View
 						style={{

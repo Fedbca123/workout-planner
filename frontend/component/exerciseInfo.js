@@ -10,6 +10,7 @@ import {
 	FlatList,
     useWindowDimensions,
     Platform,
+    ScrollView,
 } from "react-native";
 import React from "react";
 import { useState } from "react";
@@ -26,18 +27,20 @@ export default function ExerciseInfo({ exercise, setModalVisbility }){
                     <Image style={styles.exerciseInfoImage} src={exercise.image} />
                 </View>
 
-                <View style={styles.exerciseInfoBody}>
-                <Text style={styles.exerciseInfoDescription}>{exercise.description}</Text>
-                </View>
+                <ScrollView contentContainerStyle={{marginBottom: 5}}>
+                   <View style={styles.exerciseInfoBody}>
+                        <Text style={styles.exerciseInfoDescription}>{exercise.description}</Text>
+                        </View>
 
-                <View style={{}}>
-                <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {exercise.muscleGroups && exercise.muscleGroups.join(", ")}</Text> 
-                <Text style={styles.exerciseInfoTags}>Tags:{exercise.tags && exercise.tags.join(", ")}</Text> 
-                </View>
+                        <View style={{}}>
+                        <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {exercise.muscleGroups && exercise.muscleGroups.join(", ")}</Text> 
+                        {/* <Text style={styles.exerciseInfoTags}>Tags:{exercise.tags && exercise.tags.join(", ")}</Text>  */}
+                    </View> 
+                </ScrollView>
 
             </View>
 
-             <View style={{bottom:10}}>
+             <View style={{marginBottom: 5}}>
                 <TouchableOpacity style={styles.modalCloseButton} onPress={() => {setModalVisbility(false)}}>
                     <View style={styles.closeButtonContainer}>
                     <Text style={styles.closeText}>Close</Text>
