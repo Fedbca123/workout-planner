@@ -127,7 +127,7 @@ export default function DiscoverPage({navigation}) {
   };
 
   // Exercise Card
-  const ExerciseItem = ({exercise, title, type, image}) => (
+  const ExerciseItem = ({title, type, image}) => (
     <View style={styles.exerciseItems}>
       <View style={styles.exerciseCardImageContainer}>
         <Image style={styles.exerciseCardImage} src = {image}/>
@@ -136,15 +136,6 @@ export default function DiscoverPage({navigation}) {
         <Text style={styles.exerciseCardTitle}>{title}</Text>
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
       </View>
-      {/* Delete Custom Exercise */}
-      {exercise.owner == globalState.user._id && 
-      <View style={styles.exerciseCardImageContainer}>
-        <AntDesign
-          name="delete"
-          style={styles.deleteCustomExercise}
-          size={15}
-        />
-      </View>}
     </View>
   );
 
@@ -852,8 +843,19 @@ return (
             transparent={false}
             >
             <SafeAreaView style={styles.exerciseInfoHeader}>
-              <View style={styles.exerciseInfoTitleContainer}>
-                <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
+              <View style={styles.exerciseInfoTitleandDelete}>
+              {/* {selectedExerciseOwner == globalState.user._id &&  */}
+                <View style={styles.exerciseInfoDeleteButton}>
+                  <AntDesign
+                    name="delete"
+                    size={30}
+                    style={styles.deleteCustomExercise}
+                  />
+                </View>
+                {/* } */}
+                <View style={styles.exerciseInfoTitleContainer}>
+                  <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
+                </View>
               </View>
               <View style={styles.exerciseInfoCardImageContainer}>
                 <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
@@ -877,13 +879,13 @@ return (
               </View>
               </ScrollView>
             </SafeAreaView>
-            <View style={styles.modalCloseButton}>
-              <TouchableOpacity  onPress={closeInfoModal}>
-                <View style={styles.closeInfoButtonContainer}>
-                  <Text style={styles.closeText}>Close</Text>
-                </View>
-              </TouchableOpacity>
-            </View>
+              <View style={styles.modalCloseButton}>
+                <TouchableOpacity  onPress={closeInfoModal}>
+                  <View style={styles.closeInfoButtonContainer}>
+                    <Text style={styles.closeText}>Close</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
           </Modal>
       </View>
     </SafeAreaView>
@@ -958,19 +960,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   exerciseInfoTitleContainer:{
-    overflow: 'hidden',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    marginHorizontal: 1,
     justifyContent: 'center',
     alignContent: 'center',
     textAlign: 'center',
-    flex: .15,
-    flexShrink: 1
+    // flex: .15,
+    flex: 1,
+    // alignSelf: 'center',
   },
   exerciseInfoHeader:{
     flex: 1.5,
-    alignItems: 'center',
+  },
+  exerciseInfoTitleandDelete:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   exerciseInfoBody:{
     flex: 1.3,
@@ -998,6 +1001,15 @@ const styles = StyleSheet.create({
     borderRadius: 20
 
   },
+
+  exerciseInfoDeleteButton:{
+
+    // borderColor: 'black',
+    // borderWidth: 1.5,
+    // borderRadius: 20
+    alignSelf: 'flex-start'
+
+  },
   exerciseCardImage:{
     width: 60,
     height: 60,
@@ -1005,9 +1017,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
 	deleteCustomExercise: {
-		padding: 10,
 		borderWidth: 2,
-		// borderRadius: 100,
+		borderRadius: 100,
 	},
   workoutCardImageContainer:{
     position: 'absolute',
