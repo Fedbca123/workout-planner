@@ -205,7 +205,6 @@ router.route('/search').post(authenticateToken, async (req, res) => {
   for(let ex of results){
     if(ex.owner && ex.owner != ownerId){
       const user = await User.findById(ex.owner);
-      ex.ownerName = user.firstName + " " + user.lastName;
       let item = {...ex};
       item._doc.ownerName = user.firstName + " " + user.lastName;
       ret.push(item._doc);
@@ -213,7 +212,7 @@ router.route('/search').post(authenticateToken, async (req, res) => {
       ret.push(ex)
     }
   }
-  
+
   return res.json(ret);
 });
 
