@@ -126,28 +126,29 @@ export default function DiscoverPage({navigation}) {
     }
   };
 
-  // Exercise Component
-  const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
+  // Exercise Card
+  const ExerciseItem = ({exercise, title, type, image}) => (
     <View style={styles.exerciseItems}>
       <View style={styles.exerciseCardImageContainer}>
         <Image style={styles.exerciseCardImage} src = {image}/>
       </View> 
       <View style={styles.exerciseCardText}>
         <Text style={styles.exerciseCardTitle}>{title}</Text>
-        {/* <Text style={styles.exerciseCardDescription}>{description}</Text> */}
         <Text style={styles.exerciseCardType}>Type: {type}</Text>
-        {/* <Text style={styles.exerciseCardTags}>Tags: {tags.join(", ")}</Text> */}
-        {/* <Text style={styles.exerciseCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text> */}
       </View>
+      {/* Delete Custom Exercise */}
+      {exercise.owner == globalState.user._id && 
       <View style={styles.exerciseCardImageContainer}>
         <AntDesign
-          
+          name="delete"
+          style={styles.deleteCustomExercise}
+          size={15}
         />
-      </View>
+      </View>}
     </View>
   );
 
-  // Workout Component
+  // Workout Card
   const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => {setExpanded(!expanded);};
@@ -721,11 +722,13 @@ return (
                             />
                           </SafeAreaView>
                       </SafeAreaView>
-                      <TouchableOpacity style={styles.modalCloseButton} onPress={toggleFiltersShowing}>
-                        <View style={styles.closeFiltersButtonContainer}>
-                              <Text style={styles.closeText}>Close</Text>
-                        </View>
-                      </TouchableOpacity>
+                      <View style={styles.modalCloseButton}>
+                        <TouchableOpacity onPress={toggleFiltersShowing}>
+                          <View style={styles.closeFiltersButtonContainer}>
+                            <Text style={styles.closeText}>Close</Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
                       
                     </SafeAreaView>
                   </Modal>
@@ -803,7 +806,8 @@ return (
                     showInfoModal();  
                 }}>
 
-                  <ExerciseItem title={item.title} 
+                  <ExerciseItem exercise = {item}
+                  title={item.title} 
                   description={item.description} muscleGroups={item.muscleGroups}
                   type={item.exerciseType} tags={item.tags} image={item.image}
                   />
@@ -873,11 +877,13 @@ return (
               </View>
               </ScrollView>
             </SafeAreaView>
-            <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
-                  <View style={styles.closeInfoButtonContainer}>
-                    <Text style={styles.closeText}>Close</Text>
-                  </View>
-                </TouchableOpacity>
+            <View style={styles.modalCloseButton}>
+              <TouchableOpacity  onPress={closeInfoModal}>
+                <View style={styles.closeInfoButtonContainer}>
+                  <Text style={styles.closeText}>Close</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </Modal>
       </View>
     </SafeAreaView>
@@ -998,7 +1004,11 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch', // can be changed to contain if needed
     borderRadius: 20,
   },
-
+	deleteCustomExercise: {
+		padding: 10,
+		borderWidth: 2,
+		// borderRadius: 100,
+	},
   workoutCardImageContainer:{
     position: 'absolute',
     left: 10,
@@ -1045,27 +1055,19 @@ const styles = StyleSheet.create({
   toggleandfilters:{
     flexDirection: 'row'
   },
+
   modalCloseButton:{
     alignItems: 'center',
-    //position: 'absolute',
-    justifyContent: 'center',
-    alignContent: 'center',
-    //bottom: "2%",
-    //width: "100%",
-
   },
+
   closeInfoButtonContainer:{
     backgroundColor: 'white',
     borderColor: "black",
-    overflow: 'hidden',
     borderWidth: 3,
     borderRadius: 20,
-    alignItems: 'center',
     paddingHorizontal: 10,
-    marginHorizontal: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
   },
+
   closeFiltersButtonContainer:{
     backgroundColor: 'white',
     borderColor: "black",
@@ -1077,12 +1079,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 1,
     justifyContent: 'center',
     alignContent: 'center',
-    // position: 'absolute',
-    // bottom: "1%"
-    // flex: 3,
   },
   
-
   closeText:{
     fontWeight: 'bold',
     color: 'black',
@@ -1097,7 +1095,6 @@ const styles = StyleSheet.create({
   },
   modalBackground:{
     backgroundColor: "white",
-    // borderRadius: 15,
     flex: 1,
     justifyContent: 'space-between'
   },
