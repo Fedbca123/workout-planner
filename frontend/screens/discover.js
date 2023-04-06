@@ -120,7 +120,7 @@ export default function DiscoverPage({navigation}) {
     if (exercise.owner === user._id) {
       return "You";
     } else if (user.friends.includes(exercise.owner)) {
-      return exercise.owner;
+      return "Friend";
     } else {
       return "Public";
     }
@@ -229,6 +229,7 @@ export default function DiscoverPage({navigation}) {
                     setSelectedExerciseMuscleGroups(exercise.muscleGroups);
                     setSelectedExerciseImage(exercise.image);
                     setSelectedExerciseOwner(exercise.owner);
+                    // getWorkoutOwner(exercise, globalState.user);
                     showInfoModal();  
               }
               }>             
@@ -812,6 +813,7 @@ return (
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
                     setSelectedExerciseOwner(item.owner);
+                    // getWorkoutOwner(item, globalState.user);
                     showInfoModal();  
                 }}>
 
@@ -891,7 +893,7 @@ return (
 
               <View style={styles.exerciseInfoOwnerContainer}>
                 <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
-                <Text style={styles.exerciseInfoOwner}>{selectedExerciseOwner}</Text>
+                <Text style={styles.exerciseInfoOwner}>{selectedExerciseOwner ? selectedExerciseOwner : "Public"}</Text>
               </View>
               </ScrollView>
             </SafeAreaView>
