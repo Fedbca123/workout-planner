@@ -71,10 +71,9 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					Add an Exercise
 				</Text>
 			</TouchableOpacity>
-			<KeyboardAvoidingView behavior='height'>
 			<DraggableFlatList
 				data={exercises}
-				style={{ height: "70%" }}
+				style={{ height: "75%" }}
 				enableOnAndroid={true}
 				keyExtractor={(item) => item._id}
 				// ListEmptyComponent={
@@ -231,7 +230,6 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					</ScaleDecorator>
 				)}
 			/>
-			</KeyboardAvoidingView>
 
 			<View style={styles.navButtonContainer}>
 				<View style={{ backgroundColor: "#FF8C4B", flex: 1 }}>
