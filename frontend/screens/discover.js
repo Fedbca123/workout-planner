@@ -83,7 +83,7 @@ export default function DiscoverPage({navigation}) {
   const [globalState, updateGlobalState] = useGlobalState();
   
   // For Exercise Info Page
-  const [selectedExercise, setSelectedExercise] = useState();
+  const [selectedExercise, setSelectedExercise] = useState([]);
   const [selectedExerciseTitle, setSelectedExerciseTitle] = useState();
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
@@ -107,8 +107,6 @@ export default function DiscoverPage({navigation}) {
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
   const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true);
 
-  const [exerciseList, setExercises] = useState([]);
-  const [workoutList, setWorkouts] = useState([]);
 
   useEffect(() => {
     if(isFocused){
@@ -118,12 +116,12 @@ export default function DiscoverPage({navigation}) {
   }, [isFocused]);
 
   const getWorkoutOwner = (exercise, user) => {
-    if (exercise.owner === user._id) {
-      return "You";
-    } else if (user.friends.includes(exercise.owner)) {
-      return "Friend";
-    } else {
+    if (!exercise.owner)
       return "Public";
+    else if (exercise.owner === user._id) {
+      return "You";
+    } else {
+      return exercise.ownerName;
     }
   };
   // function deleteExercise(){
@@ -157,7 +155,7 @@ export default function DiscoverPage({navigation}) {
   //   }
   // }
   // Exercise Card
-  const ExerciseItem = ({title, type, image}) => {
+  const ExerciseItem = ({exercise, title, type, image}) => {
 
     return(
     <View style={styles.exerciseItems}>
@@ -829,6 +827,7 @@ return (
               style = {styles.boxContainer}
               renderItem={({item}) => 
                 <TouchableOpacity onPress={()=>{
+                    
                     setSelectedExercise(item);
                     setSelectedExerciseTitle(item.title)
                     setSelectedExerciseDesc(item.description);
@@ -839,6 +838,7 @@ return (
                 }}>
 
                   <ExerciseItem 
+                  exercise = {item}
                   title={item.title} 
                   description={item.description} muscleGroups={item.muscleGroups}
                   type={item.exerciseType} tags={item.tags} image={item.image}
@@ -920,7 +920,9 @@ return (
 
               <View style={styles.exerciseInfoOwnerContainer}>
                 <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
-                <Text style={styles.exerciseInfoOwner}>{selectedExerciseOwner ? selectedExerciseOwner : "Public"}</Text>
+                <Text style={styles.exerciseInfoOwner}>{getWorkoutOwner(selectedExercise, globalState.user)}
+                {/* {selectedExerciseOwner ? selectedExerciseOwner : "Public"}*/}
+                </Text> 
               </View>
               </ScrollView>
             </SafeAreaView>
