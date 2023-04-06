@@ -143,11 +143,8 @@ export default function DiscoverPage({navigation}) {
 
   const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
-    const handlePress = () => {
-      setExpanded(!expanded);
-    };
+    const handlePress = () => {setExpanded(!expanded);};
     function addWorkout(workout){
-      // console.log("Adding Workout", workout.title);
       navigation.navigate("createWorkout", { workoutData: workout });
     }
     function deleteWorkout(workout){
@@ -183,6 +180,7 @@ export default function DiscoverPage({navigation}) {
     }
 
     return(
+      // Workout Cards
     <View style={styles.workoutItems}>
     <TouchableOpacity onPress={handlePress} activeOpacity=".4">
       <View style={styles.workoutHeader}>
@@ -201,6 +199,7 @@ export default function DiscoverPage({navigation}) {
         </View>
       </View>
 
+        {/* Workout Header Info */}
         {expanded && 
           <View>
             <View style={styles.workoutCardText}>
@@ -218,18 +217,16 @@ export default function DiscoverPage({navigation}) {
           </View>
           }
       
+        {/* Exercises in Workout */}
         {expanded &&
             exercises.map((exercise) => (
               <View style = {styles.workoutExerciseCard} key={exercise._id}>
               <TouchableOpacity onPress={()=>{
-                    // Commenting out openExerciseInfo doesn't break it 
-                    // openExerciseInfo(exercise);
                     setSelectedExerciseTitle(exercise.title);
                     setSelectedExerciseDesc(exercise.description);
                     setSelectedExerciseMuscleGroups(exercise.muscleGroups);
                     setSelectedExerciseImage(exercise.image);
                     setSelectedExerciseOwner(exercise.owner);
-                    // getWorkoutOwner(exercise, globalState.user);
                     showInfoModal();  
               }
               }>             
@@ -249,6 +246,7 @@ export default function DiscoverPage({navigation}) {
             </View>
             ))}
 
+          {/* Delete Custom Workout */}
           {expanded && workout.owner == globalState.user._id &&
             <TouchableOpacity onPress={()=>
               deleteWorkout(workout)}>
@@ -316,7 +314,7 @@ export default function DiscoverPage({navigation}) {
     // filter on masterList
     if(areFiltersVisible){
       if(toggleValue){
-        // we are in exercises
+        // We are in exercises
         setFilteredExerciseData(filterExercises(exerciseSearch));
       }else{
         setFilteredWorkoutData(filterWorkouts(workoutSearch));
@@ -326,12 +324,10 @@ export default function DiscoverPage({navigation}) {
 
   const exercisesLoaded = async () => {
       setIsExercisesLoading(false);
-      // console.log("Changing Exercises Activity Indicator");
   }
   
   const workoutsLoaded = async () => {
     setIsWorkoutsLoading(false);
-    // console.log("Changing Workouts Activity Indicator");
   }
 
   function onMultiChangeEquipment() {
@@ -540,8 +536,6 @@ export default function DiscoverPage({navigation}) {
     return success;
   }
 
-  
-
   const filterWorkouts = (term) => {
     let retList = [];
     let searchVals =  term ? term.split(' ') : [];
@@ -565,12 +559,6 @@ export default function DiscoverPage({navigation}) {
 
     return retList;
   }
-
-  // const openExerciseInfo = (item) => {
-  //   return (<View>
-  //     <Text style={{fontSize: 20}}>title: {item.title}</Text>
-  //   </View>)
-  // }
 
   function showInfoModal() {
     setInfoPageVisible(true);
@@ -751,7 +739,6 @@ return (
                 data={toggleValue ? filteredExerciseData : workoutList} 
                 lightTheme
                 round
-                // onChangeText={updateSearch}
                 autoCorrect={false}
                 autoCapitalize="none"
                 autoComplete='off'
@@ -807,13 +794,11 @@ return (
               style = {styles.boxContainer}
               renderItem={({item}) => 
                 <TouchableOpacity onPress={()=>{
-                    // openExerciseInfo(item);
                     setSelectedExerciseTitle(item.title)
                     setSelectedExerciseDesc(item.description);
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
                     setSelectedExerciseOwner(item.owner);
-                    // getWorkoutOwner(item, globalState.user);
                     showInfoModal();  
                 }}>
 
@@ -839,14 +824,8 @@ return (
                 </View>
               }
               style = {styles.boxContainer}
-              renderItem={({item,index}) => 
-                (
-                <TouchableOpacity onPress={()=>{
-                    // setSelectedWorkoutTitle(item.title);
-                    // setSelectedExerciseDuration(item.duration);
-              }}>
-                
-                <WorkoutItem 
+              renderItem={({item,index}) => (              
+              <WorkoutItem 
                 workout={item}
                 title={item.title} 
                 description={item.description}
@@ -854,14 +833,11 @@ return (
                 muscleGroups={item.muscleGroups} 
                 duration={item.duration} exercises={item.exercises}
                 image={item.image} key={index}
-
-                /></TouchableOpacity>
-                )
-              }
-
+              />)}
               />}
       </View>
-
+      
+      {/* Exercise Info Modal */}
       <View style={styles.infoModal}>
           <Modal 
             isVisible = {isInfoPageVisible}
@@ -870,7 +846,6 @@ return (
             presentationStyle='fullScreen'
             transparent={false}
             >
-
             <SafeAreaView style={styles.exerciseInfoHeader}>
               <View style={styles.exerciseInfoTitleContainer}>
                 <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
