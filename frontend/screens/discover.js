@@ -915,7 +915,6 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline'
   },
   exerciseInfoDescription:{
-    //16
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
