@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
-import React, {useState, useEffect, useCallback} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert , Animated} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {Image, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert , KeyboardAvoidingView} from 'react-native';
 import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import Modal from "react-native-modal";
@@ -126,6 +126,7 @@ export default function DiscoverPage({navigation}) {
     }
   };
 
+  // Exercise Component
   const ExerciseItem = ({title, description, type, muscleGroups, tags, image}) => (
     <View style={styles.exerciseItems}>
       <View style={styles.exerciseCardImageContainer}>
@@ -138,9 +139,15 @@ export default function DiscoverPage({navigation}) {
         {/* <Text style={styles.exerciseCardTags}>Tags: {tags.join(", ")}</Text> */}
         {/* <Text style={styles.exerciseCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text> */}
       </View>
+      <View style={styles.exerciseCardImageContainer}>
+        <AntDesign
+          
+        />
+      </View>
     </View>
   );
 
+  // Workout Component
   const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image}) => {
     const [expanded, setExpanded] = useState(false);
     const handlePress = () => {setExpanded(!expanded);};
@@ -260,6 +267,7 @@ export default function DiscoverPage({navigation}) {
     );
   };
 
+  // Exercise API Call
   const exercisesList = async()=> {
       API_Instance.post('exercises/search',
     {
@@ -284,6 +292,7 @@ export default function DiscoverPage({navigation}) {
     })
   }
 
+  // Workout API Call
   const workoutsList = async()=> {
     API_Instance.post('workouts/search',
     {
@@ -308,7 +317,7 @@ export default function DiscoverPage({navigation}) {
       console.log(e);  
     })
 }
-
+  // Toggle Filter Modal
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
     // filter on masterList
@@ -330,6 +339,7 @@ export default function DiscoverPage({navigation}) {
     setIsWorkoutsLoading(false);
   }
 
+  // onMultiChange - filter adding
   function onMultiChangeEquipment() {
     return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
   }
@@ -577,40 +587,34 @@ return (
           <View style={styles.buttonsContainer}>
             <View style={styles.toggleandfilters}>
               <View style={styles.toggleContainer}>
-                  <Toggle
-                    value = {toggleValue}
-                    onPress = {(newState) => setToggleValue(newState)}
-                    disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
-                    leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
-                    rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
-                    trackBar={{
-                      width: 170,
-                      height: 50,
-                      //radius: 40,
-                    //borderWidth: -1,
-                    // borderColor: "black",
+              {/* Workout/Exercise List Toggle */}
+                <Toggle
+                  value = {toggleValue}
+                  onPress = {(newState) => setToggleValue(newState)}
+                  disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
+                  leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
+                  rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
+                  trackBar={{
+                    width: 170,
+                    height: 50,
                     activeBackgroundColor: "#E5DAE7",
                     // activeBackgroundColor: "#FEE2CF",
                     inActiveBackgroundColor: "#88CAE7",
-                    }}
-                    trackBarStyle={{
-                        borderColor: 'black',
-                        borderWidth: 2.5,
-                        height: 54,
-                        width: 174
-                  
-                    }}
-                    thumbButton={{
-                      width: 77,
-                      height: 50,
-                      //radius: 30,
-                      // borderWidth: 1,
-                      activeBackgroundColor: "#34A5D5",
-                      inActiveBackgroundColor: "#BFBCC8"
-                      // inActiveBackgroundColor: "#FAD5A5"
-                      }}
-                      
-                    />
+                  }}
+                  trackBarStyle={{
+                      borderColor: 'black',
+                      borderWidth: 2.5,
+                      height: 54,
+                      width: 174                 
+                  }}
+                  thumbButton={{
+                    width: 77,
+                    height: 50,
+                    activeBackgroundColor: "#34A5D5",
+                    inActiveBackgroundColor: "#BFBCC8"
+                    // inActiveBackgroundColor: "#FAD5A5"
+                    }}                     
+                />
               </View>
               <View style={styles.filters}>
                 <TouchableOpacity onPress={toggleFiltersShowing}>
@@ -619,7 +623,7 @@ return (
                     <Image source = {require("../../assets/filter_icon.png")}
                       style={styles.filterImage}
                     />
-                {/* <Text style={styles.openText}>Open Filters</Text> */}
+                  {/* Filters Modal */}
                   <Modal 
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
@@ -629,100 +633,96 @@ return (
                     transparent={false}
                     >
                     <SafeAreaView style={styles.modalBackground}>
-                      <SafeAreaView style={styles.filtersContainer}>
-                        <SafeAreaView style={styles.filterButtonContainer}>
-                        {/* <Text style={styles.filterLabels}>Select Equipments</Text> */}
-                          <SelectBox
-                            label="Equipment"
-                            labelStyle={styles.filterLabels}
-                            inputPlaceholder = "Add one or more Equipment"
-                            listEmptyText='No Equipment Found'
-                            searchInputProps = {{placeholder: "Search..."}}
-                            inputFilterStyle={styles.filterSearch}
-                            arrowIconColor = '#000000'
-                            multiOptionContainerStyle = {styles.selectedFilterContainers}
-                            multiOptionsLabelStyle = {styles.selectedFilterLabels}
-                            
-                            searchIconColor = "#000"
-                            toggleIconColor = "#2193BC"
+                        <SafeAreaView style={styles.filtersContainer}>
+                          <SafeAreaView style={styles.filterButtonContainer}>
+                            <SelectBox
+                              label="Equipment"
+                              labelStyle={styles.filterLabels}
+                              inputPlaceholder = "Add one or more Equipment"
+                              listEmptyText='No Equipment Found'
+                              searchInputProps = {{placeholder: "Search..."}}
+                              inputFilterStyle={styles.filterSearch}
+                              arrowIconColor = '#000000'
+                              multiOptionContainerStyle = {styles.selectedFilterContainers}
+                              multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                              
+                              searchIconColor = "#000"
+                              toggleIconColor = "#2193BC"
 
-                            options = {equipmentFilters}
-                            optionsLabelStyle = {styles.filterOptions}
-                            
-                            selectedValues = {selectedEquipmentFilter}
-                            onMultiSelect = {onMultiChangeEquipment()}
-                            onTapClose = {onMultiChangeEquipment()}
-                            isMulti
-                          />
-                        </SafeAreaView>
-                        <SafeAreaView style={styles.filterButtonContainer}>
-                          {/* <Text style={styles.filterLabels}>Select Muscle Groups</Text> */}
-                          <SelectBox
-                            label="Muscle Groups"
-                            labelStyle={styles.filterLabels}
-                            inputPlaceholder = "Add one or more Muscle Groups"
-                            listEmptyText='No Muscle Groups Found'
-                            searchInputProps = {{placeholder: "Search..."}}
-                            multiOptionsLabelStyle = {styles.selectedFilterLabels}
-                            multiOptionContainerStyle = {styles.selectedFilterContainers}
-                            options = {muscleGroupsFilters}
-                            optionsLabelStyle = {styles.filterOptions}
-                            arrowIconColor = '#000'
+                              options = {equipmentFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              
+                              selectedValues = {selectedEquipmentFilter}
+                              onMultiSelect = {onMultiChangeEquipment()}
+                              onTapClose = {onMultiChangeEquipment()}
+                              isMulti
+                            />
+                          </SafeAreaView>
+                          <SafeAreaView style={styles.filterButtonContainer}>
+                            <SelectBox
+                              label="Muscle Groups"
+                              labelStyle={styles.filterLabels}
+                              inputPlaceholder = "Add one or more Muscle Groups"
+                              listEmptyText='No Muscle Groups Found'
+                              searchInputProps = {{placeholder: "Search..."}}
+                              multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                              multiOptionContainerStyle = {styles.selectedFilterContainers}
+                              options = {muscleGroupsFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              arrowIconColor = '#000'
 
-                            searchIconColor = "#000"
-                            toggleIconColor = "#2193BC"
-                            
-                            selectedValues = {selectedMuscleGroupsFilter}
-                            onMultiSelect = {onMultiChangeMuscleGroups()}
-                            onTapClose = {onMultiChangeMuscleGroups()}
-                            isMulti
-                          />
-                        </SafeAreaView>
-                        <SafeAreaView style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
-                          {/* <Text style={styles.filterLabels}>Select Exercise Types</Text> */}
-                          <SelectBox
-                            label="Exercise Types"
-                            inputPlaceholder = "Add one or more Types"
-                            labelStyle = {styles.filterLabels}
-                            options = {typeFilters}
-                            optionsLabelStyle = {styles.filterOptions}
-                            hideInputFilter = 'true'
-                            //containerStyle={{backgroundColor:"black"}}
-                            toggleIconColor = "#2193BC"
-                            arrowIconColor = '#000'
-                            
-                            multiOptionsLabelStyle={styles.selectedFilterLabels}
-                            multiOptionContainerStyle={styles.selectedFilterContainers}
-                            selectedValues = {selectedTypeFilter}
-                            onMultiSelect = {onMultiChangeType()}
-                            onTapClose = {onMultiChangeType()}
-                            isMulti
-                          />
-                        </SafeAreaView>
-                        <SafeAreaView style={styles.filterButtonContainer}>                      
-                          {/* <Text style={styles.filterLabels}>Select Exercise Types</Text> */}
-                          <SelectBox
-                            label="Owner Types"
-                            inputPlaceholder = "Add one or more owner types"
-                            labelStyle = {styles.filterLabels}
-                            options = {ownerFilters}
-                            optionsLabelStyle = {styles.filterOptions}
-                            hideInputFilter = 'true'
-                            //containerStyle={{backgroundColor:"black"}}
-                            toggleIconColor = "#2193BC"
-                            arrowIconColor = '#000'
-                            
-                            multiOptionsLabelStyle={styles.selectedFilterLabels}
-                            multiOptionContainerStyle={styles.selectedFilterContainers}
-                            selectedValues = {selectedOwnerFilter}
-                            onMultiSelect = {onMultiChangeOwner()}
-                            onTapClose = {onMultiChangeOwner()}
-                            isMulti
-                          />
-                        </SafeAreaView>
+                              searchIconColor = "#000"
+                              toggleIconColor = "#2193BC"
+                              
+                              selectedValues = {selectedMuscleGroupsFilter}
+                              onMultiSelect = {onMultiChangeMuscleGroups()}
+                              onTapClose = {onMultiChangeMuscleGroups()}
+                              isMulti
+                            />
+                          </SafeAreaView>
+                          <SafeAreaView style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
+                            <SelectBox
+                              label="Exercise Types"
+                              inputPlaceholder = "Add one or more Types"
+                              labelStyle = {styles.filterLabels}
+                              options = {typeFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              hideInputFilter = 'true'
+                              //containerStyle={{backgroundColor:"black"}}
+                              toggleIconColor = "#2193BC"
+                              arrowIconColor = '#000'
+                              
+                              multiOptionsLabelStyle={styles.selectedFilterLabels}
+                              multiOptionContainerStyle={styles.selectedFilterContainers}
+                              selectedValues = {selectedTypeFilter}
+                              onMultiSelect = {onMultiChangeType()}
+                              onTapClose = {onMultiChangeType()}
+                              isMulti
+                            />
+                          </SafeAreaView>
+                          <SafeAreaView style={styles.filterButtonContainer}>                      
+                            <SelectBox
+                              label="Owner Types"
+                              inputPlaceholder = "Add one or more owner types"
+                              labelStyle = {styles.filterLabels}
+                              options = {ownerFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              hideInputFilter = 'true'
+                              //containerStyle={{backgroundColor:"black"}}
+                              toggleIconColor = "#2193BC"
+                              arrowIconColor = '#000'
+                              
+                              multiOptionsLabelStyle={styles.selectedFilterLabels}
+                              multiOptionContainerStyle={styles.selectedFilterContainers}
+                              selectedValues = {selectedOwnerFilter}
+                              onMultiSelect = {onMultiChangeOwner()}
+                              onTapClose = {onMultiChangeOwner()}
+                              isMulti
+                            />
+                          </SafeAreaView>
                       </SafeAreaView>
                       <TouchableOpacity style={styles.modalCloseButton} onPress={toggleFiltersShowing}>
-                        <View style={styles.closeButtonContainer}>
+                        <View style={styles.closeFiltersButtonContainer}>
                               <Text style={styles.closeText}>Close</Text>
                         </View>
                       </TouchableOpacity>
@@ -732,6 +732,7 @@ return (
                   </TouchableOpacity>
               </View>
             </View>
+            {/* Search Bar */}
             <View style={styles.searchBar}>
               <SearchBar
                 placeholder="Search Here"
@@ -873,7 +874,7 @@ return (
               </ScrollView>
             </SafeAreaView>
             <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
-                  <View style={styles.closeButtonContainer}>
+                  <View style={styles.closeInfoButtonContainer}>
                     <Text style={styles.closeText}>Close</Text>
                   </View>
                 </TouchableOpacity>
@@ -966,7 +967,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   exerciseInfoBody:{
-    flex: 1,
+    flex: 1.3,
   },
   
   exerciseInfoCardImageContainer:{
@@ -1053,7 +1054,7 @@ const styles = StyleSheet.create({
     //width: "100%",
 
   },
-  closeButtonContainer:{
+  closeInfoButtonContainer:{
     backgroundColor: 'white',
     borderColor: "black",
     overflow: 'hidden',
@@ -1065,6 +1066,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
   },
+  closeFiltersButtonContainer:{
+    backgroundColor: 'white',
+    borderColor: "black",
+    overflow: 'hidden',
+    borderWidth: 3,
+    borderRadius: 20,
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginHorizontal: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
+    // position: 'absolute',
+    // bottom: "1%"
+    // flex: 3,
+  },
+  
 
   closeText:{
     fontWeight: 'bold',
@@ -1080,8 +1097,9 @@ const styles = StyleSheet.create({
   },
   modalBackground:{
     backgroundColor: "white",
-    borderRadius: 15,
-    flex: 1
+    // borderRadius: 15,
+    flex: 1,
+    justifyContent: 'space-between'
   },
   expandableIndicatorContainer:{
     position: 'absolute',
@@ -1312,7 +1330,8 @@ deleteWorkoutText:{
   buttonsContainer:{
   },
   filtersContainer:{
-    height: "50%",
+    // height: "50%",
+    flex: 1
   },
   filterButtonContainer:{
     backgroundColor: "#CDCDCD",
@@ -1323,6 +1342,7 @@ deleteWorkoutText:{
     marginHorizontal: 5,
     paddingVertical: 5,
     marginVertical: 5,
+    // flex: 1,
   },
 
   hidden:{
