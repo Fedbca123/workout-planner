@@ -1,6 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, {useState, useEffect, useCallback} from 'react';
-import {Image, Switch, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert , Animated} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert , Animated} from 'react-native';
 import { SearchBar, ListItem} from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import Modal from "react-native-modal";
@@ -9,6 +9,7 @@ import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -86,6 +87,7 @@ export default function DiscoverPage({navigation}) {
   const [selectedExerciseDesc, setSelectedExerciseDesc] = useState();
   const [selectedExerciseMuscleGroups, setSelectedExerciseMuscleGroups] = useState();
   const [selectedExerciseImage, setSelectedExerciseImage] = useState();
+  const [selectedExerciseOwner, setSelectedExerciseOwner] = useState();
 
   // All items resulting from search and filter
   const [filteredExerciseData, setFilteredExerciseData] = useState([]);
@@ -221,11 +223,12 @@ export default function DiscoverPage({navigation}) {
               <View style = {styles.workoutExerciseCard} key={exercise._id}>
               <TouchableOpacity onPress={()=>{
                     // Commenting out openExerciseInfo doesn't break it 
-                    openExerciseInfo(exercise);
+                    // openExerciseInfo(exercise);
                     setSelectedExerciseTitle(exercise.title);
                     setSelectedExerciseDesc(exercise.description);
                     setSelectedExerciseMuscleGroups(exercise.muscleGroups);
                     setSelectedExerciseImage(exercise.image);
+                    setSelectedExerciseOwner(exercise.owner);
                     showInfoModal();  
               }
               }>             
@@ -237,13 +240,7 @@ export default function DiscoverPage({navigation}) {
                   <View style={styles.workoutExerciseCardTextContainer}>
                     <Text style={styles.workoutExerciseCardTitle}>{exercise.title}</Text>
                     <Text>{exercise.exerciseType}</Text>
-                    {/*{exercise.exerciseType === 'SETSXREPS' && (
-                      <Text>
-                        {exercise.sets} sets x {exercise.reps} reps
-                      </Text>
-                    )}
-                    {exercise.exerciseType === 'AMRAP' && <Text>As many reps as possible in {exercise.time} seconds!</Text>}
-                    {exercise.exerciseType === 'CARDIO' && <Text>Push for {exercise.duration} seconds!</Text>} */}
+                    
                   </View>
                 </View>
               </View>
@@ -267,22 +264,17 @@ export default function DiscoverPage({navigation}) {
   const exercisesList = async()=> {
       API_Instance.post('exercises/search',
     {
-      // muscleGroupsSrch: selectedMuscleGroupsFilter.map(a => a.item),
-      // exerciseTypeSrch : selectedTypeFilter.map(a => a.item),
-      // equipmentSrch : selectedEquipmentFilter.map(a => a.item),
       ownerId : globalState.user._id,
       friendIDs : globalState.user.friends
-      // searchStr : exerciseSearch
     },   
     {
       headers: {
         'authorization': `BEARER ${globalState.authToken}`,
-        //'Content-Type':'multipart/form-data'
       }
     })
     .then((response) => {
       if (response.status == 200){
-        console.log(response.data[0]);
+        // console.log(response.data[0]);
         setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
         exercisesLoaded();
@@ -296,22 +288,18 @@ export default function DiscoverPage({navigation}) {
   const workoutsList = async()=> {
     API_Instance.post('workouts/search',
     {
-      // muscleGroupsStr: selectedMuscleGroupsFilter,
-      // exerciseTypeSrch : selectedTypeFilter,
-      // equipmentFilters : selectedEquipmentFilter
       ownerId: globalState.user._id,
       friendIDs : globalState.user.friends
     },   
     {
       headers: {
         'authorization': `BEARER ${globalState.authToken}`,
-        // 'Content-Type':'multipart/form-data'
       }
     })
     .then((response) => {
       if (response.status == 200) {
         // console.log(JSON.stringify(response.data, null, 2));
-        console.log(response.data[0].owner);
+        // console.log(response.data[0].owner);
         setFilteredWorkoutData(response.data);
         setMasterWorkoutData(response.data);
         workoutsLoaded();
@@ -577,11 +565,11 @@ export default function DiscoverPage({navigation}) {
     return retList;
   }
 
-  const openExerciseInfo = (item) => {
-    return (<View>
-      <Text style={{fontSize: 20}}>title: {item.title}</Text>
-    </View>)
-  }
+  // const openExerciseInfo = (item) => {
+  //   return (<View>
+  //     <Text style={{fontSize: 20}}>title: {item.title}</Text>
+  //   </View>)
+  // }
 
   function showInfoModal() {
     setInfoPageVisible(true);
@@ -749,6 +737,7 @@ return (
                               <Text style={styles.closeText}>Close</Text>
                         </View>
                       </TouchableOpacity>
+                      
                     </SafeAreaView>
                   </Modal>
                   </TouchableOpacity>
@@ -786,14 +775,12 @@ return (
                     }
                   )
                 )}
-                // searchIcon = {false}
                 inputStyle={{
                     color: "black",
                   }}
                 containerStyle = {{
                   marginTop: 5,
                   backgroundColor: "white",
-                  // marginBottom: 5,
                 }}
               />
             </View>
@@ -819,11 +806,12 @@ return (
               style = {styles.boxContainer}
               renderItem={({item}) => 
                 <TouchableOpacity onPress={()=>{
-                    openExerciseInfo(item);
+                    // openExerciseInfo(item);
                     setSelectedExerciseTitle(item.title)
                     setSelectedExerciseDesc(item.description);
                     setSelectedExerciseMuscleGroups(item.muscleGroups);
                     setSelectedExerciseImage(item.image);
+                    setSelectedExerciseOwner(item.owner);
                     showInfoModal();  
                 }}>
 
@@ -872,25 +860,10 @@ return (
               />}
       </View>
 
-      {/* <View style={styles.discoverContainer}>
-              {toggleValue ? <FlatList
-              data = {exerciseDummyData}
-              style = {styles.boxContainer}
-              renderItem = 
-              {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.exerciseItems}>{item.id}{". "}{item.title}</Text></TouchableOpacity>}
-              /> : <FlatList
-              data = {workoutDummyData}
-              style = {styles.boxContainer}
-              renderItem = {({item}) => <TouchableOpacity onPress={()=>
-              Alert.alert(item.Name)}><Text style={styles.workoutItems}>{item.id}{". "}{item.Name}</Text></TouchableOpacity>}
-              />}
-      </View> */}
       <View style={styles.infoModal}>
           <Modal 
             isVisible = {isInfoPageVisible}
             coverScreen = {true}
-            //backdropOpacity = "1"
             backdropColor = "white"
             presentationStyle='fullScreen'
             transparent={false}
@@ -906,7 +879,7 @@ return (
             </SafeAreaView>
 
             <SafeAreaView style={styles.exerciseInfoBody}>
-
+              <ScrollView>
               <View style={styles.exerciseInfoDescriptionContainer}>
                 <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
                 <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
@@ -915,14 +888,18 @@ return (
                 <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
                 <Text style={styles.exerciseInfoMuscleGroups}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text> 
               </View>
-            
-              <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
+
+              <View style={styles.exerciseInfoOwnerContainer}>
+                <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
+                <Text style={styles.exerciseInfoOwner}>{selectedExerciseOwner}</Text>
+              </View>
+              </ScrollView>
+            </SafeAreaView>
+            <TouchableOpacity style={styles.modalCloseButton} onPress={closeInfoModal}>
                   <View style={styles.closeButtonContainer}>
                     <Text style={styles.closeText}>Close</Text>
                   </View>
                 </TouchableOpacity>
-
-            </SafeAreaView>
           </Modal>
       </View>
     </SafeAreaView>
@@ -938,6 +915,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline'
   },
   exerciseInfoDescription:{
+    //16
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
@@ -959,17 +937,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textDecorationLine: 'underline'
   },
+  exerciseInfoOwnerTitle:{
+    fontSize: 18,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline'
+  },
   exerciseInfoDescriptionContainer:{
     marginBottom: 0,
     marginTop: 0,
-    // flex: .5,
   },
 
   exerciseInfoMuscleGroupsContainer:{
     marginTop: 5
-    // flex: .5
   },
-
+  exerciseInfoOwnerContainer:{
+    marginTop: 5
+  },
   exerciseInfoTagsContainer:{
     marginBottom: 0,
     marginTop: 0,
@@ -981,22 +964,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  exerciseInfoOwner:{
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
   exerciseInfoTags:{
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
   },
   exerciseInfoTitleContainer:{
-    // borderColor: 'black',
-    // borderRadius: "20rem",
-    // backgroundColor: 'white',
     overflow: 'hidden',
-    // borderWidth: 3,
-    // bottom: -375,
     alignItems: 'center',
     paddingHorizontal: 10,
     marginHorizontal: 1,
-    //width: "35%",
     justifyContent: 'center',
     alignContent: 'center',
     textAlign: 'center',
@@ -1009,35 +991,24 @@ const styles = StyleSheet.create({
   },
   exerciseInfoBody:{
     flex: 1,
-    
-    // alignItems: 'center',
   },
   
   exerciseInfoCardImageContainer:{
-    // position: 'absolute',
-    // borderColor: 'black',
-    // borderWidth: 2,
-    // borderRadius: 22,
-    // marginTop: 0,
     width: "100%",
     flex: .78,
     marginTop: 10,
-    // marginBottom: 10,
-    // resizeMode: 'contain'
   },
 
   exerciseInfoImage:{
     width: "100%",
     height: "100%",
-    resizeMode: 'contain',
+    // resizeMode: 'contain',
     borderRadius: 22,
     borderWidth: 3,
-    // borderRadius: 22,
   },
   exerciseCardImageContainer:{
     position: 'absolute',
     left: 10,
-    //paddingVertical: 5,
     marginRight: 20,
     borderColor: 'black',
     borderWidth: 1.5,
@@ -1070,7 +1041,6 @@ const styles = StyleSheet.create({
   },
 
   workoutHeader:{
-    // resizeMode: 'contain',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
@@ -1100,11 +1070,11 @@ const styles = StyleSheet.create({
   },
   modalCloseButton:{
     alignItems: 'center',
-    position: 'absolute',
+    //position: 'absolute',
     justifyContent: 'center',
     alignContent: 'center',
-    bottom: "2%",
-    width: "100%",
+    //bottom: "2%",
+    //width: "100%",
 
   },
   closeButtonContainer:{
@@ -1125,7 +1095,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 30,
     paddingHorizontal: 8,
-    //borderRadius: "20rem",
     
   },
   openText:{
@@ -1135,7 +1104,6 @@ const styles = StyleSheet.create({
   },
   modalBackground:{
     backgroundColor: "white",
-    //height: "90%",
     borderRadius: 15,
     flex: 1
   },
@@ -1155,8 +1123,6 @@ const styles = StyleSheet.create({
   filterImage:{
     width: 30,
     height: 30,
-    // paddingHorizontal: 8,
-    //paddingVertical: 10,
     marginTop: 25,
     marginLeft: 5,
   },
@@ -1188,10 +1154,8 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 14,
     resizeMode: 'contain',
-    //height: Dimensions.get('window') / numColumns,
     flex: 1,
     margin: 1,
-    // overflow: "hidden",
     shadowColor: "#000",
     shadowOffset: {width: 0, height: 0},
     shadowOpacity: 1,
@@ -1205,23 +1169,15 @@ const styles = StyleSheet.create({
   textAlign: 'center',
   padding: .5,
   resizeMode: 'contain',
-  //height: Dimensions.get('window') / numColumns,
   flex: 1,
   margin: 1,
-  // overflow: "hidden",
-  // shadowColor: "#000",
-  // shadowOffset: {width: 0, height: 0},
-  // shadowOpacity: 1,
-  // shadowRadius: 2
 },
   exerciseItems:{
       backgroundColor: '#67BBE0',
       color: "#333",
       fontWeight: "500",
-      // alignContent: 'center',
       alignItems: 'center',
       justifyContent: 'center',
-      // textAlign: 'center',
       paddingVertical: 12, 
       paddingHorizontal: 12,
       flex: 1,
@@ -1239,25 +1195,17 @@ const styles = StyleSheet.create({
    exerciseCardText:{
     marginLeft: 100,
     width: "100%",
-    // paddingLeft: 0,
     alignItems: 'center',
     alignContent: 'center',
-    // justifyContent: 'center',
-    // flex: 1,
     flexShrink: 1,
     
    },
 
   workoutExerciseCardTextContainer:{
     alignItems: 'center',
-    // width: "100%",
     textAlign: 'center',
     alignContent: 'center',
     marginLeft: 100,
-    // flex: 1,
-    // flexShrink: 1,
-    // flexWrap: 'wrap',
-
    },
 
    exerciseCardTitle:{
@@ -1269,7 +1217,6 @@ const styles = StyleSheet.create({
    workoutExerciseCardTitle:{
     fontSize: 16,
     fontWeight: 'bold',
-    // flexShrink: 1,
     textAlign: 'center',
  },
    exerciseCardMuscleGroups:{
@@ -1371,7 +1318,6 @@ deleteWorkoutText:{
   workoutCardDuration:{
     fontWeight: 'bold',
     fontSize: 12,
-    // paddingBottom: 10,
     textAlign: 'center',
   
   },
@@ -1388,16 +1334,11 @@ deleteWorkoutText:{
     paddingTop: 15,
   },
   buttonsContainer:{
-    // paddingBottom: 5
   },
   filtersContainer:{
-    //flexDirection: 'column',
-    //alignItems: 'left',
     height: "50%",
-
   },
   filterButtonContainer:{
-    //alignItems: "center",
     backgroundColor: "#CDCDCD",
     borderColor: "black",
     borderWidth: 1.5,
@@ -1427,30 +1368,17 @@ deleteWorkoutText:{
   discoverContainer:{
     backgroundColor: 'white',
     height: "72%",
-    // flex: 2,
   },
   discoverHeaderContainer:{
     backgroundColor: 'white',
-    //flex: 1,
   },
   workoutExerciseContainer:{
     backgroundColor: '#67BBE0',
     color: "#333",
     fontWeight: "500",
-    // alignContent: 'center',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // textAlign: 'center',
-    // // width: "140%",
-    // paddingTop: 12,
     paddingVertical: 15,
-    // paddingHorizontal: 12, 
-    //height: Dimensions.get('window') / numColumns,
-    // flex: 1,
-    // flexDirection: 'row',
     alignSelf: 'stretch',
     margin: 2,
-    // flex: 1,
     flexDirection: 'row',
     borderColor: 'black',
     borderWidth: 2,
@@ -1499,11 +1427,8 @@ deleteWorkoutButton:{
 },
 
   workoutExerciseCardContent:{
-    // alignContent: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
-    // textAlign: 'center',
-    
+    justifyContent: 'center',    
     flex: 1,
     flexDirection: 'row',
   },
