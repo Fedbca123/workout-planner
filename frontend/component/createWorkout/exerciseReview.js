@@ -12,11 +12,13 @@ import {
 	VirtualizedList,
 	useWindowDimensions,
 	Alert,
+	KeyboardAvoidingView
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
-import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
+import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
+import KeyboardSpacer from 'react-native-keyboard-spacer'
 
 export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
@@ -69,161 +71,167 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					Add an Exercise
 				</Text>
 			</TouchableOpacity>
-			<KeyboardAwareFlatList
+			<KeyboardAvoidingView behavior='height'>
+			<DraggableFlatList
 				data={exercises}
-
 				style={{ height: "70%" }}
 				enableOnAndroid={true}
-				ListEmptyComponent={
-					<View
-						style={{
-							flex: 1,
-							alignItems: "center",
-							marginTop: "30%",
-						}}
-					>
-						<Text style={{ fontWeight: "bold", fontSize: 18 }}>
-							This workout currently has no exercises
-						</Text>
-					</View>
-				}
-				renderItem={({ item, index }) => (
-					<View style={styles.ExerciseCard}>
-						<View style={styles.ExerciseCardTop}>
-							<Image
-								source={{ uri: item.image }}
-								style={styles.ExerciseImage}
-							/>
-							<Text style={styles.ExerciseText}>
-								{item.title}
-							</Text>
-							<TouchableOpacity
-								onPress={() => {
-									let temp = [...exercises];
-									temp.splice(index, 1);
-									updateExercises(temp);
-								}}
-							>
-								<AntDesign
-									style={styles.DeleteExerciseBttn}
-									name="minus"
-									size={20}
+				keyExtractor={(item) => item._id}
+				// ListEmptyComponent={
+				// 	<View
+				// 		style={{
+				// 			flex: 1,
+				// 			alignItems: "center",
+				// 			marginTop: "30%",
+				// 		}}
+				// 	>
+				// 		<Text style={{ fontWeight: "bold", fontSize: 18 }}>
+				// 			This workout currently has no exercises
+				// 		</Text>
+				// 	</View>
+				// }
+				onDragEnd={({data}) => updateExercises(data)}
+				renderItem={({ item, getIndex, drag, isActive }) => (
+					<ScaleDecorator>
+						<TouchableOpacity style={styles.ExerciseCard} onLongPress={drag} disabled={isActive}>
+							<View style={styles.ExerciseCardTop}>
+								<Image
+									source={{ uri: item.image }}
+									style={styles.ExerciseImage}
 								/>
-							</TouchableOpacity>
-						</View>
-						<View style={{ alignItems: "center" }}>
-							<Dropdown
-								style={styles.dropdown}
-								data={[
-									{ label: "Cardio", value: "CARDIO" },
-									{
-										label: "Sets x Reps",
-										value: "SETSXREPS",
-									},
-									{ label: "AMRAP", value: "AMRAP" },
-								]}
-								labelField="label"
-								valueField="value"
-								value={item.exerciseType}
-								onChange={(val) => {
-									let temp = [...exercises];
-									temp[index].exerciseType = val.value;
-									updateExercises(temp);
-								}}
-							/>
-						</View>
-						<View style={styles.ExerciseCardBottom}>
-							{(item.exerciseType === "SETSXREPS" ||
-								item.exerciseType === "AMRAP") && (
-								<View style={{flexDirection: "column", alignItems: 'center'}}>
-								<Text>Sets:</Text>
-								<TextInput
-									style={styles.inputfield}
-									keyboardType="numeric"
-									placeholder={item.sets ? `${item.sets}` : "Sets"}
-									placeholderTextColor="#808080"
-									value={`${item.sets}`}
-									maxLength={2}
-									// defaultValue={item.sets ? item.sets : undefined}
-									onChangeText={(text) => {
+								<Text style={styles.ExerciseText}>
+									{item.title}
+								</Text>
+								<TouchableOpacity
+									onPress={() => {
 										let temp = [...exercises];
-										let str = text.split(".");
-										// target.value = str[0];
-										temp[index].sets = str[0];
-										// console.log(temp[index].sets = str[0])
+										temp.splice(getIndex(), 1);
+										updateExercises(temp);
+									}}
+								>
+									<AntDesign
+										style={styles.DeleteExerciseBttn}
+										name="minus"
+										size={20}
+									/>
+								</TouchableOpacity>
+							</View>
+							<View style={{ alignItems: "center" }}>
+								<Dropdown
+									inverted={true}
+									style={styles.dropdown}
+									data={[
+										{ label: "Cardio", value: "CARDIO" },
+										{
+											label: "Sets x Reps",
+											value: "SETSXREPS",
+										},
+										{ label: "AMRAP", value: "AMRAP" },
+									]}
+									labelField="label"
+									valueField="value"
+									value={item.exerciseType}
+									onChange={(val) => {
+										let temp = [...exercises];
+										temp[getIndex()].exerciseType = val.value;
 										updateExercises(temp);
 									}}
 								/>
-								</View>
-								
-							)}
-							{item.exerciseType === "SETSXREPS" && (
-								<View style={{flexDirection: "column", alignItems: 'center'}}>
-									<Text>Reps:</Text>
+							</View>
+							<View style={styles.ExerciseCardBottom}>
+								{(item.exerciseType === "SETSXREPS" ||
+									item.exerciseType === "AMRAP") && (
+									<View style={{flexDirection: "column", alignItems: 'center'}}>
+									<Text>Sets:</Text>
 									<TextInput
 										style={styles.inputfield}
 										keyboardType="numeric"
-										placeholder={item.reps ? `${item.reps}`  : "Reps"}
+										placeholder={item.sets ? `${item.sets}` : "Sets"}
 										placeholderTextColor="#808080"
-										maxLength={3}
-										value={`${item.reps}`}
-										// defaultValue={item.reps ? item.reps : undefined}
+										value={`${item.sets}`}
+										maxLength={2}
+										// defaultValue={item.sets ? item.sets : undefined}
 										onChangeText={(text) => {
 											let temp = [...exercises];
 											let str = text.split(".");
-											temp[index].reps = str[0];
-											updateExercises(temp);
-									}}
-									/>
-								</View>
-								
-							)}
-							{(item.exerciseType === "SETSXREPS" ||
-								item.exerciseType === "AMRAP") && (
-								<View style={{flexDirection: "column", alignItems: 'center'}}>
-									<Text>Weight:</Text>
-									<TextInput
-										style={styles.inputfield}
-										keyboardType="numeric"
-										maxLength={3}
-										placeholder={item.weight ? `${item.weight}`  : "Weight"}
-										placeholderTextColor="#808080"
-										value={item.weight ? `${item.weight}` : ""}
-										// defaultValue={item.weight ? item.weight : undefined}
-										onChangeText={(text) => {
-											let temp = [...exercises];
-											temp[index].weight = text;
+											// target.value = str[0];
+											temp[getIndex()].sets = str[0];
+											// console.log(temp[index].sets = str[0])
 											updateExercises(temp);
 										}}
 									/>
-								</View>
-								
-							)}
-							{(item.exerciseType === "AMRAP" ||
-								item.exerciseType === "CARDIO") && (
-								<View style={{flexDirection: "column", alignItems: 'center'}}>
-									<Text>Time:</Text>
-									<TextInput
-									style={styles.inputfield}
-									keyboardType="numeric"
-									maxLength={4}
-									placeholder={item.time ? `${item.time}` : "Time"}
-										placeholderTextColor="#808080"
-										value={`${item.time}`}
-									// defaultValue={item.time ? item.time : undefined}
-									onChangeText={(text) => {
-										let temp = [...exercises];
-										temp[index].time = text;
-										updateExercises(temp);
-									}}
-								/>
-								</View>
-								
-							)}
-						</View>
-					</View>
+									</View>
+									
+								)}
+								{item.exerciseType === "SETSXREPS" && (
+									<View style={{flexDirection: "column", alignItems: 'center'}}>
+										<Text>Reps:</Text>
+										<TextInput
+											style={styles.inputfield}
+											keyboardType="numeric"
+											placeholder={item.reps ? `${item.reps}`  : "Reps"}
+											placeholderTextColor="#808080"
+											maxLength={3}
+											value={`${item.reps}`}
+											// defaultValue={item.reps ? item.reps : undefined}
+											onChangeText={(text) => {
+												let temp = [...exercises];
+												let str = text.split(".");
+												temp[getIndex()].reps = str[0];
+												updateExercises(temp);
+										}}
+										/>
+									</View>
+									
+								)}
+								{(item.exerciseType === "SETSXREPS" ||
+									item.exerciseType === "AMRAP") && (
+									<View style={{flexDirection: "column", alignItems: 'center'}}>
+										<Text>Weight:</Text>
+										<TextInput
+											style={styles.inputfield}
+											keyboardType="numeric"
+											maxLength={3}
+											placeholder={item.weight ? `${item.weight}`  : "Weight"}
+											placeholderTextColor="#808080"
+											value={item.weight ? `${item.weight}` : ""}
+											// defaultValue={item.weight ? item.weight : undefined}
+											onChangeText={(text) => {
+												let temp = [...exercises];
+												temp[getIndex()].weight = text;
+												updateExercises(temp);
+											}}
+										/>
+									</View>
+									
+								)}
+								{(item.exerciseType === "AMRAP" ||
+									item.exerciseType === "CARDIO") && (
+									<View style={{flexDirection: "column", alignItems: 'center'}}>
+										<Text>Time:</Text>
+										<TextInput
+										style={styles.inputfield}
+										keyboardType="numeric"
+										maxLength={4}
+										placeholder={item.time ? `${item.time}` : "Time"}
+											placeholderTextColor="#808080"
+											value={`${item.time}`}
+										// defaultValue={item.time ? item.time : undefined}
+										onChangeText={(text) => {
+											let temp = [...exercises];
+											temp[getIndex()].time = text;
+											updateExercises(temp);
+										}}
+									/>
+									</View>
+									
+								)}
+							</View>
+						</TouchableOpacity>
+					</ScaleDecorator>
 				)}
 			/>
+			</KeyboardAvoidingView>
 
 			<View style={styles.navButtonContainer}>
 				<View style={{ backgroundColor: "#FF8C4B", flex: 1 }}>
@@ -273,7 +281,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					</TouchableOpacity>
 				</View>
 			</View>
-		</View>
+		</View>	
 	);
 }
 
@@ -281,10 +289,10 @@ const styles = StyleSheet.create({
 	Background: {
 		backgroundColor: "white",
 		flex: 1,
-		borderWidth:.5,
+		borderTopWidth:.5,
 		display: "flex",
 		flexDirection: "column",
-		justifyContent: "space-evenly",
+		justifyContent: "space-between",
 		alignContent: "space-between",
 		// alignItems: "flex-end",
 	},
@@ -373,7 +381,7 @@ const styles = StyleSheet.create({
 		height: "15%",
 		display: "flex",
 		flexDirection: "row",
-		borderWidth: 1,
-		justifyContent: "space-evenly",
+		borderTopWidth: .5,
+		justifyContent: "space-between",
 	},
 });
