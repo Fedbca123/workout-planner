@@ -189,9 +189,23 @@ router.route('/search').post(authenticateToken, async (req, res) => {
     }
   }
 
-  Workout.find(filters)
-  .then(workout => res.json(workout))
+  const results  = await Workout.find(filters)
   .catch(err => res.status(500).json('Error: ' + err));
+
+  const ret = [];
+
+  for(let w of results){
+    if(w.owner && w.owner != ownerId){
+      const user = await User.findById(w.owner);
+      let item = {...w};
+      item._doc.ownerName = user.firstName + " " + user.lastName;
+      ret.push(item._doc);
+    }else{
+      ret.push(w);
+    }
+  }
+  
+  return res.json(ret);
 });
 
 //------UPDATE-----//
