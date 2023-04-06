@@ -204,7 +204,7 @@ router.route('/search').post(authenticateToken, async (req, res) => {
       ret.push(w);
     }
   }
-  
+
   return res.json(ret);
 });
 
