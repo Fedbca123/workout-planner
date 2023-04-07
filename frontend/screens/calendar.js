@@ -1,18 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
+import { TouchableWithoutFeedback, Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
 import {useGlobalState} from '../GlobalState.js';
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import { ScrollView } from 'react-native'
 
 const CalendarScreen = ({}) => {
+    const navigation = useNavigation();
 
     const [datePickerText, setDatePickerText] = useState("Select Date & Time");
 
     const [editModalVisible, setEditModalVisible] = useState(false);
     const [workoutToEdit, setWorkoutToEdit] = useState(null);
+
+    const [completedWorkoutModalVisible, setCompletedWorkoutModalVisible] = useState(false);
+    const [selectedCompletedWorkout, setSelectedCompletedWorkout] = useState(null);
+
+    const [detailsModalVisible, setDetailsModalVisible] = useState(false);
+    const [selectedWorkout, setSelectedWorkout] = useState(null);
 
     const [editedScheduledDate, setEditedScheduledDate] = useState('');
     const [editedRecurrence, setEditedRecurrence] = useState(false);
@@ -22,6 +30,19 @@ const CalendarScreen = ({}) => {
     const [weeklyEvents, setWeeklyEvents] = useState({});
     const isFocused = useIsFocused();
 
+    useEffect(() => {
+      const unsubscribe = navigation.addListener('focus', () => {
+        fetchEvents();
+      });
+    
+      return unsubscribe;
+    }, [navigation]);
+
+    const handleCompletedWorkoutDetails = (workout) => {
+      setSelectedCompletedWorkout(workout);
+      setCompletedWorkoutModalVisible(true);
+    };
+
     const fetchEvents = async () => {
       try {
         const response = await API_Instance.get(`users/${globalState.user._id}/calendar/all`, {
@@ -29,8 +50,6 @@ const CalendarScreen = ({}) => {
             'authorization': `Bearer ${globalState.authToken}`,
           },
         });
-        // console.log(response.data.workouts);
-        // console.log("My user email is", globalState.user.email);
         const formattedEvents = formatEvents(response.data.workouts);
         setWeeklyEvents(formattedEvents);
       } catch (error) {
@@ -44,7 +63,6 @@ const CalendarScreen = ({}) => {
   
     useEffect(() => {
       if(isFocused){
-        //console.log('rendering calendar')
         fetchEvents();
       }
     }, [isFocused]);
@@ -53,7 +71,6 @@ const CalendarScreen = ({}) => {
       handleDayPress({ dateString: selectedDate });
   }, [weeklyEvents]);
   
-    //changes date to yyyy-mm-dd
     const formatEvents = (events) => {
       const formattedEvents = {};
       events.forEach((event) => {
@@ -90,7 +107,7 @@ const CalendarScreen = ({}) => {
     const handleDayPress = (day) => {
       const formattedDate = moment(day.dateString).format('YYYY-MM-DD');
       if (weeklyEvents[formattedDate]) {
-        const events = weeklyEvents[formattedDate].events; // access the events array
+        const events = weeklyEvents[formattedDate].events; 
         setEvents(events);
         setSelectedDate(formattedDate);
       } else {
@@ -109,14 +126,11 @@ const CalendarScreen = ({}) => {
     const handleConfirm = (date) => {
       const formattedDate = moment(date).format('YYYY-MM-DDTHH:mm');
       setEditedScheduledDate(formattedDate);
-      //This updates what is selected
       setDatePickerText(moment(date).format("MMMM D, YYYY hh:mm A"));
       hideDatePicker();
     };
 
     const updateWorkout = async (workout, updatedInfo) => {
-      // console.log(updatedInfo);
-      // console.log(workout);
       try {
         const response = await API_Instance.patch(
           `workouts/${workout}`,
@@ -198,8 +212,10 @@ const CalendarScreen = ({}) => {
               <View style={{marginRight: 10,}}>
                 <Button title="Edit" onPress={() => handleEdit(item)} />
               </View>
-              
-              <Button title="Delete workout" onPress={ 
+              <View style={{marginRight: 10,}}>
+                <Button title="Start" onPress={() => {navigation.navigate("start", {workout: item})}} />
+              </View>
+              <Button title="Delete" onPress={ 
                 () => {
                   Alert.alert( `Are you sure you want to delete ${item.title}?`,'',
                     [{
@@ -219,14 +235,17 @@ const CalendarScreen = ({}) => {
           </View>
         );
       } else if (item.ownerEmail === globalState.user?.email) {
-        return (
-          <View style={styles.myExercise}>
-            <Text>{dateText} </Text>
-            <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
-            {item.location && <Text>Location: {item.location}</Text>}
-          </View>
-        );
-      } else {
+          return (
+            <View style={styles.myExercise}>
+              <Text>{dateText} </Text>
+              <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
+              {item.location && <Text>Location: {item.location}</Text>}
+              <View style={{ flexDirection: 'row' }}>
+                <Button title="Details" onPress={() => handleCompletedWorkoutDetails(item)} />
+              </View>
+            </View>
+          );
+        } else {
         return (
           <View style={styles.friendExercise}>
             <Text>{dateText} workout at {startTime}</Text>
@@ -271,7 +290,6 @@ const CalendarScreen = ({}) => {
             {workoutToEdit && (
               <>
                   <Text style={styles.modalTitle}>Edit Workout</Text>
-                  {/* Edit the workout information */}
                   <Text>Date & Time:</Text>
                   <View style={styles.timedate}>
                     <TouchableOpacity onPress={showDatePicker} style={styles.datePickerContainer}>
@@ -303,6 +321,42 @@ const CalendarScreen = ({}) => {
                 </>
               )}
             </View>
+          </View>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={completedWorkoutModalVisible}
+          onRequestClose={() => setCompletedWorkoutModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <ScrollView contentContainerStyle={styles.modalContent}>
+              {selectedCompletedWorkout && (
+                <>
+                  <Text style={styles.modalTitle}>Workout Details</Text>
+                  <Text>{selectedCompletedWorkout.title}</Text>
+                  {/* <Text>Description: {selectedCompletedWorkout.description}</Text>
+                  <Text>Owner Name: {selectedCompletedWorkout.ownerName}</Text>
+                  {selectedCompletedWorkout.location && <Text>Location: {selectedCompletedWorkout.location}</Text>} */}
+                  
+                  <Text style={styles.modalSubTitle}>Exercises</Text>
+                  {selectedCompletedWorkout.exercises.map((exercise, index) => (
+                    <View key={index} style={styles.exerciseDetails}>
+                      <Text style={styles.exerciseTitle}>{exercise.title}</Text>
+                      <Text>Description: {exercise.description}</Text>
+                      <Text>Sets: {exercise.sets}, Reps: {exercise.reps}</Text>
+                      <Text>Weight: {exercise.weight} lbs</Text>
+                    </View>
+                  ))}
+                  
+                  <View style={styles.modalButtons}>
+                    <Button title="Close" onPress={() => setCompletedWorkoutModalVisible(false)} />
+                  </View>
+                </>
+              )}
+            </ScrollView>
+    
           </View>
         </Modal>
       </View>
@@ -377,9 +431,9 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 20,
     borderRadius: 10,
-    width: '80%',
+    padding: 20,
+    width: '90%',
   },
   modalTitle: {
     fontSize: 20,
@@ -410,6 +464,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 5,
   },
+  modalSubTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 15,
+    marginBottom: 5,
+  },
+  exerciseDetails: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  exerciseTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 5,
+  }
 });
 
 export default CalendarScreen;
