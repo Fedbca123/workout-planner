@@ -187,10 +187,12 @@ export default function AdminPage({navigation}) {
 
                     <TextInput style={styles.inputfield}
                     placeholder="title"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setTitle(text)}/>
 
                     <TextInput style={styles.inputfield}
                     placeholder="description"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setDescription(text)}/>
 
                     { imageUri && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
@@ -205,30 +207,37 @@ export default function AdminPage({navigation}) {
 
                     { !toggleValue && <TextInput style={styles.inputfield}
                     placeholder="AMRAP, SETSXREPS, or CARDIO"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setExerciseType(text)}/> }
 
                     {!toggleValue && <TextInput style={styles.inputfield}
                     placeholder="sets"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setSets(text)}/>}
 
                     {!toggleValue && <TextInput style={styles.inputfield}
                     placeholder="reps"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setReps(text)}/>}
 
                     {!toggleValue && <TextInput style={styles.inputfield}
                     placeholder="time"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setTime(text)}/>}
 
                     {!toggleValue && <TextInput style={styles.inputfield}
                     placeholder="weight"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setWeight(text)}/>}
 
                     {!toggleValue && <TextInput style={styles.inputfield}
                     placeholder="restTime"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setRestTime(text)}/>}
 
                     {toggleValue && <TextInput style={styles.inputfield}
                     placeholder={"exercises - List of ObjecId's \nseperate by comma"}
+                    placeholderTextColor={"#808080"}
                     multiline = {true}
                     numberOfLines = {4}
                     minHeight = {80}
@@ -237,10 +246,12 @@ export default function AdminPage({navigation}) {
 
                     {toggleValue && <TextInput style={styles.inputfield}
                     placeholder="duration"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setDuration(text)}/>}
 
                     {toggleValue && <TextInput style={styles.inputfield}
                     placeholder="location"
+                    placeholderTextColor={"#808080"}
                     onChangeText={(text) => setLocation(text)}/>}
                     
                     <TextInput style={styles.inputfield}
@@ -249,6 +260,7 @@ export default function AdminPage({navigation}) {
                     minHeight = {80}
                     maxHeight = {80}
                     placeholder = {"Tags - Seperate By Comma"}
+                    placeholderTextColor={"#808080"}
                     onChangeText = {(text) => setTags(text)} />
 
                     <TextInput style={styles.inputfield}
@@ -257,10 +269,13 @@ export default function AdminPage({navigation}) {
                     minHeight = {80}
                     maxHeight = {80}
                     placeholder= {"Muscle Groups - Seperate By Comma"}
+                    placeholderTextColor={"#808080"}
                     onChangeText = {(text) => setMuscleGroups(text)}/>
 
                     <TextInput style={styles.inputfield}
                     placeholder= {"Owner (Public if empty)"}
+                    placeholderTextColor={"#808080"}
+                    
                     onChangeText = {(text) => setOwner(text)}/>
 
                     <View style={styles.submitButtonContainerStyle}>
