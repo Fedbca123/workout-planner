@@ -183,7 +183,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 								<View style={styles.workoutCardImageContainer}>
 									<Image
 										style={styles.workoutCardImage}
-										src={(workout[0].image) ? (workout[0].image.uri || config.DEFAULTWORKIMAGE) : config.DEFAULTWORKIMAGE}
+										src={(workout[0].image) ? (workout[0].image || config.DEFAULTWORKIMAGE) : config.DEFAULTWORKIMAGE}
 									/>
 								</View>
 								<View style={styles.workoutCardTitleContainer}>
