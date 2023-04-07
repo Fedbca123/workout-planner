@@ -34,6 +34,7 @@ export default function Register({navigation}) {
   const [emailError, setEmailError] = useState(false);
   const [PW1Error, setPW1Error] = useState(false);
   const [PW2Error, setPW2Error] = useState(false);
+  const [sent, setSent] = useState(false);
   // defining refs
   const firstNameRef = useRef(0);
   const lastNameRef = useRef(0);
@@ -149,6 +150,12 @@ export default function Register({navigation}) {
       setError('');
     }
 
+    console.log(sent)
+    if (sent)
+      return;
+    
+    setSent(true);
+
     API_Instance.post('users/emailVerification/send/to',
       {
         firstName: firstName,
@@ -161,6 +168,7 @@ export default function Register({navigation}) {
           [{text:"Back to Login", onPress: () => navigation.goBack()}]);
         }
       }).catch((e) => {
+        setSent(false);
         if (e.response.status === 502) {
           Alert.alert("Email already has an account associated with it");
         }
@@ -253,7 +261,10 @@ export default function Register({navigation}) {
             returnKeyType="next"
             ref={emailRef}
             onSubmitEditing={() => {passwordRef.current.focus();}}
-            onChangeText={(text)=> setEmail(text)}/>
+            onChangeText={(text)=> {
+              setEmail(text);
+              setSent(false);
+            }}/>
 
             <Text style={styles.text}>Password</Text>
             <TextInput
@@ -313,7 +324,9 @@ export default function Register({navigation}) {
           <View style={styles.buttoncontainer}>
             <Pressable
               style={styles.button}
-              onPress={()=>{registerHandler()}}>
+              onPress={()=>{
+                  registerHandler();
+              }}>
               <Text style={styles.buttontext}>Register</Text>
             </Pressable>
             <View style ={{margin:5}}>
