@@ -118,42 +118,42 @@ export default function DiscoverPage({navigation}) {
   const getWorkoutOwner = (exercise, user) => {
     if (!exercise.owner)
       return "Public";
-    else if (exercise.owner === user._id) {
+    else if (exercise.owner === globalState.user?._id) {
       return "You";
     } else {
       return exercise.ownerName;
     }
   };
-  // function deleteExercise(){
-  //   try{
-  //     Alert.alert(`Are you sure you want to delete ${selectedExerciseTitle}?`,
-  //     '',
-  //     [{
-  //         text: 'Yes',
-  //         onPress: () => {
-  //           API_Instance.delete(`exercises/${selectedExercise._id}`,
-  //           {
-  //             headers: {
-  //                 'authorization': `BEARER ${globalState.authToken}`
-  //               }
-  //             }).then((response) => {
-  //               Alert.alert(`${selectedExerciseTitle} deleted successfully!`);
-  //               exercisesList();
-  //               closeInfoModal();
-  //             }).catch((e) => {
-  //               Alert.alert(`${e}`);
-  //               console.log(e);
-  //             });
-  //         },
-  //     },
-  //     {
-  //         text: 'No',
-  //     }],
-  //     { cancelable: false});
-  //   }catch(e){
-  //     console.log(e);
-  //   }
-  // }
+  function deleteExercise(){
+    try{
+      Alert.alert(`Are you sure you want to delete ${selectedExerciseTitle}?`,
+      '',
+      [{
+          text: 'Yes',
+          onPress: () => {
+            API_Instance.delete(`exercises/${selectedExercise._id}`,
+            {
+              headers: {
+                  'authorization': `BEARER ${globalState.authToken}`
+                }
+              }).then((response) => {
+                Alert.alert(`${selectedExerciseTitle} deleted successfully!`);
+                exercisesList();
+                closeInfoModal();
+              }).catch((e) => {
+                Alert.alert(`${e}`);
+                console.log(e);
+              });
+          },
+      },
+      {
+          text: 'No',
+      }],
+      { cancelable: false});
+    }catch(e){
+      console.log(e);
+    }
+  }
   // Exercise Card
   const ExerciseItem = ({exercise, title, type, image}) => {
 
@@ -276,7 +276,7 @@ export default function DiscoverPage({navigation}) {
             ))}
 
           {/* Delete Custom Workout */}
-          {expanded && workout.owner == globalState.user._id &&
+          {expanded && workout.owner == globalState.user?._id &&
             <TouchableOpacity onPress={()=>
               deleteWorkout(workout)}>
               <View style={styles.deleteWorkoutButton}>
@@ -412,7 +412,7 @@ export default function DiscoverPage({navigation}) {
       if(selectedOwner.includes('Public') && !exercise.owner){
         matches = true;
       }
-      if(!matches && selectedOwner.includes('Personal') && exercise.owner == globalState.user._id){
+      if(!matches && selectedOwner.includes('Personal') && exercise.owner == globalState.user?._id){
         matches = true;
       }
       if(!matches && selectedOwner.includes('Friends') && globalState.user.friends.includes(exercise.owner)){
@@ -524,7 +524,7 @@ export default function DiscoverPage({navigation}) {
       if(selectedOwner.includes('Public') && !workout.owner){
         matches = true;
       }
-      if(!matches && selectedOwner.includes('Personal') && workout.owner == globalState.user._id){
+      if(!matches && selectedOwner.includes('Personal') && workout.owner == globalState.user?._id){
         matches = true;
       }
       if(!matches && selectedOwner.includes('Friends') && globalState.user.friends.includes(workout.owner)){
@@ -885,10 +885,9 @@ return (
             >
             <SafeAreaView style={styles.exerciseInfoHeader}>
               <View style={styles.exerciseInfoTitleandDelete}>
-              {/* {selectedExerciseOwner == globalState.user._id &&  */}
+              {selectedExerciseOwner == globalState.user?._id && 
                 <View style={styles.exerciseInfoDeleteButton}>
-                  <TouchableOpacity>
-                  {/* <TouchableOpacity onPress={deleteExercise()}> */}
+                  <TouchableOpacity onPress={deleteExercise}>
                     <AntDesign
                     name="delete"
                     size={30}
@@ -897,7 +896,7 @@ return (
                   </TouchableOpacity>
  
                 </View>
-                {/* } */}
+                }
                 <View style={styles.exerciseInfoTitleContainer}>
                   <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
                 </View>
