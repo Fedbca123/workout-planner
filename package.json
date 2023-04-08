@@ -9,7 +9,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "dev": "concurrently -r \"cross-env APP_ENV=development expo start\" \"cross-env APP_ENV=development npm run server\"",
-    "prod": "APP_ENV=production expo start",
+    "prod": "cross-env APP_ENV=production expo start",
     "host": "node backend/server.js"
 
   },
