@@ -84,6 +84,7 @@
     "react-native-toggle-element": "^2.0.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.11",
+    "sharp": "^0.32.0",
     "use-event-callback": "^0.1.0"
   },
   "devDependencies": {
