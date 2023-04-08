@@ -9,10 +9,10 @@ else{
 }
 
 if (Constants.expoConfig.extra && Constants.expoConfig.extra.APP_ENV === 'production')
-    url = process.env.API_URL;
+    url = process.env.API_PROD_URL;
 else
     url = `http://${manifest.debuggerHost.split(':').shift()}:${process.env.PORT}`;
 
 export default {
     API_URL: url
-};
+}
