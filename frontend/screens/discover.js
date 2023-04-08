@@ -323,7 +323,6 @@ export default function DiscoverPage({navigation}) {
 
   // Workout API Call
   const workoutsList = async()=> {
-    console.log("Workouts List called");
     API_Instance.post('workouts/search',
     {
       ownerId: globalState.user._id,
