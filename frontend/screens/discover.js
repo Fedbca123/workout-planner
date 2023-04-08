@@ -115,12 +115,13 @@ export default function DiscoverPage({navigation}) {
     }
   }, [isFocused]);
 
-  const getWorkoutOwner = (exercise, user) => {
+  const getWorkoutOwner = (exercise) => {
     if (!exercise.owner)
       return "Public";
     else if (exercise.owner === globalState.user?._id) {
       return "You";
     } else {
+      // console.log("exercise " + exercise.title+  " owner: "+ exercise.ownerName);
       return exercise.ownerName;
     }
   };
@@ -234,7 +235,7 @@ export default function DiscoverPage({navigation}) {
               <Text style={styles.workoutCardDescription}>{description}</Text>
               <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
               <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
-              <Text style={styles.workoutCardOwner}>Workout Owner: {getWorkoutOwner(workout, globalState.user)} </Text>
+              <Text style={styles.workoutCardOwner}>Workout Owner: {getWorkoutOwner(workout)} </Text>
             </View>
             <TouchableOpacity onPress={()=>
               addWorkout(workout)}>
@@ -304,8 +305,9 @@ export default function DiscoverPage({navigation}) {
     .then((response) => {
       if (response.status == 200){
         // console.log(response.data[0]);
-        setFilteredExerciseData(response.data);
+        // setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
+        setFilteredExerciseData(filterExercises(exerciseSearch));
         exercisesLoaded();
       }
     })
@@ -330,8 +332,9 @@ export default function DiscoverPage({navigation}) {
       if (response.status == 200) {
         // console.log(JSON.stringify(response.data, null, 2));
         // console.log(response.data[0].owner);
-        setFilteredWorkoutData(response.data);
+        // setFilteredWorkoutData(response.data);
         setMasterWorkoutData(response.data);
+        setFilteredWorkoutData(filterWorkouts(workoutSearch));
         workoutsLoaded();
       }
     })
@@ -919,7 +922,7 @@ return (
 
               <View style={styles.exerciseInfoOwnerContainer}>
                 <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
-                <Text style={styles.exerciseInfoOwner}>{getWorkoutOwner(selectedExercise, globalState.user)}
+                <Text style={styles.exerciseInfoOwner}>{getWorkoutOwner(selectedExercise)}
                 {/* {selectedExerciseOwner ? selectedExerciseOwner : "Public"}*/}
                 </Text> 
               </View>
