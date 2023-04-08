@@ -8,8 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "dev": "concurrently -r \"APP_ENV=development expo start\" \" APP_ENV=development npm run server\"",
-    "prod": "APP_ENV=production expo start",
+    "dev": "concurrently -r \"cross-env APP_ENV=development expo start\" \" cross-env APP_ENV=development npm run server\"",
+    "prod": "cross-env APP_ENV=production expo start",
     "host": "node backend/server.js"
   },
   "dependencies": {
@@ -29,6 +29,7 @@
     "cloudinary": "^1.33.0",
     "concurrently": "^7.6.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
     "expo": "^48.0.0",

@@ -40,6 +40,23 @@ function removeItem(array, val){
   return array;
 }
 
+const addOwnerToExercises = async (w, ownerId) => {
+  const ret = [];
+
+  for(let ex of w.exercises){
+    if(ex.owner && ex.owner != ownerId){
+      const user = await User.findById(ex.owner);
+      let item = {...ex};
+      item._doc.ownerName = user.firstName + " " + user.lastName;
+      ret.push(item._doc);
+    }else{
+      ret.push(ex)
+    }
+  }
+
+  return ret;
+}
+
 //------GET-----//
 
 //-----POST-----//
