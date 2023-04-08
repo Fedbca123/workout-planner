@@ -8,11 +8,13 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "dev": "concurrently -r \"APP_ENV=development expo start\" \" APP_ENV=development npm run server\"",
-    "prod": "APP_ENV=production expo start",
+    "dev": "concurrently -r \"cross-env APP_ENV=development expo start\" \"cross-env APP_ENV=development npm run server\"",
+    "prod": "cross-env APP_ENV=production expo start",
     "host": "node backend/server.js"
+
   },
   "dependencies": {
+    "@ant-design/icons": "^5.0.1",
     "@azure/communication-email": "^1.0.0-beta.2",
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^18.0.1",
@@ -22,6 +24,7 @@
     "@react-navigation/drawer": "^6.5.8",
     "@react-navigation/native": "^6.1.1",
     "@react-navigation/native-stack": "^6.9.8",
+    "antd": "^5.4.0",
     "axios": "^1.2.2",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
@@ -29,6 +32,7 @@
     "cloudinary": "^1.33.0",
     "concurrently": "^7.6.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "deprecated-react-native-prop-types": "^4.0.0",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
