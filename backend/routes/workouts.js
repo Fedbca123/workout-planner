@@ -212,6 +212,8 @@ router.route('/search').post(authenticateToken, async (req, res) => {
   const ret = [];
 
   for(let w of results){
+    console.log(await addOwnerToExercises(w,ownerId))
+    //console.log(w);
     if(w.owner && w.owner != ownerId){
       const user = await User.findById(w.owner);
       let item = {...w};
