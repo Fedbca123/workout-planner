@@ -110,10 +110,15 @@ export default function DiscoverPage({navigation}) {
 
   useEffect(() => {
     if(isFocused){
+      // console.log("UseEffect Called");
       exercisesList();
       workoutsList();
     }
   }, [isFocused]);
+
+  useEffect(() => {
+    setFilteredWorkoutData(filterWorkouts(workoutSearch));
+  }, [masterWorkoutData]);
 
   const getWorkoutOwner = (exercise) => {
     if (!exercise.owner)
@@ -333,7 +338,9 @@ export default function DiscoverPage({navigation}) {
         // console.log(JSON.stringify(response.data, null, 2));
         // console.log(response.data[0].owner);
         // setFilteredWorkoutData(response.data);
+        // console.log("API response: ", response.data);
         setMasterWorkoutData(response.data);
+        // console.log(masterWorkoutData);
         setFilteredWorkoutData(filterWorkouts(workoutSearch));
         workoutsLoaded();
       }
