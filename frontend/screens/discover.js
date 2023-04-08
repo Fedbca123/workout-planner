@@ -305,8 +305,9 @@ export default function DiscoverPage({navigation}) {
     .then((response) => {
       if (response.status == 200){
         // console.log(response.data[0]);
-        setFilteredExerciseData(response.data);
+        // setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
+        setFilteredExerciseData(filterExercises(exerciseSearch));
         exercisesLoaded();
       }
     })
@@ -331,8 +332,9 @@ export default function DiscoverPage({navigation}) {
       if (response.status == 200) {
         // console.log(JSON.stringify(response.data, null, 2));
         // console.log(response.data[0].owner);
-        setFilteredWorkoutData(response.data);
+        // setFilteredWorkoutData(response.data);
         setMasterWorkoutData(response.data);
+        setFilteredWorkoutData(filterWorkouts(workoutSearch));
         workoutsLoaded();
       }
     })
