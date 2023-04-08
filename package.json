@@ -8,8 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "dev": "concurrently -r \"NODE_ENV=development expo start\" \" NODE_ENV=development npm run server\"",
-    "prod": "NODE_ENV=production expo start",
+    "dev": "concurrently -r \"APP_ENV=development expo start\" \" APP_ENV=development npm run server\"",
+    "prod": "APP_ENV=production expo start",
     "host": "node backend/server.js"
   },
   "dependencies": {
@@ -86,6 +86,7 @@
     "react-native-toggle-element": "^2.0.1",
     "react-native-vector-icons": "^9.2.0",
     "react-native-web": "~0.18.11",
+    "sharp": "^0.32.0",
     "use-event-callback": "^0.1.0"
   },
   "devDependencies": {
