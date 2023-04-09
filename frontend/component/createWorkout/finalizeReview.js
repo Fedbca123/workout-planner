@@ -210,13 +210,14 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 								)}
 								<Text style={styles.workoutCardDuration}>
 									Time:{" "}
-									{new Date(
-										workout[0].scheduledDate,
-									).toDateString() +
-										" " +
-										new Date(
-											workout[0].scheduledDate,
-										).toLocaleTimeString()}
+									{(new Date(workout[0].scheduledDate).toLocaleDateString('en-us',{
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric'
+                            }))}
 								</Text>
 								<Text
 									style={styles.workoutCardMuscleGroups}

@@ -118,6 +118,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <TextInput
                         // keyboardType="numeric"
                         placeholder="Home"
+                        placeholderTextColor={"#808080"}
                         defaultValue={workout[0].location ? workout[0].location : ""}
                         style={styles.inputfield}
                         onChangeText={(text) => {
@@ -131,6 +132,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <TextInput
                         keyboardType="numeric"
                         placeholder="60"
+                        placeholderTextColor={"#808080"}
                         defaultValue={workout[0].duration ? `${workout[0].duration}` : null}
                         style={styles.inputfield}
                         onChangeText={(text) => {
@@ -144,7 +146,15 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                     <Text style={[styles.text, {fontSize: 18}]}>
                         {/* { toString(new Date(workout[0].scheduledDate)) } */}
                         {
-                            workout[0].scheduledDate && (new Date(workout[0].scheduledDate).toDateString() + " " + new Date(workout[0].scheduledDate).toLocaleTimeString())
+                            //workout[0].scheduledDate && (new Date(workout[0].scheduledDate).toDateString() + " " + new Date(workout[0].scheduledDate).toLocaleTimeString())
+                            workout[0].scheduledDate && (new Date(workout[0].scheduledDate).toLocaleDateString('en-us',{
+                              weekday: 'long',
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                              hour: 'numeric',
+                              minute: 'numeric'
+                            }))
                         }
                     </Text>
                    <Button title="Choose a Day and Time" onPress={showDatePicker} /> 
