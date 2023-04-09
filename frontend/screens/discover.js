@@ -144,7 +144,9 @@ export default function DiscoverPage({navigation}) {
                 }
               }).then((response) => {
                 Alert.alert(`${selectedExerciseTitle} deleted successfully!`);
-                exercisesList();
+                //exercisesList();
+                setFilteredExerciseData(filteredExerciseData.filter(item => item._id != selectedExercise._id));
+                setMasterExerciseData(masterExerciseData.filter(item => item._id != selectedExercise._id));
                 closeInfoModal();
               }).catch((e) => {
                 Alert.alert(`${e}`);
@@ -197,7 +199,8 @@ export default function DiscoverPage({navigation}) {
                   }
                 }).then((response) => {
                   Alert.alert(`${workout.title} deleted successfully!`);
-                  workoutsList();
+                  setFilteredWorkoutData(filteredWorkoutData.filter(item => item._id != workout._id));
+                  setMasterWorkoutData(masterWorkoutData.filter(item => item._id != workout._id));
                 }).catch((e) => {
                   Alert.alert(`${e}`);
                   console.log(e);
@@ -897,13 +900,16 @@ return (
               <View style={styles.exerciseInfoTitleandDelete}>
               {selectedExerciseOwner == globalState.user?._id && 
                 <View style={styles.exerciseInfoDeleteButton}>
-                  <TouchableOpacity onPress={deleteExercise}>
-                    <AntDesign
-                    name="delete"
-                    size={30}
-                    style={styles.deleteCustomExercise}
-                    />
-                  </TouchableOpacity>
+                  {
+                    // removes bug of delete icon showing even after deleting an exercise
+                    masterExerciseData.some(exercise => exercise._id == selectedExercise._id) ? <TouchableOpacity onPress={deleteExercise}>
+                      <AntDesign
+                      name="delete"
+                      size={30}
+                      style={styles.deleteCustomExercise}
+                      />
+                    </TouchableOpacity> : null
+                  }
  
                 </View>
                 }

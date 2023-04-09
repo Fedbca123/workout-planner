@@ -142,7 +142,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									keyboardType="numeric"
 									placeholder={item.sets ? `${item.sets}` : "Sets"}
 									placeholderTextColor="#808080"
-									value={`${item.sets}`}
+									value={item.sets ? `${item.sets}` : ''}
 									maxLength={2}
 									// defaultValue={item.sets ? item.sets : undefined}
 									onChangeText={(text) => {
@@ -166,7 +166,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 										placeholder={item.reps ? `${item.reps}`  : "Reps"}
 										placeholderTextColor="#808080"
 										maxLength={3}
-										value={`${item.reps}`}
+										value={item.reps ? `${item.reps}` : ''}
 										// defaultValue={item.reps ? item.reps : undefined}
 										onChangeText={(text) => {
 											let temp = [...exercises];
@@ -209,7 +209,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									maxLength={4}
 									placeholder={item.time ? `${item.time}` : "Time"}
 										placeholderTextColor="#808080"
-										value={`${item.time}`}
+										value={item.time ? `${item.time}` : ''}
 									// defaultValue={item.time ? item.time : undefined}
 									onChangeText={(text) => {
 										let temp = [...exercises];

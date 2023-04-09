@@ -344,9 +344,13 @@ const CalendarScreen = ({}) => {
                   {selectedCompletedWorkout.exercises.map((exercise, index) => (
                     <View key={index} style={styles.exerciseDetails}>
                       <Text style={styles.exerciseTitle}>{exercise.title}</Text>
-                      <Text>Description: {exercise.description}</Text>
-                      <Text>Sets: {exercise.sets}, Reps: {exercise.reps}</Text>
-                      <Text>Weight: {exercise.weight} lbs</Text>
+                      <Text>({exercise.exerciseType})</Text>
+                      {/* uncomment if we see a need but it looks nicer like this imo - Nestor <Text>Description: {exercise.description}</Text>*/}
+                      {console.log(exercise)}
+                      {(exercise.exerciseType == 'SETSXREPS' || exercise.exerciseType == 'AMRAP') && <Text>Sets: {exercise.sets}</Text>}
+                      {(exercise.exerciseType == 'SETSXREPS'                                    ) && <Text>Reps: {exercise.reps}</Text>}
+                      {(exercise.exerciseType == 'SETSXREPS' || exercise.exerciseType == 'AMRAP') && <Text>Weight: {exercise.weight} lbs</Text>}
+                      {(exercise.exerciseType == 'CARDIO'   || exercise.exerciseType == 'AMRAP') && <Text>Time: {exercise.time}</Text>}
                     </View>
                   ))}
                   
@@ -424,6 +428,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   modalContainer: {
+    // added paddingTop because modal kept touching top of screen and got cutoff by 'island' on my iphone
+    paddingTop: '15%',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -443,6 +449,7 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignSelf: 'center',
     marginTop: 20,
   },
   modalInput: {
