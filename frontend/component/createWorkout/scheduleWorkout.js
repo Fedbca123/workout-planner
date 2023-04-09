@@ -177,7 +177,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        borderWidth:.5,
+        borderTopWidth: 1.5,
         backgroundColor: 'white',
         flexDirection: 'column-reverse',
         // justifyContent:"space-between"

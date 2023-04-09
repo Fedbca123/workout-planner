@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "white",
 		flexDirection: "column-reverse",
-		borderTopWidth: 1,
+		borderTopWidth: 1.5,
 		// borderWidth: 1,
 		// justifyContent:"space-between"
 	},

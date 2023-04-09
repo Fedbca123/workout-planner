@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
 	Background: {
 		backgroundColor: "white",
 		flex: 1,
-		borderTopWidth:.5,
+		borderTopWidth:1.5,
 		justifyContent: 'space-between'
 	},
 	HeaderText: {
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
 		borderWidth: .5, 
 		width: '60%', 
 		alignSelf: 'center',
-		marginTop: 15, 
+		marginVertical: 15, 
 		backgroundColor: '#DDF2FF',
 		// borderRadius: 8,
 		...Platform.select({

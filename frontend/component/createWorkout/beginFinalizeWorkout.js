@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
-		borderWidth:.5,
+		borderTopWidth:1.5,
 		// alignContent:"space-between",
 		backgroundColor: 'white',
 		justifyContent: "space-between",

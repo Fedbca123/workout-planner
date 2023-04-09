@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     Background: {
 		backgroundColor: "white",
         flex: 1,
-        borderWidth:.5,
+        borderTopWidth:1.5,
         display: "flex",
         justifyContent: 'space-between',
         // alignContent: "space-between",
