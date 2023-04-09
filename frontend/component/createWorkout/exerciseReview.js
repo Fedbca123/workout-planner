@@ -25,17 +25,6 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	const [exercises, updateExercises] = useState(!workout[0].exercises ? [] : workout[0].exercises);
 
 	useEffect(() => {
-		let temp = {...workout[0]}
-		for (let i = 0; i < temp.exercises.length; i++)
-		{
-			if (!temp.exercises[i].time)
-			{
-				temp.exercises[i].time = '';
-			}
-		}
-	}, [])
-
-	useEffect(() => {
 		let temp = { ...workout };
 		temp[0].exercises = exercises;
 		updateWorkout(temp);
