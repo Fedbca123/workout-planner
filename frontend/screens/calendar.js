@@ -339,14 +339,21 @@ const CalendarScreen = ({}) => {
                   {/* <Text>Description: {selectedCompletedWorkout.description}</Text>
                   <Text>Owner Name: {selectedCompletedWorkout.ownerName}</Text>
                   {selectedCompletedWorkout.location && <Text>Location: {selectedCompletedWorkout.location}</Text>} */}
-                  
+                  <Text style={styles.modalSubTitle}>Completed:</Text>
+                  <Text style={styles.modalSubTitle}>{new Date(selectedCompletedWorkout.dateOfCompletion).toLocaleDateString('en-us',{
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric'
+                  })}</Text>
                   <Text style={styles.modalSubTitle}>Exercises</Text>
                   {selectedCompletedWorkout.exercises.map((exercise, index) => (
                     <View key={index} style={styles.exerciseDetails}>
                       <Text style={styles.exerciseTitle}>{exercise.title}</Text>
                       <Text>({exercise.exerciseType})</Text>
                       {/* uncomment if we see a need but it looks nicer like this imo - Nestor <Text>Description: {exercise.description}</Text>*/}
-                      {console.log(exercise)}
                       {(exercise.exerciseType == 'SETSXREPS' || exercise.exerciseType == 'AMRAP') && <Text>Sets: {exercise.sets}</Text>}
                       {(exercise.exerciseType == 'SETSXREPS'                                    ) && <Text>Reps: {exercise.reps}</Text>}
                       {(exercise.exerciseType == 'SETSXREPS' || exercise.exerciseType == 'AMRAP') && <Text>Weight: {exercise.weight} lbs</Text>}
