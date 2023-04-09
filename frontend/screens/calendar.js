@@ -437,6 +437,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     // added paddingTop because modal kept touching top of screen and got cutoff by 'island' on my iphone
     paddingTop: '15%',
+    paddingBottom: '15%',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
