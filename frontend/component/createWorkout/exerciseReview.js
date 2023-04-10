@@ -18,7 +18,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
-import KeyboardSpacer from 'react-native-keyboard-spacer'
+// import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
@@ -239,6 +239,8 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					</ScaleDecorator>
 				)}
 			/>
+
+			{/* <KeyboardSpacer topSpacing={100}/> */}
 
 			<View style={styles.navButtonContainer}>
 				<View style={{ backgroundColor: "#FF8C4B", flex: 1 }}>

@@ -22,8 +22,6 @@ import { Header, SearchBar } from "react-native-elements";
 
 export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, setCreateNew }) {
 	const [globalState, updateGlobalState] = useGlobalState();
-	const [publicWorkouts, updatePublicWorkouts] = useState([]);
-	const [privateWorkouts, updatePrivateWorkouts] = useState([]);
 	const [allWorkouts, setAllWorkouts] = useState([]);
 	const [searchText, setSearchText] = useState("");
 	const [searchResults, updateSearchResults] = useState([]);

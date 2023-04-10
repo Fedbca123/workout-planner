@@ -17,27 +17,49 @@ import { useState } from "react";
 import reactDom from "react-dom";
 import { useGlobalState } from "../GlobalState.js";
 
-export default function ExerciseInfo({ exercise, setModalVisbility }){
+export default function ExerciseInfo({ exercise, setModalVisbility }) {
+    
+    const getWorkoutOwner = (exercise) => {
+        if (!exercise.owner)
+        return "Public";
+        else if (exercise.owner === globalState.user?._id) {
+        return "You";
+        } else {
+        // console.log("exercise " + exercise.title+  " owner: "+ exercise.ownerName);
+        return exercise.ownerName;
+        }
+    };
 
     return (
-        <View style={{flex: 1}}>
-            <View style={{display:"flex", flex:1, justifyContent:"space-evenly"}}>
-                <View style={styles.exerciseInfoHeader}>
-                <Text style={styles.exerciseInfoTitle}>{exercise.title}</Text>
-                    <Image style={styles.exerciseInfoImage} src={exercise.image} />
+        <View style={{flex: 1, flexDirection: "column", display:"flex", justifyContent:"space-evenly"}}>
+            <View style={styles.exerciseInfoHeader}>
+              <View style={styles.exerciseInfoTitleandDelete}>
+                <View style={styles.exerciseInfoTitleContainer}>
+                  <Text style={styles.exerciseInfoTitle}>{exercise.title}</Text>
                 </View>
+              </View>
+              <View style={styles.exerciseInfoCardImageContainer}>
+                <Image  style={styles.exerciseInfoImage} src ={exercise.image}/>
+              </View>
+            </View>
 
-                <ScrollView contentContainerStyle={{marginBottom: 5}}>
-                   <View style={styles.exerciseInfoBody}>
-                        <Text style={styles.exerciseInfoDescription}>{exercise.description}</Text>
-                        </View>
+            <View style={styles.exerciseInfoBody}>
+              <ScrollView>
+              <View style={styles.exerciseInfoDescriptionContainer}>
+                <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
+                <Text style={styles.exerciseInfoDescription}>{exercise.description}</Text>
+              </View>
+              <View style={styles.exerciseInfoMuscleGroupsContainer}>
+                <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
+                <Text style={styles.exerciseInfoMuscleGroups}>{exercise.muscleGroups && exercise.muscleGroups.join(", ")}</Text> 
+              </View>
 
-                        <View style={{}}>
-                        <Text style={styles.exerciseInfoMuscleGroups}>Muscle Groups: {exercise.muscleGroups && exercise.muscleGroups.join(", ")}</Text> 
-                        {/* <Text style={styles.exerciseInfoTags}>Tags:{exercise.tags && exercise.tags.join(", ")}</Text>  */}
-                    </View> 
-                </ScrollView>
-
+              <View style={styles.exerciseInfoOwnerContainer}>
+                <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
+                <Text style={styles.exerciseInfoOwner}>{getWorkoutOwner(exercise)}
+                </Text> 
+              </View>
+              </ScrollView>
             </View>
 
              <View style={{marginBottom: 5}}>
@@ -56,47 +78,85 @@ export default function ExerciseInfo({ exercise, setModalVisbility }){
 const styles = StyleSheet.create({
 	exerciseInfoHeader:{
         // flex: 1,
+        flex: 1.5,
+        // alignItems: 'center',
+    },
+    exerciseInfoTitleandDelete:{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    exerciseInfoTitleContainer:{
         alignItems: 'center',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        // flex: .15,
+        flex: 1,
+        // alignSelf: 'center',
+    },
+    exerciseInfoHeader:{
+        flex: 1.5,
     },
     exerciseInfoTitle:{
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom:10,
+        textAlign: 'center',
+        textDecorationLine: 'underline'
     },
-    exerciseInfoImage:{
-        width: "70%",
-		// height: "60%",
-		borderWidth: 2,
-        borderRadius: 10,
-        aspectRatio: 6/7,
-        // resizeMode: "contain"
+    exerciseInfoCardImageContainer:{
+        width: "100%",
+        flex: 1,
+        marginTop: 10,
     },
     exerciseInfoBody:{
-        // flex: 1,
-        // display: "flex",
-        // alignItems:"center",
-        // borderWidth: 2,
-        // borderRadius:10,
-        // alignItems: 'center',
-        // top: "-17%",
-        // height:"30%",
-        padding:10,
+        flex: 1.3,
+    },
+    exerciseInfoDescriptionContainer:{
+        marginBottom: 0,
+        marginTop: 0,
+    },
+    exerciseInfoImage:{
+        width: "100%",
+        height: "100%",
+        // resizeMode: 'stretch',
+        borderRadius: 22,
+        borderWidth: 3,
+    },
+    exerciseInfoDescriptionTitle:{
+        fontSize: 18,
+        fontWeight: 'bold',
+        textDecorationLine: 'underline'
     },
     exerciseInfoDescription:{
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
-
+        textAlign: 'center',
+    },
+    exerciseInfoMuscleGroupsContainer:{
+        marginTop: 5
+    },
+    exerciseInfoMuscleGroupsTitle:{
+        fontSize: 18,
+        fontWeight: 'bold',
+        textDecorationLine: 'underline'
     },
     exerciseInfoMuscleGroups:{
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
-        textAlign: "center",
-        padding: 10,
+        textAlign: 'center',
     },
-    exerciseInfoTags:{
-        fontSize: 16,
+    exerciseInfoOwnerContainer:{
+        marginTop: 5
+    },
+    exerciseInfoOwnerTitle:{
+        fontSize: 18,
         fontWeight: 'bold',
-        textAlign:"center",
+        textDecorationLine: 'underline'
+    },
+    exerciseInfoOwner:{
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     closeButtonContainer:{
         backgroundColor: 'white',
