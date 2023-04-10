@@ -18,6 +18,7 @@ import reactDom from "react-dom";
 import { useGlobalState } from "../GlobalState.js";
 
 export default function ExerciseInfo({ exercise, setModalVisbility }) {
+    const [globalState, updateGlobalState] = useGlobalState();
     
     const getWorkoutOwner = (exercise) => {
         if (!exercise.owner)

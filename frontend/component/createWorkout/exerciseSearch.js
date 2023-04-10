@@ -23,6 +23,8 @@ import { useIsFocused } from '@react-navigation/native';
 import Modal from "react-native-modal";
 import ExerciseInfo from "../exerciseInfo.js";
 import { Header, SearchBar } from "react-native-elements";
+import SelectBox from 'react-native-multi-selectbox';
+import {xorBy} from 'lodash';
 
 export default function ExerciseSearch({ workout, updateWorkout, setCurrState }) {
 
@@ -33,6 +35,77 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
     const [searchResults, updateSearchResults] = useState([]);
     const [globalState, updateGlobalState] = useGlobalState();
     const isFocused = useIsFocused();
+    	const [areFiltersVisible, setFiltersVisible] = useState(false);
+	  // Chosen Equipment Filters
+	const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
+	
+	// Chosen Muscle Group Filters
+	const [selectedMuscleGroupsFilter, setMuscleGroupsFilter] = useState([]);
+	
+	// Chosen Exercise Type Filters
+	const [selectedTypeFilter, setTypeFilter] = useState([]);
+
+	// Chosen Owner Type Filters
+	const [selectedOwnerFilter, setOwnerFilter] = useState([]);
+
+	const equipmentFilters = [
+		{item: 'None', id: '1'},
+		{item: 'Dumbbells', id: '2'},
+		{item: 'Barbell', id: '3'},
+		{item: 'Kettle Bell', id: '4'},
+		{item: 'Bench', id: '5'},
+		{item: 'Machine', id: '6'},
+		{item: 'Resistance Bands', id: '7'},
+		{item: 'Cables', id: '8'},
+		{item: 'Pull-Up Bar', id: '9'},
+	];
+
+	const muscleGroupsFilters = [
+		{item: 'Upper Body', id: '1'},
+		{item: 'Lower Body', id: '2'},
+		{item: 'Full Body', id: '3'},
+		{item: 'Abs', id: '4'},
+		{item: 'Shoulders', id: '5'},
+		{item: 'Triceps', id: '6'},
+		{item: 'Biceps', id: '7'},
+		{item: 'Chest', id: '8'},
+		{item: 'Back', id: '9'},
+		{item: 'Hamstring', id: '10'},
+		{item: 'Quads', id: '11'},
+		{item: 'Calves', id: '12'},
+		{item: 'Glutes', id: '13'},
+		{item: 'Forearms', id: '14'},
+		{item: 'Arms', id: '15'},
+		{item: 'Legs', id: '16'},
+	];
+
+	const typeFilters = [
+		{id: 0,item:'Cardio'},
+		{id: 1,item: 'SETSXREPS'},
+		{id: 2,item:'AMRAP'}
+	];
+
+	const ownerFilters = [
+		{ id: 0, item: 'Public' },
+		{ id: 1, item: 'Personal' },
+		{ id: 2, item: 'Friends' }
+	];
+
+	function onMultiChangeEquipment() {
+		return (item) => setEquipmentFilter(xorBy(selectedEquipmentFilter, [item], 'id'))
+	}
+
+  function onMultiChangeMuscleGroups() {
+    return (item) => setMuscleGroupsFilter(xorBy(selectedMuscleGroupsFilter, [item], 'id'))
+  }
+
+  function onMultiChangeType() {
+    return (item) => {setTypeFilter(xorBy(selectedTypeFilter, [item], 'id'));}
+  }
+
+  function onMultiChangeOwner(){
+    return (item) => {setOwnerFilter(xorBy(selectedOwnerFilter, [item], 'id'));}
+  }
     
 
 	function loadExercises(){
@@ -61,24 +134,116 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 		loadExercises();
     }, [isFocused]);
 
-    function TryFilterExercise(ex, searchVals){
-    	let success = true;
-    
-		// search
-		if(success && searchVals.length > 0){
-		//console.log("st",searchTags)
-		let matches = false;
-		for(const tag of ex.tags){
-			if(exerciseTagFound(tag, searchVals)){
-			matches = true;
-			break;
-			}
-		}
-		success = success && matches;
-		}
+    function tryFilterExercise(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType, selectedOwner){
+    let success = true;
 
-		return success;
+    // type
+    if(selectedType.length > 0){
+      //console.log(selectedType)
+      let matches = false;
+
+      for(const type of selectedType){
+        if(type.toLowerCase() == exercise.exerciseType.toLowerCase()){
+          matches = true;
+          break;
+        }
+      }
+
+      success = success && matches;
     }
+
+    // for owner types
+    if(success && selectedOwner.length > 0){
+      let matches = false;
+
+      if(selectedOwner.includes('Public') && !exercise.owner){
+        matches = true;
+      }
+      if(!matches && selectedOwner.includes('Personal') && exercise.owner == globalState.user?._id){
+        matches = true;
+      }
+      if(!matches && selectedOwner.includes('Friends') && globalState.user.friends.includes(exercise.owner)){
+        matches = true;
+      }
+
+      success = success && matches;
+    }
+
+    // for all muscle groups if they exist or are included
+    if(success && muscleGroupVals.length > 0){
+      let matches = false;
+      for(const mg of exercise.muscleGroups){
+        for(const tag of muscleGroupVals){
+          if(mg.toLowerCase() == tag.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // equipment
+    if(success && equipmentTags.length > 0){
+      //console.log("et",equipmentTags)
+      let matches = false;
+      for(const tag of exercise.tags){
+        for(const eq of equipmentTags){
+          if(tag.toLowerCase() == eq.toLowerCase()){
+            matches = true;
+            break;
+          }
+        }
+        if(matches){
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    // search
+    if(success && searchTags.length > 0){
+      //console.log("st",searchTags)
+      let matches = false;
+      for(const tag of exercise.tags){
+        if(exerciseTagFound(tag, searchTags)){
+          matches = true;
+          break;
+        }
+      }
+      success = success && matches;
+    }
+
+    return success;
+  }
+
+  const filterExercises = (term) => {
+    let retList = [];
+    let searchVals =  term ? term.split(' ') : [];
+    let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
+    let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
+    let selectedType = [...selectedTypeFilter.map(a=>a.item)];
+    let selectedOwner = [...selectedOwnerFilter.map(a=>a.item)];
+
+    // if no tags or search terms then return masterlist
+    if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0 && selectedOwner.length == 0){
+      //console.log('no filter but still ate');
+      return exercises;
+    }
+
+    // for all exercises in masterlist
+    for (const ex of exercises)
+    {
+      if (tryFilterExercise(ex, searchVals, equipmentTags, muscleGroupVals, selectedType, selectedOwner)){
+        retList.push(ex);
+      }
+    }
+
+    return retList;
+  }
 
     function exerciseTagFound(exTag, searchTags){
         for (const term of searchTags) {
@@ -109,6 +274,14 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 		return retList;
     }
 
+    const toggleFiltersShowing = () =>{
+		setFiltersVisible(!areFiltersVisible);
+		// filter on masterList
+		if(areFiltersVisible){
+			updateSearchResults(filterExercises(searchText));
+		}
+	}
+
     return (
     <View style={styles.Background}>
         <TouchableOpacity 
@@ -123,30 +296,156 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 
 		<Text style={{fontSize:20, textAlign:"center", fontWeight: 'bold'}}>-OR-</Text>
 
-		<Text style={styles.HeaderText}>Select an Exercise:</Text>
-        <SearchBar
-				platform="default"
-				lightTheme={true}
-				containerStyle={{ backgroundColor: "white" }}
-                inputStyle={{ color: "black" }}
-                autoComplete='off'
-                autoCapitalize='none'
-				onChangeText={(val) => {
-					setSearchText(val);
-					updateSearchResults(handleSearch(val));
-				}}
-				round={true}
-				value={searchText}
-				cancelButtonTitle=""
-                autoCorrect={false}
-				onClear={() => {
-					setSearchText("");
-				}}
-				onCancel={() => {
-					setSearchText("");
-				}}
-				placeholder="Search exercises by name"
-	    />
+            <Text style={styles.HeaderText}>Select an Exercise:</Text>
+            
+            <View style={{ flex: 1, display: "flex", flexDirection: "row", justifyContent: "flex-start"}}>
+				<View style={{flex:1, }}>
+					<SearchBar
+                        platform="default"
+                        lightTheme={true}
+                        containerStyle={{ backgroundColor: "white" }}
+                        inputStyle={{ color: "black" }}
+                        autoComplete='off'
+                        autoCapitalize='none'
+                        onChangeText={(val) => {
+                            setSearchText(val);
+                            updateSearchResults(filterExercises(val));
+                        }}
+                        round={true}
+                        value={searchText}
+                        cancelButtonTitle=""
+                        autoCorrect={false}
+                        onClear={() => {
+                            setSearchText("");
+                        }}
+                        onCancel={() => {
+                            setSearchText("");
+                        }}
+                        placeholder="Search exercises by name"
+                    />
+				</View>
+
+				<View style={{}}>
+				
+                <TouchableOpacity onPress={toggleFiltersShowing} style={{}}>
+                  
+                <View style={styles.modalContainer}></View>
+                    <Image source = {require("../../../assets/filter_icon.png")}
+                      style={styles.filterImage}
+                    />
+                  {/* Filters Modal */}
+                  <Modal 
+                    isVisible = {areFiltersVisible}
+                    coverScreen = {true}
+                    //backdropOpacity = "1"
+                    backdropColor = "white"
+                    presentationStyle='fullScreen'
+                    transparent={false}
+                    >
+                    <SafeAreaView style={styles.modalBackground}>
+                        <SafeAreaView style={styles.filtersContainer}>
+                          <SafeAreaView style={styles.filterButtonContainer}>
+                            <SelectBox
+                              label="Equipment"
+                              labelStyle={styles.filterLabels}
+                              inputPlaceholder = "Add one or more Equipment"
+                              listEmptyText='No Equipment Found'
+                              searchInputProps = {{placeholder: "Search..."}}
+                              inputFilterStyle={styles.filterSearch}
+                              arrowIconColor = '#000000'
+                              multiOptionContainerStyle = {styles.selectedFilterContainers}
+                              multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                              
+                              searchIconColor = "#000"
+                              toggleIconColor = "#2193BC"
+
+                              options = {equipmentFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              
+                              selectedValues = {selectedEquipmentFilter}
+                              onMultiSelect = {onMultiChangeEquipment()}
+                              onTapClose = {onMultiChangeEquipment()}
+                              isMulti
+                            />
+                          </SafeAreaView>
+                          <SafeAreaView style={styles.filterButtonContainer}>
+                            <SelectBox
+                              label="Muscle Groups"
+                              labelStyle={styles.filterLabels}
+                              inputPlaceholder = "Add one or more Muscle Groups"
+                              listEmptyText='No Muscle Groups Found'
+                              searchInputProps = {{placeholder: "Search..."}}
+                              multiOptionsLabelStyle = {styles.selectedFilterLabels}
+                              multiOptionContainerStyle = {styles.selectedFilterContainers}
+                              options = {muscleGroupsFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              arrowIconColor = '#000'
+
+                              searchIconColor = "#000"
+                              toggleIconColor = "#2193BC"
+                              
+                              selectedValues = {selectedMuscleGroupsFilter}
+                              onMultiSelect = {onMultiChangeMuscleGroups()}
+                              onTapClose = {onMultiChangeMuscleGroups()}
+                              isMulti
+                            />
+                          </SafeAreaView>
+                          <SafeAreaView style={styles.filterButtonContainer}>                      
+                            <SelectBox
+                              label="Exercise Types"
+                              inputPlaceholder = "Add one or more Types"
+                              labelStyle = {styles.filterLabels}
+                              options = {typeFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              hideInputFilter = 'true'
+                              //containerStyle={{backgroundColor:"black"}}
+                              toggleIconColor = "#2193BC"
+                              arrowIconColor = '#000'
+                              
+                              multiOptionsLabelStyle={styles.selectedFilterLabels}
+                              multiOptionContainerStyle={styles.selectedFilterContainers}
+                              selectedValues = {selectedTypeFilter}
+                              onMultiSelect = {onMultiChangeType()}
+                              onTapClose = {onMultiChangeType()}
+                              isMulti
+                            />
+                          </SafeAreaView>
+                          <SafeAreaView style={styles.filterButtonContainer}>                      
+                            <SelectBox
+                              label="Owner Types"
+                              inputPlaceholder = "Add one or more owner types"
+                              labelStyle = {styles.filterLabels}
+                              options = {ownerFilters}
+                              optionsLabelStyle = {styles.filterOptions}
+                              hideInputFilter = 'true'
+                              //containerStyle={{backgroundColor:"black"}}
+                              toggleIconColor = "#2193BC"
+                              arrowIconColor = '#000'
+                              
+                              multiOptionsLabelStyle={styles.selectedFilterLabels}
+                              multiOptionContainerStyle={styles.selectedFilterContainers}
+                              selectedValues = {selectedOwnerFilter}
+                              onMultiSelect = {onMultiChangeOwner()}
+                              onTapClose = {onMultiChangeOwner()}
+                              isMulti
+                            />
+                          </SafeAreaView>
+                      </SafeAreaView>
+                      <View style={styles.modalCloseButton}>
+                        <TouchableOpacity onPress={toggleFiltersShowing}>
+                          <View style={styles.closeFiltersButtonContainer}>
+                            <Text style={styles.closeText}>Close</Text>
+                          </View>
+                        </TouchableOpacity>
+                      </View>
+                      
+                    </SafeAreaView>
+                  </Modal>
+                  </TouchableOpacity>
+              </View>
+			</View>
+            
+            
       <FlatList
         data={searchResults}
         keyExtractor={(item) => item._id}
@@ -274,6 +573,13 @@ const styles = StyleSheet.create({
 		shadowOpacity: 1, // IOS
 		shadowRadius: 1, //IOS
 		elevation: 2,
+    },
+    filterImage:{
+		width: 30,
+		height: 30,
+		// marginTop: 25,
+		marginTop: "55%",
+		marginLeft: 5,
 	},
 
 })
