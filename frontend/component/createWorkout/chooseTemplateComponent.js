@@ -295,12 +295,6 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 	return (
 		<View style={styles.Background}>
-			{/* <View style={{marginVertical: 10, borderWidth: 1}}>
-				<Button title="Create A Custom Workout" onPress={() => {
-					setCurrWorkout(noTemplate);
-					setCurrState("ExerciseReview");
-				}} />
-			</View> */}
 
 			<TouchableOpacity 
 				style={styles.createButton}
@@ -318,8 +312,8 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 			<Text style={styles.HeaderText}>Select a Workout:</Text>
 
-			<View style={{ flex: 1, display: "flex", flexDirection: "row", justifyContent: "flex-start"}}>
-				<View style={{flex:1, }}>
+			<View style={{ flex: .12, display: "flex", flexDirection: "row", justifyContent: "flex-start", borderTopWidth: .9,borderBottomWidth: .9,}}>
+				<View style={{flex:1, maxHeight: "45%" }}>
 					<SearchBar
 						platform='default'
 						lightTheme={true}
@@ -340,37 +334,14 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 						keyboardShouldPersistTaps='handled'
 						onClear={() => {
 							setSearchText("");
-							updateSearchResults(allWorkouts);
+							// updateSearchResults(allWorkouts);
 						}}
 						onCancel={() => {
 							setSearchText("");
-							updateSearchResults(allWorkouts);
+							// updateSearchResults(allWorkouts);
 						}}
-						placeholder="Search by name or equipment"
+						placeholder="Search workouts"
 					/>
-					{/* <SearchBar
-                        platform="default"
-                        lightTheme={true}
-                        containerStyle={{ backgroundColor: "white" }}
-                        inputStyle={{ color: "black" }}
-                        autoComplete='off'
-                        autoCapitalize='none'
-                        onChangeText={(val) => {
-                            setSearchText(val);
-                            updateSearchResults(filterExercises(val));
-                        }}
-                        round={true}
-                        value={searchText}
-                        cancelButtonTitle=""
-                        autoCorrect={false}
-                        onClear={() => {
-                            setSearchText("");
-                        }}
-                        onCancel={() => {
-                            setSearchText("");
-                        }}
-                        placeholder="Search exercises by name"
-                    /> */}
 				</View>
 
 				<View style={{}}>
@@ -473,32 +444,37 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
               </View>
 			</View>
 
-			<FlatList
-				data={searchResults}
-				style={{ maxHeight: useWindowDimensions().height * .65}}
-				renderItem={(item) => (
-					<View>
-						{/* {comments(item.item)} */}
-						<Workouts
-							data={[item.item]}
-							showButton={true}
-							showInput={false}
-							setCurrState={setCurrState}
-							setCurrWorkout={setCurrWorkout}
-							passData={setCurrWorkout}
-							setCreateNew={setCreateNew}
-						/>
-					</View>
-				)}
-				ListEmptyComponent={
-				<View style={{alignItems: 'center'}}>
-					<Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
-					No Workouts Found
-					</Text>
-                </View>
-				}
-				refreshing={true}
-			/>
+			<View style={{flex:1}}>
+				<FlatList
+								data={searchResults}
+								// style={{ flex: 1, alignItems:"flex-start"}}
+								contentContainerStyle={{}}
+								renderItem={(item) => (
+									<View>
+										{/* {comments(item.item)} */}
+										<Workouts
+											data={[item.item]}
+											showButton={true}
+											showInput={false}
+											setCurrState={setCurrState}
+											setCurrWorkout={setCurrWorkout}
+											passData={setCurrWorkout}
+											setCreateNew={setCreateNew}
+										/>
+									</View>
+								)}
+								ListEmptyComponent={
+								<View style={{alignItems: 'center'}}>
+									<Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
+									No Workouts Found
+									</Text>
+								</View>
+								}
+								refreshing={true}
+							/>
+			</View>
+
+			
 		</View>
 	);
 }
@@ -508,7 +484,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		flex: 1,
 		borderTopWidth:1.5,
-		justifyContent: 'space-between'
+		// justifyContent: "space-evenly"
 	},
 	HeaderText: {
 		fontSize: 20,
@@ -543,4 +519,62 @@ const styles = StyleSheet.create({
 		marginTop: "55%",
 		marginLeft: 5,
 	},
+	modalBackground:{
+		backgroundColor: "white",
+		flex: 1,
+		justifyContent: 'space-between'
+	},
+	filtersContainer:{
+		// height: "50%",
+		flex: 1
+	},
+	filterButtonContainer:{
+		backgroundColor: "#CDCDCD",
+		borderColor: "black",
+		borderWidth: 1.5,
+		borderRadius: 20,
+		paddingHorizontal: 10,
+		marginHorizontal: 5,
+		paddingVertical: 5,
+		marginVertical: 5,
+		// flex: 1,
+	},
+	filterLabels:{
+		fontWeight: '500',
+		fontSize: 18,
+		color: 'black',
+	},
+	selectedFilterContainers:{
+		// backgroundColor: '#4bccdd',
+		backgroundColor: '#2193BC'
+	},
+	selectedFilterLabels: {
+		color: 'black',
+		fontWeight: 'bold',
+		fontSize: 12,
+	},
+	filterOptions:{
+		color: '#000',
+		flex: 3,
+	},
+	hidden:{
+		opacity: 0,
+		display: 'none'
+	},
+	modalCloseButton:{
+		alignItems: 'center',
+	},
+	closeFiltersButtonContainer:{
+		backgroundColor: 'white',
+		borderColor: "black",
+		overflow: 'hidden',
+		borderWidth: 3,
+		borderRadius: 20,
+		alignItems: 'center',
+		paddingHorizontal: 10,
+		marginHorizontal: 1,
+		justifyContent: 'center',
+		alignContent: 'center',
+	},
+
 });

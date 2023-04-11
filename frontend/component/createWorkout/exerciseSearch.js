@@ -580,6 +580,10 @@ const styles = StyleSheet.create({
 		// marginTop: 25,
 		marginTop: "55%",
 		marginLeft: 5,
+    },
+    hidden:{
+		opacity: 0,
+		display: 'none'
 	},
 
 })
