@@ -10,6 +10,7 @@ import {xorBy} from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
+import { set } from 'mongoose';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -107,6 +108,9 @@ export default function DiscoverPage({navigation}) {
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
   const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true);
 
+  const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
+
+
 
   useEffect(() => {
     if(isFocused){
@@ -179,9 +183,15 @@ export default function DiscoverPage({navigation}) {
     )}
 
   // Workout Card
-  const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image}) => {
-    const [expanded, setExpanded] = useState(false);
-    const handlePress = () => {setExpanded(!expanded);};
+  const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image, expandedWorkoutId, setExpandedWorkoutId}) => {
+    // const [expanded, setExpanded] = useState(false);
+    const expanded = expandedWorkoutId === workout._id;
+    const handlePress = () => {
+      // setExpanded(!expanded);
+      setExpandedWorkoutId((prevExpandedWorkoutId) =>
+      prevExpandedWorkoutId === workout._id ? null : workout._id
+    );
+    };
     function addWorkout(workout){
       navigation.navigate("createWorkout", { workoutData: workout });
     }
@@ -883,6 +893,8 @@ return (
                 muscleGroups={item.muscleGroups} 
                 duration={item.duration} exercises={item.exercises}
                 image={item.image} key={index}
+                expandedWorkoutId = {expandedWorkoutId}
+                setExpandedWorkoutId = {setExpandedWorkoutId}
               />)}
               />}
       </View>
