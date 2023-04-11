@@ -9,7 +9,8 @@ import {
 	FlatList,
 	ScrollView,
 	VirtualizedList,
-	useWindowDimensions
+	useWindowDimensions,
+	ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -30,6 +31,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	const isFocused = useIsFocused();
 	const [areFiltersVisible, setFiltersVisible] = useState(false);
 	const windowHeight = useWindowDimensions().height;
+	const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true);
 	  // Chosen Equipment Filters
 	const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
 	
@@ -120,6 +122,8 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 				setAllWorkouts(response.data);
 
 				updateSearchResults(response.data);
+
+				setIsWorkoutsLoading(false);
 				
 
 			} else {
@@ -445,34 +449,38 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
               </View>
 			</View>
 
-			<View style={{flex:1,}}>
-				<FlatList
-					data={searchResults}
-					style={styles.temp}
-					// contentContainerStyle={{}}
-					renderItem={(item) => (
-						<View>
-							{/* {comments(item.item)} */}
-							<Workouts
-								data={[item.item]}
-								showButton={true}
-								showInput={false}
-								setCurrState={setCurrState}
-								setCurrWorkout={setCurrWorkout}
-								passData={setCurrWorkout}
-								setCreateNew={setCreateNew}
-							/>
+			<View style={{ flex: 1, }}>
+				{isWorkoutsLoading ? 
+					<ActivityIndicator size={50} /> :
+					<FlatList
+						data={searchResults}
+						style={styles.temp}
+						// contentContainerStyle={{}}
+						renderItem={(item) => (
+							<View>
+								{/* {comments(item.item)} */}
+								<Workouts
+									data={[item.item]}
+									showButton={true}
+									showInput={false}
+									setCurrState={setCurrState}
+									setCurrWorkout={setCurrWorkout}
+									passData={setCurrWorkout}
+									setCreateNew={setCreateNew}
+								/>
+							</View>
+						)}
+						ListEmptyComponent={
+						<View style={{alignItems: 'center'}}>
+							<Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
+							No Workouts Found
+							</Text>
 						</View>
-					)}
-					ListEmptyComponent={
-					<View style={{alignItems: 'center'}}>
-						<Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
-						No Workouts Found
-						</Text>
-					</View>
-					}
-					refreshing={true}
-				/>
+						}
+						refreshing={true}
+					/>
+				}
+				
 			</View>
 
 			

@@ -11,7 +11,8 @@ import {
     ScrollView,
     VirtualizedList,
     useWindowDimensions,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -35,7 +36,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
     const [searchResults, updateSearchResults] = useState([]);
     const [globalState, updateGlobalState] = useGlobalState();
     const isFocused = useIsFocused();
-    	const [areFiltersVisible, setFiltersVisible] = useState(false);
+    const [areFiltersVisible, setFiltersVisible] = useState(false);
+    const [isExercisesLoading, setIsExercisesLoading] = useState(true);
 	  // Chosen Equipment Filters
 	const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
 	
@@ -122,6 +124,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
             if (response.status == 200) {
                 updateExercises(response.data);
                 updateSearchResults(response.data);
+                setIsExercisesLoading(false);
 			} else {
 				console.log(response.status);
 			}
@@ -445,47 +448,51 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
               </View>
 			</View>
             
-            <View style={{flex:1, maxHeight: "80%"}}>
-                <FlatList
-                    data={searchResults}
-                    keyExtractor={(item) => item._id}
-                    style={{ flex: 1 }}
-                    ListEmptyComponent={
-                    <View style={{alignItems: 'center'}}>
-                        <Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
-                            No Exercises Found
-                        </Text>
-                    </View>
-                    }
-                    renderItem={({ item }) => (
-                        <View>
-                            <TouchableOpacity style={styles.ExerciseCard}
-                                onPress={() => {
-                                    if (workout[0].exercises.filter(a => (
-                                        a._id == item._id
-                                    )).length > 0) {
-                                        Alert.alert(`${item.title} is already in your workout`);
-                                    } else {
-                                        workout[0].exercises.push(item)
-                                        updateWorkout(workout);
-                                        setCurrState('ExerciseReview'); 
-                                    }
-                                }}
-                            >
-                                <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
-                                <Text style={styles.ExerciseText}>{item.title}</Text>
-                                {/* Button to take user to page about info for the workout */}
-                                <TouchableOpacity onPress={() => {
-                                    setExercise(item); 
-                                    setModalVisibility(true);
-                                }}>
-                                <AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
-                            </TouchableOpacity>
-                            </TouchableOpacity>
-                            
+            <View style={{ flex: 1, maxHeight: "80%" }}>
+                {isExercisesLoading ?
+                    <ActivityIndicator size={50} /> :
+                    <FlatList
+                        data={searchResults}
+                        keyExtractor={(item) => item._id}
+                        style={{ flex: 1 }}
+                        ListEmptyComponent={
+                        <View style={{alignItems: 'center'}}>
+                            <Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
+                                No Exercises Found
+                            </Text>
                         </View>
-                    )}
-                />
+                        }
+                        renderItem={({ item }) => (
+                            <View>
+                                <TouchableOpacity style={styles.ExerciseCard}
+                                    onPress={() => {
+                                        if (workout[0].exercises.filter(a => (
+                                            a._id == item._id
+                                        )).length > 0) {
+                                            Alert.alert(`${item.title} is already in your workout`);
+                                        } else {
+                                            workout[0].exercises.push(item)
+                                            updateWorkout(workout);
+                                            setCurrState('ExerciseReview'); 
+                                        }
+                                    }}
+                                >
+                                    <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
+                                    <Text style={styles.ExerciseText}>{item.title}</Text>
+                                    {/* Button to take user to page about info for the workout */}
+                                    <TouchableOpacity onPress={() => {
+                                        setExercise(item); 
+                                        setModalVisibility(true);
+                                    }}>
+                                    <AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
+                                </TouchableOpacity>
+                                </TouchableOpacity>
+                                
+                            </View>
+                        )}
+                    />
+                }
+                
             </View>
       
         <Modal
