@@ -393,7 +393,7 @@ export default function DiscoverPage({navigation}) {
 
   function exerciseTagFound(exTag, searchTags){
     for(const term of searchTags){
-      if(exTag && exTag.toLowerCase().includes(term.toLowerCase())){
+      if(exTag && term.length > 0 && exTag.toLowerCase().includes(term.toLowerCase())){
         return true;
       }
     }
@@ -409,7 +409,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
 
       for(const type of selectedType){
-        if(type.toLowerCase() == exercise.exerciseType.toLowerCase()){
+        if(type && exercise && exercise.exerciseType && type.toLowerCase() == exercise.exerciseType.toLowerCase()){
           matches = true;
           break;
         }
@@ -440,7 +440,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const mg of exercise.muscleGroups){
         for(const tag of muscleGroupVals){
-          if(mg.toLowerCase() == tag.toLowerCase()){
+          if(mg && tag && mg.toLowerCase() == tag.toLowerCase()){
             matches = true;
             break;
           }
@@ -458,7 +458,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const tag of exercise.tags){
         for(const eq of equipmentTags){
-          if(tag.toLowerCase() == eq.toLowerCase()){
+          if(tag && eq && tag.toLowerCase() == eq.toLowerCase()){
             matches = true;
             break;
           }
@@ -518,7 +518,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const mg of workout.muscleGroups){
         for(const tag of muscleGroupVals){
-          if(mg.toLowerCase() == tag.toLowerCase()){
+          if(mg && tag && mg.toLowerCase() == tag.toLowerCase()){
             matches = true;
             break;
           }
@@ -553,7 +553,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const tag of workout.tags){
         for(const eq of equipmentTags){
-          if(tag.toLowerCase() == eq.toLowerCase()){
+          if(tag && eq && tag.toLowerCase() == eq.toLowerCase()){
             matches = true;
             break;
           }
@@ -874,7 +874,7 @@ return (
                 </View>
               }
               style = {styles.boxContainer}
-              renderItem={({item,index}) => (              
+              renderItem={({item,index}) => (       
               <WorkoutItem 
                 workout={item}
                 title={item.title} 
