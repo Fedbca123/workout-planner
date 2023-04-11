@@ -203,7 +203,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 							<View style={styles.workoutCardText}>
 								
 								<Text style={styles.workoutCardDuration}>
-									Duration: {workout[0].duration} min
+									Duration: {Math.floor(workout[0].duration / 60)}h {workout[0].duration % 60}s
 								</Text>
 								{workout[0].location && (
 								<Text
@@ -294,12 +294,10 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 															" sets with " +
 															exercise.weight +
 															"lbs for " +
-															exercise.time +
-															" seconds"}
+															`${Math.floor(exercise.time / 60)}m ${exercise.time % 60}s`}
 													{exercise.exerciseType ===
 														"CARDIO" &&
-														exercise.time +
-															" seconds"}
+														`${Math.floor(exercise.time / 60)}m ${exercise.time % 60}s`}
 												</Text>
 											</View>
 										</View>

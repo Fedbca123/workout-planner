@@ -12,17 +12,26 @@ import {
 	VirtualizedList,
 	useWindowDimensions,
 	Alert,
-	KeyboardAvoidingView
+	KeyboardAvoidingView,
+	Modal
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
+import {TimePicker} from 'react-native-simple-time-picker';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
 	const [exercises, updateExercises] = useState(!workout[0].exercises ? [] : workout[0].exercises);
+	const [modalVisible, setModalVisible] = useState(false);
+	const [timeVal, setTimeVal]= useState({
+		hours: 0,
+		minutes: 0,
+		seconds: 0
+	})
+	const [currentExIdx, setCurrExIdx] = useState(0);
 
 	useEffect(() => {
 		let temp = { ...workout };
@@ -216,20 +225,35 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									<View style={styles.rowViewInputs}>
 										<Text>Time:</Text>
 										<View style={styles.inputFieldView}>
-											<TextInput
-											style={styles.inputfield}
-											keyboardType="numeric"
-											maxLength={4}
-											placeholder={item.time ? `${item.time}` : "Time"}
-												placeholderTextColor="#808080"
-												value={item.time ? `${item.time}` : ''}
-											// defaultValue={item.time ? item.time : undefined}
-											onChangeText={(text) => {
-												let temp = [...exercises];
-												temp[getIndex()].time = text;
-												updateExercises(temp);
-											}}
-											/>
+											<TouchableOpacity
+												onPress={() => {
+													setModalVisible(!modalVisible);
+													setCurrExIdx(getIndex);
+													setTimeVal({
+														hours: 0,
+														minutes: Math.floor(item.time / 60),
+														seconds: item.time % 60
+													})
+												}}>
+												<View pointerEvents="none">
+													<TextInput
+													style={styles.inputfield}
+													editable={false}
+													cursorColor={'transparent'}
+													keyboardType="numeric"
+													maxLength={4}
+													placeholder={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : "Time"}
+													placeholderTextColor="#808080"
+													value={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : ''}
+													// defaultValue={item.time ? item.time : undefined}
+													onChangeText={(text) => {
+														let temp = [...exercises];
+														temp[getIndex()].time = text;
+														updateExercises(temp);
+													}}
+													/>
+												</View>
+											</TouchableOpacity>
 										</View>
 									</View>
 									
@@ -290,6 +314,39 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					</TouchableOpacity>
 				</View>
 			</View>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					setModalVisible(!modalVisible);
+				}}>
+				<View style={styles.centeredView}>
+					<View style={styles.modalView}>
+						<TimePicker 
+							value={timeVal} 
+							onChange={(val) => {setTimeVal(val)}} 
+							pickerShows={["minutes", "seconds"]}
+							minutesUnit={"m"}
+							secondsUnit={"s"}/>
+						<TouchableOpacity
+						style={[styles.button, styles.buttonClose]}
+						onPress={() => {
+							setModalVisible(!modalVisible);
+							let temp = {...workout[0]};
+							temp.exercises[currentExIdx].time = 3600 * timeVal.hours + 60 * timeVal.minutes + timeVal.seconds;
+							updateWorkout([temp]);
+							setTimeVal({
+								hours: 0,
+								minutes: 0,
+								seconds: 0
+							});
+						}}>
+						<Text style={styles.textStyle}>Done</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
 		</View>	
 	);
 }
@@ -404,4 +461,42 @@ const styles = StyleSheet.create({
 		borderTopWidth: .5,
 		justifyContent: "space-between",
 	},
+	centeredView: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 22,
+	  },
+	  modalView: {
+		margin: 20,
+		backgroundColor: 'white',
+		borderRadius: 20,
+		padding: 35,
+		alignItems: 'center',
+		shadowColor: '#000',
+		shadowOffset: {
+		  width: 0,
+		  height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+	  },
+	  button: {
+		borderRadius: 20,
+		padding: 10,
+		elevation: 2,
+	  },
+	  buttonClose: {
+		backgroundColor: '#2196F3',
+	  },
+	  textStyle: {
+		color: 'white',
+		fontWeight: 'bold',
+		textAlign: 'center',
+	  },
+	  modalText: {
+		marginBottom: 15,
+		textAlign: 'center',
+	  },
 });

@@ -12,7 +12,8 @@ import {
 	VirtualizedList,
     useWindowDimensions,
     Switch,
-    Alert
+    Alert,
+    Modal
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Checkbox from 'expo-checkbox';
@@ -26,11 +27,18 @@ import { Header, SearchBar } from "react-native-elements";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { duration } from "moment";
+import {TimePicker} from 'react-native-simple-time-picker';
 
 export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     // const [save, setSave] = useState(workout[0].save ? workout[0].save : false);
     const [globalState, updateGlobalState] = useGlobalState();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [timeVal, setTimeVal]= useState({
+		hours: 0,
+		minutes: 0,
+		seconds: 0
+	})
     // console.log("every render: ", workout[0].save);
 
     // const [isReoccurring, setReoccurring] = useState(false);
@@ -114,7 +122,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
             
             <KeyboardAwareScrollView contentContainerStyle={{ flex:1, alignItems: "center", justifyContent:"flex-start"}}>
                 <View style={{width: "70%", marginVertical: "10%"}}>
-                    <Text style={styles.text}>Location of workout?</Text>
+                    <Text style={styles.text}>Location:</Text>
                     <TextInput
                         // keyboardType="numeric"
                         placeholder="Home"
@@ -128,18 +136,31 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 					}}/> 
                 </View> 
                 <View style={{width: "70%", marginBottom: "10%"}}>
-                    <Text style={styles.text}>{'Estimated duration\n(in minutes):'}</Text>
-                    <TextInput
-                        keyboardType="numeric"
-                        placeholder="60"
-                        placeholderTextColor={"#808080"}
-                        defaultValue={workout[0].duration ? `${workout[0].duration}` : null}
-                        style={styles.inputfield}
-                        onChangeText={(text) => {
-							let temp = {...workout[0]}
-							temp.duration = text;
-                            updateWorkout([temp]);
-					}} /> 
+                    <Text style={styles.text}>Estimated duration:</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setModalVisible(!modalVisible);
+                            setTimeVal({
+                                hours: Math.floor(workout[0].duration / 60),
+                                minutes: workout[0].duration % 60,
+                                seconds: 0,
+                            })
+                        }}>
+                        <View pointerEvents="none">
+                            <TextInput
+                                editable={false}
+                                keyboardType="numeric"
+                                placeholder="1 h"
+                                placeholderTextColor={"#808080"}
+                                defaultValue={workout[0].duration ? `${Math.floor(workout[0].duration / 60)}h ${workout[0].duration % 60}m` : null}
+                                style={styles.inputfield}
+                                onChangeText={(text) => {
+                                    let temp = {...workout[0]}
+                                    temp.duration = text;
+                                    updateWorkout([temp]);
+                            }} /> 
+                        </View>
+                    </TouchableOpacity>
                 </View> 
                 <View style={{ marginBottom: "10%" }}>
                     
@@ -160,7 +181,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                    <Button title="Choose a Day and Time" onPress={showDatePicker} /> 
                 </View>
                 
-                <Text style={styles.text}>Reoccurring Weekly? {"\t"}
+                <Text style={styles.text}>Reccurring Weekly? {"\t"}
                     <Switch
                         value={workout[0].recurrence}
                         onValueChange={(val) => {
@@ -170,7 +191,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                         }}/>
                 </Text>
                 <View style={{flexDirection: 'row', marginTop: 40, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={[styles.text, {marginRight: 10}]}>Save Workout For Later Use?</Text>
+                    <Text style={[styles.text, {marginRight: 10}]}>Save to Profile?</Text>
                     <Switch
                         value={workout[0].save}
                         onValueChange={(val) => {
@@ -180,6 +201,36 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                         }}/> 
                 </View>
             </KeyboardAwareScrollView>
+            <Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+				Alert.alert('Modal has been closed.');
+				setModalVisible(!modalVisible);
+				}}>
+				<View style={styles.centeredView}>
+					<View style={styles.modalView}>
+						<TimePicker 
+							value={timeVal} 
+							onChange={(val) => {setTimeVal(val)}} 
+							pickerShows={["hours", "minutes"]}
+                            hoursUnit={"h"}
+							minutesUnit={"m"}
+                            minutesInterval={5}/>
+						<TouchableOpacity
+						style={[styles.button, styles.buttonClose]}
+						onPress={() => {
+							setModalVisible(!modalVisible);
+							let temp = {...workout[0]};
+							temp.duration = 60 * timeVal.hours + timeVal.minutes
+							updateWorkout([temp]);
+						}}>
+						<Text style={styles.textStyle}>Done</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
         </View>
     );
 };
@@ -232,5 +283,43 @@ const styles = StyleSheet.create({
         // shadowOffset: {width: 0, height: 0},
         // shadowOpacity: 1,
         // shadowRadius: 2
+    },
+    centeredView: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 22,
+	  },
+    modalView: {
+		margin: 20,
+		backgroundColor: 'white',
+		borderRadius: 20,
+		padding: 35,
+		alignItems: 'center',
+		shadowColor: '#000',
+		shadowOffset: {
+		  width: 0,
+		  height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 4,
+		elevation: 5,
+	},
+	button: {
+		borderRadius: 20,
+		padding: 10,
+		elevation: 2,
+    },
+    buttonClose: {
+        backgroundColor: '#2196F3',
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
     },
 })
