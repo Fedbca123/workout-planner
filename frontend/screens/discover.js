@@ -587,7 +587,7 @@ export default function DiscoverPage({navigation}) {
     let equipmentTags = [...selectedEquipmentFilter.map(a=>a.item)];
     let muscleGroupVals = [...selectedMuscleGroupsFilter.map(a=>a.item)];
     let selectedOwner = [...selectedOwnerFilter.map(a=>a.item)];
-setInfoPageVisible
+
     // if no tags or search terms then return masterlist
     if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedOwner.length == 0){
       //console.log('no filter but still ate');
