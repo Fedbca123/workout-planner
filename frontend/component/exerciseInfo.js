@@ -32,7 +32,7 @@ export default function ExerciseInfo({ exercise, setModalVisbility }) {
     };
 
     return (
-        <View style={{flex: 1, flexDirection: "column", display:"flex", justifyContent:"space-evenly"}}>
+        <View style={{flex: 5, flexDirection: "column", display:"flex",alignContent:"space-between",}}>
             <View style={styles.exerciseInfoHeader}>
               <View style={styles.exerciseInfoTitleandDelete}>
                 <View style={styles.exerciseInfoTitleContainer}>
@@ -80,6 +80,8 @@ const styles = StyleSheet.create({
 	exerciseInfoHeader:{
         // flex: 1,
         flex: 1.5,
+        marginBottom: 20,
+        marginTop: 20,
         // alignItems: 'center',
     },
     exerciseInfoTitleandDelete:{
@@ -94,9 +96,6 @@ const styles = StyleSheet.create({
         // flex: .15,
         flex: 1,
         // alignSelf: 'center',
-    },
-    exerciseInfoHeader:{
-        flex: 1.5,
     },
     exerciseInfoTitle:{
         fontSize: 24,

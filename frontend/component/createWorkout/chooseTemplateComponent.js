@@ -5,7 +5,6 @@ import {
 	Text,
 	Image,
 	View,
-	SafeAreaView,
 	TextInput,
 	FlatList,
 	ScrollView,
@@ -30,6 +29,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	const [searchResults, updateSearchResults] = useState([]);
 	const isFocused = useIsFocused();
 	const [areFiltersVisible, setFiltersVisible] = useState(false);
+	const windowHeight = useWindowDimensions().height;
 	  // Chosen Equipment Filters
 	const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
 	
@@ -294,7 +294,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	// }
 
 	return (
-		<View style={styles.Background}>
+		<View style={[styles.Background, { minHeight: Math.round(windowHeight) }]}>
 
 			<TouchableOpacity 
 				style={styles.createButton}
@@ -312,13 +312,14 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 			<Text style={styles.HeaderText}>Select a Workout:</Text>
 
-			<View style={{ flex: .12, display: "flex", flexDirection: "row", justifyContent: "flex-start", borderTopWidth: .9,borderBottomWidth: .9,}}>
-				<View style={{flex:1, maxHeight: "45%" }}>
+			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start", borderTopWidth: .9,borderBottomWidth: .9, paddingBottom: 10}}>
+				<View style={{flex:1, }}>
 					<SearchBar
 						platform='default'
 						lightTheme={true}
-						containerStyle={{ backgroundColor: "white" }}
+						containerStyle={{ backgroundColor: "white",}}
 						inputStyle={{ color: "black" }}
+						// showLoading={true}
 						onChangeText={(val) => {
 							setSearchText(val);
 							updateSearchResults(filterWorkouts(val));
@@ -344,9 +345,9 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 					/>
 				</View>
 
-				<View style={{}}>
+				<View style={{ flex: .1}}>
 				
-                <TouchableOpacity onPress={toggleFiltersShowing} style={{}}>
+                <TouchableOpacity onPress={toggleFiltersShowing}>
                   
                 <View style={styles.modalContainer}></View>
                     <Image source = {require("../../../assets/filter_icon.png")}
@@ -361,9 +362,9 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                     presentationStyle='fullScreen'
                     transparent={false}
                     >
-                    <SafeAreaView style={styles.modalBackground}>
-                        <SafeAreaView style={styles.filtersContainer}>
-                          <SafeAreaView style={styles.filterButtonContainer}>
+                    <View style={styles.modalBackground}>
+                        <View style={styles.filtersContainer}>
+                          <View style={styles.filterButtonContainer}>
                             <SelectBox
                               label="Equipment"
                               labelStyle={styles.filterLabels}
@@ -386,8 +387,8 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                               onTapClose = {onMultiChangeEquipment()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={styles.filterButtonContainer}>
+                          </View>
+                          <View style={styles.filterButtonContainer}>
                             <SelectBox
                               label="Muscle Groups"
                               labelStyle={styles.filterLabels}
@@ -408,8 +409,8 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                               onTapClose = {onMultiChangeMuscleGroups()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={styles.filterButtonContainer}>                      
+                          </View>
+                          <View style={styles.filterButtonContainer}>                      
                             <SelectBox
                               label="Owner Types"
                               inputPlaceholder = "Add one or more owner types"
@@ -428,8 +429,8 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                               onTapClose = {onMultiChangeOwner()}
                               isMulti
                             />
-                          </SafeAreaView>
-                      </SafeAreaView>
+                          </View>
+                      </View>
                       <View style={styles.modalCloseButton}>
                         <TouchableOpacity onPress={toggleFiltersShowing}>
                           <View style={styles.closeFiltersButtonContainer}>
@@ -438,40 +439,40 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                         </TouchableOpacity>
                       </View>
                       
-                    </SafeAreaView>
+                    </View>
                   </Modal>
                   </TouchableOpacity>
               </View>
 			</View>
 
-			<View style={{flex:1}}>
+			<View style={{flex:1,}}>
 				<FlatList
-								data={searchResults}
-								// style={{ flex: 1, alignItems:"flex-start"}}
-								contentContainerStyle={{}}
-								renderItem={(item) => (
-									<View>
-										{/* {comments(item.item)} */}
-										<Workouts
-											data={[item.item]}
-											showButton={true}
-											showInput={false}
-											setCurrState={setCurrState}
-											setCurrWorkout={setCurrWorkout}
-											passData={setCurrWorkout}
-											setCreateNew={setCreateNew}
-										/>
-									</View>
-								)}
-								ListEmptyComponent={
-								<View style={{alignItems: 'center'}}>
-									<Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
-									No Workouts Found
-									</Text>
-								</View>
-								}
-								refreshing={true}
+					data={searchResults}
+					style={styles.temp}
+					// contentContainerStyle={{}}
+					renderItem={(item) => (
+						<View>
+							{/* {comments(item.item)} */}
+							<Workouts
+								data={[item.item]}
+								showButton={true}
+								showInput={false}
+								setCurrState={setCurrState}
+								setCurrWorkout={setCurrWorkout}
+								passData={setCurrWorkout}
+								setCreateNew={setCreateNew}
 							/>
+						</View>
+					)}
+					ListEmptyComponent={
+					<View style={{alignItems: 'center'}}>
+						<Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
+						No Workouts Found
+						</Text>
+					</View>
+					}
+					refreshing={true}
+				/>
 			</View>
 
 			
@@ -484,7 +485,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		flex: 1,
 		borderTopWidth:1.5,
-		// justifyContent: "space-evenly"
+		justifyContent: "space-evenly"
 	},
 	HeaderText: {
 		fontSize: 20,
@@ -576,5 +577,9 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignContent: 'center',
 	},
+	temp: {
+		// maxHeight:"20%"
+		flex: 1,
+	}
 
 });

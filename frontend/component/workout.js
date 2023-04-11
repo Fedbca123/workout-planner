@@ -214,19 +214,11 @@ const styles = StyleSheet.create({
 		backgroundColor: "#F1F3FA",
 		padding: 20,
 		shadowColor: "#000",
-		shadowOpacity: 0.2,
-		shadowRadius: 4,
-		shadowOffset: { width: 0, height: 2 },
-		// elevation: 2,
-		// borderRadius: "20rem",
-		...Platform.select({
-			ios: {
-				borderRadius: 20
-			},
-			android: {
-				borderRadius: 20
-			},
-		}),
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        shadowOffset: { width: 0, height: 2 },
+        elevation: 2,
+        borderRadius: 20,
 		width: "95%",
 		// maxHeight: "90%",
 		
