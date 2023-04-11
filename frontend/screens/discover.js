@@ -10,6 +10,7 @@ import {xorBy} from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
+import { set } from 'mongoose';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -107,6 +108,9 @@ export default function DiscoverPage({navigation}) {
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
   const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true);
 
+  const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
+
+
 
   useEffect(() => {
     if(isFocused){
@@ -179,9 +183,15 @@ export default function DiscoverPage({navigation}) {
     )}
 
   // Workout Card
-  const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image}) => {
-    const [expanded, setExpanded] = useState(false);
-    const handlePress = () => {setExpanded(!expanded);};
+  const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image, expandedWorkoutId, setExpandedWorkoutId}) => {
+    // const [expanded, setExpanded] = useState(false);
+    const expanded = expandedWorkoutId === workout._id;
+    const handlePress = () => {
+      // setExpanded(!expanded);
+      setExpandedWorkoutId((prevExpandedWorkoutId) =>
+      prevExpandedWorkoutId === workout._id ? null : workout._id
+    );
+    };
     function addWorkout(workout){
       navigation.navigate("createWorkout", { workoutData: workout });
     }
@@ -393,7 +403,7 @@ export default function DiscoverPage({navigation}) {
 
   function exerciseTagFound(exTag, searchTags){
     for(const term of searchTags){
-      if(exTag && exTag.toLowerCase().includes(term.toLowerCase())){
+      if(exTag && term.length > 0 && exTag.toLowerCase().includes(term.toLowerCase())){
         return true;
       }
     }
@@ -409,7 +419,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
 
       for(const type of selectedType){
-        if(type.toLowerCase() == exercise.exerciseType.toLowerCase()){
+        if(type && exercise && exercise.exerciseType && type.toLowerCase() == exercise.exerciseType.toLowerCase()){
           matches = true;
           break;
         }
@@ -440,7 +450,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const mg of exercise.muscleGroups){
         for(const tag of muscleGroupVals){
-          if(mg.toLowerCase() == tag.toLowerCase()){
+          if(mg && tag && mg.toLowerCase() == tag.toLowerCase()){
             matches = true;
             break;
           }
@@ -458,7 +468,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const tag of exercise.tags){
         for(const eq of equipmentTags){
-          if(tag.toLowerCase() == eq.toLowerCase()){
+          if(tag && eq && tag.toLowerCase() == eq.toLowerCase()){
             matches = true;
             break;
           }
@@ -518,7 +528,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const mg of workout.muscleGroups){
         for(const tag of muscleGroupVals){
-          if(mg.toLowerCase() == tag.toLowerCase()){
+          if(mg && tag && mg.toLowerCase() == tag.toLowerCase()){
             matches = true;
             break;
           }
@@ -553,7 +563,7 @@ export default function DiscoverPage({navigation}) {
       let matches = false;
       for(const tag of workout.tags){
         for(const eq of equipmentTags){
-          if(tag.toLowerCase() == eq.toLowerCase()){
+          if(tag && eq && tag.toLowerCase() == eq.toLowerCase()){
             matches = true;
             break;
           }
@@ -874,7 +884,7 @@ return (
                 </View>
               }
               style = {styles.boxContainer}
-              renderItem={({item,index}) => (              
+              renderItem={({item,index}) => (       
               <WorkoutItem 
                 workout={item}
                 title={item.title} 
@@ -883,6 +893,8 @@ return (
                 muscleGroups={item.muscleGroups} 
                 duration={item.duration} exercises={item.exercises}
                 image={item.image} key={index}
+                expandedWorkoutId = {expandedWorkoutId}
+                setExpandedWorkoutId = {setExpandedWorkoutId}
               />)}
               />}
       </View>
