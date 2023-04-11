@@ -100,24 +100,47 @@ router.route('/add').post(authenticateToken, upload.single('image'),async (req,r
   }
 
   const exerciseIds = req.body.exerciseIds;
-  const exercises = [];
+  let exercises = [];
+
+  let tags = [];
+	let muscleGroups = [];
   if (exerciseIds)
   {
     for (let i = 0; i < exerciseIds.length; i++)
     {
-      exercises.push(await Exercise.findById(exerciseIds[i]));
+      let exercise = await Exercise.findById(exerciseIds[i]);
+
+      for (let j = 0; j < exercise.tags.length; j++){
+				if (!tags.includes(exercise.tags[j]) && exercise.tags[j]) {
+					tags.push(exercise.tags[j]);
+				}
+			}
+
+			for (let j = 0; j < exercise.muscleGroups.length; j++){
+				if (!muscleGroups.includes(exercise.muscleGroups[j]) && exercise.muscleGroups[j]) {
+					muscleGroups.push(exercise.muscleGroups[j]);
+				}
+			}
+
+      exercises.push(exercise);
     }
   }
 
+
   const duration = req.body.duration;
   const location = req.body.location;
-  const muscleGroups = req.body.muscleGroups;
+  muscleGroups = muscleGroups.concat(req.body.muscleGroups);
   
-  let tags = [];
   tags = tags.concat(req.body.tags)
   if (title)
-    tags = tags.concat(title.split(' '));
-  
+  {
+    for (let s of tags.concat(title.split(' ')))
+    {
+      if (!tags.includes(s))
+        tags = tags.concat(s);
+    }
+  }
+
   tags.filter(elm => elm);
   muscleGroups.filter(elm => elm);
 
