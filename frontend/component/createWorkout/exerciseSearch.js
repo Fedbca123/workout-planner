@@ -38,6 +38,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
     const isFocused = useIsFocused();
     const [areFiltersVisible, setFiltersVisible] = useState(false);
     const [isExercisesLoading, setIsExercisesLoading] = useState(true);
+    const windowHeight = useWindowDimensions().height;
 	  // Chosen Equipment Filters
 	const [selectedEquipmentFilter, setEquipmentFilter] = useState([]);
 	
@@ -286,7 +287,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	}
 
     return (
-    <View style={styles.Background}>
+    <View style={[styles.Background, { minHeight: Math.round(windowHeight) }]}>
         <TouchableOpacity 
 				style={styles.createButton}
 				onPress={() => {
@@ -503,9 +504,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 		>
 		    <ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
 		</Modal>
-            <View style={{ height: '15%', backgroundColor: "#FF8C4B"}}>
-                    <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("ExerciseReview")}}>
-                    {/* <AntDesign size={useWindowDimensions().height * 0.08} name="leftcircle" color={"white"}/> */}
+            <View style={{ height: '22%', backgroundColor: "#FF8C4B", justifyContent:"flex-start"}}>
+                    <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "flex-start"}} onPress={() => {setCurrState("ExerciseReview")}}>
                     <Text style={styles.BttnText}>Return to Review</Text>
                 </TouchableOpacity>
             </View>
