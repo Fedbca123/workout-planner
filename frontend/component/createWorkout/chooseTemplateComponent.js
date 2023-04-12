@@ -298,7 +298,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	// }
 
 	return (
-		<View style={[styles.Background, { minHeight: Math.round(windowHeight) }]}>
+		<View style={[styles.Background, { minHeight: windowHeight - 500 }]}>
 
 			<TouchableOpacity 
 				style={styles.createButton}
