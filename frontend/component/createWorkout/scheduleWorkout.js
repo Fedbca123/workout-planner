@@ -223,7 +223,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 						onPress={() => {
 							setModalVisible(!modalVisible);
 							let temp = {...workout[0]};
-							temp.duration = 60 * timeVal.hours + timeVal.minutes
+                            temp.duration = 60 * (timeVal.hours ? timeVal.hours : 0) + (timeVal.minutes ? timeVal.minutes : 0);
 							updateWorkout([temp]);
 						}}>
 						<Text style={styles.textStyle}>Done</Text>

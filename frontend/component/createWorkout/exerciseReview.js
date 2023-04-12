@@ -333,13 +333,15 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 						onPress={() => {
 							setModalVisible(!modalVisible);
 							let temp = {...workout[0]};
-							temp.exercises[currentExIdx].time = 3600 * timeVal.hours + 60 * timeVal.minutes + timeVal.seconds;
+							temp.exercises[currentExIdx].time = 3600 * timeVal.hours + 60 * (timeVal.minutes ? timeVal.minutes : 0) + (timeVal.seconds ? timeVal.seconds : 0);
 							updateWorkout([temp]);
 							setTimeVal({
 								hours: 0,
 								minutes: 0,
 								seconds: 0
 							});
+							// console.log(temp.exercises[currentExIdx].time);
+							// console.log(timeVal.minutes, " ", timeVal.seconds)
 						}}>
 						<Text style={styles.textStyle}>Done</Text>
 						</TouchableOpacity>

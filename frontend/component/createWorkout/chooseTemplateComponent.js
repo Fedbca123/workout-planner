@@ -298,7 +298,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	// }
 
 	return (
-		<View style={[styles.Background, { minHeight: Math.round(windowHeight) }]}>
+		<View style={[styles.Background, { minHeight: windowHeight - 500 }]}>
 
 			<TouchableOpacity 
 				style={styles.createButton}
@@ -531,7 +531,9 @@ const styles = StyleSheet.create({
 	modalBackground:{
 		backgroundColor: "white",
 		flex: 1,
-		justifyContent: 'space-between'
+		display:"flex",
+		// justifyContent: "space-evenly",
+		alignContent:"space-evenly,"
 	},
 	filtersContainer:{
 		// height: "50%",
@@ -546,7 +548,6 @@ const styles = StyleSheet.create({
 		marginHorizontal: 5,
 		paddingVertical: 5,
 		marginVertical: 5,
-		// flex: 1,
 	},
 	filterLabels:{
 		fontWeight: '500',
@@ -582,8 +583,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		paddingHorizontal: 10,
 		marginHorizontal: 1,
-		justifyContent: 'center',
-		alignContent: 'center',
 	},
 	temp: {
 		// maxHeight:"20%"

@@ -287,7 +287,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	}
 
     return (
-    <View style={[styles.Background, { minHeight: Math.round(windowHeight) }]}>
+    <View style={[styles.Background, { minHeight: windowHeight - 500 }]}>
         <TouchableOpacity 
 				style={styles.createButton}
 				onPress={() => {
@@ -504,8 +504,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 		>
 		    <ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
 		</Modal>
-            <View style={{ height: '22%', backgroundColor: "#FF8C4B", justifyContent:"flex-start"}}>
-                    <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "flex-start"}} onPress={() => {setCurrState("ExerciseReview")}}>
+            <View style={{ height: '15%', backgroundColor: "#FF8C4B", justifyContent:"center"}}>
+                    <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("ExerciseReview")}}>
                     <Text style={styles.BttnText}>Return to Review</Text>
                 </TouchableOpacity>
             </View>
