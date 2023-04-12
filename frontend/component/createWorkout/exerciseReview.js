@@ -241,7 +241,6 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 													editable={false}
 													cursorColor={'transparent'}
 													keyboardType="numeric"
-													maxLength={4}
 													placeholder={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : "Time"}
 													placeholderTextColor="#808080"
 													value={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : ''}
