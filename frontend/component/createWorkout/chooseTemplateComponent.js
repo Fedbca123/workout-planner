@@ -11,6 +11,7 @@ import {
 	VirtualizedList,
 	useWindowDimensions,
 	ActivityIndicator,
+	SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -145,14 +146,14 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 		return false;
 	}
 
-	function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals, selectedOwner){
+	  function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals, selectedOwner){
 		let success = true;
 		// for all muscle groups if they exist or are included
 		if(muscleGroupVals.length > 0){
 		let matches = false;
 		for(const mg of workout.muscleGroups){
 			for(const tag of muscleGroupVals){
-			if(mg.toLowerCase() == tag.toLowerCase()){
+			if(mg && tag && mg.toLowerCase() == tag.toLowerCase()){
 				matches = true;
 				break;
 			}
@@ -187,7 +188,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 		let matches = false;
 		for(const tag of workout.tags){
 			for(const eq of equipmentTags){
-			if(tag.toLowerCase() == eq.toLowerCase()){
+			if(tag && eq && tag.toLowerCase() == eq.toLowerCase()){
 				matches = true;
 				break;
 			}
@@ -366,7 +367,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                     presentationStyle='fullScreen'
                     transparent={false}
                     >
-                    <View style={styles.modalBackground}>
+                    <SafeAreaView style={styles.modalBackground}>
                         <View style={styles.filtersContainer}>
                           <View style={styles.filterButtonContainer}>
                             <SelectBox
@@ -443,7 +444,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                         </TouchableOpacity>
                       </View>
                       
-                    </View>
+                    </SafeAreaView>
                   </Modal>
                   </TouchableOpacity>
               </View>

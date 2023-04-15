@@ -147,7 +147,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
       let matches = false;
 
       for(const type of selectedType){
-        if(type.toLowerCase() == exercise.exerciseType.toLowerCase()){
+        if(type && exercise && exercise.exerciseType && type.toLowerCase() == exercise.exerciseType.toLowerCase()){
           matches = true;
           break;
         }
@@ -178,7 +178,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
       let matches = false;
       for(const mg of exercise.muscleGroups){
         for(const tag of muscleGroupVals){
-          if(mg.toLowerCase() == tag.toLowerCase()){
+          if(mg && tag && mg.toLowerCase() == tag.toLowerCase()){
             matches = true;
             break;
           }
@@ -196,7 +196,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
       let matches = false;
       for(const tag of exercise.tags){
         for(const eq of equipmentTags){
-          if(tag.toLowerCase() == eq.toLowerCase()){
+          if(tag && eq && tag.toLowerCase() == eq.toLowerCase()){
             matches = true;
             break;
           }
