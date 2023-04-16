@@ -10,7 +10,6 @@ import {xorBy} from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
-import { set } from 'mongoose';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -103,6 +102,7 @@ export default function DiscoverPage({navigation}) {
 
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [workoutSearch, setWorkoutSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // will be used for Activity Indicator
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
@@ -641,10 +641,10 @@ return (
                     setToggleValue(newState);
                     if (newState) {
                       // We are in exercises
-                      setFilteredExerciseData(filterExercises(lastExerciseSearch));
+                      setFilteredExerciseData(filterExercises(searchTerm));
                     } else {
                       // We are in workouts
-                      setFilteredWorkoutData(filterWorkouts(lastWorkoutSearch));
+                      setFilteredWorkoutData(filterWorkouts(searchTerm));
                     }
                   }}
                   // onPress = {(newState) => {
@@ -814,19 +814,17 @@ return (
                 // below line will make keyboard go away by
                 // tapping away from the input only if it's in a scrollview
                 keyboardShouldPersistTaps='handled'
+                value = {searchTerm}
+                // value={toggleValue ? lastExerciseSearch : lastWorkoutSearch}
+                onChangeText={(text) => {
+                  setSearchTerm(text);
+                  if (toggleValue) {
+                    setFilteredExerciseData(filterExercises(text));
+                  } else {
+                    setFilteredWorkoutData(filterWorkouts(text));
+                  }
+                }}
                 
-                value={toggleValue ? lastExerciseSearch : lastWorkoutSearch}
-                onChangeText={(text) =>
-                  toggleValue
-                    ? (() => {
-                        setLastExerciseSearch(text);
-                        setFilteredExerciseData(filterExercises(text));
-                      })()
-                    : (() => {
-                        setLastWorkoutSearch(text);
-                        setFilteredWorkoutData(filterWorkouts(text));
-                      })()
-                }
                 //value={(toggleValue ? exerciseSearch : workoutSearch)}
                 // onChangeText = {(toggleValue ? 
                 //   (
