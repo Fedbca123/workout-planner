@@ -110,8 +110,6 @@ export default function DiscoverPage({navigation}) {
 
   const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
 
-  const [lastExerciseSearch, setLastExerciseSearch] = useState("");
-  const [lastWorkoutSearch, setLastWorkoutSearch] = useState("");
   
 
   useEffect(() => {
@@ -815,7 +813,6 @@ return (
                 // tapping away from the input only if it's in a scrollview
                 keyboardShouldPersistTaps='handled'
                 value = {searchTerm}
-                // value={toggleValue ? lastExerciseSearch : lastWorkoutSearch}
                 onChangeText={(text) => {
                   setSearchTerm(text);
                   if (toggleValue) {
@@ -825,6 +822,7 @@ return (
                   }
                 }}
                 
+                // Old stuff just in case
                 //value={(toggleValue ? exerciseSearch : workoutSearch)}
                 // onChangeText = {(toggleValue ? 
                 //   (
