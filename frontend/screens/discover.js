@@ -110,7 +110,9 @@ export default function DiscoverPage({navigation}) {
 
   const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
 
-
+  const [lastExerciseSearch, setLastExerciseSearch] = useState("");
+  const [lastWorkoutSearch, setLastWorkoutSearch] = useState("");
+  
 
   useEffect(() => {
     if(isFocused){
@@ -635,15 +637,25 @@ return (
               {/* Workout/Exercise List Toggle */}
                 <Toggle
                   value = {toggleValue}
-                  onPress = {(newState) => {
-                    setToggleValue(newState)
-                    if(newState){
+                  onPress={(newState) => {
+                    setToggleValue(newState);
+                    if (newState) {
                       // We are in exercises
-                      setFilteredExerciseData(filterExercises(exerciseSearch));
-                    }else{
-                      setFilteredWorkoutData(filterWorkouts(workoutSearch));
+                      setFilteredExerciseData(filterExercises(lastExerciseSearch));
+                    } else {
+                      // We are in workouts
+                      setFilteredWorkoutData(filterWorkouts(lastWorkoutSearch));
                     }
                   }}
+                  // onPress = {(newState) => {
+                  //   setToggleValue(newState)
+                  //   if(newState){
+                  //     // We are in exercises
+                  //     setFilteredExerciseData(filterExercises(exerciseSearch));
+                  //   }else{
+                  //     setFilteredWorkoutData(filterWorkouts(workoutSearch));
+                  //   }
+                  // }}
                   disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
                   leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
                   rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
@@ -802,23 +814,35 @@ return (
                 // below line will make keyboard go away by
                 // tapping away from the input only if it's in a scrollview
                 keyboardShouldPersistTaps='handled'
-
-                value={(toggleValue ? exerciseSearch : workoutSearch)}
-                onChangeText = {(toggleValue ? 
-                  (
-                    (text) => {
-                  setExerciseSearch(text);
-                  setFilteredExerciseData(filterExercises(text));
-                  // below is for filters
-                  //setExerciseSearch(text);
-                  }
-                  ) :  (
-                    (text) => {
-                      setWorkoutSearch(text);
-                      setFilteredWorkoutData(filterWorkouts(text));
-                    }
-                  )
-                )}
+                
+                value={toggleValue ? lastExerciseSearch : lastWorkoutSearch}
+                onChangeText={(text) =>
+                  toggleValue
+                    ? (() => {
+                        setLastExerciseSearch(text);
+                        setFilteredExerciseData(filterExercises(text));
+                      })()
+                    : (() => {
+                        setLastWorkoutSearch(text);
+                        setFilteredWorkoutData(filterWorkouts(text));
+                      })()
+                }
+                //value={(toggleValue ? exerciseSearch : workoutSearch)}
+                // onChangeText = {(toggleValue ? 
+                //   (
+                //     (text) => {
+                //   setExerciseSearch(text);
+                //   setFilteredExerciseData(filterExercises(text));
+                //   // below is for filters
+                //   //setExerciseSearch(text);
+                //   }
+                //   ) :  (
+                //     (text) => {
+                //       setWorkoutSearch(text);
+                //       setFilteredWorkoutData(filterWorkouts(text));
+                //     }
+                //   )
+                // )}
                 inputStyle={{
                     color: "black",
                   }}
