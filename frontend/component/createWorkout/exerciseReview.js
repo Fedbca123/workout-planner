@@ -20,6 +20,9 @@ import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign } from "@expo/vector-icons";
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import {TimePicker} from 'react-native-simple-time-picker';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import keyboardAwareDraggableFlatlist from "../keyboard-aware-draggable-flatlist";
+import KeyboardAwareDraggableFlatlist from "../keyboard-aware-draggable-flatlist";
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
@@ -80,7 +83,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					Add an Exercise
 				</Text>
 			</TouchableOpacity>
-			<DraggableFlatList
+			<KeyboardAwareDraggableFlatlist
 				data={exercises}
 				style={{ height: "75%" }}
 				enableOnAndroid={true}
