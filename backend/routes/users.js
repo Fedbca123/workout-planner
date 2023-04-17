@@ -170,7 +170,6 @@ router.route('/login').post(async (req, res) => {
 // Get user by id
 // req.params = { id }
 // (GET) API_Instance.get("users/${id}")
-// returns { Deleted: user.email }
 router.route('/:id').get(authenticateToken, async (req, res) => {
   User.findById(req.params.id)
   .then(user => {
@@ -1225,7 +1224,7 @@ router.route('/emailVerification/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.APP_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailVerification/${authToken}`
 
@@ -1316,7 +1315,7 @@ router.route('/forgotpassword/email/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.APP_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/forgotpassword/reset/${authToken}`
 
@@ -1432,7 +1431,7 @@ router.route('/emailreset/send/to').post(async (req,res) => {
 
   const authToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '35m'});
 
-  const port = process.env.NODE_ENV === 'development' ? `${process.env.PORT}` : "";
+  const port = process.env.APP_ENV === 'development' ? `${process.env.PORT}` : "";
 
   const endpointURI = `${process.env.API_URL}${port}/users/emailreset/${authToken}`
 
