@@ -140,7 +140,7 @@ export default function AdminPage({navigation}) {
 			})
 			.then((response) => {
 				if (response.status == 200) {
-                    Alert.alert('Success!', 'Exercise created', [
+                    Alert.alert('Success!', 'Workout created', [
                         {text: 'OK', onPress: () => console.log('OK Pressed')},
                     ]);
 					console.log(response.data)
