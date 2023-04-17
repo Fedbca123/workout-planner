@@ -10,7 +10,6 @@ import {xorBy} from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
-import { set } from 'mongoose';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -103,6 +102,7 @@ export default function DiscoverPage({navigation}) {
 
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [workoutSearch, setWorkoutSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // will be used for Activity Indicator
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
@@ -110,7 +110,7 @@ export default function DiscoverPage({navigation}) {
 
   const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
 
-
+  
 
   useEffect(() => {
     if(isFocused){
@@ -635,15 +635,25 @@ return (
               {/* Workout/Exercise List Toggle */}
                 <Toggle
                   value = {toggleValue}
-                  onPress = {(newState) => {
-                    setToggleValue(newState)
-                    if(newState){
+                  onPress={(newState) => {
+                    setToggleValue(newState);
+                    if (newState) {
                       // We are in exercises
-                      setFilteredExerciseData(filterExercises(exerciseSearch));
-                    }else{
-                      setFilteredWorkoutData(filterWorkouts(workoutSearch));
+                      setFilteredExerciseData(filterExercises(searchTerm));
+                    } else {
+                      // We are in workouts
+                      setFilteredWorkoutData(filterWorkouts(searchTerm));
                     }
                   }}
+                  // onPress = {(newState) => {
+                  //   setToggleValue(newState)
+                  //   if(newState){
+                  //     // We are in exercises
+                  //     setFilteredExerciseData(filterExercises(exerciseSearch));
+                  //   }else{
+                  //     setFilteredWorkoutData(filterWorkouts(workoutSearch));
+                  //   }
+                  // }}
                   disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
                   leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
                   rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
@@ -802,23 +812,33 @@ return (
                 // below line will make keyboard go away by
                 // tapping away from the input only if it's in a scrollview
                 keyboardShouldPersistTaps='handled'
-
-                value={(toggleValue ? exerciseSearch : workoutSearch)}
-                onChangeText = {(toggleValue ? 
-                  (
-                    (text) => {
-                  setExerciseSearch(text);
-                  setFilteredExerciseData(filterExercises(text));
-                  // below is for filters
-                  //setExerciseSearch(text);
+                value = {searchTerm}
+                onChangeText={(text) => {
+                  setSearchTerm(text);
+                  if (toggleValue) {
+                    setFilteredExerciseData(filterExercises(text));
+                  } else {
+                    setFilteredWorkoutData(filterWorkouts(text));
                   }
-                  ) :  (
-                    (text) => {
-                      setWorkoutSearch(text);
-                      setFilteredWorkoutData(filterWorkouts(text));
-                    }
-                  )
-                )}
+                }}
+                
+                // Old stuff just in case
+                //value={(toggleValue ? exerciseSearch : workoutSearch)}
+                // onChangeText = {(toggleValue ? 
+                //   (
+                //     (text) => {
+                //   setExerciseSearch(text);
+                //   setFilteredExerciseData(filterExercises(text));
+                //   // below is for filters
+                //   //setExerciseSearch(text);
+                //   }
+                //   ) :  (
+                //     (text) => {
+                //       setWorkoutSearch(text);
+                //       setFilteredWorkoutData(filterWorkouts(text));
+                //     }
+                //   )
+                // )}
                 inputStyle={{
                     color: "black",
                   }}
