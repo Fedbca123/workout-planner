@@ -622,9 +622,12 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
   // if recurring add in again but a week in advance
   if(workout.recurrence){
     var date = workout.scheduledDate ? new Date(workout.scheduledDate) : new Date();
-    date.setDate(date.getDate() + 7);
-    workout.scheduledDate = date;
-    await workout.save();
+    if (!(new Date().setTime(0,0,0,0) < date < new Date().setTime(23, 59, 59)))
+    {
+      date.setDate(date.getDate() + 7);
+      workout.scheduledDate = date;
+      await workout.save();
+    }
   } else {
     // remove image from cloudinary
     if (workout.imageId != config.DEFAULTWORKIMAGEID)
