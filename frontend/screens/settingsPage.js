@@ -14,6 +14,7 @@ import { useGlobalState } from "../GlobalState.js";
 import API_Instance from "../../backend/axios_instance";
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from '../AuthProvider';
+import { useIsFocused } from "@react-navigation/native";
 
 const text_field_width = '80%';
 
@@ -30,6 +31,7 @@ export default function SettingsPage({ navigation })
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [userMessage, setUserMessage] = useState("");
+    const isFocused = useIsFocused();
 
     useEffect(() => {
         setFirstName("");
@@ -37,6 +39,27 @@ export default function SettingsPage({ navigation })
         setEmail("");
         setUserMessage("");
 	}, [editFirstName, editLastName, editEmail])
+
+    useEffect(() => {
+        let email = "";
+        if (isFocused)
+        {
+            API_Instance.get(`users/${globalState.user._id}`, {
+                headers: {
+                    'authorization': `BEARER ${globalState.authToken}`
+                }
+            })
+            .then((response) => {
+                let tmp = {...globalState.user};
+                tmp.email = response.data.email;
+                updateGlobalState("user", tmp);
+            })
+            .catch((error) => {
+                console.log(error);
+                Alert.alert("There was an error retrieving the email")
+            })
+        }
+    }, [isFocused]);
 
     function updateFirstName() 
     {

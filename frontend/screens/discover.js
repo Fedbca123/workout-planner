@@ -106,10 +106,7 @@ export default function DiscoverPage({navigation}) {
 <<<<<<< Updated upstream
   const [exerciseSearch, setExerciseSearch] = useState('');
   const [workoutSearch, setWorkoutSearch] = useState('');
-=======
-  // SearchBar Term
   const [searchTerm, setSearchTerm] = useState('');
->>>>>>> Stashed changes
 
   // Activity Indicator
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
@@ -118,10 +115,7 @@ export default function DiscoverPage({navigation}) {
   // Used to keep workout expanded
   const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
+  
 
   useEffect(() => {
     if(isFocused){
@@ -635,13 +629,14 @@ return (
                 <Toggle
                   value = {toggleValue}
 <<<<<<< Updated upstream
-                  onPress = {(newState) => {
-                    setToggleValue(newState)
-                    if(newState){
+                  onPress={(newState) => {
+                    setToggleValue(newState);
+                    if (newState) {
                       // We are in exercises
-                      setFilteredExerciseData(filterExercises(exerciseSearch));
-                    }else{
-                      setFilteredWorkoutData(filterWorkouts(workoutSearch));
+                      setFilteredExerciseData(filterExercises(searchTerm));
+                    } else {
+                      // We are in workouts
+                      setFilteredWorkoutData(filterWorkouts(searchTerm));
 =======
                   onPress={(newState) => {
                     setToggleValue(newState);
@@ -654,6 +649,15 @@ return (
 >>>>>>> Stashed changes
                     }
                   }}
+                  // onPress = {(newState) => {
+                  //   setToggleValue(newState)
+                  //   if(newState){
+                  //     // We are in exercises
+                  //     setFilteredExerciseData(filterExercises(exerciseSearch));
+                  //   }else{
+                  //     setFilteredWorkoutData(filterWorkouts(workoutSearch));
+                  //   }
+                  // }}
                   disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
                   leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
                   rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
@@ -809,27 +813,33 @@ return (
                 // below line will make keyboard go away by
                 // tapping away from the input only if it's in a scrollview
                 keyboardShouldPersistTaps='handled'
-
-                value={(toggleValue ? exerciseSearch : workoutSearch)}
-                onChangeText = {(toggleValue ? 
-                  (
-                    (text) => {
-                  setExerciseSearch(text);
-                  setFilteredExerciseData(filterExercises(text));
-                  // below is for filters
-                  //setExerciseSearch(text);
+                value = {searchTerm}
+                onChangeText={(text) => {
+                  setSearchTerm(text);
+                  if (toggleValue) {
+                    setFilteredExerciseData(filterExercises(text));
+                  } else {
+                    setFilteredWorkoutData(filterWorkouts(text));
                   }
-<<<<<<< Updated upstream
-                  ) :  (
-                    (text) => {
-                      setWorkoutSearch(text);
-                      setFilteredWorkoutData(filterWorkouts(text));
-                    }
-                  )
-                )}
-=======
-                }}             
->>>>>>> Stashed changes
+                }}
+                
+                // Old stuff just in case
+                //value={(toggleValue ? exerciseSearch : workoutSearch)}
+                // onChangeText = {(toggleValue ? 
+                //   (
+                //     (text) => {
+                //   setExerciseSearch(text);
+                //   setFilteredExerciseData(filterExercises(text));
+                //   // below is for filters
+                //   //setExerciseSearch(text);
+                //   }
+                //   ) :  (
+                //     (text) => {
+                //       setWorkoutSearch(text);
+                //       setFilteredWorkoutData(filterWorkouts(text));
+                //     }
+                //   )
+                // )}
                 inputStyle={{
                     color: "black",
                   }}
