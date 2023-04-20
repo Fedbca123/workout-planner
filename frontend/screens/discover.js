@@ -1,15 +1,15 @@
-import { useFocusEffect } from '@react-navigation/native';
-import React, {useState, useEffect} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View, SafeAreaView, TouchableOpacity, ActivityIndicator, FlatList, Alert , KeyboardAvoidingView} from 'react-native';
-import { SearchBar, ListItem} from 'react-native-elements';
+import React, { useState, useEffect } from 'react';
+import { SearchBar } from 'react-native-elements';
 import Toggle from "react-native-toggle-element";
 import Modal from "react-native-modal";
 import API_Instance from '../../backend/axios_instance';
 import SelectBox from 'react-native-multi-selectbox';
-import {xorBy} from 'lodash';
+import { xorBy } from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
+import { Image, ScrollView, StyleSheet, Text, View, SafeAreaView,
+  TouchableOpacity, ActivityIndicator, FlatList, Alert } from 'react-native';
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -57,6 +57,7 @@ const ownerFilters = [
 export default function DiscoverPage({navigation}) {
 
   const isFocused = useIsFocused();
+  const [globalState, updateGlobalState] = useGlobalState();
 
   // Exercise or Workout List Toggle
   const [toggleValue, setToggleValue] = useState(false);
@@ -79,8 +80,6 @@ export default function DiscoverPage({navigation}) {
   // Chosen Owner Type Filters
   const [selectedOwnerFilter, setOwnerFilter] = useState([]);
 
-  // globalState
-  const [globalState, updateGlobalState] = useGlobalState();
   
   // For Exercise Info Page
   const [selectedExercise, setSelectedExercise] = useState([]);
@@ -100,40 +99,39 @@ export default function DiscoverPage({navigation}) {
   // All items from DB from search with only ownerID
   const [masterWorkoutData, setMasterWorkoutData] = useState([]);
 
-  const [exerciseSearch, setExerciseSearch] = useState('');
-  const [workoutSearch, setWorkoutSearch] = useState('');
+  // Search Bar Term
   const [searchTerm, setSearchTerm] = useState('');
 
-  // will be used for Activity Indicator
+  // Activity Indicator
   const [isExercisesLoading, setIsExercisesLoading] = useState(true);
   const [isWorkoutsLoading, setIsWorkoutsLoading] = useState(true);
 
+  // Used to keep workout expanded
   const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
-
-  
 
   useEffect(() => {
     if(isFocused){
-      // console.log("UseEffect Called");
       exercisesList();
       workoutsList();
     }
   }, [isFocused]);
 
   useEffect(() => {
-    setFilteredWorkoutData(filterWorkouts(workoutSearch));
+    setFilteredWorkoutData(filterWorkouts(searchTerm));
   }, [masterWorkoutData]);
 
+  // Returns Public, You, or friend's name as workout owner
   const getWorkoutOwner = (exercise) => {
     if (!exercise.owner)
       return "Public";
     else if (exercise.owner === globalState.user?._id) {
       return "You";
     } else {
-      // console.log("exercise " + exercise.title+  " owner: "+ exercise.ownerName);
       return exercise.ownerName;
     }
   };
+
+  // Delete Personal Custom Exercise
   function deleteExercise(){
     try{
       Alert.alert(`Are you sure you want to delete ${selectedExerciseTitle}?`,
@@ -148,7 +146,6 @@ export default function DiscoverPage({navigation}) {
                 }
               }).then((response) => {
                 Alert.alert(`${selectedExerciseTitle} deleted successfully!`);
-                //exercisesList();
                 setFilteredExerciseData(filteredExerciseData.filter(item => item._id != selectedExercise._id));
                 setMasterExerciseData(masterExerciseData.filter(item => item._id != selectedExercise._id));
                 closeInfoModal();
@@ -184,10 +181,8 @@ export default function DiscoverPage({navigation}) {
 
   // Workout Card
   const WorkoutItem = ({workout, title, description, muscleGroups, duration, exercises, image, expandedWorkoutId, setExpandedWorkoutId}) => {
-    // const [expanded, setExpanded] = useState(false);
     const expanded = expandedWorkoutId === workout._id;
     const handlePress = () => {
-      // setExpanded(!expanded);
       setExpandedWorkoutId((prevExpandedWorkoutId) =>
       prevExpandedWorkoutId === workout._id ? null : workout._id
     );
@@ -322,10 +317,8 @@ export default function DiscoverPage({navigation}) {
     })
     .then((response) => {
       if (response.status == 200){
-        // console.log(response.data[0]);
-        // setFilteredExerciseData(response.data);
         setMasterExerciseData(response.data);
-        setFilteredExerciseData(filterExercises(exerciseSearch));
+        setFilteredExerciseData(filterExercises(searchTerm));
         exercisesLoaded();
       }
     })
@@ -348,13 +341,8 @@ export default function DiscoverPage({navigation}) {
     })
     .then((response) => {
       if (response.status == 200) {
-        // console.log(JSON.stringify(response.data, null, 2));
-        // console.log(response.data[0].owner);
-        // setFilteredWorkoutData(response.data);
-        // console.log("API response: ", response.data);
         setMasterWorkoutData(response.data);
-        // console.log(masterWorkoutData);
-        setFilteredWorkoutData(filterWorkouts(workoutSearch));
+        setFilteredWorkoutData(filterWorkouts(searchTerm));
         workoutsLoaded();
       }
     })
@@ -362,24 +350,26 @@ export default function DiscoverPage({navigation}) {
       console.log(e);  
     })
 }
+
   // Toggle Filter Modal
   const toggleFiltersShowing = () =>{
     setFiltersVisible(!areFiltersVisible);
-    // filter on masterList
     if(areFiltersVisible){
       if(toggleValue){
-        // We are in exercises
-        setFilteredExerciseData(filterExercises(exerciseSearch));
-      }else{
-        setFilteredWorkoutData(filterWorkouts(workoutSearch));
+        // Exercises
+        setFilteredExerciseData(filterExercises(searchTerm));
+      }
+      else {
+        setFilteredWorkoutData(filterWorkouts(searchTerm));
       }
     }
   }
 
+  // Activity Indicator
   const exercisesLoaded = async () => {
       setIsExercisesLoading(false);
   }
-  
+  // Activity Indicator
   const workoutsLoaded = async () => {
     setIsWorkoutsLoading(false);
   }
@@ -413,9 +403,8 @@ export default function DiscoverPage({navigation}) {
   function tryFilterExercise(exercise, searchTags, equipmentTags, muscleGroupVals, selectedType, selectedOwner){
     let success = true;
 
-    // type
+    // Exercise Type
     if(selectedType.length > 0){
-      //console.log(selectedType)
       let matches = false;
 
       for(const type of selectedType){
@@ -428,7 +417,7 @@ export default function DiscoverPage({navigation}) {
       success = success && matches;
     }
 
-    // for owner types
+    // Owner Type
     if(success && selectedOwner.length > 0){
       let matches = false;
 
@@ -445,7 +434,7 @@ export default function DiscoverPage({navigation}) {
       success = success && matches;
     }
 
-    // for all muscle groups if they exist or are included
+    // Muscle Groups
     if(success && muscleGroupVals.length > 0){
       let matches = false;
       for(const mg of exercise.muscleGroups){
@@ -462,9 +451,8 @@ export default function DiscoverPage({navigation}) {
       success = success && matches;
     }
 
-    // equipment
+    // Equipment
     if(success && equipmentTags.length > 0){
-      //console.log("et",equipmentTags)
       let matches = false;
       for(const tag of exercise.tags){
         for(const eq of equipmentTags){
@@ -480,9 +468,8 @@ export default function DiscoverPage({navigation}) {
       success = success && matches;
     }
 
-    // search
+    // SearchBar
     if(success && searchTags.length > 0){
-      //console.log("st",searchTags)
       let matches = false;
       for(const tag of exercise.tags){
         if(exerciseTagFound(tag, searchTags)){
@@ -506,7 +493,6 @@ export default function DiscoverPage({navigation}) {
 
     // if no tags or search terms then return masterlist
     if(searchVals.length == 0 && equipmentTags.length == 0 && muscleGroupVals.length == 0 && selectedType.length == 0 && selectedOwner.length == 0){
-      //console.log('no filter but still ate');
       return masterExerciseData;
     }
 
@@ -523,7 +509,7 @@ export default function DiscoverPage({navigation}) {
 
   function tryFilterWorkout(workout, searchVals, equipmentTags, muscleGroupVals, selectedOwner){
     let success = true;
-    // for all muscle groups if they exist or are included
+    // Muscle Groups
     if(muscleGroupVals.length > 0){
       let matches = false;
       for(const mg of workout.muscleGroups){
@@ -540,7 +526,7 @@ export default function DiscoverPage({navigation}) {
       success = success && matches;
     }
 
-    // for owner types
+    // Owner Types
     if(success && selectedOwner.length > 0){
       let matches = false;
 
@@ -557,9 +543,8 @@ export default function DiscoverPage({navigation}) {
       success = success && matches;
     }
 
-    // equipment
+    // Equipment
     if(success && equipmentTags.length > 0){
-      //console.log("et",equipmentTags)
       let matches = false;
       for(const tag of workout.tags){
         for(const eq of equipmentTags){
@@ -575,9 +560,8 @@ export default function DiscoverPage({navigation}) {
       success = success && matches;
     }
 
-    // search
+    // SearchBar
     if(success && searchVals.length > 0){
-      //console.log("st",searchTags)
       let matches = false;
       for(const tag of workout.tags){
         if(exerciseTagFound(tag, searchVals)){
@@ -645,15 +629,6 @@ return (
                       setFilteredWorkoutData(filterWorkouts(searchTerm));
                     }
                   }}
-                  // onPress = {(newState) => {
-                  //   setToggleValue(newState)
-                  //   if(newState){
-                  //     // We are in exercises
-                  //     setFilteredExerciseData(filterExercises(exerciseSearch));
-                  //   }else{
-                  //     setFilteredWorkoutData(filterWorkouts(workoutSearch));
-                  //   }
-                  // }}
                   disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
                   leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
                   rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
@@ -690,7 +665,6 @@ return (
                   <Modal 
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
-                    //backdropOpacity = "1"
                     backdropColor = "white"
                     presentationStyle='fullScreen'
                     transparent={false}
@@ -751,7 +725,6 @@ return (
                               options = {typeFilters}
                               optionsLabelStyle = {styles.filterOptions}
                               hideInputFilter = 'true'
-                              //containerStyle={{backgroundColor:"black"}}
                               toggleIconColor = "#2193BC"
                               arrowIconColor = '#000'
                               
@@ -771,7 +744,6 @@ return (
                               options = {ownerFilters}
                               optionsLabelStyle = {styles.filterOptions}
                               hideInputFilter = 'true'
-                              //containerStyle={{backgroundColor:"black"}}
                               toggleIconColor = "#2193BC"
                               arrowIconColor = '#000'
                               
@@ -822,23 +794,7 @@ return (
                   }
                 }}
                 
-                // Old stuff just in case
-                //value={(toggleValue ? exerciseSearch : workoutSearch)}
-                // onChangeText = {(toggleValue ? 
-                //   (
-                //     (text) => {
-                //   setExerciseSearch(text);
-                //   setFilteredExerciseData(filterExercises(text));
-                //   // below is for filters
-                //   //setExerciseSearch(text);
-                //   }
-                //   ) :  (
-                //     (text) => {
-                //       setWorkoutSearch(text);
-                //       setFilteredWorkoutData(filterWorkouts(text));
-                //     }
-                //   )
-                // )}
+               
                 inputStyle={{
                     color: "black",
                   }}
@@ -854,7 +810,7 @@ return (
       <View style={styles.discoverContainer}>
       
               {toggleValue ? 
-              //Exercises
+              // Exercises
               isExercisesLoading ? 
               
               <ActivityIndicator size ="large"/>
@@ -968,7 +924,6 @@ return (
               <View style={styles.exerciseInfoOwnerContainer}>
                 <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
                 <Text style={styles.exerciseInfoOwner}>{getWorkoutOwner(selectedExercise)}
-                {/* {selectedExerciseOwner ? selectedExerciseOwner : "Public"}*/}
                 </Text> 
               </View>
               </ScrollView>
@@ -1058,9 +1013,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignContent: 'center',
     textAlign: 'center',
-    // flex: .15,
     flex: 1,
-    // alignSelf: 'center',
   },
   exerciseInfoHeader:{
     flex: 1.5,
@@ -1082,7 +1035,6 @@ const styles = StyleSheet.create({
   exerciseInfoImage:{
     width: "100%",
     height: "100%",
-    // resizeMode: 'stretch',
     borderRadius: 22,
     borderWidth: 3,
   },
@@ -1225,7 +1177,6 @@ const styles = StyleSheet.create({
   },
 
   selectedFilterContainers:{
-    // backgroundColor: '#4bccdd',
     backgroundColor: '#2193BC'
     
   },
@@ -1237,7 +1188,6 @@ const styles = StyleSheet.create({
   },
   workoutItems:{
     backgroundColor: '#E5DAE7',
-    // backgroundColor: "#FEE2CF",
     color: "#333",
     fontWeight: "500",
     justifyContent: 'center',
@@ -1427,7 +1377,6 @@ deleteWorkoutText:{
   buttonsContainer:{
   },
   filtersContainer:{
-    // height: "50%",
     flex: 1
   },
   filterButtonContainer:{
@@ -1439,7 +1388,6 @@ deleteWorkoutText:{
     marginHorizontal: 5,
     paddingVertical: 5,
     marginVertical: 5,
-    // flex: 1,
   },
 
   hidden:{
