@@ -8,12 +8,8 @@ import { xorBy } from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
-<<<<<<< Updated upstream
-import { set } from 'mongoose';
-=======
 import { Image, ScrollView, StyleSheet, Text, View, SafeAreaView,
   TouchableOpacity, ActivityIndicator, FlatList, Alert } from 'react-native';
->>>>>>> Stashed changes
 
 const equipmentFilters = [
   {item: 'None', id: '1'},
@@ -103,9 +99,7 @@ export default function DiscoverPage({navigation}) {
   // All items from DB from search with only ownerID
   const [masterWorkoutData, setMasterWorkoutData] = useState([]);
 
-<<<<<<< Updated upstream
-  const [exerciseSearch, setExerciseSearch] = useState('');
-  const [workoutSearch, setWorkoutSearch] = useState('');
+  // Search Bar Term
   const [searchTerm, setSearchTerm] = useState('');
 
   // Activity Indicator
@@ -114,8 +108,6 @@ export default function DiscoverPage({navigation}) {
 
   // Used to keep workout expanded
   const [expandedWorkoutId, setExpandedWorkoutId] = useState(null);
-
-  
 
   useEffect(() => {
     if(isFocused){
@@ -154,7 +146,6 @@ export default function DiscoverPage({navigation}) {
                 }
               }).then((response) => {
                 Alert.alert(`${selectedExerciseTitle} deleted successfully!`);
-                //exercisesList();
                 setFilteredExerciseData(filteredExerciseData.filter(item => item._id != selectedExercise._id));
                 setMasterExerciseData(masterExerciseData.filter(item => item._id != selectedExercise._id));
                 closeInfoModal();
@@ -628,7 +619,6 @@ return (
               {/* Workout/Exercise List Toggle */}
                 <Toggle
                   value = {toggleValue}
-<<<<<<< Updated upstream
                   onPress={(newState) => {
                     setToggleValue(newState);
                     if (newState) {
@@ -637,27 +627,8 @@ return (
                     } else {
                       // We are in workouts
                       setFilteredWorkoutData(filterWorkouts(searchTerm));
-=======
-                  onPress={(newState) => {
-                    setToggleValue(newState);
-                    if (newState) {
-                      // Exercises
-                      setFilteredExerciseData(filterExercises(searchTerm));
-                    } else {
-                      // Workouts
-                      setFilteredWorkoutData(filterWorkouts(searchTerm));
->>>>>>> Stashed changes
                     }
                   }}
-                  // onPress = {(newState) => {
-                  //   setToggleValue(newState)
-                  //   if(newState){
-                  //     // We are in exercises
-                  //     setFilteredExerciseData(filterExercises(exerciseSearch));
-                  //   }else{
-                  //     setFilteredWorkoutData(filterWorkouts(workoutSearch));
-                  //   }
-                  // }}
                   disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
                   leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
                   rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
@@ -823,23 +794,7 @@ return (
                   }
                 }}
                 
-                // Old stuff just in case
-                //value={(toggleValue ? exerciseSearch : workoutSearch)}
-                // onChangeText = {(toggleValue ? 
-                //   (
-                //     (text) => {
-                //   setExerciseSearch(text);
-                //   setFilteredExerciseData(filterExercises(text));
-                //   // below is for filters
-                //   //setExerciseSearch(text);
-                //   }
-                //   ) :  (
-                //     (text) => {
-                //       setWorkoutSearch(text);
-                //       setFilteredWorkoutData(filterWorkouts(text));
-                //     }
-                //   )
-                // )}
+               
                 inputStyle={{
                     color: "black",
                   }}
@@ -969,7 +924,6 @@ return (
               <View style={styles.exerciseInfoOwnerContainer}>
                 <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
                 <Text style={styles.exerciseInfoOwner}>{getWorkoutOwner(selectedExercise)}
-                {/* {selectedExerciseOwner ? selectedExerciseOwner : "Public"}*/}
                 </Text> 
               </View>
               </ScrollView>
