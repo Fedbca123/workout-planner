@@ -622,7 +622,9 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
   // if recurring add in again but a week in advance
   if(workout.recurrence){
     var date = workout.scheduledDate ? new Date(workout.scheduledDate) : new Date();
-    if (!(new Date().setTime(0,0,0,0) < date < new Date().setTime(23, 59, 59)))
+    let dateStart = (new Date()).setHours(0,0,0,0);
+    let dateEnd = (new Date()).setHours(23, 59, 59, 59);
+    if (dateStart < date && date < dateEnd)
     {
       date.setDate(date.getDate() + 7);
       workout.scheduledDate = date;
