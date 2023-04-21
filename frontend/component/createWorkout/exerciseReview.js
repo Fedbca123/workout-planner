@@ -13,7 +13,10 @@ import {
 	useWindowDimensions,
 	Alert,
 	KeyboardAvoidingView,
-	Modal
+	Modal,
+	Platform,
+	Dimensions,
+	StatusBar,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
@@ -21,8 +24,8 @@ import { AntDesign } from "@expo/vector-icons";
 import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import {TimePicker} from 'react-native-simple-time-picker';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import keyboardAwareDraggableFlatlist from "../keyboard-aware-draggable-flatlist";
 import KeyboardAwareDraggableFlatlist from "../keyboard-aware-draggable-flatlist";
+import { useHeaderHeight } from '@react-navigation/elements';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
@@ -35,6 +38,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 		seconds: 0
 	})
 	const [currentExIdx, setCurrExIdx] = useState(0);
+	const headerHeight = useHeaderHeight();
 
 	useEffect(() => {
 		let temp = { ...workout };
@@ -65,7 +69,11 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 	}
 
 	return (
-		<View style={styles.Background}>
+		<KeyboardAvoidingView
+			behavior='padding'
+			keyboardVerticalOffset={Platform.OS === "ios" ? headerHeight : -500}
+			style={styles.Background}
+		>
 			<TouchableOpacity
 				style={styles.addExerciseButton}
 				onPress={() => {
@@ -83,188 +91,190 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					Add an Exercise
 				</Text>
 			</TouchableOpacity>
-			<KeyboardAwareDraggableFlatlist
-				data={exercises}
-				style={{ height: "75%" }}
-				enableOnAndroid={true}
-				keyExtractor={(item) => item._id}
-				ListEmptyComponent={
-					<View
-						style={{
-							flex: 1,
-							alignItems: "center",
-							marginTop: "30%",
-						}}
-					>
-						<Text style={{ fontWeight: "bold", fontSize: 18 }}>
-							This workout currently has no exercises
-						</Text>
-					</View>
-				}
-				onDragEnd={({data}) => updateExercises(data)}
-				renderItem={({ item, getIndex, drag, isActive }) => (
-					<ScaleDecorator>
-						<TouchableOpacity style={styles.ExerciseCard} onLongPress={drag} disabled={isActive}>
-							<View style={styles.ExerciseCardTop}>
-								<Image
-									source={{ uri: item.image }}
-									style={styles.ExerciseImage}
-								/>
-								<View style={{alignItems:'center'}}>
-									<Text style={styles.ExerciseText}>
-										{item.title}
-									</Text>
-									<Dropdown
-									inverted={true}
-									style={styles.dropdown}
-									data={[
-										{ label: "Cardio", value: "CARDIO" },
-										{
-											label: "Sets x Reps",
-											value: "SETSXREPS",
-										},
-										{ label: "AMRAP", value: "AMRAP" },
-									]}
-									labelField="label"
-									valueField="value"
-									value={item.exerciseType}
-									onChange={(val) => {
-										let temp = [...exercises];
-										temp[getIndex()].exerciseType = val.value;
-										updateExercises(temp);
-									}}
+				<DraggableFlatList
+					data={exercises}
+					style={{ height: "75%" }}
+					enableOnAndroid={true}
+					keyExtractor={(item) => item._id}
+					
+					ListEmptyComponent={
+						<View
+							style={{
+								flex: 1,
+								alignItems: "center",
+								marginTop: "30%",
+							}}
+						>
+							<Text style={{ fontWeight: "bold", fontSize: 18 }}>
+								This workout currently has no exercises
+							</Text>
+						</View>
+					}
+					onDragEnd={({data}) => updateExercises(data)}
+					renderItem={({ item, getIndex, drag, isActive }) => (
+						<ScaleDecorator>
+							<TouchableOpacity style={styles.ExerciseCard} onLongPress={drag} disabled={isActive}>
+								<View style={styles.ExerciseCardTop}>
+									<Image
+										source={{ uri: item.image }}
+										style={styles.ExerciseImage}
 									/>
-								</View>
-								
-								<TouchableOpacity
-									onPress={() => {
-										let temp = [...exercises];
-										temp.splice(getIndex(), 1);
-										updateExercises(temp);
-									}}
-								>
-									<AntDesign
-										style={styles.DeleteExerciseBttn}
-										name="minus"
-										size={20}
-									/>
-								</TouchableOpacity>
-							</View>
-							<View style={styles.ExerciseCardBottom}>
-								{(item.exerciseType === "SETSXREPS" ||
-									item.exerciseType === "AMRAP") && (
-									<View style={styles.rowViewInputs}>
-									<Text>Sets:</Text>
-									<View style={styles.inputFieldView}>
-										<TextInput
-											style={styles.inputfield}
-											keyboardType="numeric"
-											placeholder={item.sets ? `${item.sets}` : "Sets"}
-											placeholderTextColor="#808080"
-											value={item.sets ? `${item.sets}` : ''}
-											maxLength={2}
-											// defaultValue={item.sets ? item.sets : undefined}
-											onChangeText={(text) => {
-												let temp = [...exercises];
-												let str = text.split(".");
-												// target.value = str[0];
-												temp[getIndex()].sets = str[0];
-												// console.log(temp[index].sets = str[0])
-												updateExercises(temp);
-											}}
+									<View style={{alignItems:'center'}}>
+										<Text style={styles.ExerciseText}>
+											{item.title}
+										</Text>
+										<Dropdown
+										inverted={true}
+										style={styles.dropdown}
+										data={[
+											{ label: "Cardio", value: "CARDIO" },
+											{
+												label: "Sets x Reps",
+												value: "SETSXREPS",
+											},
+											{ label: "AMRAP", value: "AMRAP" },
+										]}
+										labelField="label"
+										valueField="value"
+										value={item.exerciseType}
+										onChange={(val) => {
+											let temp = [...exercises];
+											temp[getIndex()].exerciseType = val.value;
+											updateExercises(temp);
+										}}
 										/>
 									</View>
-									</View>
 									
-								)}
-								{item.exerciseType === "SETSXREPS" && (
-									<View style={styles.rowViewInputs}>
-										<Text>Reps:</Text>
+									<TouchableOpacity
+										onPress={() => {
+											let temp = [...exercises];
+											temp.splice(getIndex(), 1);
+											updateExercises(temp);
+										}}
+									>
+										<AntDesign
+											style={styles.DeleteExerciseBttn}
+											name="minus"
+											size={20}
+										/>
+									</TouchableOpacity>
+								</View>
+								<View style={styles.ExerciseCardBottom}>
+									{(item.exerciseType === "SETSXREPS" ||
+										item.exerciseType === "AMRAP") && (
+										<View style={styles.rowViewInputs}>
+										<Text>Sets:</Text>
 										<View style={styles.inputFieldView}>
 											<TextInput
 												style={styles.inputfield}
 												keyboardType="numeric"
-												placeholder={item.reps ? `${item.reps}`  : "Reps"}
+												placeholder={item.sets ? `${item.sets}` : "Sets"}
 												placeholderTextColor="#808080"
-												maxLength={3}
-												value={item.reps ? `${item.reps}` : ''}
-												// defaultValue={item.reps ? item.reps : undefined}
+												value={item.sets ? `${item.sets}` : ''}
+												maxLength={2}
+												// defaultValue={item.sets ? item.sets : undefined}
 												onChangeText={(text) => {
 													let temp = [...exercises];
 													let str = text.split(".");
-													temp[getIndex()].reps = str[0];
-													updateExercises(temp);
-											}}
-											/>
-										</View>
-									</View>
-									
-								)}
-								{(item.exerciseType === "SETSXREPS" ||
-									item.exerciseType === "AMRAP") && (
-									<View style={styles.rowViewInputs}>
-										<Text>Weight:</Text>
-										<View style={styles.inputFieldView}>
-											<TextInput
-												style={styles.inputfield}
-												keyboardType="numeric"
-												maxLength={3}
-												placeholder={item.weight ? `${item.weight}`  : "Weight"}
-												placeholderTextColor="#808080"
-												value={item.weight ? `${item.weight}` : ""}
-												// defaultValue={item.weight ? item.weight : undefined}
-												onChangeText={(text) => {
-													let temp = [...exercises];
-													temp[getIndex()].weight = text;
+													// target.value = str[0];
+													temp[getIndex()].sets = str[0];
+													// console.log(temp[index].sets = str[0])
 													updateExercises(temp);
 												}}
 											/>
 										</View>
-									</View>
-									
-								)}
-								{(item.exerciseType === "AMRAP" ||
-									item.exerciseType === "CARDIO") && (
-									<View style={styles.rowViewInputs}>
-										<Text>Time:</Text>
-										<View style={styles.inputFieldView}>
-											<TouchableOpacity
-												onPress={() => {
-													setModalVisible(!modalVisible);
-													setCurrExIdx(getIndex);
-													setTimeVal({
-														hours: 0,
-														minutes: Math.floor(item.time / 60),
-														seconds: item.time % 60
-													})
-												}}>
-												<View pointerEvents="none">
-													<TextInput
+										</View>
+										
+									)}
+									{item.exerciseType === "SETSXREPS" && (
+										<View style={styles.rowViewInputs}>
+											<Text>Reps:</Text>
+											<View style={styles.inputFieldView}>
+												<TextInput
 													style={styles.inputfield}
-													editable={false}
-													cursorColor={'transparent'}
 													keyboardType="numeric"
-													placeholder={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : "Time"}
+													placeholder={item.reps ? `${item.reps}`  : "Reps"}
 													placeholderTextColor="#808080"
-													value={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : ''}
-													// defaultValue={item.time ? item.time : undefined}
+													maxLength={3}
+													value={item.reps ? `${item.reps}` : ''}
+													// defaultValue={item.reps ? item.reps : undefined}
 													onChangeText={(text) => {
 														let temp = [...exercises];
-														temp[getIndex()].time = text;
+														let str = text.split(".");
+														temp[getIndex()].reps = str[0];
+														updateExercises(temp);
+												}}
+												/>
+											</View>
+										</View>
+										
+									)}
+									{(item.exerciseType === "SETSXREPS" ||
+										item.exerciseType === "AMRAP") && (
+										<View style={styles.rowViewInputs}>
+											<Text>Weight:</Text>
+											<View style={styles.inputFieldView}>
+												<TextInput
+													style={styles.inputfield}
+													keyboardType="numeric"
+													maxLength={3}
+													placeholder={item.weight ? `${item.weight}`  : "Weight"}
+													placeholderTextColor="#808080"
+													value={item.weight ? `${item.weight}` : ""}
+													// defaultValue={item.weight ? item.weight : undefined}
+													onChangeText={(text) => {
+														let temp = [...exercises];
+														temp[getIndex()].weight = text;
 														updateExercises(temp);
 													}}
-													/>
-												</View>
-											</TouchableOpacity>
+												/>
+											</View>
 										</View>
-									</View>
-									
-								)}
-							</View>
-						</TouchableOpacity>
-					</ScaleDecorator>
-				)}
-			/>
+										
+									)}
+									{(item.exerciseType === "AMRAP" ||
+										item.exerciseType === "CARDIO") && (
+										<View style={styles.rowViewInputs}>
+											<Text>Time:</Text>
+											<View style={styles.inputFieldView}>
+												<TouchableOpacity
+													onPress={() => {
+														setModalVisible(!modalVisible);
+														setCurrExIdx(getIndex);
+														setTimeVal({
+															hours: 0,
+															minutes: Math.floor(item.time / 60),
+															seconds: item.time % 60
+														})
+													}}>
+													<View pointerEvents="none">
+														<TextInput
+														style={styles.inputfield}
+														editable={false}
+														cursorColor={'transparent'}
+														keyboardType="numeric"
+														placeholder={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : "Time"}
+														placeholderTextColor="#808080"
+														value={item.time ? `${Math.floor(item.time / 60)}m ${item.time % 60}s` : ''}
+														// defaultValue={item.time ? item.time : undefined}
+														onChangeText={(text) => {
+															let temp = [...exercises];
+															temp[getIndex()].time = text;
+															updateExercises(temp);
+														}}
+														/>
+													</View>
+												</TouchableOpacity>
+											</View>
+										</View>
+										
+									)}
+								</View>
+							</TouchableOpacity>
+						</ScaleDecorator>
+					)}
+				/>
+			
 
 			{/* <KeyboardSpacer topSpacing={100}/> */}
 
@@ -351,7 +361,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					</View>
 				</View>
 			</Modal>
-		</View>	
+		</KeyboardAvoidingView>	
 	);
 }
 
