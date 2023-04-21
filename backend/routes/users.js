@@ -459,28 +459,12 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
     recurrence
   });
 
-  var image = null;
-  var imageId = null;
-  if(req.file){
-    await cloudinary.v2.uploader.upload(req.file.path + "-cmp",{folder: "workouts"},function(err, result) {
-      if (err)
-        return res.status(402).send({Error: err});
-      image = result.url;
-      imageId = result.public_id;
-    });
-  } else{
-    // Defualt Cloudinary Workout Image, UPDATE IF CHANGED!!
-    image = config.DEFAULTWORKIMAGE;
-    imageId = config.DEFAULTWORKIMAGEID;
-  }
     
   // custom workouts dont have a scheduled date and recurrence
   const newCustomWorkout = new Workout({
     title,
     description,
     owner,
-    image,
-    imageId,
     duration,
     location,
     exercises,
@@ -519,6 +503,24 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
   let saveBool = req.body.save === "true" ? true : false;
   if (saveBool)
   {
+    var image = null;
+    var imageId = null;
+    if(req.file){
+      await cloudinary.v2.uploader.upload(req.file.path + "-cmp",{folder: "workouts"},function(err, result) {
+        if (err)
+          return res.status(402).send({Error: err});
+        image = result.url;
+        imageId = result.public_id;
+      });
+    } else{
+      // Defualt Cloudinary Workout Image, UPDATE IF CHANGED!!
+      image = config.DEFAULTWORKIMAGE;
+      imageId = config.DEFAULTWORKIMAGEID;
+    }
+
+    newCustomWorkout.image = image;
+    newCustomWorkout.imageId = imageId;
+
     newCustomWorkout.save()
       .then(async()=>{
         const user = await User.findById(newWorkout.owner);
@@ -543,10 +545,19 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
       });
   }
 
-  if(req.file){
-     await unlinkAsync(req.file.path);
-     await unlinkAsync(req.file.path + "-cmp");
+  try
+  {
+    if(req.file){
+      await unlinkAsync(req.file.path);
+      await unlinkAsync(req.file.path + "-cmp");
+   }
   }
+
+  catch
+  {
+    return res.status(573);
+  }
+  
 
   return res.status(200);
 });
