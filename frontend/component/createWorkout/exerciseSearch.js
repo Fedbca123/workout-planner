@@ -287,7 +287,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	}
 
     return (
-    <View style={[styles.Background, { minHeight: windowHeight - 500 }]}>
+    <View style={[styles.Background, { minHeight: windowHeight - 50 }]}>
         <TouchableOpacity 
 				style={styles.createButton}
 				onPress={() => {
