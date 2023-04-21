@@ -79,7 +79,7 @@ const CalendarScreen = ({}) => {
         const dot = {
           key: isMyWorkout ? 'myWorkout' : 'friendWorkout',
           color: isMyWorkout ? '#24C8FE' : '#808080',
-          selectedDotColor: isMyWorkout ? 'blue' : 'gray',
+          selectedDotColor: isMyWorkout ? '#24C8FE' : 'gray',
         };
     
         if (event.recurrence) {
@@ -106,6 +106,7 @@ const CalendarScreen = ({}) => {
 
     const handleDayPress = (day) => {
       const formattedDate = moment(day.dateString).format('YYYY-MM-DD');
+      
       if (weeklyEvents[formattedDate]) {
         const events = weeklyEvents[formattedDate].events; 
         setEvents(events);
@@ -177,7 +178,6 @@ const CalendarScreen = ({}) => {
     };
 
     const handleDelete = async (workout) => {
-      // console.log(workout);
       try {
         await API_Instance.patch(`users/${globalState.user._id}/workouts/remove/${workout._id}`, {}, {
           headers: {
@@ -260,9 +260,8 @@ const CalendarScreen = ({}) => {
       <View style ={styles.container}>
         <Calendar
           onDayPress={handleDayPress}
-          markedDates={weeklyEvents}
+          markedDates={{...weeklyEvents, [selectedDate]: {dots: [...weeklyEvents[selectedDate].dots],selected: true, selectedColor: '#feaa72'}}}
           markingType={'multi-dot'}
-          selected={[selectedDate]}
         />
       
         {selectedDate !== '' && 
