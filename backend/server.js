@@ -35,8 +35,8 @@ app.use('/workouts', workoutRouter);
 app.use('/users', userRouter);
 app.use('/healthcheck', healthcheckRouter);
 
-app.use(bodyParser.urlencoded({extended: false}));
-app.use(bodyParser.json());
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
 
 app.set("view engine", "ejs");
 
