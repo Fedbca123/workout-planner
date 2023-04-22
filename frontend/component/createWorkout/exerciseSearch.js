@@ -5,7 +5,6 @@ import {
     Text,
     Image,
     View,
-    SafeAreaView,
     TextInput,
     FlatList,
     ScrollView,
@@ -346,9 +345,9 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                     presentationStyle='fullScreen'
                     transparent={false}
                     >
-                    <SafeAreaView style={styles.modalBackground}>
-                        <SafeAreaView style={styles.filtersContainer}>
-                          <SafeAreaView style={styles.filterButtonContainer}>
+                    <View style={styles.modalBackground}>
+                        <View style={styles.filtersContainer}>
+                          <View style={[styles.filterButtonContainer, {marginTop:40}]}>
                             <SelectBox
                               label="Equipment"
                               labelStyle={styles.filterLabels}
@@ -371,8 +370,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                               onTapClose = {onMultiChangeEquipment()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={styles.filterButtonContainer}>
+                          </View>
+                          <View style={styles.filterButtonContainer}>
                             <SelectBox
                               label="Muscle Groups"
                               labelStyle={styles.filterLabels}
@@ -393,8 +392,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                               onTapClose = {onMultiChangeMuscleGroups()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={styles.filterButtonContainer}>                      
+                          </View>
+                          <View style={styles.filterButtonContainer}>                      
                             <SelectBox
                               label="Exercise Types"
                               inputPlaceholder = "Add one or more Types"
@@ -413,8 +412,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                               onTapClose = {onMultiChangeType()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={styles.filterButtonContainer}>                      
+                          </View>
+                          <View style={styles.filterButtonContainer}>                      
                             <SelectBox
                               label="Owner Types"
                               inputPlaceholder = "Add one or more owner types"
@@ -433,8 +432,8 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                               onTapClose = {onMultiChangeOwner()}
                               isMulti
                             />
-                          </SafeAreaView>
-                      </SafeAreaView>
+                          </View>
+                      </View>
                       <View style={styles.modalCloseButton}>
                         <TouchableOpacity onPress={toggleFiltersShowing}>
                           <View style={styles.closeFiltersButtonContainer}>
@@ -443,7 +442,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                         </TouchableOpacity>
                       </View>
                       
-                    </SafeAreaView>
+                    </View>
                   </Modal>
                   </TouchableOpacity>
               </View>
@@ -593,7 +592,9 @@ const styles = StyleSheet.create({
 	modalBackground:{
 		backgroundColor: "white",
 		flex: 1,
-		justifyContent: 'space-between'
+		display: "flex",
+		flexDirection:"column",
+		justifyContent: "space-evenly",
 	},
 	filtersContainer:{
 		// height: "50%",
@@ -607,7 +608,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		marginHorizontal: 5,
 		paddingVertical: 5,
-		marginVertical: 5,
+		marginVertical: 15,
 		// flex: 1,
 	},
 	filterLabels:{
@@ -643,9 +644,13 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		alignItems: 'center',
 		paddingHorizontal: 10,
-		marginHorizontal: 1,
-		justifyContent: 'center',
-		alignContent: 'center',
-	},
+		margin: 10,
+  },
+  closeText: {
+		fontWeight: 'bold',
+        color: 'black',
+        fontSize: 30,
+        paddingHorizontal: 8,
+	}
 
 })

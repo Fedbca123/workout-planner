@@ -11,7 +11,6 @@ import {
 	VirtualizedList,
 	useWindowDimensions,
 	ActivityIndicator,
-	SafeAreaView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -369,7 +368,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                     >
                     <View style={styles.modalBackground}>
                         <View style={styles.filtersContainer}>
-                          <View style={[styles.filterButtonContainer, {marginTop:30}]}>
+                          <View style={[styles.filterButtonContainer, {marginTop:40}]}>
                             <SelectBox
                               label="Equipment"
                               labelStyle={styles.filterLabels}
@@ -541,7 +540,7 @@ const styles = StyleSheet.create({
 	filtersContainer:{
 		// height: "50%",
 		flex: 1,
-		borderWidth: 5,
+		// borderWidth: 5,
 	},
 	filterButtonContainer:{
 		backgroundColor: "#CDCDCD",
@@ -552,7 +551,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 5,
 		paddingVertical: 5,
 		marginVertical: 15,
-		borderWidth: 5,
+		// borderWidth: 5,
 	},
 	filterLabels:{
 		fontWeight: '500',
@@ -593,6 +592,12 @@ const styles = StyleSheet.create({
 	temp: {
 		// maxHeight:"20%"
 		flex: 1,
+	},
+	closeText: {
+		fontWeight: 'bold',
+        color: 'black',
+        fontSize: 30,
+        paddingHorizontal: 8,
 	}
 
 });
