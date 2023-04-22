@@ -354,7 +354,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 				
                 <TouchableOpacity onPress={toggleFiltersShowing}>
                   
-                <View style={styles.modalContainer}></View>
+                <View style={{ flex: 1,}}></View>
                     <Image source = {require("../../../assets/filter_icon.png")}
                       style={styles.filterImage}
                     />
@@ -367,9 +367,9 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                     presentationStyle='fullScreen'
                     transparent={false}
                     >
-                    <SafeAreaView style={styles.modalBackground}>
+                    <View style={styles.modalBackground}>
                         <View style={styles.filtersContainer}>
-                          <View style={styles.filterButtonContainer}>
+                          <View style={[styles.filterButtonContainer, {marginTop:30}]}>
                             <SelectBox
                               label="Equipment"
                               labelStyle={styles.filterLabels}
@@ -444,7 +444,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
                         </TouchableOpacity>
                       </View>
                       
-                    </SafeAreaView>
+                    </View>
                   </Modal>
                   </TouchableOpacity>
               </View>
@@ -532,13 +532,16 @@ const styles = StyleSheet.create({
 	modalBackground:{
 		backgroundColor: "white",
 		flex: 1,
-		display:"flex",
-		// justifyContent: "space-evenly",
-		alignContent:"space-evenly,"
+		display: "flex",
+		flexDirection:"column",
+		justifyContent: "space-evenly",
+		// alignContent: "space-between",
+		// alignItems:"stretch",
 	},
 	filtersContainer:{
 		// height: "50%",
-		flex: 1
+		flex: 1,
+		borderWidth: 5,
 	},
 	filterButtonContainer:{
 		backgroundColor: "#CDCDCD",
@@ -548,7 +551,8 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 10,
 		marginHorizontal: 5,
 		paddingVertical: 5,
-		marginVertical: 5,
+		marginVertical: 15,
+		borderWidth: 5,
 	},
 	filterLabels:{
 		fontWeight: '500',
@@ -583,7 +587,8 @@ const styles = StyleSheet.create({
 		borderRadius: 20,
 		alignItems: 'center',
 		paddingHorizontal: 10,
-		marginHorizontal: 1,
+		margin: 10,
+		// width:"50%"
 	},
 	temp: {
 		// maxHeight:"20%"
