@@ -119,7 +119,15 @@ const CalendarScreen = ({}) => {
 
     const handleEdit = (workout) => {
       setWorkoutToEdit(workout);
-      setEditedScheduledDate(moment(workout.scheduledDate || workout.dateOfCompletion).format('YYYY-MM-DDTHH:mm'));
+      setDatePickerText(new Date(workout.scheduledDate).toLocaleDateString('en-us',{
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      }))
+      setEditedScheduledDate(moment(workout.scheduledDate).format('YYYY-MM-DDTHH:mm'));
       setEditedRecurrence(workout.recurrence);
       setEditModalVisible(true);
     };
