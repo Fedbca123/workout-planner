@@ -304,6 +304,7 @@ const CalendarScreen = ({}) => {
                     </TouchableOpacity>
                   </View>
                   <DateTimePickerModal
+                    date={new Date(workoutToEdit.scheduledDate)}
                     isVisible={datePickerVisible}
                     mode="datetime"
                     onConfirm={handleConfirm}
