@@ -11,6 +11,7 @@ import {
 	VirtualizedList,
 	useWindowDimensions,
 	ActivityIndicator,
+	Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -43,6 +44,11 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 	// Chosen Owner Type Filters
 	const [selectedOwnerFilter, setOwnerFilter] = useState([]);
+	// const OS = Platform.select({
+	// 	ios: "ios",
+	// 	android: "android",
+	// 	default: 'default'
+	// })
 
 	const equipmentFilters = [
 		{item: 'None', id: '1'},
@@ -287,16 +293,6 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 		console.log(JSON.stringify(n, null, 2));
 	}
 
-	// function checkOS() {
-	// 	if (Platform.OS === "ios") {
-	// 		return "ios";
-	// 	} else if (Platform.OS === "android") {
-	// 		return "android";
-	// 	} else {
-	// 		return "default";
-	// 	}
-	// }
-
 	return (
 		<View style={[styles.Background, { minHeight: windowHeight - 50 }]}>
 
@@ -319,7 +315,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start", borderTopWidth: .9,borderBottomWidth: .9, paddingBottom: 10}}>
 				<View style={{flex:1, }}>
 					<SearchBar
-						platform='default'
+						platform="default"
 						lightTheme={true}
 						containerStyle={{ backgroundColor: "white",}}
 						inputStyle={{ color: "black" }}

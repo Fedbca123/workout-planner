@@ -286,7 +286,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	}
 
     return (
-    <View style={[styles.Background, { minHeight: windowHeight - 50 }]}>
+    <View style={[styles.Background, { minHeight: windowHeight - (useWindowDimensions().height * 0.1) }]}>
         <TouchableOpacity 
 				style={styles.createButton}
 				onPress={() => {
@@ -454,7 +454,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                     <FlatList
                         data={searchResults}
                         keyExtractor={(item) => item._id}
-                        style={{ flex: 1 }}
+                        style={{ flex: 1, }}
                         ListEmptyComponent={
                         <View style={{alignItems: 'center'}}>
                             <Text style={{fontSize:20, alignItems: 'center', paddingTop:"15%"}}>
@@ -503,7 +503,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 		>
 		    <ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
 		</Modal>
-            <View style={{ height: '15%', backgroundColor: "#FF8C4B", justifyContent:"center"}}>
+            <View style={{ flex: .25, backgroundColor: "#FF8C4B", justifyContent:"center",}}>
                     <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("ExerciseReview")}}>
                     <Text style={styles.BttnText}>Return to Review</Text>
                 </TouchableOpacity>
