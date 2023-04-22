@@ -260,7 +260,7 @@ const CalendarScreen = ({}) => {
       <View style ={styles.container}>
         <Calendar
           onDayPress={handleDayPress}
-          markedDates={{...weeklyEvents, [selectedDate]: {dots: [...weeklyEvents[selectedDate].dots],selected: true, selectedColor: '#feaa72'}}}
+          markedDates={{...weeklyEvents, [selectedDate]: {dots: (weeklyEvents[selectedDate] ? [...weeklyEvents[selectedDate].dots] : []), selected: true, selectedColor: '#E5DAE7'}}}
           markingType={'multi-dot'}
         />
       
