@@ -17,7 +17,19 @@ import { useState } from "react";
 import reactDom from "react-dom";
 import { useGlobalState } from "../GlobalState.js";
 
-export default function ExerciseInfo({ exercise, setModalVisbility }){
+export default function ExerciseInfo({ exercise, setModalVisbility }) {
+    const [globalState, updateGlobalState] = useGlobalState();
+    
+    const getWorkoutOwner = (exercise) => {
+        if (!exercise.owner)
+        return "Public";
+        else if (exercise.owner === globalState.user?._id) {
+        return "You";
+        } else {
+        // console.log("exercise " + exercise.title+  " owner: "+ exercise.ownerName);
+        return exercise.ownerName;
+        }
+    };
 
     return (
         <View style={{flex: 1}}>
@@ -130,10 +142,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    exerciseInfoTags:{
-        fontSize: 16,
+    exerciseInfoOwner:{
+        fontSize: 14,
         fontWeight: 'bold',
-        textAlign:"center",
+        textAlign: 'center',
     },
     closeButtonContainer:{
         backgroundColor: 'white',

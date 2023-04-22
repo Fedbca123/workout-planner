@@ -63,7 +63,7 @@ export default function Inbox({ navigation }) {
           console.error(error);
           throw error;
         }
-      };
+    };
   
     const handleDeclineFriendRequest = async (deleteNewFriendId) => {
         const deleteid = deleteNewFriendId;
