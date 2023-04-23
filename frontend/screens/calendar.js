@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableWithoutFeedback, Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
+import { TouchableWithoutFeedback, Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform, ActivityIndicator} from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
 import {useGlobalState} from '../GlobalState.js';
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { ScrollView } from 'react-native'
+import { ScrollView } from 'react-native';
+import {ReactNativeModal} from "react-native-modal";
 
 const CalendarScreen = ({}) => {
     const navigation = useNavigation();
+
+    const [isLoading, setIsLoading] = useState(true);
 
     const [datePickerText, setDatePickerText] = useState("Select Date & Time");
 
@@ -45,6 +48,7 @@ const CalendarScreen = ({}) => {
 
     const fetchEvents = async () => {
       try {
+        setIsLoading(true);
         const response = await API_Instance.get(`users/${globalState.user._id}/calendar/all`, {
           headers: {
             'authorization': `Bearer ${globalState.authToken}`,
@@ -52,6 +56,7 @@ const CalendarScreen = ({}) => {
         });
         const formattedEvents = formatEvents(response.data.workouts);
         setWeeklyEvents(formattedEvents);
+        setIsLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 403) {
           Alert.alert('Failed to authenticate you');
@@ -77,8 +82,7 @@ const CalendarScreen = ({}) => {
         
         let date = moment(event.dateOfCompletion ? event.dateOfCompletion : event.scheduledDate).format('YYYY-MM-DD');
         const isMyWorkout = event.ownerEmail === globalState.user?.email;
-        //event.scheduledDate = moment.utc(event.scheduledDate);
-        if(event.scheduledDate && isMyWorkout){console.log(event.title, event.scheduledDate);}
+        
         const dot = {
           key: isMyWorkout ? 'myWorkout' : 'friendWorkout',
           color: isMyWorkout ? '#24C8FE' : '#808080',
@@ -136,10 +140,8 @@ const CalendarScreen = ({}) => {
     };
 
     const handleConfirm = (date) => {
-      //console.log("on confirm", moment.utc(date).subtract(new Date().getTimezoneOffset(), 'minute'))
       date = moment.utc(date).subtract(new Date().getTimezoneOffset(), 'minute')
       const formattedDate = moment.utc(date).format('YYYY-MM-DDTHH:mm');
-      console.log('on confirm formatted date', formattedDate);
       setEditedScheduledDate(formattedDate);
       setDatePickerText(new Date(moment(date).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
         weekday: 'long',
@@ -183,8 +185,6 @@ const CalendarScreen = ({}) => {
     };
 
     const handleSave = async () => {
-
-      console.log('saving editedScheduledDate', moment.utc(editedScheduledDate))
       const updatedInfo = {
         scheduledDate: moment.utc(editedScheduledDate),
         recurrence: editedRecurrence,
@@ -407,6 +407,13 @@ const CalendarScreen = ({}) => {
     
           </View>
         </Modal>
+        <ReactNativeModal
+				  isVisible={isLoading}
+				  transparent={true}
+				  coverScreen={true}
+				  backdropOpacity={.6}>
+				  <ActivityIndicator size={100} />
+			  </ReactNativeModal>
       </View>
     );
   };
