@@ -221,15 +221,28 @@ const CalendarScreen = ({}) => {
     const [events, setEvents] = useState([]);
     const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
 
+    const buildString = (dateText,item) => {
+      if(dateText == 'Scheduled'){
+        const start = moment.utc(item.scheduledDate).format('hh:mm A');
+        const end  = moment.utc(item.scheduledDate).add(item.duration, 'minute').format('hh:mm A');
+        return `Scheduled workout from ${start} - ${end}`;
+      }else{
+        return `Completed workout at ${moment.utc(item.dateOfCompletion).format('hh:mm A')}`
+      }
+    }
+
     const renderItem = ({ item }) => {
       // const eventDate = item.scheduledDate || item.dateOfCompletion;
       const dateText = item.scheduledDate ? 'Scheduled' : 'Completed';
       const startTime = moment.utc(item.scheduledDate).format('hh:mm A');
 
+
+      const displayString = buildString(dateText, item);
+
       if (item.ownerEmail === globalState.user?.email && item.scheduledDate) {
         return (
           <View style={styles.myExercise}>
-            <Text>{dateText} workout at {startTime} </Text>
+            <Text>{displayString}</Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
             {item.location && <Text>Location: {item.location}</Text>}
             <View style={{ flexDirection: 'row' }}>
@@ -261,7 +274,7 @@ const CalendarScreen = ({}) => {
       } else if (item.ownerEmail === globalState.user?.email) {
           return (
             <View style={styles.myExercise}>
-              <Text>{dateText} </Text>
+              <Text>{displayString}</Text>
               <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
               {item.location && <Text>Location: {item.location}</Text>}
               <View style={{ flexDirection: 'row' }}>
@@ -272,7 +285,7 @@ const CalendarScreen = ({}) => {
         } else {
         return (
           <View style={styles.friendExercise}>
-            <Text>{dateText} workout at {startTime}</Text>
+            <Text>{displayString}</Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
             {item.location && <Text>Location: {item.location}</Text>}
           </View>
