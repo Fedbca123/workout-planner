@@ -74,8 +74,11 @@ const CalendarScreen = ({}) => {
     const formatEvents = (events) => {
       const formattedEvents = {};
       events.forEach((event) => {
-        let date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
+        
+        let date = moment(event.dateOfCompletion ? event.dateOfCompletion : event.scheduledDate).format('YYYY-MM-DD');
         const isMyWorkout = event.ownerEmail === globalState.user?.email;
+        //event.scheduledDate = moment.utc(event.scheduledDate);
+        if(event.scheduledDate && isMyWorkout){console.log(event.title, event.scheduledDate);}
         const dot = {
           key: isMyWorkout ? 'myWorkout' : 'friendWorkout',
           color: isMyWorkout ? '#24C8FE' : '#808080',
@@ -119,7 +122,7 @@ const CalendarScreen = ({}) => {
 
     const handleEdit = (workout) => {
       setWorkoutToEdit(workout);
-      setDatePickerText(new Date(workout.scheduledDate).toLocaleDateString('en-us',{
+      setDatePickerText(new Date(moment.utc(workout.scheduledDate).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
         weekday: 'long',
         year: 'numeric',
         month: 'short',
@@ -127,15 +130,25 @@ const CalendarScreen = ({}) => {
         hour: 'numeric',
         minute: 'numeric'
       }))
-      setEditedScheduledDate(moment(workout.scheduledDate).format('YYYY-MM-DDTHH:mm'));
+      setEditedScheduledDate(moment.utc(workout.scheduledDate).format('YYYY-MM-DDTHH:mm'));
       setEditedRecurrence(workout.recurrence);
       setEditModalVisible(true);
     };
 
     const handleConfirm = (date) => {
-      const formattedDate = moment(date).format('YYYY-MM-DDTHH:mm');
+      //console.log("on confirm", moment.utc(date).subtract(new Date().getTimezoneOffset(), 'minute'))
+      date = moment.utc(date).subtract(new Date().getTimezoneOffset(), 'minute')
+      const formattedDate = moment.utc(date).format('YYYY-MM-DDTHH:mm');
+      console.log('on confirm formatted date', formattedDate);
       setEditedScheduledDate(formattedDate);
-      setDatePickerText(moment(date).format("MMMM D, YYYY hh:mm A"));
+      setDatePickerText(new Date(moment(date).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      }));
       hideDatePicker();
     };
 
@@ -170,11 +183,14 @@ const CalendarScreen = ({}) => {
     };
 
     const handleSave = async () => {
+
+      console.log('saving editedScheduledDate', moment.utc(editedScheduledDate))
       const updatedInfo = {
-        scheduledDate: editedScheduledDate,
+        scheduledDate: moment.utc(editedScheduledDate),
         recurrence: editedRecurrence,
       };
 
+      
       const updatedWorkout = await updateWorkout(workoutToEdit._id, updatedInfo);
     
       if (updatedWorkout) {
@@ -208,8 +224,8 @@ const CalendarScreen = ({}) => {
     const renderItem = ({ item }) => {
       // const eventDate = item.scheduledDate || item.dateOfCompletion;
       const dateText = item.scheduledDate ? 'Scheduled' : 'Completed';
-      const startTime = moment(item.scheduledDate).format('hh:mm A');
-    
+      const startTime = moment.utc(item.scheduledDate).format('hh:mm A');
+
       if (item.ownerEmail === globalState.user?.email && item.scheduledDate) {
         return (
           <View style={styles.myExercise}>
@@ -304,7 +320,7 @@ const CalendarScreen = ({}) => {
                     </TouchableOpacity>
                   </View>
                   <DateTimePickerModal
-                    date={new Date(workoutToEdit.scheduledDate)}
+                    date={new Date(moment.utc(workoutToEdit.scheduledDate).format('YYYY-MM-DDTHH:mm'))}
                     isVisible={datePickerVisible}
                     mode="datetime"
                     onConfirm={handleConfirm}
@@ -348,7 +364,7 @@ const CalendarScreen = ({}) => {
                   <Text>Owner Name: {selectedCompletedWorkout.ownerName}</Text>
                   {selectedCompletedWorkout.location && <Text>Location: {selectedCompletedWorkout.location}</Text>} */}
                   <Text style={styles.modalSubTitle}>Completed:</Text>
-                  <Text style={styles.modalSubTitle}>{new Date(selectedCompletedWorkout.dateOfCompletion).toLocaleDateString('en-us',{
+                  <Text style={styles.modalSubTitle}>{new Date(moment.utc(selectedCompletedWorkout.dateOfCompletion).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
                     weekday: 'long',
                     year: 'numeric',
                     month: 'short',
