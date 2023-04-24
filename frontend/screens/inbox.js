@@ -53,12 +53,17 @@ export default function Inbox({ navigation }) {
               'authorization': `Bearer ${globalState.authToken}`,
             }
           });
+          
+          let temp = {...globalState.user};
+          temp.friends = temp.friends.push(id);
+          updateGlobalState("user", temp);
+
           fetchFriendRequests(); 
         } catch (error) {
           console.error(error);
           throw error;
         }
-      };
+    };
   
     const handleDeclineFriendRequest = async (deleteNewFriendId) => {
         const deleteid = deleteNewFriendId;

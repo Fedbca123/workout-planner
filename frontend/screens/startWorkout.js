@@ -348,12 +348,11 @@ const StartWorkout = ({ navigation, route }) => {
                       progressValueColor={'black'}
                       activeStrokeColor={'#FA7B34'}
                       maxValue={timerDuration}
-                      title={'Seconds'}
                       titleColor={'black'}
                       progressFormatter={(value) => {
                         'worklet';
               
-                        return value;
+                        return `${Math.floor(value / 60)}:${value % 60}`
                       }}
                     />
                     <View style={{flexDirection:'row', justifyContent:'center', height:"20%"}}>
@@ -374,12 +373,10 @@ const StartWorkout = ({ navigation, route }) => {
                     progressValueColor={'black'}
                     activeStrokeColor={'#FA7B34'}
                     maxValue={timerDuration}
-                    title={'Seconds'}
                     titleColor={'black'}
                     progressFormatter={(value) => {
                       'worklet';
-            
-                      return value;
+                      return `${Math.floor(value / 60)}:${value % 60}`
                     }}
                   />
                   <View style={{flexDirection:'row', justifyContent:'center', height:"20%"}}>

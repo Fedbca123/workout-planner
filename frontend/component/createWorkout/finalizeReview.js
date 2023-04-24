@@ -13,7 +13,8 @@ import {
 	useWindowDimensions,
 	Switch,
 	Animated,
-	Alert
+	Alert,
+	ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -25,16 +26,17 @@ import { AntDesign } from "@expo/vector-icons";
 import { Header, SearchBar } from "react-native-elements";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import config from "../../../backend/config.js"
+import config from "../../../backend/config.js";
+import Modal from "react-native-modal";
 
 export default function FinalizeReview({ workout, updateWorkout, setCurrState, navigation, }) {
 	const [expanded, setExpanded] = useState(false);
 	const [globalState, updateGlobalState] = useGlobalState();
+	const [isScheduling, setIsScheduling] = useState(false);
 	const spinValue = React.useState(new Animated.Value(0))[0]; // Makes animated value
 	const handlePress = () => {
 		setExpanded(!expanded);
 	};
-	// console.log("Finalize Review: ", workout[0].save);
 	// When button is pressed in, make spinValue go through and up to 1
 	const onPressIn = () => {
 		Animated.spring(spinValue, {
@@ -111,6 +113,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 				'authorization': `BEARER ${globalState.authToken}`
 			}
 		}).then((response) => {
+			setIsScheduling(false);
 			if (response.status == 200) {
 				// console.log(response.data);
 				Alert.alert('Success!', 'Workout scheduled!', [
@@ -159,6 +162,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 						}}
 						onPress={() => {
 							// console.log(workout[0].save);
+							setIsScheduling(true);
 							scheduledWorkout();
 						}}
 					>
@@ -175,10 +179,10 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 				data={workout}
 				renderItem={(item) => (
 					<View style={styles.workoutItems}>
-						<TouchableOpacity
+						{/* <TouchableOpacity
 							onPress={handlePress}
 							activeOpacity="1"
-						>
+						> */}
 							<View style={styles.workoutHeader}>
 								<View style={styles.workoutCardImageContainer}>
 									<Image
@@ -199,7 +203,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 							<View style={styles.workoutCardText}>
 								
 								<Text style={styles.workoutCardDuration}>
-									Duration: {workout[0].duration} min
+									Duration: {Math.floor(workout[0].duration / 60)}h {workout[0].duration % 60}s
 								</Text>
 								{workout[0].location && (
 								<Text
@@ -290,22 +294,28 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 															" sets with " +
 															exercise.weight +
 															"lbs for " +
-															exercise.time +
-															" seconds"}
+															`${Math.floor(exercise.time / 60)}m ${exercise.time % 60}s`}
 													{exercise.exerciseType ===
 														"CARDIO" &&
-														exercise.time +
-															" seconds"}
+														`${Math.floor(exercise.time / 60)}m ${exercise.time % 60}s`}
 												</Text>
 											</View>
 										</View>
 									</View>
 								</TouchableOpacity>
 							</View>))}
-						</TouchableOpacity>
+						{/* </TouchableOpacity> */}
 					</View>
 				)}
 			/>
+			<Modal
+				isVisible={isScheduling}
+				transparent={true}
+				coverScreen={true}
+				backdropOpacity={.6}
+			>
+				<ActivityIndicator size={100} />
+			</Modal>
 		</View>
 	);
 }
@@ -315,7 +325,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "white",
 		flexDirection: "column-reverse",
-		borderTopWidth: 1,
+		borderTopWidth: 1.5,
 		// borderWidth: 1,
 		// justifyContent:"space-between"
 	},

@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableWithoutFeedback, Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform } from 'react-native';
+import { TouchableWithoutFeedback, Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform, ActivityIndicator} from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
 import moment from 'moment';
 import {useGlobalState} from '../GlobalState.js';
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { ScrollView } from 'react-native'
+import { ScrollView } from 'react-native';
+import {ReactNativeModal} from "react-native-modal";
 
 const CalendarScreen = ({}) => {
     const navigation = useNavigation();
+
+    const [isLoading, setIsLoading] = useState(true);
 
     const [datePickerText, setDatePickerText] = useState("Select Date & Time");
 
@@ -45,6 +48,7 @@ const CalendarScreen = ({}) => {
 
     const fetchEvents = async () => {
       try {
+        setIsLoading(true);
         const response = await API_Instance.get(`users/${globalState.user._id}/calendar/all`, {
           headers: {
             'authorization': `Bearer ${globalState.authToken}`,
@@ -52,6 +56,7 @@ const CalendarScreen = ({}) => {
         });
         const formattedEvents = formatEvents(response.data.workouts);
         setWeeklyEvents(formattedEvents);
+        setIsLoading(false);
       } catch (error) {
         if (error.response && error.response.status === 403) {
           Alert.alert('Failed to authenticate you');
@@ -74,12 +79,14 @@ const CalendarScreen = ({}) => {
     const formatEvents = (events) => {
       const formattedEvents = {};
       events.forEach((event) => {
-        let date = moment(event.scheduledDate || event.dateOfCompletion).format('YYYY-MM-DD');
+        
+        let date = moment(event.dateOfCompletion ? event.dateOfCompletion : event.scheduledDate).format('YYYY-MM-DD');
         const isMyWorkout = event.ownerEmail === globalState.user?.email;
+        
         const dot = {
           key: isMyWorkout ? 'myWorkout' : 'friendWorkout',
           color: isMyWorkout ? '#24C8FE' : '#808080',
-          selectedDotColor: isMyWorkout ? 'blue' : 'gray',
+          selectedDotColor: isMyWorkout ? '#24C8FE' : 'gray',
         };
     
         if (event.recurrence) {
@@ -106,6 +113,7 @@ const CalendarScreen = ({}) => {
 
     const handleDayPress = (day) => {
       const formattedDate = moment(day.dateString).format('YYYY-MM-DD');
+      
       if (weeklyEvents[formattedDate]) {
         const events = weeklyEvents[formattedDate].events; 
         setEvents(events);
@@ -118,15 +126,31 @@ const CalendarScreen = ({}) => {
 
     const handleEdit = (workout) => {
       setWorkoutToEdit(workout);
-      setEditedScheduledDate(moment(workout.scheduledDate || workout.dateOfCompletion).format('YYYY-MM-DDTHH:mm'));
+      setDatePickerText(new Date(moment.utc(workout.scheduledDate).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      }))
+      setEditedScheduledDate(moment.utc(workout.scheduledDate).format('YYYY-MM-DDTHH:mm'));
       setEditedRecurrence(workout.recurrence);
       setEditModalVisible(true);
     };
 
     const handleConfirm = (date) => {
-      const formattedDate = moment(date).format('YYYY-MM-DDTHH:mm');
+      date = moment.utc(date).subtract(new Date().getTimezoneOffset(), 'minute')
+      const formattedDate = moment.utc(date).format('YYYY-MM-DDTHH:mm');
       setEditedScheduledDate(formattedDate);
-      setDatePickerText(moment(date).format("MMMM D, YYYY hh:mm A"));
+      setDatePickerText(new Date(moment(date).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric'
+      }));
       hideDatePicker();
     };
 
@@ -162,10 +186,11 @@ const CalendarScreen = ({}) => {
 
     const handleSave = async () => {
       const updatedInfo = {
-        scheduledDate: editedScheduledDate,
+        scheduledDate: moment.utc(editedScheduledDate),
         recurrence: editedRecurrence,
       };
 
+      
       const updatedWorkout = await updateWorkout(workoutToEdit._id, updatedInfo);
     
       if (updatedWorkout) {
@@ -177,7 +202,6 @@ const CalendarScreen = ({}) => {
     };
 
     const handleDelete = async (workout) => {
-      // console.log(workout);
       try {
         await API_Instance.patch(`users/${globalState.user._id}/workouts/remove/${workout._id}`, {}, {
           headers: {
@@ -197,15 +221,28 @@ const CalendarScreen = ({}) => {
     const [events, setEvents] = useState([]);
     const [selectedDate, setSelectedDate] = useState(moment().format('YYYY-MM-DD'));
 
+    const buildString = (dateText,item) => {
+      if(dateText == 'Scheduled'){
+        const start = moment.utc(item.scheduledDate).format('hh:mm A');
+        const end  = moment.utc(item.scheduledDate).add(item.duration, 'minute').format('hh:mm A');
+        return `Scheduled workout from ${start} - ${end}`;
+      }else{
+        return `Completed workout at ${moment.utc(item.dateOfCompletion).format('hh:mm A')}`
+      }
+    }
+
     const renderItem = ({ item }) => {
       // const eventDate = item.scheduledDate || item.dateOfCompletion;
       const dateText = item.scheduledDate ? 'Scheduled' : 'Completed';
-      const startTime = moment(item.scheduledDate).format('hh:mm A');
-    
+      const startTime = moment.utc(item.scheduledDate).format('hh:mm A');
+
+
+      const displayString = buildString(dateText, item);
+
       if (item.ownerEmail === globalState.user?.email && item.scheduledDate) {
         return (
           <View style={styles.myExercise}>
-            <Text>{dateText} workout at {startTime} </Text>
+            <Text>{displayString}</Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
             {item.location && <Text>Location: {item.location}</Text>}
             <View style={{ flexDirection: 'row' }}>
@@ -237,7 +274,7 @@ const CalendarScreen = ({}) => {
       } else if (item.ownerEmail === globalState.user?.email) {
           return (
             <View style={styles.myExercise}>
-              <Text>{dateText} </Text>
+              <Text>{displayString}</Text>
               <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
               {item.location && <Text>Location: {item.location}</Text>}
               <View style={{ flexDirection: 'row' }}>
@@ -248,7 +285,7 @@ const CalendarScreen = ({}) => {
         } else {
         return (
           <View style={styles.friendExercise}>
-            <Text>{dateText} workout at {startTime}</Text>
+            <Text>{displayString}</Text>
             <Text style={{ fontWeight: 'bold' }}>{item.title} - {item.ownerName} </Text>
             {item.location && <Text>Location: {item.location}</Text>}
           </View>
@@ -260,9 +297,8 @@ const CalendarScreen = ({}) => {
       <View style ={styles.container}>
         <Calendar
           onDayPress={handleDayPress}
-          markedDates={weeklyEvents}
+          markedDates={{...weeklyEvents, [selectedDate]: {dots: (weeklyEvents[selectedDate] ? [...weeklyEvents[selectedDate].dots] : []), selected: true, selectedColor: '#E5DAE7'}}}
           markingType={'multi-dot'}
-          selected={[selectedDate]}
         />
       
         {selectedDate !== '' && 
@@ -297,6 +333,7 @@ const CalendarScreen = ({}) => {
                     </TouchableOpacity>
                   </View>
                   <DateTimePickerModal
+                    date={new Date(moment.utc(workoutToEdit.scheduledDate).format('YYYY-MM-DDTHH:mm'))}
                     isVisible={datePickerVisible}
                     mode="datetime"
                     onConfirm={handleConfirm}
@@ -340,7 +377,7 @@ const CalendarScreen = ({}) => {
                   <Text>Owner Name: {selectedCompletedWorkout.ownerName}</Text>
                   {selectedCompletedWorkout.location && <Text>Location: {selectedCompletedWorkout.location}</Text>} */}
                   <Text style={styles.modalSubTitle}>Completed:</Text>
-                  <Text style={styles.modalSubTitle}>{new Date(selectedCompletedWorkout.dateOfCompletion).toLocaleDateString('en-us',{
+                  <Text style={styles.modalSubTitle}>{new Date(moment.utc(selectedCompletedWorkout.dateOfCompletion).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
                     weekday: 'long',
                     year: 'numeric',
                     month: 'short',
@@ -370,6 +407,13 @@ const CalendarScreen = ({}) => {
     
           </View>
         </Modal>
+        <ReactNativeModal
+				  isVisible={isLoading}
+				  transparent={true}
+				  coverScreen={true}
+				  backdropOpacity={.6}>
+				  <ActivityIndicator size={100} />
+			  </ReactNativeModal>
       </View>
     );
   };
