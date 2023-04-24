@@ -642,7 +642,7 @@ return (
                   }}
                   trackBarStyle={{
                       borderColor: 'black',
-                      borderWidth: 2.5,
+                      borderWidth: 0,
                       height: 54,
                       width: 174                 
                   }}
@@ -1046,7 +1046,7 @@ const styles = StyleSheet.create({
     left: 10,
     marginRight: 20,
     borderColor: 'black',
-    borderWidth: 1.5,
+    borderWidth: .5,
     borderRadius: 20
 
   },
@@ -1226,10 +1226,10 @@ const styles = StyleSheet.create({
       paddingVertical: 12, 
       paddingHorizontal: 12,
       flex: 1,
-      margin: 1.8,
+      margin: 3,
       flexDirection: 'row',
       borderColor: 'black',
-      borderWidth: 2,
+      borderWidth: .5,
       borderRadius: 15,
       // Can delete below if wanted
       shadowColor: "#000",

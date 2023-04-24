@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 		padding: 25,
 		borderRadius: 20,
-		borderWidth: 2,
+		borderWidth: .5,
 		// flex: 2,
 		width: 350,
 		height:82

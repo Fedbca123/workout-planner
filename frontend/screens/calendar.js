@@ -411,7 +411,8 @@ const CalendarScreen = ({}) => {
 				  isVisible={isLoading}
 				  transparent={true}
 				  coverScreen={true}
-				  backdropOpacity={.6}>
+				  backdropOpacity={.6}
+          animationIn={"tada"}>
 				  <ActivityIndicator size={100} />
 			  </ReactNativeModal>
       </View>
@@ -457,7 +458,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: .5,
+    alignSelf: 'center',
+    width: "95%",
   },
   friendExercise:{
     backgroundColor: '#F1F3FA',
@@ -472,7 +475,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderWidth: 2,
+    borderWidth: .5,
+    alignSelf: 'center',
+    width: "95%",
   },
   noEvents: {
     textAlign: 'left',
