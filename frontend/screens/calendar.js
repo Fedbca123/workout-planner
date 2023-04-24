@@ -12,6 +12,8 @@ import {ReactNativeModal} from "react-native-modal";
 const CalendarScreen = ({}) => {
     const navigation = useNavigation();
 
+    const [isDateValid, setIsDateValid] = useState(true);
+
     const [isLoading, setIsLoading] = useState(true);
 
     const [datePickerText, setDatePickerText] = useState("Select Date & Time");
@@ -142,15 +144,23 @@ const CalendarScreen = ({}) => {
     const handleConfirm = (date) => {
       date = moment.utc(date).subtract(new Date().getTimezoneOffset(), 'minute')
       const formattedDate = moment.utc(date).format('YYYY-MM-DDTHH:mm');
-      setEditedScheduledDate(formattedDate);
-      setDatePickerText(new Date(moment(date).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
-        weekday: 'long',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric'
-      }));
+      const now = moment.utc();
+    
+      if (date.isBefore(now)) {
+        setIsDateValid(false);
+        Alert.alert('Error', 'Dates cannot be selected in the past.');
+      } else {
+        setIsDateValid(true);
+        setEditedScheduledDate(formattedDate);
+        setDatePickerText(new Date(moment(date).format('YYYY-MM-DDTHH:mm')).toLocaleDateString('en-us',{
+          weekday: 'long',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+        }));
+      }
       hideDatePicker();
     };
 
@@ -353,7 +363,7 @@ const CalendarScreen = ({}) => {
 
                   <View style={styles.modalButtons}>
                     <Button title="Close" onPress={() => setEditModalVisible(false)} />
-                    <Button title="Save" onPress={handleSave} />
+                    <Button title="Save" onPress={handleSave} disabled={!isDateValid} />
                   </View>
                 </>
               )}
