@@ -209,10 +209,10 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 const styles = StyleSheet.create({
 	collapsePill: {
-		margin: 10,
+		margin: 5,
 		// padding: 15,
 		backgroundColor: "#F1F3FA",
-		padding: 20,
+		padding: 15,
 		shadowColor: "#000",
         shadowOpacity: 0.2,
         shadowRadius: 5,
