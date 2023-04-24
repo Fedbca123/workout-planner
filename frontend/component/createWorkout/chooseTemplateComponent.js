@@ -445,7 +445,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
               </View>
 			</View>
 
-			<View style={{ flex: 1, }}>
+			<View style={{ flex: 1.1, }}>
 				{isWorkoutsLoading ? 
 					<ActivityIndicator size={50} /> :
 					<FlatList
