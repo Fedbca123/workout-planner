@@ -293,7 +293,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 					setCurrState("CustomExercise");
 				}}
 			>
-			<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a custom exercise</Text>
+			<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a Custom Exercise</Text>
 		</TouchableOpacity>
 			
 
