@@ -59,9 +59,9 @@ export default function LandingPage({navigation}) {
 
 	const loadCurrentDayWorkoutStatus = () => {
 		if (todaysWorkouts.length === 1) {
-			return "a workout scheduled today";
+			return "a workout scheduled today!";
 		} else if (todaysWorkouts.length > 1) {
-			return `${todaysWorkouts.length} workouts scheduled today`;
+			return `${todaysWorkouts.length} workouts scheduled today!`;
 		} else {
 			return "no workout scheduled today";
 			//or "you are done with your workout today!"
@@ -180,6 +180,7 @@ const styles = StyleSheet.create({
 		marginTop: 15,
 		padding: 25,
 		borderRadius: 20,
+		borderWidth: .5,
 		// flex: 2,
 		width: 350,
 		height:82

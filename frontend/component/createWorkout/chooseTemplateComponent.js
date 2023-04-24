@@ -304,7 +304,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 					setCurrState("ExerciseReview");
 				}}
 			>
-				<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a custom workout</Text>
+				<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a Custom Workout</Text>
 			</TouchableOpacity>
 			
 
@@ -312,7 +312,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 			<Text style={styles.HeaderText}>Select a Workout:</Text>
 
-			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start", borderTopWidth: .9,borderBottomWidth: .9, paddingBottom: 10}}>
+			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start"}}>
 				<View style={{flex:1, }}>
 					<SearchBar
 						platform="default"
@@ -445,7 +445,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
               </View>
 			</View>
 
-			<View style={{ flex: 1, }}>
+			<View style={{ flex: 1.1, }}>
 				{isWorkoutsLoading ? 
 					<ActivityIndicator size={50} /> :
 					<FlatList
@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
 		marginLeft: 10
 	},
 	createButton: {
-		borderWidth: .5, 
+		borderWidth: 1.5, 
 		width: '60%', 
 		alignSelf: 'center',
 		marginVertical: 15, 
