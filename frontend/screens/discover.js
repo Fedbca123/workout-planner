@@ -1017,7 +1017,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   exerciseInfoHeader:{
-    top: 15,
+    marginTop: "10%",
     flex: 1.5,
   },
   exerciseInfoTitleandDelete:{
@@ -1381,7 +1381,7 @@ deleteWorkoutText:{
   },
   filtersContainer:{
     flex: 1,
-    top: 10,
+    marginTop: "5%",
   },
   filterButtonContainer:{
     backgroundColor: "#CDCDCD",
