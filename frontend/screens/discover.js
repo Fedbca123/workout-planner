@@ -608,7 +608,9 @@ export default function DiscoverPage({navigation}) {
   }
 
 return (
-    <SafeAreaView style = {{flex: 1, backgroundColor: "white"}}>
+
+  <View style={{flex: 1, backgroundColor: "white"}}>
+    {/* <SafeAreaView style = {{flex: 1, backgroundColor: "white"}}> */}
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
           <Text style={styles.discoverTitle}>Discover</Text>
@@ -669,9 +671,9 @@ return (
                     presentationStyle='fullScreen'
                     transparent={false}
                     >
-                    <SafeAreaView style={styles.modalBackground}>
-                        <SafeAreaView style={styles.filtersContainer}>
-                          <SafeAreaView style={styles.filterButtonContainer}>
+                    <View style={styles.modalBackground}>
+                        <View style={styles.filtersContainer}>
+                          <View style={styles.filterButtonContainer}>
                             <SelectBox
                               label="Equipment"
                               labelStyle={styles.filterLabels}
@@ -694,8 +696,8 @@ return (
                               onTapClose = {onMultiChangeEquipment()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={styles.filterButtonContainer}>
+                          </View>
+                          <View style={styles.filterButtonContainer}>
                             <SelectBox
                               label="Muscle Groups"
                               labelStyle={styles.filterLabels}
@@ -716,8 +718,8 @@ return (
                               onTapClose = {onMultiChangeMuscleGroups()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
+                          </View>
+                          <View style={toggleValue ? styles.filterButtonContainer : styles.hidden}>                      
                             <SelectBox
                               label="Exercise Types"
                               inputPlaceholder = "Add one or more Types"
@@ -735,8 +737,8 @@ return (
                               onTapClose = {onMultiChangeType()}
                               isMulti
                             />
-                          </SafeAreaView>
-                          <SafeAreaView style={styles.filterButtonContainer}>                      
+                          </View>
+                          <View style={styles.filterButtonContainer}>                      
                             <SelectBox
                               label="Owner Types"
                               inputPlaceholder = "Add one or more owner types"
@@ -754,8 +756,8 @@ return (
                               onTapClose = {onMultiChangeOwner()}
                               isMulti
                             />
-                          </SafeAreaView>
-                      </SafeAreaView>
+                          </View>
+                      </View>
                       <View style={styles.modalCloseButton}>
                         <TouchableOpacity onPress={toggleFiltersShowing}>
                           <View style={styles.closeFiltersButtonContainer}>
@@ -764,7 +766,7 @@ return (
                         </TouchableOpacity>
                       </View>
                       
-                    </SafeAreaView>
+                    </View>
                   </Modal>
                   </TouchableOpacity>
               </View>
@@ -876,7 +878,7 @@ return (
       </View>
       
       {/* Exercise Info Modal */}
-      <View style={styles.infoModal}>
+      <View style={{flex: 1}}>
           <Modal 
             isVisible = {isInfoPageVisible}
             coverScreen = {true}
@@ -884,7 +886,7 @@ return (
             presentationStyle='fullScreen'
             transparent={false}
             >
-            <SafeAreaView style={styles.exerciseInfoHeader}>
+            <View style={styles.exerciseInfoHeader}>
               <View style={styles.exerciseInfoTitleandDelete}>
               {selectedExerciseOwner == globalState.user?._id && 
                 <View style={styles.exerciseInfoDeleteButton}>
@@ -908,9 +910,9 @@ return (
               <View style={styles.exerciseInfoCardImageContainer}>
                 <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
               </View>
-            </SafeAreaView>
+            </View>
 
-            <SafeAreaView style={styles.exerciseInfoBody}>
+            <View style={styles.exerciseInfoBody}>
               <ScrollView>
               <View style={styles.exerciseInfoDescriptionContainer}>
                 <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
@@ -927,7 +929,7 @@ return (
                 </Text> 
               </View>
               </ScrollView>
-            </SafeAreaView>
+            </View>
               <View style={styles.modalCloseButton}>
                 <TouchableOpacity  onPress={closeInfoModal}>
                   <View style={styles.closeInfoButtonContainer}>
@@ -937,7 +939,7 @@ return (
               </View>
           </Modal>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 
@@ -1016,6 +1018,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   exerciseInfoHeader:{
+    top: 15,
     flex: 1.5,
   },
   exerciseInfoTitleandDelete:{
@@ -1024,6 +1027,7 @@ const styles = StyleSheet.create({
   },
   exerciseInfoBody:{
     flex: 1.3,
+    paddingTop: 20,
   },
   
   exerciseInfoCardImageContainer:{
@@ -1377,7 +1381,8 @@ deleteWorkoutText:{
   buttonsContainer:{
   },
   filtersContainer:{
-    flex: 1
+    flex: 1,
+    top: 10,
   },
   filterButtonContainer:{
     backgroundColor: "#CDCDCD",
