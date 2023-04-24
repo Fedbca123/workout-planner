@@ -497,7 +497,7 @@ const styles = StyleSheet.create({
 		marginLeft: 10
 	},
 	createButton: {
-		borderWidth: .5, 
+		borderWidth: 1.5, 
 		width: '60%', 
 		alignSelf: 'center',
 		marginVertical: 15, 
