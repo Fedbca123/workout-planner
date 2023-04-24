@@ -1190,7 +1190,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   workoutItems:{
-    backgroundColor: '#E5DAE7',
+    // backgroundColor: '#E5DAE7',
+    backgroundColor: "#E5DAE7",
     color: "#333",
     fontWeight: "500",
     justifyContent: 'center',

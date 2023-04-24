@@ -457,6 +457,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 2,
   },
   friendExercise:{
     backgroundColor: '#F1F3FA',
@@ -471,6 +472,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 2,
   },
   noEvents: {
     textAlign: 'left',
