@@ -533,6 +533,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         elevation: 2,
         borderRadius: 15,
+        borderWidth: 1.5,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
