@@ -28,6 +28,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { duration } from "moment";
 import {TimePicker} from 'react-native-simple-time-picker';
+import moment from 'moment';
 
 export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -213,7 +214,9 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 					<View style={styles.modalView}>
 						<TimePicker 
 							value={timeVal} 
-							onChange={(val) => {setTimeVal(val)}} 
+							onChange={(val) => {
+                                
+                                setTimeVal(val)}} 
 							pickerShows={["hours", "minutes"]}
                             hoursUnit={"h"}
 							minutesUnit={"m"}

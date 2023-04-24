@@ -28,6 +28,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import config from "../../../backend/config.js";
 import Modal from "react-native-modal";
+import moment from 'moment';
 
 export default function FinalizeReview({ workout, updateWorkout, setCurrState, navigation, }) {
 	const [expanded, setExpanded] = useState(false);
@@ -79,7 +80,8 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 		formData.append('location', workout[0].location);
 		formData.append('duration', workout[0].duration);
 		formData.append('recurrence', workout[0].recurrence);
-		formData.append('scheduledDate', workout[0].scheduledDate);
+		// must be a string 
+		formData.append('scheduledDate',(new Date(workout[0].scheduledDate) - (new Date().getTimezoneOffset() * 60000)));
 		formData.append('save', workout[0].save);
 	
 		let workoutTags = [];
@@ -119,7 +121,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 				Alert.alert('Success!', 'Workout scheduled!', [
 					{text: 'OK', onPress: () => {}},
 				]);
-
+				
 				navigation.navigate("Home");
 			}
 		}).catch((e) => {
@@ -127,6 +129,8 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 				{text: 'OK', onPress: () => {}},
 			]);
 			console.log(e);
+		}).finally(()=>{
+			setIsScheduling(false);
 		});
 	}
 
@@ -313,6 +317,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 				transparent={true}
 				coverScreen={true}
 				backdropOpacity={.6}
+				animationIn={"tada"}
 			>
 				<ActivityIndicator size={100} />
 			</Modal>
