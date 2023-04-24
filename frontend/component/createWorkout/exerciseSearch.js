@@ -301,7 +301,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 
             <Text style={styles.HeaderText}>Select an Exercise:</Text>
             
-            <View style={{ flex: .15, display: "flex", flexDirection: "row", justifyContent: "flex-start", borderTopWidth: .9,borderBottomWidth: .9,}}>
+            <View style={{ flex: .15, display: "flex", flexDirection: "row", justifyContent: "flex-start"}}>
 				<View style={{flex:1,}}>
 					<SearchBar
                         platform="default"
@@ -448,7 +448,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
               </View>
 			</View>
             
-            <View style={{ flex: 1, maxHeight: "80%" }}>
+            <View style={{ flex: 1.1, maxHeight: "80%" }}>
                 {isExercisesLoading ?
                     <ActivityIndicator size={50} /> :
                     <FlatList
@@ -503,7 +503,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 		>
 		    <ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
 		</Modal>
-            <View style={{ flex: .25, backgroundColor: "#FF8C4B", justifyContent:"center",}}>
+            <View style={{ flex: .25, backgroundColor: "#FF8C4B", justifyContent:"center", borderTopWidth: 2}}>
                     <TouchableOpacity style={{ flex:1, alignItems:"center", justifyContent: "center"}} onPress={() => {setCurrState("ExerciseReview")}}>
                     <Text style={styles.BttnText}>Return to Review</Text>
                 </TouchableOpacity>
@@ -524,8 +524,8 @@ const styles = StyleSheet.create({
 	},
     ExerciseCard: {
         backgroundColor: "#F1F3FA",
-        padding: 20,
-        margin:10,
+        padding: 15,
+        margin:5,
         // marginBottom: 0,
         shadowColor: "#000",
         shadowOpacity: 0.2,
