@@ -144,7 +144,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 				);
 			}else{
 				return (
-					<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", marginTop: 5, alignItems: 'center'}}>
+					<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", marginTop: 5, alignItems: 'center', borderBottomWidth: 1.5}}>
 						
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ExerciseImage} />
@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
 	ExerciseImage: {
 		height: 50,
 		width: 50,
+		marginBottom: 2,
 		borderWidth: 1,
 		// borderRadius: 20,
 		...Platform.select({
