@@ -8,7 +8,7 @@ import { xorBy } from 'lodash';
 import { useGlobalState } from '../GlobalState.js';
 import { useIsFocused } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
-import { Image, ScrollView, StyleSheet, Text, View, SafeAreaView,
+import { Image, ScrollView, StyleSheet, Text, View,
   TouchableOpacity, ActivityIndicator, FlatList, Alert } from 'react-native';
 
 const equipmentFilters = [
@@ -610,7 +610,6 @@ export default function DiscoverPage({navigation}) {
 return (
 
   <View style={{flex: 1, backgroundColor: "white"}}>
-    {/* <SafeAreaView style = {{flex: 1, backgroundColor: "white"}}> */}
       <View style = {styles.discoverHeaderContainer}>
         <View style={styles.discoveryPageHeader}>
           <Text style={styles.discoverTitle}>Discover</Text>
