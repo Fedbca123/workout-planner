@@ -312,7 +312,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 
 			<Text style={styles.HeaderText}>Select a Workout:</Text>
 
-			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start", borderTopWidth: .9,borderBottomWidth: .9, paddingBottom: 10}}>
+			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start"}}>
 				<View style={{flex:1, }}>
 					<SearchBar
 						platform="default"

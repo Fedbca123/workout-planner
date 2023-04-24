@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         elevation: 2,
         borderRadius: 20,
+		borderWidth: 2,
 		width: "95%",
 		// maxHeight: "90%",
 		
