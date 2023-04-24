@@ -1381,7 +1381,7 @@ deleteWorkoutText:{
   },
   filtersContainer:{
     flex: 1,
-    marginTop: "5%",
+    marginTop: "8%",
   },
   filterButtonContainer:{
     backgroundColor: "#CDCDCD",
