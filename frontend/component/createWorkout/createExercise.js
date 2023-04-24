@@ -11,7 +11,8 @@ import {
     ScrollView,
     VirtualizedList,
     useWindowDimensions,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import React, { useEffect, useState } from "react";
 import reactDom, { render } from "react-dom";
@@ -72,6 +73,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
 	const [isVisible, setIsVisible] = useState(false);
     const [pageTwo, setPageTwo] = useState(false);
     const [globalState, updateGlobalState] = useGlobalState();
+    const [isLoading, setIsLoading] = useState(false);
 
 	const getPhotoForExercise = async () => {
 
@@ -184,7 +186,10 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                 {
                     Alert.alert("There was an error creating the exercise")
                 };
-			});
+			})
+            .finally(() => {
+                setIsLoading(false);
+            });
     }
 
     return (
@@ -344,6 +349,8 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                 {pageTwo && <TouchableOpacity 
                     style={{ flex:1, alignItems:"center", justifyContent: "center", backgroundColor: "#10B9F1"}} 
                     onPress={() => {
+
+                        setIsLoading(true);
                         // console.log(selectedMuscleGroups);
                         if (selectedMuscleGroups.length === 0) {
                             Alert.alert("Even if it's cardio, it has to workout at least one muscle");
@@ -414,6 +421,14 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
 
 					</TouchableOpacity>
    				</View>
+			</Modal>
+            <Modal
+				isVisible={isLoading}
+				transparent={true}
+				coverScreen={true}
+				backdropOpacity={.6}
+			>
+				<ActivityIndicator size={100} />
 			</Modal>
             
 		</KeyboardAwareScrollView>

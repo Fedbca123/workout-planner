@@ -294,7 +294,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	}
 
 	return (
-		<View style={[styles.Background, { minHeight: windowHeight - 50 }]}>
+		<View style={[styles.Background, { minHeight: windowHeight - 500 }]}>
 
 			<TouchableOpacity 
 				style={styles.createButton}
@@ -445,7 +445,7 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
               </View>
 			</View>
 
-			<View style={{ flex: 1.1, }}>
+			<View style={{ flex: 1, }}>
 				{isWorkoutsLoading ? 
 					<ActivityIndicator size={50} /> :
 					<FlatList

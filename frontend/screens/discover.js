@@ -120,6 +120,10 @@ export default function DiscoverPage({navigation}) {
     setFilteredWorkoutData(filterWorkouts(searchTerm));
   }, [masterWorkoutData]);
 
+  useEffect(() => {
+    setFilteredExerciseData(filterExercises(searchTerm));
+  }, [masterExerciseData]);
+
   // Returns Public, You, or friend's name as workout owner
   const getWorkoutOwner = (exercise) => {
     if (!exercise.owner)

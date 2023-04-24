@@ -13,6 +13,15 @@ const FriendsScreen = () => {
   const [globalState, updateGlobalState] = useGlobalState();
   const isFocused = useIsFocused();
 
+
+  function removeItem(array, val){
+    const index = array.indexOf(val);
+    if(index > -1) {
+      array.splice(index,1);
+    }
+    return array;
+  }
+
   const handleSearch = (text) => {
     setSearchTerm(text);
     const filtered = filteredFriends.filter((friend) =>
@@ -64,6 +73,11 @@ const FriendsScreen = () => {
           Alert.alert('Blocked', `${blockedFirstName} ${blockedLastName} has been blocked`, [{ text: 'OK' }]);
         }
         fetchFriends();
+
+        let temp = {...globalState.user};
+        temp.friends = removeItem(temp.friends, blockedFriendID);
+        updateGlobalState("user", temp);
+
       })
       .catch((error) => {
         if (error.status === 497) {
