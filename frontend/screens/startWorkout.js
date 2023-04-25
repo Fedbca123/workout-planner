@@ -351,8 +351,29 @@ const StartWorkout = ({ navigation, route }) => {
                       titleColor={'black'}
                       progressFormatter={(value) => {
                         'worklet';
-              
-                        return `${Math.floor(value / 60)}:${value % 60}`
+                        let m = Math.floor(value / 60);
+                        let s = value % 60;
+                        let secs = "";
+                        let mins = "";
+                        if (s < 10)
+                        {
+                          secs = "0" + s.toString();
+                        }
+                        else 
+                        {
+                          secs = s.toString();
+                        }
+
+                        if (m < 10)
+                        {
+                          mins = "0" + m.toString();
+                        }
+                        else 
+                        {
+                          mins = m.toString();
+                        }
+
+                        return `${mins}:${secs}`
                       }}
                     />
                     <View style={{flexDirection:'row', justifyContent:'center', height:"20%"}}>
@@ -376,7 +397,29 @@ const StartWorkout = ({ navigation, route }) => {
                     titleColor={'black'}
                     progressFormatter={(value) => {
                       'worklet';
-                      return `${Math.floor(value / 60)}:${value % 60}`
+                      let m = Math.floor(value / 60);
+                      let s = value % 60;
+                      let secs = "";
+                      let mins = "";
+                      if (s < 10)
+                      {
+                        secs = "0" + s.toString();
+                      }
+                      else 
+                      {
+                        secs = s.toString();
+                      }
+
+                      if (m < 10)
+                      {
+                        mins = "0" + m.toString();
+                      }
+                      else 
+                      {
+                        mins = m.toString();
+                      }
+
+                      return `${mins}:${secs}`
                     }}
                   />
                   <View style={{flexDirection:'row', justifyContent:'center', height:"20%"}}>
