@@ -144,8 +144,8 @@ const CalendarScreen = ({}) => {
     const handleConfirm = (date) => {
       date = moment.utc(date).subtract(new Date().getTimezoneOffset(), 'minute')
       const formattedDate = moment.utc(date).format('YYYY-MM-DDTHH:mm');
-      const now = moment.utc();
-    
+      const now = moment.utc().subtract(new Date().getTimezoneOffset(), 'minute')
+      // console.log("now", now, "date", date);
       if (date.isBefore(now)) {
         setIsDateValid(false);
         Alert.alert('Error', 'Dates cannot be selected in the past.');
