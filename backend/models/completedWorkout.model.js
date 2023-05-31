@@ -31,10 +31,6 @@ var completedWorkoutSchema = new Schema({
     type: String,
     required: false,
   },
-  recurrence: {
-    type: Boolean,
-    required: false,
-  },
   dateOfCompletion: {
     type: Date,
     required: false,

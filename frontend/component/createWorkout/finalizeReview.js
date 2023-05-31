@@ -128,7 +128,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 			Alert.alert('Error!', 'Workout not created', [
 				{text: 'OK', onPress: () => {}},
 			]);
-			console.log(e);
+			console.log(e, e.status);
 		}).finally(()=>{
 			setIsScheduling(false);
 		});

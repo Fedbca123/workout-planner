@@ -7,6 +7,7 @@ const cloudinary = require('../cloudinary');
 const upload = require('../middleware/uploadMiddleware');
 const { User, userSchema } = require('../models/user.model');
 const { Workout, workoutSchema} = require('../models/workout.model'); 
+const {CompletedWorkout, completedWorkoutSchema} = require('../models/completedWorkout.model');
 const { Exercise, exerciseSchema } = require('../models/exercise.model');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -39,6 +40,7 @@ Error Codes:
 401 - error retrieving user(s)
 403 - Failed to authenticate
 405 - No Token Provided
+410 - completed workout doc couldnt be saved
 491 - Current user has other user in blocked list (cant befriend someone in your blocked list)
 492 - exercise id not found in DB
 493 - email provided not in DB
@@ -501,8 +503,7 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
     });
 
   let saveBool = req.body.save === "true" ? true : false;
-  if (saveBool)
-  {
+  if (saveBool){
     var image = null;
     var imageId = null;
     if(req.file){
@@ -545,16 +546,12 @@ router.route('/:id/workouts/create/schedule').post(authenticateToken, upload.sin
       });
   }
 
-  try
-  {
+  try{
     if(req.file){
       await unlinkAsync(req.file.path);
       await unlinkAsync(req.file.path + "-cmp");
    }
-  }
-
-  catch
-  {
+  }catch{
     return res.status(573);
   }
   
@@ -661,13 +658,31 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
   }
   workout.recurrence = false;
   workout.dateOfCompletion = new Date();
-  user.completedWorkouts.push(workout);
 
-  await user.save((err, newUser) => {
-    if (err) return res.status(499).send(err);
-    res.status(200).json(newUser);
+  const completedWorkout = new CompletedWorkout({
+    title: workout.title,
+    description: workout.description,
+    exercises: workout.exercises,
+    duration: workout.duration,
+    location: workout.location,
+    dateOfCompletion:workout.dateOfCompletion,
+    tags: workout.tags,
+    muscleGroups: workout.muscleGroups,
+    owner: user._id
   });
 
+  await completedWorkout.save(async (err, newCW) => {
+    if (err) return res.status(410).send(err);
+
+    let user = await User.findById(newCW.owner);
+
+    user.completedWorkouts.push(newCW._id);
+
+    user.save((err, newUser) => {
+      if (err) return res.status(499).send(err);
+      res.status(200).json(newUser);
+    });
+  })
 });
 
 // user gets all their friends
@@ -1120,9 +1135,17 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
 
       scheduled.push(workout);
     }
+    if(!userObj.completedWorkouts){continue;}
     // for all completed workouts
-    for(const workoutObj of userObj.completedWorkouts){
-      const workout = {
+    for(const workoutID of userObj.completedWorkouts){
+      const workoutObj = await CompletedWorkout.findById(workoutID);
+      
+      if (!workoutObj) {
+        return res.status(494).send({Error: `Completed workout ${workoutID} does not exist!`});
+      }
+
+      const completedWorkout = {
+        _id: workoutID,
         title: workoutObj.title,
         description: workoutObj.description,
         image: workoutObj.image,
@@ -1130,13 +1153,11 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
         exercises: workoutObj.exercises,
         duration: workoutObj.duration,
         location: workoutObj.location,
-        recurrence: workoutObj.recurrence,
-        dateOfCompletion: workoutObj.dateOfCompletion,
         ownerName: userObj.firstName + " " + userObj.lastName,
         ownerEmail: userObj.email
       }
 
-      completed.push(workout);
+      completed.push(completedWorkout);
     }
   }
 
