@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 let {Workout, workoutSchema} = require('./workout.model');
 let {Exercise, exerciseSchema} = require('./exercise.model');
-
+let {CompletedWorkout, completedWorkoutSchema} = require('./completedWorkout.model');
 
 var userSchema = new Schema({
     firstName:  {
@@ -49,7 +49,10 @@ var userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Workout'
     }],
-    completedWorkouts: [workoutSchema],
+    completedWorkouts: [{
+      type: Schema.Types.ObjectId,
+      ref: 'CompletedWorkout'
+    }],
     customWorkouts: [{
         type: Schema.Types.ObjectId,
         ref: 'Workout'
