@@ -297,8 +297,8 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 								<Text
 									style={styles.workoutCardMuscleGroups}
 								>
-									Muscle Groups:{" "}
-									{workout[0].muscleGroups && workout[0].muscleGroups.join(", ")}
+									{workout[0].muscleGroups?.length > 0 && ('Muscle Groups: ')}
+									{workout[0].muscleGroups?.length > 0 && workout[0].muscleGroups.join(", ")}
 								</Text>
 							</View>
 							
