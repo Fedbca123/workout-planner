@@ -81,13 +81,13 @@ export default function CreateWorkout({ navigation, route }) {
     // console.log("every render: ", currWorkout[0] ? currWorkout[0].save : "none");
     return (
         <View style={{flex: 1}}>
-            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} setCreateNew={setCreateNew} />}
-            {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} updateWorkout={setCurrWorkout} workout={currWorkout} setCreateNew={setCreateNew}/>}
-            {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
-            {currState === "BeginFinalizing" && <BeginFinalizeWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
-            {currState === "Schedule" && <ScheduleWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} />}
-            {currState === "FinalizeReview" && <FinalizeReview workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} navigation={navigation} />}
-            {currState === "CustomExercise" && <CreateExercise workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} navigation={navigation} />}
+            {currState === "chooseTemplate" && <ChooseTemplateComponent setCurrState={setCurrState} setCurrWorkout={setCurrWorkout} setCreateNew={setCreateNew} modifyScheduledWorkout={route.params.modifyScheduledWorkout}/>}
+            {currState === "ExerciseReview" && <ExerciseReview setCurrState={setCurrState} updateWorkout={setCurrWorkout} workout={currWorkout} setCreateNew={setCreateNew}modifyScheduledWorkout={route.params.modifyScheduledWorkout}/>}
+            {currState === "ExerciseSearch" && <ExerciseSearch workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} modifyScheduledWorkout={route.params.modifyScheduledWorkout} />}
+            {currState === "BeginFinalizing" && <BeginFinalizeWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} modifyScheduledWorkout={route.params.modifyScheduledWorkout}/>}
+            {currState === "Schedule" && <ScheduleWorkout workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} modifyScheduledWorkout={route.params.modifyScheduledWorkout}/>}
+            {currState === "FinalizeReview" && <FinalizeReview workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} navigation={navigation} modifyScheduledWorkout={route.params.modifyScheduledWorkout}/>}
+            {currState === "CustomExercise" && <CreateExercise workout={currWorkout} updateWorkout={setCurrWorkout} setCurrState={setCurrState} navigation={navigation} modifyScheduledWorkout={route.params.modifyScheduledWorkout}/>}
         </View>
     );
 }

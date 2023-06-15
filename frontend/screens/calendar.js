@@ -336,6 +336,14 @@ const CalendarScreen = ({}) => {
             {workoutToEdit && (
               <>
                   <Text style={styles.modalTitle}>Edit Workout</Text>
+                  <View style={styles.timedate}>
+                    <TouchableOpacity onPress={()=>{
+                      navigation.navigate("createWorkout", { workoutData: workoutToEdit, modifyScheduledWorkout: true })
+                      setEditModalVisible(false);
+                    }}>
+                      <Text style={styles.datePickerText}>Modify Workout Content</Text>
+                    </TouchableOpacity>
+                  </View>
                   <Text>Date & Time:</Text>
                   <View style={styles.timedate}>
                     <TouchableOpacity onPress={showDatePicker} style={styles.datePickerContainer}>

@@ -24,10 +24,10 @@ export default function MainNav() {
                 options={{ header: CreateWorkoutHeader}}
             />
             <Stack.Screen
-				name="start"
-				component={StartWorkout}
-				options={{ headerShown: false }}
-			/>
+				      name="start"
+				      component={StartWorkout}
+				      options={{ headerShown: false }}
+			      />
         </Stack.Navigator>
 	);
 }

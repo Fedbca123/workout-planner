@@ -30,7 +30,7 @@ import config from "../../../backend/config.js";
 import Modal from "react-native-modal";
 import moment from 'moment';
 
-export default function FinalizeReview({ workout, updateWorkout, setCurrState, navigation, }) {
+export default function FinalizeReview({ workout, updateWorkout, setCurrState, navigation, route, modifyScheduledWorkout }) {
 	const [expanded, setExpanded] = useState(false);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [isScheduling, setIsScheduling] = useState(false);
@@ -60,8 +60,76 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 		outputRange: ["0deg", "360deg"],
 	});
 
-	function scheduledWorkout() {
+  function modifyWorkout(){
+    let fd = new FormData();
+    fd.append('title', workout[0].title);
+		fd.append('description', workout[0].description);
+    
+    fd.append('owner', globalState.user._id);
+		fd.append('location', workout[0].location);
+		fd.append('duration', workout[0].duration);
+		fd.append('recurrence', workout[0].recurrence);
+		// must be a string 
+		fd.append('scheduledDate',(new Date(workout[0].scheduledDate) - (new Date().getTimezoneOffset() * 60000)));
+		fd.append('save', workout[0].save);
+	
+    for (let i = 0; i < workout[0].exercises.length; i++){
+			// console.log(exercises[i]);
+			fd.append('exercises[]', JSON.stringify(workout[0].exercises[i]));
+		}
 
+		let workoutTags = [];
+		let muscleGroups = [];
+
+    for (let i = 0; i < workout[0].exercises.length; i++){
+
+			for (let j = 0; j < workout[0].exercises[i].tags.length; j++){
+				if (!workoutTags.includes(workout[0].exercises[i].tags[j])) {
+					workoutTags.push(workout[0].exercises[i].tags[j]);
+					fd.append('tags[]', workout[0].exercises[i].tags[j])
+				}
+			}
+
+			for (let j = 0; j < workout[0].exercises[i].muscleGroups.length; j++){
+				if (!muscleGroups.includes(workout[0].exercises[i].muscleGroups[j])) {
+					muscleGroups.push(workout[0].exercises[i].muscleGroups[j]);
+					fd.append('muscleGroups[]', workout[0].exercises[i].muscleGroups[j]);
+				}
+			}
+
+		}
+
+    // call endpoint
+    API_Instance.patch(`workouts/${workout[0]._id}`, fd, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				'authorization': `BEARER ${globalState.authToken}`
+			}
+		}).then((response) => {
+			setIsScheduling(false);
+			if (response.status == 200) {
+				// console.log(response.data);
+				Alert.alert('Success!', 'Workout Modified!', [
+					{text: 'OK', onPress: () => {}},
+				]);
+			}
+		}).catch((e) => {
+			Alert.alert('Error!', 'Workout not able to be modified', [
+				{text: 'OK', onPress: () => {}},
+			]);
+			console.log(e, e.status);
+		}).finally(()=>{
+			setIsScheduling(false);
+			navigation.navigate("Home");
+		});
+  }
+
+	function scheduledWorkout() {
+    if(modifyScheduledWorkout == true){
+      // do modification through endpoint
+      modifyWorkout();
+      return;
+    }
 		
 		let formData = new FormData();
 		formData.append('title', workout[0].title);
@@ -75,7 +143,6 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 			formData.append('image', { uri: workout[0].image, name: filename, type });
 		}
 		
-		// console.log("Finalize Review2: ", workout[0].save)
 		formData.append('owner', globalState.user._id);
 		formData.append('location', workout[0].location);
 		formData.append('duration', workout[0].duration);
@@ -231,7 +298,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 									style={styles.workoutCardMuscleGroups}
 								>
 									Muscle Groups:{" "}
-									{workout[0].muscleGroups.join(", ")}
+									{workout[0].muscleGroups && workout[0].muscleGroups.join(", ")}
 								</Text>
 							</View>
 							

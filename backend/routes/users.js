@@ -1154,7 +1154,8 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
         duration: workoutObj.duration,
         location: workoutObj.location,
         ownerName: userObj.firstName + " " + userObj.lastName,
-        ownerEmail: userObj.email
+        ownerEmail: userObj.email,
+        dateOfCompletion: workoutObj.dateOfCompletion
       }
 
       completed.push(completedWorkout);
