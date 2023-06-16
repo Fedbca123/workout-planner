@@ -260,7 +260,7 @@ router.route('/search').post(authenticateToken, async (req, res) => {
 // returns { newWorkout }
 router.route('/:id').patch(authenticateToken, upload.single('image'), async (req,res) => {
   const id = req.params.id;
-  const {title,description,exercises,location,recurrence,scheduledDate,dateOfCompletion} = req.body;
+  const {title,description,exercises,location,recurrence,scheduledDate,dateOfCompletion,duration} = req.body;
 
   const workout = await Workout.findById(id);
   if(!workout)
@@ -315,6 +315,7 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
   if(recurrence != null) {workout.recurrence = recurrence;}
   if(scheduledDate) {workout.scheduledDate = scheduledDate;}
   if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
+  if(duration) {workout.duration = duration;}
 
   await workout.save((err,newWorkout) => {
     if (err) {console.log(JSON.stringify(err,null,2));return res.status(497).send(err);}
