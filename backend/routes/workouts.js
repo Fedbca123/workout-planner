@@ -276,7 +276,6 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
   var image = null;
   var imageId = null;
   if(req.file){
-    console.log("req.file exists and it is ", req.file);
     var imgPath = __dirname + '/../middleware/temp/';
     await sharp(imgPath + req.file.filename).resize(150, 150)
         .rotate()
