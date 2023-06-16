@@ -305,14 +305,19 @@ router.route('/:id').patch(authenticateToken, upload.single('image'), async (req
   if(description) {workout.description = description;}
   if(image != null) {workout.image = image;}
   if(imageId != null) {workout.imageId = imageId;}
-  if(exercises) {workout.exercises = exercises;}
+  if(exercises) {
+    workout.exercises = [];
+    for(let str of exercises){
+      workout.exercises.push(JSON.parse(str));
+    }
+  }
   if(location) {workout.location = location;}
   if(recurrence != null) {workout.recurrence = recurrence;}
   if(scheduledDate) {workout.scheduledDate = scheduledDate;}
   if(dateOfCompletion) {workout.dateOfCompletion = dateOfCompletion;}
 
   await workout.save((err,newWorkout) => {
-    if (err) return res.status(497).send(err);
+    if (err) {console.log(JSON.stringify(err,null,2));return res.status(497).send(err);}
     res.status(200).json(newWorkout);
   });
   if(req.file){

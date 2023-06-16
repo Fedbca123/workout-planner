@@ -119,6 +119,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                 mode="datetime"
                 onConfirm={handleConfirm}
                 onCancel={hideDatePicker}
+                date={workout[0].scheduledDate ? new Date(workout[0].scheduledDate) : new Date()}
             />
             
             <KeyboardAwareScrollView contentContainerStyle={{ flex:1, alignItems: "center", justifyContent:"flex-start"}}>
@@ -187,7 +188,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                         value={workout[0].recurrence}
                         onValueChange={(val) => {
                             let temp = { ...workout[0] }
-							temp.recurrence = val;
+							              temp.recurrence = val;
                             updateWorkout([temp]);
                         }}/>
                 </Text>
