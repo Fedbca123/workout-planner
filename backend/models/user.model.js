@@ -61,6 +61,7 @@ var userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Exercise'
     }],
+    darkMode: {type: Boolean}
 }, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);

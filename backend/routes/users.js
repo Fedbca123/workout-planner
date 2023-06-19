@@ -118,6 +118,7 @@ router.route('/register').post(async (req,res) =>
         completedWorkouts: [],
         customWorkouts: [],
         customExercises: [],
+        darkMode: false
     });
 
 
@@ -284,7 +285,7 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
     return res.sendStatus(403);
   }
 
-  const {firstName, lastName} = req.body
+  const {firstName, lastName, darkMode} = req.body
 
   // Check if user exists
   const user = await User.findById(id);
@@ -295,6 +296,8 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
 
   if (firstName) {user.firstName = firstName;}
   if (lastName) {user.lastName = lastName;}
+  // slightly different bc it could be a true or false and this avoids only updating to activate dark mode
+  if (darkMode != null && darkMode != undefined) {user.darkMode = darkMode;}
 
   await user.save((err, newUser) => {
       if (err) return res.status(499).send(err);

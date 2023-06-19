@@ -6,7 +6,8 @@ import {
     TextInput,
 	View,
     TouchableOpacity,
-    Alert
+    Alert,
+    Switch
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { Icon } from 'react-native-elements';
@@ -30,6 +31,7 @@ export default function SettingsPage({ navigation })
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [darkMode, setDarkMode] = useState(globalState.user.darkMode ? globalState.user.darkMode : false);
     const [userMessage, setUserMessage] = useState("");
     const isFocused = useIsFocused();
 
@@ -100,6 +102,34 @@ export default function SettingsPage({ navigation })
         API_Instance
         .patch(`users/${globalState.user._id}/contact`, {
             lastName: lastName
+        },
+        {
+          headers: {
+            Authorization : `Bearer ${globalState.authToken}`,
+          },
+        })
+        .then((response) => 
+        {
+            
+            if (response.status == 200) {
+                updateGlobalState("user", response.data);
+            }
+        })
+        .catch((error) => {
+            setUserMessage(error.response.data.errors.lastName.message);
+        });
+    }
+
+    function updateDarkMode() {
+      if (darkMode == globalState.user.darkMode)
+        {
+            return;
+        }
+
+        console.log("dm", darkMode)
+        API_Instance
+        .patch(`users/${globalState.user._id}/contact`, {
+            darkMode: darkMode
         },
         {
           headers: {
@@ -342,7 +372,17 @@ export default function SettingsPage({ navigation })
                             </TouchableOpacity>
                         </View>}
                     </View>
+                    <Text style={styles.text}>Dark Mode: {`${darkMode}\t\t\t`}</Text>
+                    <View stle={styles.switchRow}>
+                      <Switch
+                        value={darkMode}
+                        onValueChange={setDarkMode}
+                        trackColor={{ false: '#767577', true: '#81b0ff' }}
+                        thumbColor={darkMode ? '#FFFFFF' : '#f4f3f4'}
+                      />
+                    </View>
                 </View>
+
 
                 <View style={styles.belowFieldView}>
                     <Text style={styles.text3}>{userMessage}</Text>
@@ -419,5 +459,13 @@ styles = StyleSheet.create({
     },
     text3: {
         fontSize: 12
+    },
+    switchRow: {
+      width: '100%',
+      borderWeight: 1,
+      borderColor: 'red',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center'
     }
 });
