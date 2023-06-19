@@ -65,6 +65,14 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
     fd.append('title', workout[0].title);
 		fd.append('description', workout[0].description);
     
+    if (workout[0].image)
+		{
+			let filename = workout[0].image.split('/').pop();
+			let match = /\.(\w+)$/.exec(filename);
+			let type = match ? `image/${match[1]}` : `image`;
+			fd.append('image', { uri: workout[0].image, name: filename, type });
+		}
+
     fd.append('owner', globalState.user._id);
 		fd.append('location', workout[0].location);
 		fd.append('duration', workout[0].duration);

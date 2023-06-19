@@ -655,6 +655,9 @@ router.route('/:id/workouts/complete/:w_id').patch(authenticateToken,async (req,
     .catch(err => res.status(400).json('Error: ' + err));
 
     user.scheduledWorkouts = removeItem(user.scheduledWorkouts, w_id);
+    await user.save((err) => {
+      if(err) console.log(w_id,"not able to be removed from", user?._id);
+    })
   }
   workout.recurrence = false;
   workout.dateOfCompletion = new Date();
@@ -1194,7 +1197,6 @@ router.route('/:id/workouts/custom/all').get(authenticateToken, async (req,res) 
     if (!workout) {
       return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
     }
-
     workouts.push(workout);
   }
 
