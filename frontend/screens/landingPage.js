@@ -17,13 +17,16 @@ import { useIsFocused } from "@react-navigation/native";
 import WorkOuts from "../component/workout";
 import * as SecureStore from 'expo-secure-store';
 import { AuthContext } from '../AuthProvider';
+import colors from "../resources/ColorPalettes.json";
 
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [todaysWorkouts, setTodaysWorkouts] = useState([]);
 	const { isLoggedIn, setIsLoggedIn } = React.useContext(AuthContext);
+	const [colorPalette, setColorsPalette] = useState((globalState.user && globalState.user.darkMode) == true ? colors.darkmode : colors.lightmode)
   	const isFocused = useIsFocused();
 
+	console.log(globalState.user)
 	const handleScratchPress = () => {
 		// console.log("Scratch Button Pressed");
 		navigation.navigate("exerciseSearch");
@@ -110,7 +113,7 @@ export default function LandingPage({navigation}) {
 	//}
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<SafeAreaView style={styles.container(colorPalette.color1)}>
 			{/*<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>*/}
@@ -150,9 +153,11 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignSelf: "center",
 	},
-	container: {
-		flex: 1,
-		backgroundColor: "white",
+	container: (color) => {
+		return {
+			flex: 1,
+			backgroundColor: color,
+		}
 	},
 	bodyHeader: {
 		fontSize: 18,
