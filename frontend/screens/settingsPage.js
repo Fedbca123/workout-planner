@@ -148,6 +148,16 @@ export default function SettingsPage({ navigation })
         });
     }
 
+    function darkModeTester()
+    {
+        let tmp = {...globalState.user};
+        let newVal = !darkMode
+        tmp.darkMode = newVal;
+        setDarkMode(newVal);
+        // console.log(tmp.darkMode);
+        updateGlobalState("user", tmp);
+    }
+
     function updateEmail()
     {
         if (email == globalState.user.email || email == '')
@@ -376,7 +386,7 @@ export default function SettingsPage({ navigation })
                     <View stle={styles.switchRow}>
                       <Switch
                         value={darkMode}
-                        onValueChange={setDarkMode}
+                        onValueChange={darkModeTester}
                         trackColor={{ false: '#767577', true: '#81b0ff' }}
                         thumbColor={darkMode ? '#FFFFFF' : '#f4f3f4'}
                       />

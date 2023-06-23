@@ -26,7 +26,6 @@ export default function LandingPage({navigation}) {
 	const [colorPalette, setColorsPalette] = useState((globalState.user && globalState.user.darkMode) == true ? colors.darkmode : colors.lightmode)
   	const isFocused = useIsFocused();
 
-	console.log(globalState.user)
 	const handleScratchPress = () => {
 		// console.log("Scratch Button Pressed");
 		navigation.navigate("exerciseSearch");
@@ -103,16 +102,14 @@ export default function LandingPage({navigation}) {
 		loadCurrentDayWorkouts();
 		loadTodaysWorkout();
 		loadCurrentDayWorkoutStatus();
+		console.log(globalState.user.darkMode);
+		setColorsPalette(((globalState.user && globalState.user.darkMode) == true ? colors.darkmode : colors.lightmode));
     }
 	}, [isFocused]);
 
-	//componentWillMount(){
-	// could do a call through axios to get user info for each render.
-	// this would be a lot of API calls though I think.
-	// either way this is something to consider and discuss but for now we have loaded info
-	//}
 
 	return (
+	
 		<SafeAreaView style={styles.container(colorPalette.color1)}>
 			{/*<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
@@ -125,7 +122,7 @@ export default function LandingPage({navigation}) {
 				</View>
 			</View>
 			<View style={styles.Header}>
-				<Text style={styles.HeaderText}>
+				<Text style={styles.HeaderText(colorPalette.color5)}>
 					You have {loadCurrentDayWorkoutStatus()}
 				</Text>
 			</View>
@@ -140,11 +137,14 @@ export default function LandingPage({navigation}) {
 }
 
 const styles = StyleSheet.create({
-	HeaderText: {
-		fontWeight: "bold",
-		fontSize: 20,
-		alignSelf: "center",
-		marginTop: 40,
+	HeaderText: (textColor) => {
+		return {
+			fontWeight: "bold",
+			fontSize: 20,
+			alignSelf: "center",
+			marginTop: 40,
+			color: textColor
+		}
 	},
 	HeaderContainer: {
 		alignItems: "center",
