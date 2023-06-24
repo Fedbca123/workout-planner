@@ -1,16 +1,18 @@
 {
     "lightmode": {
-        "color1": "#FFFFFF",
+        "colorBackground": "#FFFFFF",
+        "color1": "#92B4EC",
         "color2": "#92B4EC",
         "color3": "#FFE69A",
         "color4": "#FFD24C",
-        "color5": "#000000",
+        "colorText": "#000000"
     },
     "darkmode": {
+        "colorBackground": "#000000",
         "color1": "#282A3A",
         "color2": "#2D4263", 
         "color3": "#ECDBBA",
         "color4": "#C84B31",
-        "color5": "#FFFFFF"
+        "colorText": "#FFFFFF"
     }
 }

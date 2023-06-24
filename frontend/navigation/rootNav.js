@@ -19,7 +19,6 @@ export default function RootNav()
     const [ checking, setIsChecking ] = React.useState(true);
     const [ globalState, updateGlobalState] = useGlobalState();
     
-
     React.useEffect(() => {
         const checkIfUserIsLoggedIn = async () => {
             const authToken = await SecureStore.getItemAsync("authKey");

@@ -16,14 +16,12 @@ import { useGlobalState } from "../GlobalState.js";
 import { useIsFocused } from "@react-navigation/native";
 import WorkOuts from "../component/workout";
 import * as SecureStore from 'expo-secure-store';
-import { AuthContext } from '../AuthProvider';
-import colors from "../resources/ColorPalettes.json";
+import { AuthContext } from '../AuthProvider'
 
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [todaysWorkouts, setTodaysWorkouts] = useState([]);
 	const { isLoggedIn, setIsLoggedIn } = React.useContext(AuthContext);
-	const [colorPalette, setColorsPalette] = useState((globalState.user && globalState.user.darkMode) == true ? colors.darkmode : colors.lightmode)
   	const isFocused = useIsFocused();
 
 	const handleScratchPress = () => {
@@ -102,27 +100,28 @@ export default function LandingPage({navigation}) {
 		loadCurrentDayWorkouts();
 		loadTodaysWorkout();
 		loadCurrentDayWorkoutStatus();
-		console.log(globalState.user.darkMode);
-		setColorsPalette(((globalState.user && globalState.user.darkMode) == true ? colors.darkmode : colors.lightmode));
+		// console.log(globalState.user.darkMode);
+		// console.log(colors.darkmode.color1)
+		// setColorsPalette(((globalState.user && globalState.user.darkMode) == true ? colors.darkmode : colors.lightmode));
     }
 	}, [isFocused]);
 
 
 	return (
 	
-		<SafeAreaView style={styles.container(colorPalette.color1)}>
+		<SafeAreaView style={styles.container(globalState.theme.colorBackground)}>
 			{/*<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>*/}
 			<View style={styles.CreateWorkoutCntnr}>	
 				<View>
-					<TouchableOpacity onPress={handleTemplatePress} style={styles.CreateWorkoutBttnsContainer}>
-						<Text style={styles.CreateWorkoutBttns}>Create A Workout</Text>
+					<TouchableOpacity onPress={handleTemplatePress} style={styles.CreateWorkoutBttnsContainer(globalState.theme.color1)}>
+						<Text style={styles.CreateWorkoutBttns(globalState.theme.colorText)}>Create A Workout</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
 			<View style={styles.Header}>
-				<Text style={styles.HeaderText(colorPalette.color5)}>
+				<Text style={styles.HeaderText(globalState.theme.colorText)}>
 					You have {loadCurrentDayWorkoutStatus()}
 				</Text>
 			</View>
@@ -174,21 +173,25 @@ const styles = StyleSheet.create({
 	BoldText: {
 		fontWeight: "bold",
 	},
-	CreateWorkoutBttns: {
-		color: "black",
-		fontWeight: "bold",
-		fontSize: 23,
+	CreateWorkoutBttns: (color) => {
+		return {
+			color: color,
+			fontWeight: "bold",
+			fontSize: 23,	
+		}	
 	},
-	CreateWorkoutBttnsContainer: {
-		alignItems: "center",
-		backgroundColor: "#E0F0FE",
-		marginTop: 15,
-		padding: 25,
-		borderRadius: 20,
-		borderWidth: .5,
-		// flex: 2,
-		width: 350,
-		height:82
+	CreateWorkoutBttnsContainer: (color) => {
+		return {
+			alignItems: "center",
+			backgroundColor: color,
+			marginTop: 15,
+			padding: 25,
+			borderRadius: 20,
+			borderWidth: .5,
+			// flex: 2,
+			width: 350,
+			height:82
+		}
 	},
 	CreateWorkoutText: {
 		...Platform.select({

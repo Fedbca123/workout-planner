@@ -51,6 +51,7 @@ export default function Login({navigation}) {
 				password: password,
 			})
 			.then((response) => {
+		
 				if (response.status == 200) {
 					setError("");
 					updateGlobalState("user", response.data.user);
@@ -110,10 +111,10 @@ export default function Login({navigation}) {
 				</Text>
 			</View>
       
-        {/* <Button
+        <Button
         title="BACKDOOR"
         onPress={() =>
-          backDoorHandler("Test@gmail.com", "Password1")}/> */}
+          backDoorHandler("Test@gmail.com", "Password1")}/>
 
       {/*code will break at the end to home bc name can't be rendered}
       */}

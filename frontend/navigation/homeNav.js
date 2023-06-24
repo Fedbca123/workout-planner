@@ -4,14 +4,23 @@ import LandingPage from '../screens/landingPage';
 import Friends from '../screens/friends';
 import CalendarPage from '../screens/calendar';
 import DiscoverPage from '../screens/discover';
+import { useGlobalState } from "../GlobalState.js";
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const Tab = createBottomTabNavigator();
 
 export default function HomeNav (props) {
+    const [globalState, updateGlobalState] = useGlobalState();
+
     return (
-        <Tab.Navigator initialRouteName='landingPage'>
+        <Tab.Navigator 
+            initialRouteName='landingPage'
+            screenOptions={{
+                tabBarStyle: {
+                    backgroundColor: globalState.theme.color1
+                }
+            }}>
             <Tab.Screen name="landingPage" 
                 component={LandingPage}
                 options={{
@@ -23,6 +32,7 @@ export default function HomeNav (props) {
                             style={{
                                 width: size,
                                 height: size,
+                                tintColor: globalState.theme.colorText
                             }}
                         />
                     )
@@ -39,6 +49,7 @@ export default function HomeNav (props) {
                             style={{
                                 width: size,
                                 height: size,
+                                tintColor: globalState.theme.colorText
                             }}
                         />
                     )
@@ -55,6 +66,7 @@ export default function HomeNav (props) {
                             style={{
                                 width: size,
                                 height: size,
+                                tintColor: globalState.theme.colorText
                             }}
                         />
                     )
@@ -71,6 +83,7 @@ export default function HomeNav (props) {
                             style={{
                                 width: size,
                                 height: size,
+                                tintColor: globalState.theme.colorText
                             }}
                         />
                     )

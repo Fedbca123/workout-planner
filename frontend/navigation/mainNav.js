@@ -10,6 +10,7 @@ import CreateWorkout from "../screens/createWorkout.js";
 const Stack = createNativeStackNavigator();
 
 export default function MainNav() {
+    
 	return (
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
