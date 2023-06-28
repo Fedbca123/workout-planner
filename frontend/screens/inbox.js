@@ -81,19 +81,19 @@ export default function Inbox({ navigation }) {
     };
 
     return (
-      <View style={styles.container}>
-        <Text style={styles.headerText}>Incoming friend requests</Text>
+      <View style={styles.container(globalState.theme.colorBackground)}>
+        <Text style={styles.headerText(globalState.theme.colorText)}>Incoming friend requests</Text>
         {filteredFriends.length > 0 ? (
           <FlatList
             data={filteredFriends}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
-              <View style={styles.friendRequestContainer}>
-                <Text style={styles.friendName}>
+              <View style={styles.friendRequestContainer(globalState.theme.color1)}>
+                <Text style={styles.friendName(globalState.theme.colorText)}>
                   {item.firstName} {item.lastName}
                 </Text>
                 <Text style={styles.friendEmail}>{item.email}</Text>
-                <Text style={styles.friendRequestText}>
+                <Text style={styles.friendRequestText(globalState.theme.colorText)}>
                   wants to be your friend!
                 </Text>
                 <View style={styles.friendRequestButtons}>
@@ -114,49 +114,59 @@ export default function Inbox({ navigation }) {
             )}
           />
         ) : (
-          <Text style={styles.noRequestText}>You have no friend requests!</Text>
+          <Text style={styles.noRequestText(globalState.theme.colorText)}>You have no friend requests!</Text>
         )}
       </View>
     );
   }
   
   const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: 'white',
+    container: (color) => {
+      return {
+        flex: 1,
+        backgroundColor: color,
+      }
     },
-    headerText: {
-      fontWeight: 'bold',
-      fontSize: 20,
-      alignSelf: 'flex-start',
-      marginTop: 40,
-      marginLeft: 20,
+    headerText: (color) => {
+      return {
+        fontWeight: 'bold',
+        fontSize: 20,
+        alignSelf: 'flex-start',
+        marginTop: 40,
+        marginLeft: 20,
+        color: color
+      }
     },
-    friendRequestContainer: {
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: '#E0E0E0',
-      backgroundColor: '#F5F5F5',
-      borderRadius: 5,
-      marginHorizontal: 10,
-      marginTop: 10,
+    friendRequestContainer: (backgroundColor) => {
+      return {
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 20,
+        backgroundColor: backgroundColor,
+        borderRadius: 5,
+        marginHorizontal: 10,
+        marginTop: 10,
+      }
     },
-    friendName: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#333',
+    friendName: (color) => {
+      return {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: color,
+      }
     },
     friendEmail: {
       fontSize: 14,
-      color: '#777',
+      color: '#888',
     },
-    friendRequestText: {
-      fontSize: 16,
-      marginTop: 2,
-      color: '#333',
+    friendRequestText: (color) => {
+      return {
+        fontSize: 16,
+        marginTop: 2,
+        color: color,
+      }
+      
     },
     friendRequestButtons: {
       flexDirection: 'row',
@@ -201,10 +211,13 @@ export default function Inbox({ navigation }) {
       color: '#FFFFFF',
       fontWeight: 'bold',
     },
-    noRequestText: {
-      fontSize: 15,
-      alignSelf: 'flex-start',
-      marginTop: 5,
-      marginLeft: 20,
+    noRequestText: (color) => {
+      return {
+        fontSize: 15,
+        alignSelf: 'flex-start',
+        marginTop: 5,
+        marginLeft: 20,
+        color: color
+      }
     },
   });

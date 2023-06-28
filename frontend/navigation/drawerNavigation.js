@@ -7,7 +7,7 @@ import { AuthContext } from '../AuthProvider';
 import MainNav from './mainNav.js';
 import SettingsPage from '../screens/settingsPage.js';
 import SettingsHeader from '../component/settingsHeader.js';
-import inboxHeader from '../component/inboxHeader.js';
+import InboxHeader from '../component/inboxHeader.js';
 import inbox from '../screens/inbox.js';
 
 const Drawer = createDrawerNavigator();
@@ -37,7 +37,7 @@ function CustomDrawerContent(props) {
         <DrawerContentScrollView {...props} bounces={false}>
             <DrawerItemList {...props} />
             <DrawerItem
-                label={() =><Text style={{}}>Logout</Text>}
+                label={() => <Text>Logout</Text>}
                 onPress={onLogoutButton}
                 style={styles.logoutButton}
                 
@@ -68,7 +68,7 @@ export default function DrawerNav (props) {
             <Drawer.Screen
                 name="Inbox"
                 component={inbox}
-                options={{ header: inboxHeader }}/>
+                options={{ header: (props) => <InboxHeader globalState={globalState} {...props}/> }}/>
             <Drawer.Screen
                 name="Settings"
                 component={SettingsPage}

@@ -31,7 +31,7 @@ export default function SettingsPage({ navigation })
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [darkMode, setDarkMode] = useState(globalState.user.darkMode ? globalState.user.darkMode : false);
+    const [darkMode, setDarkMode] = useState(globalState.user && globalState.user.darkMode ? globalState.user.darkMode : false);
     const [userMessage, setUserMessage] = useState("");
     const isFocused = useIsFocused();
 

@@ -18,7 +18,11 @@ export default function HomeNav (props) {
             initialRouteName='landingPage'
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: globalState.theme.color1
+                    backgroundColor: globalState.theme.color1,
+                    
+                },
+                tabBarLabelStyle: {
+                    color: globalState.theme.colorText
                 }
             }}>
             <Tab.Screen name="landingPage" 
