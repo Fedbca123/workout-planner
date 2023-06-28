@@ -46,6 +46,7 @@ function CustomDrawerContent(props) {
 }
 
 export default function DrawerNav (props) {
+    const [ globalState, updateGlobalState ] = useGlobalState();
     return (
         <Drawer.Navigator
         drawerContent={CustomDrawerContent}
@@ -64,7 +65,8 @@ export default function DrawerNav (props) {
             <Drawer.Screen
                 name="Settings"
                 component={SettingsPage}
-                options={{ header: SettingsHeader }}/>
+
+                options={{header: (props) => <SettingsHeader globalState={globalState} {...props}/>}}/>
         </Drawer.Navigator>
     )
 }

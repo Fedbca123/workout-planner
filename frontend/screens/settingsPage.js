@@ -260,13 +260,13 @@ export default function SettingsPage({ navigation })
         return (<></>);
     }
     return(
-        <View style={styles.container}>
+        <View style={styles.container(globalState.theme.colorBackground)}>
             <View style={styles.contentArea}>
                 <View style={{flex: 1, width: '90%', alignItems: 'flex-start'}}>
-                    <Text style={styles.text}>First Name:{"\t\t"}</Text>
-                    <View style={styles.rowView}>
+                    <Text style={styles.text(globalState.theme.colorText)}>First Name:{"\t\t"}</Text>
+                    <View style={styles.rowView(globalState.theme.colorText)}>
                         {!editFirstName && 
-                        <Text style={styles.text2}>{globalState.user.firstName}</Text>}
+                        <Text style={styles.text2(globalState.theme.colorText)}>{globalState.user.firstName}</Text>}
                         {editFirstName && 
                         <TextInput style={styles.inputfield}
                         placeholder={globalState.user.firstName}
@@ -282,7 +282,9 @@ export default function SettingsPage({ navigation })
                             }}>
                             <Icon
                                 name='edit'
-                                type='material'/>
+                                type='material'
+                                color = {globalState.theme.colorText}
+                                />
                         </TouchableOpacity>}
                         {editFirstName && <View style={{flexDirection: 'row'}}>
                              <TouchableOpacity
@@ -293,21 +295,23 @@ export default function SettingsPage({ navigation })
                                 style={{marginRight: 10}}> 
                                 <Icon
                                     name='done'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setEditFirstName(!editFirstName)}>
                                     <Icon
                                     name='close'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                         </View> }
                     </View>
                 
-                    <Text style={styles.text}>Last Name:{"\t\t"}</Text>
-                    <View style={styles.rowView}>  
+                    <Text style={styles.text(globalState.theme.colorText)}>Last Name:{"\t\t"}</Text>
+                    <View style={styles.rowView(globalState.theme.colorText)}>  
                         {!editLastName && 
-                        <Text style={styles.text2}>{globalState.user.lastName}</Text>}
+                        <Text style={styles.text2(globalState.theme.colorText)}>{globalState.user.lastName}</Text>}
                         {editLastName && 
                         <TextInput style={styles.inputfield}
                         placeholder={globalState.user.lastName}
@@ -321,7 +325,8 @@ export default function SettingsPage({ navigation })
                             onPress={() => setEditLastName(true)}>
                             <Icon
                                 name='edit'
-                                type='material'/>
+                                type='material'
+                                color = {globalState.theme.colorText}/>
                         </TouchableOpacity>}
                         {editLastName && <View style={{flexDirection: 'row'}}>
                             <TouchableOpacity
@@ -332,21 +337,23 @@ export default function SettingsPage({ navigation })
                                 style={{marginRight: 10}}> 
                                 <Icon
                                     name='done'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setEditLastName(!editLastName)}>
                                     <Icon
                                     name='close'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                         </View>}
                     </View>
 
-                    <Text style={styles.text}>Email: {"\t\t\t"}</Text>
-                    <View style={styles.rowView}>      
+                    <Text style={styles.text(globalState.theme.colorText)}>Email: {"\t\t\t"}</Text>
+                    <View style={styles.rowView(globalState.theme.colorText)}>      
                         {!editEmail && 
-                        <Text style={styles.text2}>{globalState.user.email}</Text>}
+                        <Text style={styles.text2(globalState.theme.colorText)}>{globalState.user.email}</Text>}
                         {editEmail && 
                         <TextInput style={styles.inputfield}
                         placeholder={globalState.user.email}
@@ -361,7 +368,8 @@ export default function SettingsPage({ navigation })
                             onPress={() => setEditEmail(true)}>
                             <Icon
                                 name='edit'
-                                type='material'/>
+                                type='material'
+                                color = {globalState.theme.colorText}/>
                         </TouchableOpacity>}
                         {editEmail && <View style={{flexDirection: 'row'}}>
                             <TouchableOpacity
@@ -372,17 +380,19 @@ export default function SettingsPage({ navigation })
                                 style={{marginRight: 10}}> 
                                 <Icon
                                     name='done'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setEditEmail(!editEmail)}>
                                     <Icon
                                     name='close'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                         </View>}
                     </View>
-                    <Text style={styles.text}>Dark Mode: {`${darkMode}\t\t\t`}</Text>
+                    <Text style={styles.text(globalState.theme.colorText)}>Dark Mode: {`${darkMode}\t\t\t`}</Text>
                     <View stle={styles.switchRow}>
                       <Switch
                         value={darkMode}
@@ -395,7 +405,7 @@ export default function SettingsPage({ navigation })
 
 
                 <View style={styles.belowFieldView}>
-                    <Text style={styles.text3}>{userMessage}</Text>
+                    <Text style={styles.text3(globalState.theme.colorText)}>{userMessage}</Text>
                     <Button
                         title="Reset Password"
                         onPress={() => handleResetPassword()}
@@ -414,37 +424,48 @@ export default function SettingsPage({ navigation })
 }
 
 styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
+    container: (color) => {
+        return {
+            flex: 1,
+            backgroundColor: color,
+        }    
     },
-    rowView: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomColor:'black',
-        borderBottomWidth: .4,
-        justifyContent: 'space-between',
-        width: '100%',
-        marginVertical: 10,
-        // borderWidth: 2
+    rowView: (color) => {
+        return {
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderBottomColor: color,
+            borderBottomWidth: .4,
+            justifyContent: 'space-between',
+            width: '100%',
+            marginVertical: 10,
+            // borderWidth: 2
+        } 
     },
     contentArea: {
         marginTop: '10%',
         alignItems: 'center',
         flex: 1
     },
-    text: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        marginRight: 10,
+    text: (color) => {
+        return {
+            fontWeight: 'bold',
+            fontSize: 20,
+            marginRight: 10,
+            color: color
+        }
     },
-    text2: {
-        fontSize: 16,
-        marginRight: 10,
-        width: text_field_width,
-        marginBottom: 5,
-        paddingVertical: 8,
-        marginLeft: 5,
+    text2: (color) => {
+        return {
+            fontSize: 16,
+            marginRight: 10,
+            width: text_field_width,
+            marginBottom: 5,
+            paddingVertical: 8,
+            marginLeft: 5,
+            color: color
+        }
+       
     },
     inputfield: {
 		borderWidth: 1,
@@ -467,8 +488,11 @@ styles = StyleSheet.create({
         flex: .2,
         // borderWidth: 2,
     },
-    text3: {
-        fontSize: 12
+    text3: (color) => {
+        return{
+            fontSize: 12,
+            color: color
+        } 
     },
     switchRow: {
       width: '100%',
