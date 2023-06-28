@@ -4,8 +4,8 @@ import {useGlobalState} from '../GlobalState.js';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDrawerStatus } from '@react-navigation/drawer';
 
-export default function HomeHeader ({ navigation }) {
-    const [globalState, updateGlobalState] = useGlobalState();
+export default function HomeHeader ({ navigation, globalState }) {
+    // const [globalState, updateGlobalState] = useGlobalState();
 
     return (
         <View style= {styles.container(globalState.theme.colorBackground)}>

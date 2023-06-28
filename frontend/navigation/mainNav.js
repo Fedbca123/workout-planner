@@ -6,17 +6,20 @@ import StartWorkout from "../screens/startWorkout.js";
 import HomeHeader from "../component/homeHeader.js";
 import CreateWorkoutHeader from "../component/createWorkoutHeader.js";
 import CreateWorkout from "../screens/createWorkout.js";
+import { useGlobalState } from '../GlobalState.js';
 
 const Stack = createNativeStackNavigator();
 
-export default function MainNav() {
+export default function MainNav(props) {
     
+    const [ globalState, updateGlobalState ] = useGlobalState();
+
 	return (
         <Stack.Navigator initialRouteName="Home">
             <Stack.Screen
                 name="Home"
                 component={HomeNav}
-                options={{ header: HomeHeader }}
+                options={{ header: (props) => <HomeHeader {...props } globalState={globalState}/> }}
             />
             <Stack.Screen
                 name="createWorkout"
@@ -25,10 +28,10 @@ export default function MainNav() {
                 options={{ header: CreateWorkoutHeader}}
             />
             <Stack.Screen
-				      name="start"
-				      component={StartWorkout}
-				      options={{ headerShown: false }}
-			      />
+                name="start"
+                component={StartWorkout}
+                options={{ headerShown: false }}
+            />
         </Stack.Navigator>
 	);
 }

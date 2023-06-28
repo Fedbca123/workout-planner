@@ -26,7 +26,7 @@ export const GlobalState = (props) => {
         
         if (key === "user")
         {
-          if (newValue.darkMode){
+          if (newValue && newValue.darkMode){
             newState["theme"] = colors.darkmode;
           }
           else{
