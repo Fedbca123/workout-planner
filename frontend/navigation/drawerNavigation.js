@@ -81,7 +81,7 @@ export default function DrawerNav (props) {
 const styles = StyleSheet.create({
     logoutButton: {
         marginTop: 80,
-        backgroundColor: "#f25252",
+        backgroundColor: "#f06060",
 
     },
 });
