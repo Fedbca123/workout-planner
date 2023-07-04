@@ -18,6 +18,7 @@ export default function ForgotPassword({navigation}) {
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [email, setEmail] = useState('');
+    const [globalState, updateGlobalState] = useGlobalState();
 
     const submitHandler = () => {
       if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)){
@@ -44,11 +45,11 @@ export default function ForgotPassword({navigation}) {
     return  (
       <KeyboardAwareScrollView 
         extraHeight={100}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={styles.container(globalState.theme.colorBackground)}
         keyboardShouldPersistTaps="handled"  
         bounces={false}
       >
-        <View style={{flex:0.5, textAlign: "center", backgroundColor: "#10B9F1", width: "100%", paddingTop: '10%'}}>
+        <View style={{flex:0.5, textAlign: "center", backgroundColor: `${globalState.theme.color2}`, width: "100%", paddingTop: '10%'}}>
           <Text style={styles.heading}>Password Reset</Text>
           <View style={styles.subHeader}>
             <Text style={styles.text}>Provide the email of your account so that we can send you the password reset link.</Text>
@@ -98,12 +99,14 @@ export default function ForgotPassword({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: (color) => {
+    return {
       flexDirection: 'column',
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: color,
       alignItems: 'center',
       justifyContent: 'center'
+    }
   },
   textcontainer: {
       flex: .8,
