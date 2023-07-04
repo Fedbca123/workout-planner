@@ -18,7 +18,7 @@ export default function Login({navigation}) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
-  	const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
 	const { setIsLoggedIn } = React.useContext(AuthContext);

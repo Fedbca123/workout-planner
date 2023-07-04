@@ -392,9 +392,9 @@ export default function SettingsPage({ navigation })
                             </TouchableOpacity>
                         </View>}
                     </View>
-                    <Text style={styles.text(globalState.theme.colorText)}>Dark Mode: {`${darkMode}\t\t\t`}</Text>
-                    <View stle={styles.switchRow}>
-                      <Switch
+                    <Text style={styles.text(globalState.theme.colorText)}>Dark Mode: {`${darkMode ? 'On' : 'Off'}\t\t\t`}</Text>
+                    <View style={styles.switch}>
+                    <Switch
                         value={darkMode}
                         onValueChange={darkModeTester}
                         trackColor={{ false: '#767577', true: '#81b0ff' }}
@@ -494,12 +494,9 @@ styles = StyleSheet.create({
             color: color
         } 
     },
-    switchRow: {
-      width: '100%',
-      borderWeight: 1,
-      borderColor: 'red',
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center'
+    switch: {
+      alignSelf: 'center',
+      marginRight: 'auto',
+      marginLeft: 'auto',
     }
 });
