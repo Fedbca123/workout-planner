@@ -47,7 +47,6 @@ export default function SettingsPage({ navigation })
         let email = "";
         if (isFocused)
         {
-            console.log("in settings", darkMode, globalState.theme);
             API_Instance.get(`users/${globalState.user._id}`, {
                 headers: {
                     'authorization': `BEARER ${globalState.authToken}`
@@ -67,8 +66,7 @@ export default function SettingsPage({ navigation })
 
     function updateFirstName() 
     {
-        if (firstName == globalState.user.firstName || firstName == '')
-        {
+        if (firstName == globalState.user.firstName || firstName == ''){
             return;
         }
         
