@@ -23,7 +23,9 @@ export default function RootNav()
         const checkIfUserIsLoggedIn = async () => {
             const authToken = await SecureStore.getItemAsync("authKey");
             const id = await SecureStore.getItemAsync("userId");
-    
+            const appTheme = await SecureStore.getItemAsync("appTheme");
+            updateGlobalState('theme', appTheme);
+            console.log(appTheme);
           // user is logged in
           if (authToken !== null && id !== null) {
             API_Instance

@@ -1,5 +1,6 @@
 {
     "lightmode": {
+        "name":"lightmode",
         "colorBackground": "#FFFFFF",
         "color1": "#b7d1e8",
         "color2": "#92B4EC",
@@ -8,6 +9,7 @@
         "colorText": "#000000"
     },
     "darkmode": {
+        "name":"darkmode",
         "colorBackground": "#000000",
         "color1": "#282A3A",
         "color2": "#2D4263", 

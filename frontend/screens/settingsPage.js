@@ -31,7 +31,8 @@ export default function SettingsPage({ navigation })
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    const [darkMode, setDarkMode] = useState(globalState.user && globalState.user.darkMode ? globalState.user.darkMode : false);
+    const [darkMode, setDarkMode] = useState(globalState.theme.name == 'darkmode' ? true : false);
+    //const [darkMode, setDarkMode] = useState(globalState.user && globalState.user.darkMode ? globalState.user.darkMode : false);
     const [userMessage, setUserMessage] = useState("");
     const isFocused = useIsFocused();
 
@@ -46,6 +47,7 @@ export default function SettingsPage({ navigation })
         let email = "";
         if (isFocused)
         {
+            console.log("in settings", darkMode, globalState.theme);
             API_Instance.get(`users/${globalState.user._id}`, {
                 headers: {
                     'authorization': `BEARER ${globalState.authToken}`
@@ -150,12 +152,15 @@ export default function SettingsPage({ navigation })
 
     function darkModeTester()
     {
-        let tmp = {...globalState.user};
+        //let tmp = {...globalState.user};
         let newVal = !darkMode
-        tmp.darkMode = newVal;
+        //tmp.darkMode = newVal;
         setDarkMode(newVal);
+        const newTheme = newVal ? "darkmode" : "lightmode";
+        updateGlobalState("theme", newTheme);
         // console.log(tmp.darkMode);
-        updateGlobalState("user", tmp);
+        //updateGlobalState("user", tmp);
+        SecureStore.setItemAsync("appTheme", newTheme);
     }
 
     function updateEmail()
