@@ -6,7 +6,9 @@
         "color2": "#92B4EC",
         "color3": "#FFE69A",
         "color4": "#FFD24C",
-        "colorText": "#000000"
+        "colorText": "#000000",
+        "black": "#000000",
+        "white": "#FFFFFF"
     },
     "darkmode": {
         "name":"darkmode",
@@ -15,6 +17,8 @@
         "color2": "#2D4263", 
         "color3": "#ECDBBA",
         "color4": "#C84B31",
-        "colorText": "#FFFFFF"
+        "colorText": "#FFFFFF",
+        "black": "#000000",
+        "white": "#FFFFFF"
     }
 }
