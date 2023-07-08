@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { TouchableWithoutFeedback, Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform, ActivityIndicator} from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
@@ -11,6 +11,10 @@ import {ReactNativeModal} from "react-native-modal";
 
 const CalendarScreen = ({}) => {
     const navigation = useNavigation();
+
+    const [globalState, updateGlobalState] = useGlobalState();
+
+    const CalendarMemo = memo(Calendar);
 
     const [isDateValid, setIsDateValid] = useState(true);
 
@@ -31,7 +35,6 @@ const CalendarScreen = ({}) => {
     const [editedRecurrence, setEditedRecurrence] = useState(false);
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     
-    const [globalState, updateGlobalState] = useGlobalState();
     const [weeklyEvents, setWeeklyEvents] = useState({});
     const isFocused = useIsFocused();
 
@@ -305,11 +308,15 @@ const CalendarScreen = ({}) => {
 
     return (
       <View style ={styles.container(globalState.theme.colorBackground)}>
-        <Calendar
+        <CalendarMemo
           onDayPress={handleDayPress}
           markedDates={{...weeklyEvents, [selectedDate]: {dots: (weeklyEvents[selectedDate] ? [...weeklyEvents[selectedDate].dots] : []), selected: true, selectedColor: '#E5DAE7'}}}
           markingType={'multi-dot'}
+          //headerStyle={styles.calendarHeader(globalState.globalState.theme)}
           style={styles.calendar(globalState.theme)}
+          theme={styles.calendarTheme(globalState.theme)}
+          //headerStyle={styles.calendarHeader(globalState.globalState.theme)}
+          //calendarBackground={globalState.globalState.theme.black}
         />
       
         {selectedDate !== '' && 
@@ -442,7 +449,26 @@ const CalendarScreen = ({}) => {
 const styles = StyleSheet.create({
   calendar: (theme) => {
     return {
-      backgroundColor: `${theme.colorBackground}`,
+      color: theme.colorText
+    }
+  },
+  calendarTheme: (theme) => {
+    return {
+      arrowColor: theme.name == 'lightmode' ? 'black' : theme.color3,
+      monthTextColor: theme.name == 'lightmode' ? 'black' : theme.color3, 
+      textSectionTitleColor: theme.color1,
+      calendarBackground: theme.name == 'lightmode' ? 'white' : theme.color2,
+      dayTextColor: theme.colorText
+    }
+  },
+  calendarHeader: (theme) => {
+    return {
+      current: {
+        textSectionTitleColor: theme.color4,
+        monthTextColor: theme.colorText,
+        arrowColor: theme.color3
+      }
+      
     }
   },
   container: (color) => {
@@ -466,8 +492,7 @@ const styles = StyleSheet.create({
       textAlign: 'left',
       padding: 10,
     }
-    
-},
+  },
   datePickerText:{
     color: '#9FA2AE',
     fontSize: 15,
