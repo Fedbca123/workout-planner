@@ -456,9 +456,13 @@ const styles = StyleSheet.create({
     return {
       arrowColor: theme.name == 'lightmode' ? 'black' : theme.color3,
       monthTextColor: theme.name == 'lightmode' ? 'black' : theme.color3, 
-      textSectionTitleColor: theme.color1,
       calendarBackground: theme.name == 'lightmode' ? 'white' : theme.color2,
-      dayTextColor: theme.colorText
+      dayTextColor: theme.colorText,
+      textSectionTitleColor: theme.color3,
+      todayTextColor: theme.black,
+      todayBackgroundColor: theme.color4,
+      textDisabledColor: 'gray',
+      selectedDayTextColor: theme.black
     }
   },
   calendarHeader: (theme) => {
