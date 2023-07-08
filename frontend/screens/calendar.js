@@ -340,7 +340,7 @@ const CalendarScreen = ({}) => {
         onRequestClose={() => setEditModalVisible(false)}
         >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent(globalState.theme.color1)}>
+          <View style={styles.modalContent(globalState.theme)}>
             {workoutToEdit && (
               <>
                   <Text style={styles.modalTitle(globalState.theme.colorText)}>Edit Workout</Text>
@@ -454,11 +454,11 @@ const styles = StyleSheet.create({
   },
   calendarTheme: (theme) => {
     return {
-      arrowColor: theme.name == 'lightmode' ? 'black' : theme.color3,
+      arrowColor: theme.name == 'lightmode' ? null : theme.color3,
       monthTextColor: theme.name == 'lightmode' ? 'black' : theme.color3, 
       calendarBackground: theme.name == 'lightmode' ? 'white' : theme.color2,
       dayTextColor: theme.colorText,
-      textSectionTitleColor: theme.color3,
+      textSectionTitleColor: theme.name == 'lightmode' ? theme.black : theme.color3,
       todayTextColor: theme.black,
       todayBackgroundColor: theme.color4,
       textDisabledColor: 'gray',
@@ -552,9 +552,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContent: (color) => {
+  modalContent: (theme) => {
     return {
-      backgroundColor: color,
+      backgroundColor: theme.name == 'darkmode' ? theme.color1 : theme.white,
       borderRadius: 10,
       padding: 20,
       width: '90%',
