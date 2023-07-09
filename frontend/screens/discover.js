@@ -171,7 +171,7 @@ export default function DiscoverPage({navigation}) {
   const ExerciseItem = ({exercise, title, type, image}) => {
 
     return(
-    <View style={styles.exerciseItems}>
+    <View style={styles.exerciseItems(globalState.theme)}>
       <View style={styles.exerciseCardImageContainer}>
         <Image style={styles.exerciseCardImage} src = {image}/>
       </View>
@@ -279,7 +279,7 @@ export default function DiscoverPage({navigation}) {
               }>
               <View style = {styles.workoutExerciseContainer(globalState.theme)}>
                 <View style = {styles.workoutExerciseCardContent}>
-                  <View style={styles.workoutExerciseCardImageContainer}>
+                  <View style={styles.workoutExerciseCardImageContainer(globalState.theme)}>
                     <Image style={styles.workoutExerciseCardImage} src = {exercise.image}/>
                   </View>
                   <View style={styles.workoutExerciseCardTextContainer}>
@@ -635,14 +635,14 @@ return (
                     }
                   }}
                   disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
-                  leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
-                  rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
+                  leftComponent = {<Text style={styles.workoutTitle(globalState.theme)}>Workouts</Text>}
+                  rightComponent = {<Text style={styles.exerciseTitle(globalState.theme)}>Exercises</Text>}
                   trackBar={{
                     width: 170,
                     height: 50,
-                    activeBackgroundColor: "#E5DAE7",
+                    activeBackgroundColor: globalState.theme.color1,
                     // activeBackgroundColor: "#FEE2CF",
-                    inActiveBackgroundColor: "#88CAE7",
+                    inActiveBackgroundColor: globalState.theme.color1,
                   }}
                   trackBarStyle={{
                       borderColor: 'black',
@@ -653,8 +653,8 @@ return (
                   thumbButton={{
                     width: 77,
                     height: 50,
-                    activeBackgroundColor: "#34A5D5",
-                    inActiveBackgroundColor: "#BFBCC8"
+                    activeBackgroundColor: globalState.theme.color3,
+                    inActiveBackgroundColor: globalState.theme.color2
                     }}
                 />
               </View>
@@ -1086,7 +1086,7 @@ const styles = StyleSheet.create({
       left: 10,
       top: 0,
       marginRight: 20,
-      borderColor: theme.name == 'lightmode' ? 'black' : 'white',
+      borderColor: theme.colorText,
       borderWidth: 1.5,
       borderRadius: 20
     }
@@ -1107,13 +1107,16 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
 
-  workoutExerciseCardImageContainer:{
-    position: 'absolute',
-    left: 10,
-    marginRight: 20,
-    borderColor: 'black',
-    borderWidth: 1.5,
-    borderRadius: 20
+  workoutExerciseCardImageContainer: (theme) => {
+    return {
+      position: 'absolute',
+      left: 10,
+      marginRight: 20,
+      borderColor: theme.colorBackground,
+      borderWidth: 1.5,
+      borderRadius: 20
+    }
+    
   },
   workoutExerciseCardImage:{
     width: 60,
@@ -1236,8 +1239,9 @@ const styles = StyleSheet.create({
     margin: 1,
   }
 },
-  exerciseItems:{
-      backgroundColor: '#67BBE0',
+  exerciseItems: (theme) => {
+    return {
+      backgroundColor: theme.color3,
       color: "#333",
       fontWeight: "500",
       alignItems: 'center',
@@ -1255,6 +1259,7 @@ const styles = StyleSheet.create({
       shadowOffset: {width: 0, height: 0},
       shadowOpacity: 1,
       shadowRadius: 2
+    }
    },
    exerciseCardText:{
     marginLeft: 100,
@@ -1351,14 +1356,20 @@ deleteWorkoutText:{
     }
     
   },
-   workoutTitle:{
+   workoutTitle: (theme) => {
+    return {
       fontWeight: 'bold',
       fontSize: 13,
+      color: theme.colorText
+    }
    },
 
-   exerciseTitle:{
-    fontWeight: 'bold',
-    fontSize: 13,
+   exerciseTitle:(theme) => {
+    return {
+      fontWeight: 'bold',
+      fontSize: 13,
+      color: theme.colorText
+    }
  },
 
   workoutCardDescription: (color) => {
