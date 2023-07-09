@@ -171,7 +171,7 @@ export default function DiscoverPage({navigation}) {
   const ExerciseItem = ({exercise, title, type, image}) => {
 
     return(
-    <View style={styles.exerciseItems}>
+    <View style={styles.exerciseItems(globalState.theme)}>
       <View style={styles.exerciseCardImageContainer}>
         <Image style={styles.exerciseCardImage} src = {image}/>
       </View>
@@ -227,14 +227,14 @@ export default function DiscoverPage({navigation}) {
 
     return(
       // Workout Cards
-    <View style={styles.workoutItems}>
+    <View style={styles.workoutItems(globalState.theme)}>
     <TouchableOpacity onPress={handlePress} activeOpacity=".4">
       <View style={styles.workoutHeader}>
-        <View style={styles.workoutCardImageContainer}>
+        <View style={styles.workoutCardImageContainer(globalState.theme)}>
           <Image style={styles.workoutCardImage} src = {image}/>
         </View>
         <View style={styles.workoutCardTitleContainer}>
-          <Text style={styles.workoutCardTitle}>{title}</Text>
+          <Text style={styles.workoutCardTitle(globalState.theme.colorText)}>{title}</Text>
         </View>
         <View style={styles.expandableIndicatorContainer}>
           <Image source ={ require("../../assets/expandable.png")}
@@ -249,10 +249,10 @@ export default function DiscoverPage({navigation}) {
         {expanded &&
           <View>
             <View style={styles.workoutCardText}>
-              <Text style={styles.workoutCardDescription}>{description}</Text>
-              <Text style={styles.workoutCardDuration}>Duration: {duration} min</Text>
-              <Text style={styles.workoutCardMuscleGroups}>Muscle Groups: {muscleGroups.join(", ")}</Text>
-              <Text style={styles.workoutCardOwner}>Workout Owner: {getWorkoutOwner(workout)} </Text>
+              <Text style={styles.workoutCardDescription(globalState.theme.colorText)}>{description}</Text>
+              <Text style={styles.workoutCardDuration(globalState.theme.colorText)}>Duration: {duration} min</Text>
+              <Text style={styles.workoutCardMuscleGroups(globalState.theme.colorText)}>Muscle Groups: {muscleGroups.join(", ")}</Text>
+              <Text style={styles.workoutCardOwner(globalState.theme.colorText)}>Workout Owner: {getWorkoutOwner(workout)} </Text>
             </View>
             <TouchableOpacity onPress={()=>
               addWorkout(workout)}>
@@ -277,9 +277,9 @@ export default function DiscoverPage({navigation}) {
                     showInfoModal();
               }
               }>
-              <View style = {styles.workoutExerciseContainer}>
+              <View style = {styles.workoutExerciseContainer(globalState.theme)}>
                 <View style = {styles.workoutExerciseCardContent}>
-                  <View style={styles.workoutExerciseCardImageContainer}>
+                  <View style={styles.workoutExerciseCardImageContainer(globalState.theme)}>
                     <Image style={styles.workoutExerciseCardImage} src = {exercise.image}/>
                   </View>
                   <View style={styles.workoutExerciseCardTextContainer}>
@@ -613,10 +613,10 @@ export default function DiscoverPage({navigation}) {
 
 return (
 
-  <View style={{flex: 1, backgroundColor: "white"}}>
-      <View style = {styles.discoverHeaderContainer}>
-        <View style={styles.discoveryPageHeader}>
-          <Text style={styles.discoverTitle}>Discover</Text>
+  <View style={styles.container(globalState.theme)}>
+      <View>
+        <View style={styles.discoverHeader(globalState.theme.colorBackground)}>
+          <Text style={styles.discoverTitle(globalState.theme.colorText)}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
           <View style={styles.buttonsContainer}>
             <View style={styles.toggleandfilters}>
@@ -635,14 +635,14 @@ return (
                     }
                   }}
                   disabledStyle = {{backgroundColor: "darkgray", opacity: 1}}
-                  leftComponent = {<Text style={styles.workoutTitle}>Workouts</Text>}
-                  rightComponent = {<Text style={styles.exerciseTitle}>Exercises</Text>}
+                  leftComponent = {<Text style={styles.workoutTitle(globalState.theme)}>Workouts</Text>}
+                  rightComponent = {<Text style={styles.exerciseTitle(globalState.theme)}>Exercises</Text>}
                   trackBar={{
                     width: 170,
                     height: 50,
-                    activeBackgroundColor: "#E5DAE7",
+                    activeBackgroundColor: globalState.theme.color1,
                     // activeBackgroundColor: "#FEE2CF",
-                    inActiveBackgroundColor: "#88CAE7",
+                    inActiveBackgroundColor: globalState.theme.color1,
                   }}
                   trackBarStyle={{
                       borderColor: 'black',
@@ -653,28 +653,26 @@ return (
                   thumbButton={{
                     width: 77,
                     height: 50,
-                    activeBackgroundColor: "#34A5D5",
-                    inActiveBackgroundColor: "#BFBCC8"
-                    // inActiveBackgroundColor: "#FAD5A5"
+                    activeBackgroundColor: globalState.theme.color3,
+                    inActiveBackgroundColor: globalState.theme.color2
                     }}
                 />
               </View>
               <View style={styles.filters}>
                 <TouchableOpacity onPress={toggleFiltersShowing}>
-
-                <View style={styles.modalContainer}></View>
-                    <Image source = {require("../../assets/filter_icon.png")}
+                    <Image source = {globalState.theme.name == 'lightmode' ? require("../../assets/filter_icon.png") : require("../../assets/filter_icon_white.png")}
                       style={styles.filterImage}
                     />
                   {/* Filters Modal */}
                   <Modal
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
-                    backdropColor = "white"
-                    presentationStyle='fullScreen'
-                    transparent={false}
+                    backdropColor = {globalState.theme.colorBackground}
+                    presentationStyle='overFullScreen'
+                    transparent={true}
+                    animationType='fade'
                     >
-                    <View style={styles.modalBackground}>
+                    <View style={styles.modalBackground(globalState.theme)}>
                         <View style={styles.filtersContainer}>
                           <View style={styles.filterButtonContainer}>
                             <SelectBox
@@ -775,7 +773,7 @@ return (
               </View>
             </View>
             {/* Search Bar */}
-            <View style={styles.searchBar}>
+            <View>
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
@@ -805,14 +803,14 @@ return (
                   }}
                 containerStyle = {{
                   marginTop: 5,
-                  backgroundColor: "white",
+                  backgroundColor: globalState.theme.colorBackground,
                 }}
               />
             </View>
           </View>
         </View>
       </View>
-      <View style={styles.discoverContainer}>
+      <View style={styles.discoverContainer(globalState.theme.colorBackground)}>
 
               {toggleValue ?
               // Exercises
@@ -885,7 +883,7 @@ return (
           <Modal
             isVisible = {isInfoPageVisible}
             coverScreen = {true}
-            backdropColor = "white"
+            backdropColor = {globalState.theme.colorBackground}
             presentationStyle='fullScreen'
             transparent={false}
             >
@@ -907,28 +905,28 @@ return (
                 </View>
                 }
                 <View style={styles.exerciseInfoTitleContainer}>
-                  <Text style={styles.exerciseInfoTitle}>{selectedExerciseTitle}</Text>
+                  <Text style={styles.exerciseInfoTitle(globalState.theme.colorText)}>{selectedExerciseTitle}</Text>
                 </View>
               </View>
               <View style={styles.exerciseInfoCardImageContainer}>
-                <Image  style={styles.exerciseInfoImage} src ={selectedExerciseImage}/>
+                <Image  style={styles.exerciseInfoImage(globalState.theme.colorText)} src ={selectedExerciseImage}/>
               </View>
             </View>
 
             <View style={styles.exerciseInfoBody}>
               <ScrollView>
               <View style={styles.exerciseInfoDescriptionContainer}>
-                <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
-                <Text style={styles.exerciseInfoDescription}>{selectedExerciseDesc}</Text>
+                <Text style={styles.exerciseInfoDescriptionTitle(globalState.theme.colorText)}>Description:</Text>
+                <Text style={styles.exerciseInfoDescription(globalState.theme.colorText)}>{selectedExerciseDesc}</Text>
               </View>
               <View style={styles.exerciseInfoMuscleGroupsContainer}>
-                <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
-                <Text style={styles.exerciseInfoMuscleGroups}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text>
+                <Text style={styles.exerciseInfoMuscleGroupsTitle(globalState.theme.colorText)}>Muscle Groups:</Text>
+                <Text style={styles.exerciseInfoMuscleGroups(globalState.theme.colorText)}>{selectedExerciseMuscleGroups && selectedExerciseMuscleGroups.join(", ")}</Text>
               </View>
 
               <View style={styles.exerciseInfoOwnerContainer}>
-                <Text style={styles.exerciseInfoOwnerTitle}>Exercise Owner:</Text>
-                <Text style={styles.exerciseInfoOwner}>{getWorkoutOwner(selectedExercise)}
+                <Text style={styles.exerciseInfoOwnerTitle(globalState.theme.colorText)}>Exercise Owner:</Text>
+                <Text style={styles.exerciseInfoOwner(globalState.theme.colorText)}>{getWorkoutOwner(selectedExercise)}
                 </Text>
               </View>
               </ScrollView>
@@ -948,22 +946,44 @@ return (
 
 
 const styles = StyleSheet.create({
-  exerciseInfoTitle:{
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textDecorationLine: 'underline'
+  container: (theme) => {
+    return {
+      flex: 1,
+      backgroundColor: theme.backgroundColor,
+      //borderColor: 'red',
+      //borderWidth: '2px'
+    }
   },
-  exerciseInfoDescription:{
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  discoverHeader: (color) => {
+    return {
+      backgroundColor: color
+    }
+  },
+  exerciseInfoTitle:(color) => {
+    return {
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      textDecorationLine: 'underline',
+      color: color
+    }
+  },
+  exerciseInfoDescription:(color) => {
+    return {
+      color: color,
+      fontSize: 16,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    }
   },
 
-  exerciseInfoDescriptionTitle:{
-    fontSize: 18,
-    fontWeight: 'bold',
-    textDecorationLine: 'underline'
+  exerciseInfoDescriptionTitle:(color) => {
+    return {
+      color: color,
+      fontSize: 18,
+      fontWeight: 'bold',
+      textDecorationLine: 'underline'
+    }
   },
 
   exerciseInfoTagsTitle:{
@@ -971,15 +991,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textDecorationLine: 'underline'
   },
-  exerciseInfoMuscleGroupsTitle:{
-    fontSize: 18,
-    fontWeight: 'bold',
-    textDecorationLine: 'underline'
+  exerciseInfoMuscleGroupsTitle:(color)=>{
+    return {
+      fontSize: 18,
+      fontWeight: 'bold',
+      textDecorationLine: 'underline',
+      color: color
+    }
   },
-  exerciseInfoOwnerTitle:{
-    fontSize: 18,
-    fontWeight: 'bold',
-    textDecorationLine: 'underline'
+  exerciseInfoOwnerTitle:(color) => {
+    return {
+      fontSize: 18,
+      fontWeight: 'bold',
+      textDecorationLine: 'underline',
+      color: color
+    }
   },
   exerciseInfoDescriptionContainer:{
     marginBottom: 0,
@@ -998,15 +1024,21 @@ const styles = StyleSheet.create({
     flex: .5
     },
 
-  exerciseInfoMuscleGroups:{
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  exerciseInfoMuscleGroups:(color) => {
+    return {
+      color: color,
+      fontSize: 14,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    }
   },
-  exerciseInfoOwner:{
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  exerciseInfoOwner:(color)=>{
+    return {
+      color: color,
+      fontSize: 14,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    }
   },
   exerciseInfoTags:{
     fontSize: 14,
@@ -1039,11 +1071,15 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
-  exerciseInfoImage:{
-    width: "100%",
-    height: "100%",
-    borderRadius: 22,
-    borderWidth: 3,
+  exerciseInfoImage: (color) => {
+    return {
+      width: "100%",
+      height: "100%",
+      borderRadius: 22,
+      borderWidth: 3,
+      borderColor: color
+    }
+    
   },
   exerciseCardImageContainer:{
     position: 'absolute',
@@ -1068,14 +1104,16 @@ const styles = StyleSheet.create({
 		borderWidth: 2,
 		borderRadius: 100,
 	},
-  workoutCardImageContainer:{
-    position: 'absolute',
-    left: 10,
-    top: 0,
-    marginRight: 20,
-    borderColor: 'black',
-    borderWidth: 1.5,
-    borderRadius: 20
+  workoutCardImageContainer: (theme) => {
+    return {
+      position: 'absolute',
+      left: 10,
+      top: 0,
+      marginRight: 20,
+      borderColor: theme.colorText,
+      borderWidth: 1.5,
+      borderRadius: 20
+    }
   },
 
 
@@ -1093,13 +1131,16 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
   },
 
-  workoutExerciseCardImageContainer:{
-    position: 'absolute',
-    left: 10,
-    marginRight: 20,
-    borderColor: 'black',
-    borderWidth: 1.5,
-    borderRadius: 20
+  workoutExerciseCardImageContainer: (theme) => {
+    return {
+      position: 'absolute',
+      left: 10,
+      marginRight: 20,
+      borderColor: theme.colorBackground,
+      borderWidth: 1.5,
+      borderRadius: 20
+    }
+    
   },
   workoutExerciseCardImage:{
     width: 60,
@@ -1110,9 +1151,6 @@ const styles = StyleSheet.create({
 
   boxContainer:{
     flex: 1,
-  },
-  toggleandfilters:{
-    flexDirection: 'row'
   },
 
   modalCloseButton:{
@@ -1152,10 +1190,12 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingLeft: 10
   },
-  modalBackground:{
-    backgroundColor: "white",
-    flex: 1,
-    justifyContent: 'space-between'
+  modalBackground: (theme) => {
+    return {
+      backgroundColor: theme.colorBackground,
+      flex: 1,
+      justifyContent: 'space-between'
+    }
   },
   expandableIndicatorContainer:{
     position: 'absolute',
@@ -1193,36 +1233,41 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
   },
-  workoutItems:{
-    // backgroundColor: '#E5DAE7',
-    backgroundColor: "#E5DAE7",
+  workoutItems: (theme) => {
+    return {
+      backgroundColor: theme.color2,
+      color: "#333",
+      fontWeight: "500",
+      justifyContent: 'center',
+      textAlign: 'center',
+      paddingTop: 10,
+      paddingBottom: 14,
+      resizeMode: 'contain',
+      flex: 1,
+      margin: 1,
+      shadowColor: "#000",
+      shadowOffset: {width: 0, height: 0},
+      shadowOpacity: 1,
+      shadowRadius: 2
+    }
+    
+ },
+ workoutExerciseCard:(theme) => {
+  return {
+    backgroundColor: theme.color2,
     color: "#333",
     fontWeight: "500",
     justifyContent: 'center',
     textAlign: 'center',
-    paddingTop: 10,
-    paddingBottom: 14,
+    padding: .5,
     resizeMode: 'contain',
     flex: 1,
     margin: 1,
-    shadowColor: "#000",
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 1,
-    shadowRadius: 2
- },
- workoutExerciseCard:{
-  backgroundColor: '#E5DAE7',
-  color: "#333",
-  fontWeight: "500",
-  justifyContent: 'center',
-  textAlign: 'center',
-  padding: .5,
-  resizeMode: 'contain',
-  flex: 1,
-  margin: 1,
+  }
 },
-  exerciseItems:{
-      backgroundColor: '#67BBE0',
+  exerciseItems: (theme) => {
+    return {
+      backgroundColor: theme.color3,
       color: "#333",
       fontWeight: "500",
       alignItems: 'center',
@@ -1240,6 +1285,7 @@ const styles = StyleSheet.create({
       shadowOffset: {width: 0, height: 0},
       shadowOpacity: 1,
       shadowRadius: 2
+    }
    },
    exerciseCardText:{
     marginLeft: 100,
@@ -1286,9 +1332,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  workoutCardTitle:{
-    fontSize: 18,
-    fontWeight: 'bold',
+  workoutCardTitle: (color) => {
+    return {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: color
+    }    
  },
 
  scheduleWorkoutText:{
@@ -1314,33 +1363,49 @@ deleteWorkoutText:{
     fontWeight: 'bold',
     fontSize: 13
   },
-  workoutCardMuscleGroups:{
-    fontWeight: 'bold',
-    fontSize: 12,
-    textAlign: 'center',
-    marginVertical: 5,
+  workoutCardMuscleGroups: (color) => {
+    return {
+      fontWeight: 'bold',
+      fontSize: 12,
+      textAlign: 'center',
+      marginVertical: 5,
+      color: color
+    }
   },
-  workoutCardOwner:{
-    fontWeight: 'bold',
-    fontSize: 12,
-    textAlign: 'center',
-    marginBottom: 5,
+  workoutCardOwner: (color) => {
+    return {
+      fontWeight: 'bold',
+      fontSize: 12,
+      textAlign: 'center',
+      marginBottom: 5,
+      color: color
+    }
+    
   },
-   workoutTitle:{
+   workoutTitle: (theme) => {
+    return {
       fontWeight: 'bold',
       fontSize: 13,
+      color: theme.colorText
+    }
    },
 
-   exerciseTitle:{
-    fontWeight: 'bold',
-    fontSize: 13,
+   exerciseTitle:(theme) => {
+    return {
+      fontWeight: 'bold',
+      fontSize: 13,
+      color: theme.colorText
+    }
  },
 
-  workoutCardDescription:{
-    fontWeight: 'bold',
-    fontSize: 14,
-    textAlign: 'center',
-    marginVertical: 5,
+  workoutCardDescription: (color) => {
+    return {
+      fontWeight: 'bold',
+      fontSize: 14,
+      textAlign: 'center',
+      marginVertical: 5,
+      color: color
+    }    
   },
 
    exerciseCardDescription:{
@@ -1364,14 +1429,15 @@ deleteWorkoutText:{
     textAlign: 'center',
   },
 
-  workoutCardDuration:{
-    fontWeight: 'bold',
-    fontSize: 12,
-    textAlign: 'center',
+  workoutCardDuration: (color) => {
+    return {
+      fontWeight: 'bold',
+      fontSize: 12,
+      textAlign: 'center',
+      color: color
+    }
+    
 
-  },
-  discoveryPageHeader:{
-    backgroundColor: 'white',
   },
   toggleandfilters:{
     justifyContent: 'center',
@@ -1404,40 +1470,45 @@ deleteWorkoutText:{
     display: 'none'
   },
 
-  discoverTitle:{
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginLeft: 10
+  discoverTitle:(color)=>{
+    return {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginTop: 5,
+      marginLeft: 10,
+      color: color
+    }
   },
   discoverSubtitle:{
     marginTop: 5,
     marginLeft: 10,
-    opacity: .45,
+    color: 'gray'
   },
-  discoverContainer:{
-    backgroundColor: 'white',
-    height: "72%",
+  discoverContainer: (color) => {
+    return {
+      backgroundColor: color,
+      height: "72%",
+    }
   },
-  discoverHeaderContainer:{
-    backgroundColor: 'white',
-  },
-  workoutExerciseContainer:{
-    backgroundColor: '#67BBE0',
-    color: "#333",
-    fontWeight: "500",
-    paddingVertical: 15,
-    alignSelf: 'stretch',
-    margin: 2,
-    flexDirection: 'row',
-    borderColor: 'black',
-    borderWidth: 2,
-    borderRadius: 15,
-    borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: {width: 0, height: 0},
-    shadowOpacity: 1,
-    shadowRadius: 2
+  workoutExerciseContainer: (theme) => {
+    return {
+      backgroundColor: theme.color3,
+      color: "#333",
+      fontWeight: "500",
+      paddingVertical: 15,
+      alignSelf: 'stretch',
+      margin: 2,
+      flexDirection: 'row',
+      borderColor: 'black',
+      borderWidth: 2,
+      borderRadius: 15,
+      borderRadius: 20,
+      shadowColor: "#000",
+      shadowOffset: {width: 0, height: 0},
+      shadowOpacity: 1,
+      shadowRadius: 2
+    }
+    
  },
 
  scheduleWorkoutButton:{
