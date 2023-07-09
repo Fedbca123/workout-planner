@@ -613,10 +613,10 @@ export default function DiscoverPage({navigation}) {
 
 return (
 
-  <View style={{flex: 1, backgroundColor: "white"}}>
-      <View style = {styles.discoverHeaderContainer}>
-        <View style={styles.discoveryPageHeader}>
-          <Text style={styles.discoverTitle}>Discover</Text>
+  <View style={styles.container(globalState.theme)}>
+      <View>
+        <View style={styles.discoverHeader(globalState.theme.colorBackground)}>
+          <Text style={styles.discoverTitle(globalState.theme.colorText)}>Discover</Text>
           <Text style={styles.discoverSubtitle}>Refresh your fitness knowledge or learn something new</Text>
           <View style={styles.buttonsContainer}>
             <View style={styles.toggleandfilters}>
@@ -655,7 +655,6 @@ return (
                     height: 50,
                     activeBackgroundColor: "#34A5D5",
                     inActiveBackgroundColor: "#BFBCC8"
-                    // inActiveBackgroundColor: "#FAD5A5"
                     }}
                 />
               </View>
@@ -663,7 +662,7 @@ return (
                 <TouchableOpacity onPress={toggleFiltersShowing}>
 
                 <View style={styles.modalContainer}></View>
-                    <Image source = {require("../../assets/filter_icon.png")}
+                    <Image source = {globalState.theme.name == 'lightmode' ? require("../../assets/filter_icon.png") : require("../../assets/filter_icon_white.png")}
                       style={styles.filterImage}
                     />
                   {/* Filters Modal */}
@@ -775,7 +774,7 @@ return (
               </View>
             </View>
             {/* Search Bar */}
-            <View style={styles.searchBar}>
+            <View>
               <SearchBar
                 placeholder="Search Here"
                 placeholderTextColor={"#363636"}
@@ -805,7 +804,7 @@ return (
                   }}
                 containerStyle = {{
                   marginTop: 5,
-                  backgroundColor: "white",
+                  backgroundColor: globalState.theme.colorBackground,
                 }}
               />
             </View>
@@ -948,6 +947,19 @@ return (
 
 
 const styles = StyleSheet.create({
+  container: (theme) => {
+    return {
+      flex: 1,
+      backgroundColor: theme.backgroundColor,
+      //borderColor: 'red',
+      //borderWidth: '2px'
+    }
+  },
+  discoverHeader: (color) => {
+    return {
+      backgroundColor: color
+    }
+  },
   exerciseInfoTitle:{
     fontSize: 24,
     fontWeight: 'bold',
@@ -1110,9 +1122,6 @@ const styles = StyleSheet.create({
 
   boxContainer:{
     flex: 1,
-  },
-  toggleandfilters:{
-    flexDirection: 'row'
   },
 
   modalCloseButton:{
@@ -1370,9 +1379,6 @@ deleteWorkoutText:{
     textAlign: 'center',
 
   },
-  discoveryPageHeader:{
-    backgroundColor: 'white',
-  },
   toggleandfilters:{
     justifyContent: 'center',
     flexDirection: 'row',
@@ -1404,23 +1410,23 @@ deleteWorkoutText:{
     display: 'none'
   },
 
-  discoverTitle:{
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 5,
-    marginLeft: 10
+  discoverTitle:(color)=>{
+    return {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginTop: 5,
+      marginLeft: 10,
+      color: color
+    }
   },
   discoverSubtitle:{
     marginTop: 5,
     marginLeft: 10,
-    opacity: .45,
+    color: 'gray'
   },
   discoverContainer:{
     backgroundColor: 'white',
     height: "72%",
-  },
-  discoverHeaderContainer:{
-    backgroundColor: 'white',
   },
   workoutExerciseContainer:{
     backgroundColor: '#67BBE0',
