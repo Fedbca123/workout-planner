@@ -49,7 +49,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1}}>
 						
-						<Text style={styles.TitleText}>{sections.title}</Text>
+						<Text style={styles.TitleText(globalState.theme.colorText)}>{sections.title}</Text>
 
 					</View>
 
@@ -60,7 +60,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 							setCurrState("ExerciseReview");
 						}}>
 
-							<Ionicons name="arrow-forward-circle-outline" size={34} style={{alignSelf: "center" }}  color="black" />
+							<Ionicons name="arrow-forward-circle-outline" size={34} style={{alignSelf: "center" }}  color={globalState.theme.colorText} />
 							
 						</TouchableOpacity>
 
@@ -117,12 +117,12 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 		function itemRender({ item, index }) {
 			if (showInput) {
 				return (
-					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}>
+					<View style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row"}}>
 
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ImageStyle} />
 
-						<Text style={styles.headerText}>{item.title}</Text>
+						<Text style={styles.headerText(globalState.theme.colorText)}>{item.title}</Text>
 
 						<TextInput
 							placeholder="sets"
@@ -179,7 +179,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 	}
 
 	return (
-		<View >
+		<View>
 			<Accordion
 				// containerStyle={styles.Background}
 				sections={data}
@@ -190,7 +190,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 				// keyExtractor={(item) => {
 				// 	updateGlobalState("workout", item);
 				// }}
-				sectionContainerStyle={styles.collapsePill}
+				sectionContainerStyle={styles.collapsePill(globalState.theme.color1)}
 				containerStyle={styles.collapsedContent}
 				underlayColor="transparent"
 			/>
@@ -208,21 +208,22 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 }
 
 const styles = StyleSheet.create({
-	collapsePill: {
-		margin: 5,
-		// padding: 15,
-		backgroundColor: "#F1F3FA",
-		padding: 15,
-		shadowColor: "#000",
-        shadowOpacity: 0.2,
-        shadowRadius: 5,
-        shadowOffset: { width: 0, height: 2 },
-        elevation: 2,
-        borderRadius: 20,
-		borderWidth: .5,
-		width: "95%",
-		// maxHeight: "90%",
-		
+	collapsePill: (color) => {
+		return {
+			margin: 5,
+			// padding: 15,
+			backgroundColor: color,
+			padding: 15,
+			shadowColor: "#000",
+			shadowOpacity: 0.2,
+			shadowRadius: 5,
+			shadowOffset: { width: 0, height: 2 },
+			elevation: 2,
+			borderRadius: 20,
+			borderWidth: .5,
+			width: "95%",
+			// maxHeight: "90%",
+		}
 	},
 	text: {
 		color: "black",
@@ -238,16 +239,18 @@ const styles = StyleSheet.create({
 		//marginHorizontal: 10
 		// left: 5,
 	},
-	headerText: {
-		color: "black",
-		fontWeight: "bold",
-		fontSize: 16,
-		display: "flex",
-		textAlignVertical: "center",
-		alignContent: "center",
-		flexDirection: "row",
-		justifyContent:"space-around",
-		// left: 5,
+	headerText: (color) => {
+		return {
+			color: color,
+			fontWeight: "bold",
+			fontSize: 16,
+			display: "flex",
+			textAlignVertical: "center",
+			alignContent: "center",
+			flexDirection: "row",
+			justifyContent:"space-around",
+			// left: 5,
+		}
 	},
 	addButton: {
 		// position: "relative",
@@ -279,18 +282,20 @@ const styles = StyleSheet.create({
 		}),
 		// maxHeight: "10%",
 	},
-	TitleText: {
-		color: "black",
-		position:"relative",
-		fontWeight: "bold",
-		fontSize: 22,
-		display: "flex",
-		textAlignVertical: "center",
-		alignContent: "center",
-		flexDirection: "row",
-		justifyContent:"space-around",
-		left: 5,
-		textAlign: 'center'
+	TitleText: (color) => {
+		return {
+			color: color,
+			position:"relative",
+			fontWeight: "bold",
+			fontSize: 22,
+			display: "flex",
+			textAlignVertical: "center",
+			alignContent: "center",
+			flexDirection: "row",
+			justifyContent:"space-around",
+			left: 5,
+			textAlign: 'center'
+		}
 	},
 	ImageStyle:{
 		height: 50,

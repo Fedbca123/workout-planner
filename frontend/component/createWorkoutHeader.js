@@ -9,8 +9,8 @@ export default function CreateWorkoutHeader ({ navigation, title }) {
     const [globalState, updateGlobalState] = useGlobalState();
 
     return (
-        <View style= {styles.container}>
-            <View style={styles.buttonContainer}>
+        <View style= {styles.container(globalState.theme.colorBackground)}>
+            <View style={styles.buttonContainer(globalState.theme.colorBackground)}>
                 <TouchableOpacity
                     onPress={() => {
                         navigation.navigate("Home");
@@ -21,32 +21,41 @@ export default function CreateWorkoutHeader ({ navigation, title }) {
                 </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.text}>{title}</Text>
+                <Text style={styles.text(globalState.theme.colorText)}>{title}</Text>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        height: 110,
-        backgroundColor: "white",
+    container: (color) => {
+        return {
+            height: 110,
+            backgroundColor: color,  
+        }
+        
     },
-    buttonContainer: {
-        height: 30,
-        width: 40,
-        marginLeft: 20,
-        marginTop: 50,
-        backgroundColor: "white"
+    buttonContainer: (color) => {
+        return {
+            height: 30,
+            width: 40,
+            marginLeft: 20,
+            marginTop: 50,
+            backgroundColor: color
+        }
+        
     },
     textContainer: {
     },
     button: {
     },
-    text:{
-        fontWeight: 'bold',
-        fontSize: 20,
-        textAlign: 'center'
+    text: (color) => {
+        return {
+           fontWeight: 'bold',
+            fontSize: 20,
+            textAlign: 'center',
+            color: color 
+        }  
     },
     ImageIconStyle: {
         width: 30,
