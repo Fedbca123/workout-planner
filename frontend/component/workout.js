@@ -142,20 +142,20 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 					</View>
 				);
-			}else{
+			} else {
 				return (
 					<View style={{ display: "flex", justifyContent: 'space-between', flexDirection: "row", marginTop: 5, alignItems: 'center', borderTopWidth: .5}}>
 						
 						{/* Image Component here */}
 						<Image source={{ uri: item.image }} style={styles.ExerciseImage} />
 
-						<Text style={styles.text}>{item.title}</Text>
+						<Text style={styles.text(globalState.theme.colorText)}>{item.title}</Text>
 
 						<TouchableOpacity onPress={() => {
 							setExercise(item);
 							setModalVisibility(true)
 						}}>
-						<AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
+							<AntDesign name="infocirlceo" style={{alignSelf: 'center', color: globalState.theme.colorText}} size={24} color="black" />
 						</TouchableOpacity>
 
 					</View>
@@ -198,7 +198,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 			<Modal
 				isVisible={modalVisible}
 				coverScreen={true}
-				backdropColor="white"
+				backdropColor={globalState.theme.colorBackground}
 				backdropOpacity={1}
 			>
 				<ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
@@ -225,19 +225,21 @@ const styles = StyleSheet.create({
 			// maxHeight: "90%",
 		}
 	},
-	text: {
-		color: "black",
-		//fontWeight: "bold",
-		fontSize: 16,
-		display: "flex",
-		textAlignVertical: "center",
-		alignContent: "center",
-		flexDirection: "row",
-		justifyContent:"space-around",
-		flex: 1,
-		textAlign: 'center',
-		//marginHorizontal: 10
-		// left: 5,
+	text: (color) => {
+		return {
+			color: color,
+			//fontWeight: "bold",
+			fontSize: 16,
+			display: "flex",
+			textAlignVertical: "center",
+			alignContent: "center",
+			flexDirection: "row",
+			justifyContent:"space-around",
+			flex: 1,
+			textAlign: 'center',
+			//marginHorizontal: 10
+			// left: 5,
+		}
 	},
 	headerText: (color) => {
 		return {

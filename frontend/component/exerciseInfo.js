@@ -36,7 +36,7 @@ export default function ExerciseInfo({ exercise, setModalVisbility }) {
             {/* <View style={{display:"flex", flex:1, justifyContent:"space-evenly"}}> */}
                 <View style={styles.exerciseInfoHeader}>
                     <View style={styles.exerciseInfoTitleContainer}>
-                        <Text style={styles.exerciseInfoTitle}>{exercise.title}</Text>
+                        <Text style={styles.exerciseInfoTitle(globalState.theme.colorText)}>{exercise.title}</Text>
                     </View>
                     <View style={styles.exerciseInfoCardImageContainer}>
                         <Image style={styles.exerciseInfoImage} src={exercise.image} />
@@ -47,13 +47,13 @@ export default function ExerciseInfo({ exercise, setModalVisbility }) {
                     <ScrollView>
                 {/* <ScrollView contentContainerStyle={{marginBottom: 5}}> */}
                         <View style={styles.exerciseInfoDescriptionContainer}>
-                            <Text style={styles.exerciseInfoDescriptionTitle}>Description:</Text>
-                            <Text style={styles.exerciseInfoDescription}>{exercise.description}</Text>
+                            <Text style={styles.exerciseInfoDescriptionTitle(globalState.theme.colorText)}>Description:</Text>
+                            <Text style={styles.exerciseInfoDescription(globalState.theme.colorText)}>{exercise.description}</Text>
                         </View>
 
                         <View style={styles.exerciseInfoMuscleGroupsContainer}>
-                            <Text style={styles.exerciseInfoMuscleGroupsTitle}>Muscle Groups:</Text>
-                            <Text style={styles.exerciseInfoMuscleGroups}>{exercise.muscleGroups && exercise.muscleGroups.join(", ")}</Text>
+                            <Text style={styles.exerciseInfoMuscleGroupsTitle(globalState.theme.colorText)}>Muscle Groups:</Text>
+                            <Text style={styles.exerciseInfoMuscleGroups(globalState.theme.colorText)}>{exercise.muscleGroups && exercise.muscleGroups.join(", ")}</Text>
                         </View>
 
                         {/* <View style={styles.exerciseInfoOwnerContainer}>
@@ -64,10 +64,10 @@ export default function ExerciseInfo({ exercise, setModalVisbility }) {
 
                 </View>
 
-                <View style={styles.modalCloseButton}>
-                    <TouchableOpacity style={styles.modalCloseButton} onPress={() => {setModalVisbility(false)}}>
-                        <View style={styles.closeButtonContainer}>
-                        <Text style={styles.closeText}>Close</Text>
+                <View style={[styles.modalCloseButton, {backgroundColor: globalState.theme.colorBackground}]}>
+                    <TouchableOpacity style={[styles.modalCloseButton, {backgroundColor: globalState.theme.colorBackground}]} onPress={() => {setModalVisbility(false)}}>
+                        <View style={[styles.closeButtonContainer, {backgroundColor: globalState.theme.colorBackground, borderColor: globalState.theme.colorText}]}>
+                            <Text style={[styles.closeText, {color: globalState.theme.colorText}]}>Close</Text>
                         </View>
                     </TouchableOpacity> 
                 </View>
@@ -81,19 +81,25 @@ const styles = StyleSheet.create({
     exerciseInfoMuscleGroupsContainer:{
         marginTop: 5
     },
-    exerciseInfoMuscleGroupsTitle:{
-        fontSize: 18,
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
+    exerciseInfoMuscleGroupsTitle: (color) => {
+        return {
+            fontSize: 18,
+            fontWeight: 'bold',
+            textDecorationLine: 'underline',
+            color: color
+        }
     },
-	exerciseInfoHeader:{
+	exerciseInfoHeader: {
         flex: 1.5,
         // borderWidth: 2,
     },
-    exerciseInfoDescriptionTitle:{
-        fontSize: 18,
-        fontWeight: 'bold',
-        textDecorationLine: 'underline',
+    exerciseInfoDescriptionTitle: (color) => {
+        return {
+            fontSize: 18,
+            fontWeight: 'bold',
+            textDecorationLine: 'underline',
+            color: color
+        }
     },
     exerciseInfoTitleContainer:{
         alignItems: 'center',
@@ -106,13 +112,15 @@ const styles = StyleSheet.create({
         width: "100%",
         flex: 1,
     },
-    exerciseInfoTitle:{
+    exerciseInfoTitle: (color) => {
 
-
-        fontSize: 24,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        textDecorationLine: 'underline'
+        return {
+            fontSize: 24,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            textDecorationLine: 'underline',
+            color: color
+        }
     },
     exerciseInfoImage:{
 
@@ -129,18 +137,21 @@ const styles = StyleSheet.create({
         flex: 1.3,
         // borderWidth: 2,
     },
-    exerciseInfoDescription:{
-
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
-
+    exerciseInfoDescription: (color) => {
+        return {
+            fontSize: 16,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            color: color
+        }
     },
-    exerciseInfoMuscleGroups:{
-
-        fontSize: 14,
-        fontWeight: 'bold',
-        textAlign: 'center',
+    exerciseInfoMuscleGroups: (color) => {
+        return {
+            fontSize: 14,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            color: color
+        }
     },
     exerciseInfoOwner:{
         fontSize: 14,
