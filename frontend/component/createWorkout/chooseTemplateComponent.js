@@ -355,57 +355,56 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 							isVisible = {areFiltersVisible}
 							coverScreen = {true}
 							//backdropOpacity = "1"
-							backdropColor = "white"
-							presentationStyle='fullScreen'
-							transparent={false}
+							backdropColor = {globalState.theme.colorBackground}
+							transparent={true}
 							>
-							<View style={styles.modalBackground}>
+							<View style={[styles.modalBackground, {backgroundColor: globalState.theme.colorBackground}]}>
 								<View style={styles.filtersContainer}>
-								<View style={[styles.filterButtonContainer, {marginTop:40}]}>
-									<SelectBox
-									label="Equipment"
-									labelStyle={styles.filterLabels}
-									inputPlaceholder = "Add one or more Equipment"
-									listEmptyText='No Equipment Found'
-									searchInputProps = {{placeholder: "Search..."}}
-									inputFilterStyle={styles.filterSearch}
-									arrowIconColor = '#000000'
-									multiOptionContainerStyle = {styles.selectedFilterContainers}
-									multiOptionsLabelStyle = {styles.selectedFilterLabels}
-									
-									searchIconColor = "#000"
-									toggleIconColor = "#2193BC"
+									<View style={[styles.filterButtonContainer, {marginTop:40}]}>
+										<SelectBox
+										label="Equipment"
+										labelStyle={styles.filterLabels}
+										inputPlaceholder = "Add one or more Equipment"
+										listEmptyText='No Equipment Found'
+										searchInputProps = {{placeholder: "Search..."}}
+										inputFilterStyle={styles.filterSearch}
+										arrowIconColor = '#000000'
+										multiOptionContainerStyle = {styles.selectedFilterContainers}
+										multiOptionsLabelStyle = {styles.selectedFilterLabels}
+										
+										searchIconColor = "#000"
+										toggleIconColor = "#2193BC"
 
-									options = {equipmentFilters}
-									optionsLabelStyle = {styles.filterOptions}
-									
-									selectedValues = {selectedEquipmentFilter}
-									onMultiSelect = {onMultiChangeEquipment()}
-									onTapClose = {onMultiChangeEquipment()}
-									isMulti
-									/>
-								</View>
-								<View style={styles.filterButtonContainer}>
-									<SelectBox
-									label="Muscle Groups"
-									labelStyle={styles.filterLabels}
-									inputPlaceholder = "Add one or more Muscle Groups"
-									listEmptyText='No Muscle Groups Found'
-									searchInputProps = {{placeholder: "Search..."}}
-									multiOptionsLabelStyle = {styles.selectedFilterLabels}
-									multiOptionContainerStyle = {styles.selectedFilterContainers}
-									options = {muscleGroupsFilters}
-									optionsLabelStyle = {styles.filterOptions}
-									arrowIconColor = '#000'
+										options = {equipmentFilters}
+										optionsLabelStyle = {styles.filterOptions}
+										
+										selectedValues = {selectedEquipmentFilter}
+										onMultiSelect = {onMultiChangeEquipment()}
+										onTapClose = {onMultiChangeEquipment()}
+										isMulti
+										/>
+									</View>
+									<View style={styles.filterButtonContainer}>
+										<SelectBox
+										label="Muscle Groups"
+										labelStyle={styles.filterLabels}
+										inputPlaceholder = "Add one or more Muscle Groups"
+										listEmptyText='No Muscle Groups Found'
+										searchInputProps = {{placeholder: "Search..."}}
+										multiOptionsLabelStyle = {styles.selectedFilterLabels}
+										multiOptionContainerStyle = {styles.selectedFilterContainers}
+										options = {muscleGroupsFilters}
+										optionsLabelStyle = {styles.filterOptions}
+										arrowIconColor = '#000'
 
-									searchIconColor = "#000"
-									toggleIconColor = "#2193BC"
-									
-									selectedValues = {selectedMuscleGroupsFilter}
-									onMultiSelect = {onMultiChangeMuscleGroups()}
-									onTapClose = {onMultiChangeMuscleGroups()}
-									isMulti
-									/>
+										searchIconColor = "#000"
+										toggleIconColor = "#2193BC"
+										
+										selectedValues = {selectedMuscleGroupsFilter}
+										onMultiSelect = {onMultiChangeMuscleGroups()}
+										onTapClose = {onMultiChangeMuscleGroups()}
+										isMulti
+										/>
 								</View>
 								<View style={styles.filterButtonContainer}>                      
 									<SelectBox

@@ -26,12 +26,14 @@ import {TimePicker} from 'react-native-simple-time-picker';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import KeyboardAwareDraggableFlatlist from "../keyboard-aware-draggable-flatlist";
 import { useHeaderHeight } from '@react-navigation/elements';
+import { useGlobalState } from "../../GlobalState.js";
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
+export default function ExerciseReview({setCurrState, workout, updateWorkout, theme}) {
 	// const [globalState, updateGlobalState] = useGlobalState();
 	const [exercises, updateExercises] = useState(!workout[0].exercises ? [] : workout[0].exercises);
 	const [modalVisible, setModalVisible] = useState(false);
+	const [globalState, updateGlobalState] = useGlobalState();
 	const [timeVal, setTimeVal]= useState({
 		hours: 0,
 		minutes: 0,
@@ -72,10 +74,10 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 		<KeyboardAvoidingView
 			behavior='padding'
 			keyboardVerticalOffset={Platform.OS === "ios" ? headerHeight : -500}
-			style={styles.Background}
+			style={[styles.Background, {backgroundColor: theme.colorBackground}]}
 		>
 			<TouchableOpacity
-				style={styles.addExerciseButton}
+				style={[styles.addExerciseButton, {backgroundColor: theme.color1}]}
 				onPress={() => {
 					setCurrState("ExerciseSearch");
 				}}
@@ -86,6 +88,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 						padding: 5,
 						textAlign: "center",
 						fontWeight: "bold",
+						color: theme.colorText
 					}}
 				>
 					Add an Exercise
@@ -113,19 +116,20 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 					onDragEnd={({data}) => updateExercises(data)}
 					renderItem={({ item, getIndex, drag, isActive }) => (
 						<ScaleDecorator>
-							<TouchableOpacity style={styles.ExerciseCard} onLongPress={drag} disabled={isActive}>
+							<TouchableOpacity style={[styles.ExerciseCard, {backgroundColor: theme.color1}]} onLongPress={drag} disabled={isActive}>
 								<View style={styles.ExerciseCardTop}>
 									<Image
 										source={{ uri: item.image }}
 										style={styles.ExerciseImage}
 									/>
 									<View style={{alignItems:'center'}}>
-										<Text style={styles.ExerciseText}>
+										<Text style={[styles.ExerciseText, {color: theme.colorText}]}>
 											{item.title}
 										</Text>
 										<Dropdown
 										inverted={true}
 										style={styles.dropdown}
+										selectedTextStyle={{color: theme.colorText}}
 										data={[
 											{ label: "Cardio", value: "CARDIO" },
 											{
@@ -153,7 +157,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 										}}
 									>
 										<AntDesign
-											style={styles.DeleteExerciseBttn}
+											style={[styles.DeleteExerciseBttn, {color: theme.colorText}]}
 											name="minus"
 											size={20}
 										/>
@@ -163,7 +167,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									{(item.exerciseType === "SETSXREPS" ||
 										item.exerciseType === "AMRAP") && (
 										<View style={styles.rowViewInputs}>
-										<Text>Sets:</Text>
+										<Text style={{color: theme.colorText}}>Sets:</Text>
 										<View style={styles.inputFieldView}>
 											<TextInput
 												style={styles.inputfield}
@@ -188,7 +192,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									)}
 									{item.exerciseType === "SETSXREPS" && (
 										<View style={styles.rowViewInputs}>
-											<Text>Reps:</Text>
+											<Text style={{color: theme.colorText}}>Reps:</Text>
 											<View style={styles.inputFieldView}>
 												<TextInput
 													style={styles.inputfield}
@@ -212,7 +216,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout}) {
 									{(item.exerciseType === "SETSXREPS" ||
 										item.exerciseType === "AMRAP") && (
 										<View style={styles.rowViewInputs}>
-											<Text>Weight:</Text>
+											<Text style={{color: theme.colorText}}>Weight:</Text>
 											<View style={styles.inputFieldView}>
 												<TextInput
 													style={styles.inputfield}
