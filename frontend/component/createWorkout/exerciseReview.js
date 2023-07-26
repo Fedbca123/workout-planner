@@ -239,7 +239,7 @@ export default function ExerciseReview({setCurrState, workout, updateWorkout, th
 									{(item.exerciseType === "AMRAP" ||
 										item.exerciseType === "CARDIO") && (
 										<View style={styles.rowViewInputs}>
-											<Text>Time:</Text>
+											<Text style={{color: theme.colorText}}>Time:</Text>
 											<View style={styles.inputFieldView}>
 												<TouchableOpacity
 													onPress={() => {

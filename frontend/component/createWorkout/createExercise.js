@@ -61,7 +61,7 @@ const exerciseType = [
     {label: 'Sets and Reps', value: 'SETSXREPS'},
 ]
 
-export default function createExercise({workout, updateWorkout, setCurrState}) {
+export default function createExercise({workout, updateWorkout, setCurrState, theme}) {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
@@ -193,7 +193,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
     }
 
     return (
-		<KeyboardAwareScrollView contentContainerStyle={styles.container}>
+		<KeyboardAwareScrollView bounces={false} contentContainerStyle={[styles.container, {backgroundColor: theme.colorBackground}]}>
             {!pageTwo &&
             <>
                 <View style={styles.imageContainer}>
@@ -206,7 +206,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
             
                 <View style={styles.inputContainer}>
                     <View style={{width: '70%'}}>
-                        <Text style={styles.text}>Title</Text>
+                        <Text style={[styles.text, {color: theme.colorText}]}>Title</Text>
                         <TextInput style={styles.inputfield}
                             maxLength = {40}
                             multiline = {false}
@@ -222,7 +222,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                     </View>
                     
                     <View style={{width: '70%'}}>
-                        <Text style={styles.text}>Description {"(optional)"}</Text>
+                        <Text style={[styles.text, {color: theme.colorText}]}>Description {"(optional)"}</Text>
                         <TextInput style={styles.inputfield}
                             maxLength= {200}
                             multiline = {true}
@@ -242,7 +242,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                         
             {pageTwo &&
             <View style={{marginHorizontal: 10, marginTop: 40}}>
-                <Text style={[styles.TitleText,{marginTop: 0}]}>Muscle Groups</Text>
+                <Text style={[styles.TitleText,{marginTop: 0, color: theme.colorText}]}>Muscle Groups</Text>
 
                 <MultiSelect
                     style={styles.dropdown}
@@ -279,7 +279,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                     )}
                 />
 
-                <Text style={styles.TitleText}>Equipment</Text>
+                <Text style={[styles.TitleText, {color: theme.colorText}]}>Equipment</Text>
 
                 <MultiSelect
                     style={styles.dropdown}
@@ -315,7 +315,7 @@ export default function createExercise({workout, updateWorkout, setCurrState}) {
                         </TouchableOpacity>
                     )}
                 />
-                <Text style={styles.TitleText}>What type of exercise is this?</Text>
+                <Text style={[styles.TitleText, {color: theme.colorText}]}>What type of exercise is this?</Text>
                 <Dropdown
                     style={styles.dropdown}
                     data={exerciseType}
