@@ -75,7 +75,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 
 					<View style={{ display: "flex", justifyContent: "space-evenly", flexDirection: "column", flex:1 }}>
 						
-						<Text style={styles.TitleText}>{sections.title}</Text>
+						<Text style={styles.TitleText(globalState.theme.colorText)}>{sections.title}</Text>
 
 					</View>
 
@@ -86,7 +86,7 @@ export default function WorkOuts({ data, showButton, showInput, startButton, set
 						}}>
 
 							{/* <Text style={{ alignSelf: "center" }}>Start!</Text> */}
-							<AntDesign name="playcircleo" size={34}/>
+							<AntDesign name="playcircleo" size={34} color={globalState.theme.colorText}/>
 							
 						</TouchableOpacity>
 
