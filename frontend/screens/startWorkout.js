@@ -5,169 +5,6 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import { useGlobalState } from "../GlobalState.js";
 import { Icon } from 'react-native-elements';
 
-const workout1={
-  "_id": "64167911f5e0a64f6c02a720",
-  "title": "Blah",
-  "description": "Blah",
-  "image": "https://res.cloudinary.com/djbbyeabd/image/upload/v1676577900/workouts/workoutDefault_m5co8w.jpg",
-  "imageId": "workouts/workoutDefault_m5co8w.jpg",
-  "exercises": [
-    {
-      "title": "Pushups",
-      "description": "The classic Pushups exercise",
-      "image": "https://res.cloudinary.com/djbbyeabd/image/upload/v1676577889/exercises/exerciseDefault_bgnsno.jpg",
-      "imageId": "exercises/itcyvmgvlbus6marx998",
-      "exerciseType": "AMRAP",
-      "sets": "1",
-      "reps": "2",
-      "time": "600",
-      "weight": "3",
-      "restTime": "60",
-      "tags": [
-        "Bodyweight",
-        "Calisthenics",
-        "Pushups"
-      ],
-      "muscleGroups": [
-        "Chest",
-        "Shoulders",
-        "Triceps",
-        "Core"
-      ],
-      "_id": "63fa2ca3f43bb11786b20838",
-      "createdAt": {
-        "$date": {
-          "$numberLong": "1677339811121"
-        }
-      },
-      "updatedAt": {
-        "$date": {
-          "$numberLong": "1677339811121"
-        }
-      },
-      "__v": {
-        "$numberInt": "0"
-      }
-    },
-    {
-      "title": "Calf Raises Public",
-      "description": "Test Calf Raise Exercise",
-      "image": "https://res.cloudinary.com/djbbyeabd/image/upload/v1676577889/exercises/exerciseDefault_bgnsno.jpg",
-      "imageId": "exercises/exerciseDefault_bgnsno",
-      "exerciseType": "SETSXREPS",
-      "sets":"1",
-      "reps":"2",
-      "weight": "3",
-      "restTime": "30",
-      "tags": [
-        "",
-        "Body Weight",
-        "Calf",
-        "Raises",
-        "Public"
-      ],
-      "muscleGroups": [
-        "Legs",
-        "Calfs"
-      ],
-      "_id":"640100ed07897c9d0ea77846",
-      "createdAt": {
-        "$date": {
-          "$numberLong": "1677787373593"
-        }
-      },
-      "updatedAt": {
-        "$date": {
-          "$numberLong": "1677787373593"
-        }
-      },
-      "__v": {
-        "$numberInt": "0"
-      }
-    },
-    {
-      "title": "QQQ",
-      "description": "Deez Nutta",
-      "image": "https://res.cloudinary.com/djbbyeabd/image/upload/v1676577889/exercises/exerciseDefault_bgnsno.jpg",
-      "imageId": "exercises/wvkeriew03ffbzxwqffa",
-      "exerciseType": "AMRAP",
-      "sets": "1",
-      "time": "3",
-      "weight": "2",
-      "tags": [
-        "BodyWeight/None,Dumbbells",
-        "QQQ"
-      ],
-      "muscleGroups": [
-        "Chest,Lats,Biceps"
-      ],
-      "owner": {
-        "$oid": "63e03004bcfba81ffcec233d"
-      },
-      "_id": {
-        "$oid": "6413df51c128ea8b89f0de6b"
-      },
-      "createdAt": {
-        "$date": {
-          "$numberLong": "1679023953736"
-        }
-      },
-      "updatedAt": {
-        "$date": {
-          "$numberLong": "1679023953736"
-        }
-      },
-      "__v": {
-        "$numberInt": "0"
-      }
-    }
-  ],
-  "duration": "69",
-  "location": "UCF",
-  "recurrence": true,
-  "scheduledDate": {
-    "$date": {
-      "$numberLong": "1679971825000"
-    }
-  },
-  "tags": [
-    "Bodyweight",
-    "Calisthenics",
-    "Pushups",
-    "",
-    "Body Weight",
-    "Calf",
-    "Raises",
-    "Public",
-    "BodyWeight/None,Dumbbells",
-    "QQQ",
-    "Blah"
-  ],
-  "muscleGroups": [
-    "Chest",
-    "Shoulders",
-    "Triceps",
-    "Core",
-    "Legs",
-    "Calfs",
-    "Chest,Lats,Biceps"
-  ],
-  "owner": "63e03004bcfba81ffcec233d",
-  "createdAt": {
-    "$date": {
-      "$numberLong": "1679194385547"
-    }
-  },
-  "updatedAt": {
-    "$date": {
-      "$numberLong": "1679346677691"
-    }
-  },
-  "__v": {
-    "$numberInt": "0"
-  }
-}
-
 const StartWorkout = ({ navigation, route }) => {
   const [globalState, updateGlobalState] = useGlobalState();
   const { workout } = route.params;
@@ -280,11 +117,11 @@ const StartWorkout = ({ navigation, route }) => {
     {
       return (
         <View style={{ flex: 1, alignItems: 'center', marginTop: 40 }}>
-          <Image source={{uri: workout.image}} style={[styles.image, {marginBottom: 50, borderRadius: 1000000}]}/>
-          <Text style={styles.heading}> {workout.title}</Text>
+          <Image source={{uri: workout.image}} style={[styles.image, {marginBottom: 50, borderRadius: 1000000, borderColor: globalState.theme.colorText}]}/>
+          <Text style={[styles.heading, {color: globalState.theme.colorText}]}> {workout.title}</Text>
           <View style={{flex:1, justifyContent: 'center', width: '30%'}}>
-            <TouchableOpacity style={styles.beginButton} onPress={() => handleNext()}>
-              <Text>Begin</Text>
+            <TouchableOpacity style={[styles.beginButton, {backgroundColor: globalState.theme.color1, borderColor: globalState.theme.colorText}]} onPress={() => handleNext()}>
+              <Text style={{color: globalState.theme.colorText}}>Begin</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -293,18 +130,18 @@ const StartWorkout = ({ navigation, route }) => {
     else if (currentExerciseIndex === exercises.length) {
       // last page with congratulatory message
       return (
-        <View style={{ flex: 1, alignItems: 'center', marginTop: 40 }}>
+        <View style={{ flex: 1, alignItems: 'center', marginTop: 40, backgroundColor: globalState.theme.colorBackground}}>
           <Image source={{uri: workout.image}} style={[styles.image, {marginBottom: 50, borderRadius: 1000000}]}/>
-          <Text style={styles.heading}> Congratulations!</Text>
-          <Text style={styles.text}> You have completed {workout.title}.</Text>
+          <Text style={[styles.heading, {color: globalState.theme.colorText}]}> Congratulations!</Text>
+          <Text style={[styles.text, {color: globalState.theme.colorText}]}> You have completed {workout.title}.</Text>
           <View style={{flex:1, width: '30%'}}>
             <TouchableOpacity 
-              style={styles.beginButton} 
+              style={[styles.beginButton, {backgroundColor: globalState.theme.color1, borderColor: globalState.theme.colorText}]} 
               onPress={() => {
               navigation.popToTop();
               navigation.navigate('Home'); 
               }}>
-              <Text>Return to Home</Text>
+              <Text style={{color: globalState.theme.colorText}}>Return to Home</Text>
             </TouchableOpacity>
           </View>  
         </View>
@@ -312,7 +149,7 @@ const StartWorkout = ({ navigation, route }) => {
     } else {
       // page with exercise information and progress bar
       return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: globalState.theme.colorBackground}]}>
           <View style={{flexDirection: 'column'}}>
             <TouchableOpacity style={{alignItems: 'flex-start', marginLeft: 5}}
               onPress={()=> {
@@ -322,7 +159,8 @@ const StartWorkout = ({ navigation, route }) => {
               <Icon
                 size={35}
                 name='clear'
-                type='material'/>
+                type='material'
+                color={globalState.theme.colorText}/>
             </TouchableOpacity>
             <View style={{ flexDirection: 'row', height: 8, backgroundColor: 'white' }}>
               <View style={{ flex: progress, backgroundColor: '#FA7B34' }} />
@@ -332,23 +170,23 @@ const StartWorkout = ({ navigation, route }) => {
           <View style={{ flex: 1, alignItems: 'center', marginVertical: 10, marginTop: 30}}>
             <Image source={{uri: exercises[currentExerciseIndex].image}} style={styles.image} />
             <View style={{flex: 1, marginTop: 20, alignContent: 'center'}}>
-              <Text style={styles.heading}>{exercises[currentExerciseIndex].title}</Text>
+              <Text style={[styles.heading, {color: globalState.theme.colorText}]}>{exercises[currentExerciseIndex].title}</Text>
               {exercises[currentExerciseIndex].exerciseType === 'SETSXREPS' &&
                 <View style={{flex: 1, marginTop: '20%'}}>
-                  <Text style={[styles.text2, {marginBottom: 40}]}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
-                  <Text style={styles.text2}>{`${exercises[currentExerciseIndex].weight} lbs for ${exercises[currentExerciseIndex].reps} reps`}</Text>
+                  <Text style={[styles.text2, {marginBottom: 40, color: globalState.theme.colorText}]}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
+                  <Text style={[styles.text2, {color: globalState.theme.colorText}]}>{`${exercises[currentExerciseIndex].weight} lbs for ${exercises[currentExerciseIndex].reps} reps`}</Text>
                 </View>}
               {exercises[currentExerciseIndex].exerciseType === 'CARDIO' &&
                 <View style={{alignItems: 'center', justifyContent: 'space-between', flex: 1}}>
-                    <Text style={styles.text}>Cardio!</Text>
+                    <Text style={[styles.text, { color: globalState.theme.colorText}]}>Cardio!</Text>
                     <CircularProgress
                       value={remainingTime}
                       radius={80}
                       duration={0}
-                      progressValueColor={'black'}
+                      progressValueColor={globalState.theme.colorText}
                       activeStrokeColor={'#FA7B34'}
                       maxValue={timerDuration}
-                      titleColor={'black'}
+                      titleColor={globalState.theme.colorText}
                       progressFormatter={(value) => {
                         'worklet';
                         let m = Math.floor(value / 60);
@@ -384,17 +222,17 @@ const StartWorkout = ({ navigation, route }) => {
                 </View>}
               {exercises[currentExerciseIndex].exerciseType === 'AMRAP' &&
                 <View style={{alignItems: 'center', justifyContent: 'space-between', flex: 1}}>
-                  <Text style={[styles.text2, {marginBottom: 0}]}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
-                  <Text style={[styles.text2, {marginBottom: 0}]}>{`${exercises[currentExerciseIndex].weight}lbs`}</Text>
-                  <Text style={styles.text}>As many reps as possible!</Text>
+                  <Text style={[styles.text2, {marginBottom: 0, color: globalState.theme.colorText}]}>{`Set ${exercises[currentExerciseIndex].setNumber} of ${exercises[currentExerciseIndex].sets}`}</Text>
+                  <Text style={[styles.text2, {marginBottom: 0, color: globalState.theme.colorText}]}>{`${exercises[currentExerciseIndex].weight}lbs`}</Text>
+                  <Text style={[styles.text, {color: globalState.theme.colorText}]}>As many reps as possible!</Text>
                   <CircularProgress
                     value={remainingTime}
                     radius={80}
                     duration={0}
-                    progressValueColor={'black'}
+                    progressValueColor={globalState.theme.colorText}
                     activeStrokeColor={'#FA7B34'}
                     maxValue={timerDuration}
-                    titleColor={'black'}
+                    titleColor={globalState.theme.colorText}
                     progressFormatter={(value) => {
                       'worklet';
                       let m = Math.floor(value / 60);
@@ -450,7 +288,7 @@ const StartWorkout = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: globalState.theme.colorBackground}}>
       {renderCurrentPage()}
     </SafeAreaView>
   );
