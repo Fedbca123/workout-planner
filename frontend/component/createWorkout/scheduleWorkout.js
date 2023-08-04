@@ -30,7 +30,7 @@ import { duration } from "moment";
 import {TimePicker} from 'react-native-simple-time-picker';
 import moment from 'moment';
 
-export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }) {
+export default function ScheduleWorkout({ workout, updateWorkout, setCurrState, theme }) {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     // const [save, setSave] = useState(workout[0].save ? workout[0].save : false);
     const [globalState, updateGlobalState] = useGlobalState();
@@ -80,7 +80,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 	};
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: theme.colorBackground}]}>
            <View style={styles.navButtonContainer}>
                 <View style={{ backgroundColor: "#FF8C4B", flex: 1}}>
                      <TouchableOpacity 
@@ -124,7 +124,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
             
             <KeyboardAwareScrollView contentContainerStyle={{ flex:1, alignItems: "center", justifyContent:"flex-start"}}>
                 <View style={{width: "70%", marginVertical: "10%"}}>
-                    <Text style={styles.text}>Location:</Text>
+                    <Text style={[styles.text, {color: theme.colorText}]}>Location:</Text>
                     <TextInput
                         // keyboardType="numeric"
                         placeholder="Home"
@@ -138,7 +138,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
 					}}/> 
                 </View> 
                 <View style={{width: "70%", marginBottom: "10%"}}>
-                    <Text style={styles.text}>Estimated duration:</Text>
+                    <Text style={[styles.text, {color: theme.colorText}]}>Estimated duration:</Text>
                     <TouchableOpacity
                         onPress={() => {
                             setModalVisible(!modalVisible);
@@ -166,7 +166,7 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                 </View> 
                 <View style={{ marginBottom: "10%" }}>
                     
-                    <Text style={[styles.text, {fontSize: 18}]}>
+                    <Text style={[styles.text, {fontSize: 18, color: theme.colorText}]}>
                         {/* { toString(new Date(workout[0].scheduledDate)) } */}
                         {
                             //workout[0].scheduledDate && (new Date(workout[0].scheduledDate).toDateString() + " " + new Date(workout[0].scheduledDate).toLocaleTimeString())
@@ -183,8 +183,10 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                    <Button title="Choose a Day and Time" onPress={showDatePicker} /> 
                 </View>
                 
-                <Text style={styles.text}>Reccurring Weekly? {"\t"}
+                <Text style={[styles.text, {color: theme.colorText}]}>Reccurring Weekly? {"\t"}
                     <Switch
+                        ios_backgroundColor={theme.colorText}
+                        trackColor={{false: theme.colorText}}
                         value={workout[0].recurrence}
                         onValueChange={(val) => {
                             let temp = { ...workout[0] }
@@ -193,8 +195,10 @@ export default function ScheduleWorkout({ workout, updateWorkout, setCurrState }
                         }}/>
                 </Text>
                 <View style={{flexDirection: 'row', marginTop: 40, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={[styles.text, {marginRight: 10}]}>Save to Profile?</Text>
+                    <Text style={[styles.text, {marginRight: 10, color: theme.colorText}]}>Save to Profile?</Text>
                     <Switch
+                        ios_backgroundColor={theme.colorText}
+                        trackColor={{false: theme.colorText}}
                         value={workout[0].save}
                         onValueChange={(val) => {
                             let temp = { ...workout[0] }

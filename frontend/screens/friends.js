@@ -5,6 +5,7 @@ import {useGlobalState} from '../GlobalState.js';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
 import API_Instance from "../../backend/axios_instance";
 import { useIsFocused } from '@react-navigation/native';
+import { colors } from 'react-native-elements';
 
 
 const FriendsScreen = () => {
@@ -178,7 +179,7 @@ const FriendsScreen = () => {
   }, [searchTerm]);
 
   return (
-    <View>
+    <View style={{backgroundColor: globalState.theme.colorBackground, flex:1}}>
       
       <TextInput
         style={styles.searchBar}
@@ -193,18 +194,18 @@ const FriendsScreen = () => {
       />
           
           
-          <View >
+          <View>
             {filteredFriends.length === 0 && searchTerm.length === 0? (
               <Text>You have no friends added! Search by email to add a friend </Text>
             ) : (
             filteredFriends.map((user) => (
-              <View key={user._id} style={styles.card}>
+              <View key={user._id} style={styles.card(globalState.theme.color1)}>
 
                 {/* left side */}
                 <View style={styles.info}>
-                  <Text style={styles.name}>
+                  <Text style={styles.name(globalState.theme.colorText)}>
                     {user.firstName} {user.lastName}</Text>
-                  <Text>{user.email.toLowerCase()}</Text>
+                  <Text style={styles.email(globalState.theme.colorText)}>{user.email.toLowerCase()}</Text>
                 </View>
 
                 {/* right side */}
@@ -259,7 +260,7 @@ const FriendsScreen = () => {
           </View>
 
       {filteredFriends.length === 0 && searchTerm.length != 0 &&(
-        <TouchableOpacity  style={styles.iconButton} onPress={handleAddFriend}>
+        <TouchableOpacity  style={styles.iconButton(globalState.theme.colorText)} onPress={handleAddFriend}>
                 <Text style={styles.addFriend}>Add friend <Text style={styles.searchTerm}>{searchTerm.toLowerCase()}</Text></Text>
         </TouchableOpacity>
       )}
@@ -327,20 +328,20 @@ const BlockFriendScreen = () => {
   }, []);
   
   return (
-    <View>
-      <Text style={styles.Heading}>The following users are blocked by you: </Text>
+    <View style={{backgroundColor: globalState.theme.colorBackground, flex:1}}>
+      <Text style={(styles.Heading(globalState.theme.colorText))}>The following users are blocked by you: </Text>
         
         {!filteredBlockFriends || filteredBlockFriends.length === 0 ? (
           <Text style={{ paddingLeft: 20 }}>You have no users in your blocked list!  </Text>
             ) : ( 
               filteredBlockFriends.map((user) => (
-                <View key={user._id} style={styles.cardblock}>
+                <View key={user._id} style={styles.cardblock(globalState.theme.color1)}>
 
                 {/* left side */}
                 <View style={styles.info}>
-                  <Text style={styles.name}>
+                  <Text style={styles.name(globalState.theme.colorText)}>
                     {user.firstName} {user.lastName}</Text>
-                  <Text>{user.email.toLowerCase()}</Text>
+                  <Text style={styles.email(globalState.theme.colorText)}>{user.email.toLowerCase()}</Text>
                 </View>
 
                 {/* right side */}
@@ -381,17 +382,17 @@ export default function Friends() {
   };
 
   return  (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAwareScrollView contentContainerStyle={styles.container} bounces={false}>
+    <SafeAreaView style={styles.container(globalState.theme.colorBackground)}>
+      <KeyboardAwareScrollView contentContainerStyle={styles.container(globalState.theme.colorBackground)} bounces={false}>
         <SegmentedControlTab
           values={['Friends', 'Blocked Users']}
           selectedIndex={activeScreen === 'Friends' ? 0 : 1}
           onTabPress={(index) => handleButtonPress(index === 0 ? 'Friends' : 'BlockedFriends')}
           tabsContainerStyle={styles.tabsContainerStyle}
-          tabStyle={styles.tabStyle}
-          activeTabStyle={styles.activeTabStyle}
-          tabTextStyle={styles.tabTextStyle}
-          activeTabTextStyle={styles.activeTabTextStyle}
+          tabStyle={styles.tabStyle(globalState.theme.color1)}
+          activeTabStyle={styles.activeTabStyle(globalState.theme.color4)}
+          tabTextStyle={styles.tabTextStyle(globalState.theme.colorText)}
+          activeTabTextStyle={styles.activeTabTextStyle(globalState.theme.colorText)}
         />
         {activeScreen === 'Friends' ? <FriendsScreen /> : <BlockFriendScreen />}
       </KeyboardAwareScrollView>
@@ -401,71 +402,35 @@ export default function Friends() {
 
 
 const styles = StyleSheet.create({
-  Normal: {
+  Heading: (color) => {
+    return {
       ...Platform.select({
-      ios: {
-        fontFamily: 'HelveticaNeue'
-      },
-      android: {
-        fontFamily: "Roboto"
-      },
-    }),
-      // fontFamily: 'HelveticaNeue',
-      color: '#2B2B2B',
-      fontSize: 15,
-      textAlign: 'left',
-      paddingLeft: 20,
-      paddingVertical: 5
-    },
-  Title: {
-      ...Platform.select({
-      ios: {
-        fontFamily: 'HelveticaNeue-Bold'
-      },
-      android: {
-        fontFamily: "Roboto"
-      },
-    }),
+        ios: {
+          fontFamily: 'HelveticaNeue-Bold'
+        },
+        android: {
+          fontFamily: "Roboto"
+        },
+      }),
       // fontFamily: 'HelveticaNeue-Bold',
-      color: '#2B2B2B',
-      fontSize: 24,
-      textAlign: 'left',
-      paddingLeft: 20,
-      paddingVertical: 5,
-      paddingBottom: 20
-    },
-  Heading: {
-      ...Platform.select({
-      ios: {
-        fontFamily: 'HelveticaNeue-Bold'
-      },
-      android: {
-        fontFamily: "Roboto"
-      },
-    }),
-      // fontFamily: 'HelveticaNeue-Bold',
-      color: '#2B2B2B',
+      color: color,
       fontSize: 18,
       textAlign: 'left',
       paddingLeft: 20,
       marginVertical: 5
-    },
-    CardContainer:{
-      borderColor: 'black',
-      borderWidth: '0px',
-      flex: 0.95,
-      width: '95%',
-      alignSelf: 'center'
-    },
-    searchBar: {
+    }
+  },
+  searchBar: {
       height: 40,
       padding: 10,
       marginBottom: 20,
       borderWidth: 1,
       borderColor: '#ccc',
-    },
-    card:{
-      backgroundColor: '#DDF2FF',
+      backgroundColor: "#d1cfcf"  
+  },
+  card: (color) => {
+    return{
+      backgroundColor: color,
       padding: 20,
       marginBottom: 5,
       shadowColor: '#000',
@@ -477,9 +442,11 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-    },
-    cardblock:{
-      backgroundColor: '#FEE2CF',
+    }
+  },
+  cardblock: (color) => {
+    return {
+      backgroundColor: color,
       padding: 20,
       marginBottom: 0,
       shadowColor: '#000',
@@ -491,81 +458,77 @@ const styles = StyleSheet.create({
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-    },
-    name: {
+    }
+  },
+  name: (color) => {
+
+    return {
       fontSize: 18,
       fontWeight: 'bold',
-    },
-    container:{
-      backgroundColor: 'white',
+      color: color
+    }
+  },
+  email: (color) => {
+    return {
+      color: color
+    }
+  },
+  container: (color) => {
+    return{
+      backgroundColor: color,
       flex: 1,
       flexDirection:'column'
-    },
-    addFriendContainer:{
-      flex: 0.1,
-      width: '95%',
-      alignSelf:'center',
-      marginBottom: 30
-    },
-    buttons: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: "flex-end",
-      margin: 10,
-      // borderWidth:20,
-    },
-    iconButton: {
-      backgroundColor: '#F7F7F7',
+    }
+  },
+  buttons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "flex-end",
+    margin: 10,
+    // borderWidth:20,
+  },
+  iconButton: (color) => {
+    return{
+      backgroundColor: color,
       borderRadius: 50,
       padding: 10,
       marginLeft: 10,
-      alignContent: 'center',
-    },
-    addFriend: {
-      padding: 10,
-      alignContent: 'center',
-    },
-    info: {
-      alignContent: 'flex-end',
-    },
-    searchTerm:{
-      color: '#FA7B34',
-    },
-    tabsContainerStyle: {
-      alignSelf: 'center',
-      marginBottom: 10,
-    },
-    tabStyle: {
-      backgroundColor: '#F7F7F7',
-      borderColor: '#ccc',
-    },
-    activeTabStyle: {
-      backgroundColor: '#24C8FE',
-    },
-    tabTextStyle: {
-      color: '#2B2B2B',
-    },
-    activeTabTextStyle: {
-      color: 'white',
-    },
-    tabsContainerStyle: {
-      alignSelf: 'center',
-      marginBottom: 10,
-    },
-    tabStyle: {
-      backgroundColor: '#F7F7F7',
-      borderColor: '#ccc',
-    },
-    activeTabStyle: {
-      backgroundColor: '#24C8FE',
-    },
-    tabTextStyle: {
-      color: '#2B2B2B',
-    },
-    activeTabTextStyle: {
-      color: 'white',
-  },
-  buttonlook: {
-
+      alignContent: 'center',  
     }
+  },
+  addFriend: {
+    padding: 10,
+    alignContent: 'center',
+  },
+  info: {
+    alignContent: 'flex-end',
+  },
+  searchTerm:{
+    color: '#FA7B34',
+  },
+  activeTabStyle: (color) => {
+    return {
+      backgroundColor: color,
+    }
+  },
+  tabTextStyle: (color) => {
+    return {
+      color: color,
+    }
+  },
+  activeTabTextStyle: (color) => {
+    return {
+      color: color,
+    }
+  },
+  tabsContainerStyle: {
+      alignSelf: 'center',
+      marginBottom: 5,
+  },
+  tabStyle: (color) => {
+    return {
+      backgroundColor: color,
+      borderColor: '#ccc',
+    }
+  },
 });

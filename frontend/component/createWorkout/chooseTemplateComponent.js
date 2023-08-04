@@ -23,8 +23,9 @@ import { Header, SearchBar } from "react-native-elements";
 import Modal from "react-native-modal";
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, setCreateNew }) {
+export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, setCreateNew, theme }) {
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [allWorkouts, setAllWorkouts] = useState([]);
 	const [searchText, setSearchText] = useState("");
@@ -294,30 +295,30 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 	}
 
 	return (
-		<View style={[styles.Background, { minHeight: windowHeight - 500 }]}>
+		<View style={[styles.Background(theme.colorBackground), { minHeight: windowHeight - 500 }]}>
 
 			<TouchableOpacity 
-				style={styles.createButton}
+				style={styles.createButton(theme.color1)}
 				onPress={() => {
 					setCurrWorkout(noTemplate);
 					setCreateNew(true);
 					setCurrState("ExerciseReview");
 				}}
 			>
-				<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a Custom Workout</Text>
+				<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold', color: theme.colorText}}>Create a Custom Workout</Text>
 			</TouchableOpacity>
 			
 
-			<Text style={{fontSize:20, textAlign:"center", fontWeight: 'bold'}}>-OR-</Text>
+			<Text style={{fontSize:20, textAlign:"center", fontWeight: 'bold', color: theme.colorText}}>-OR-</Text>
 
-			<Text style={styles.HeaderText}>Select a Workout:</Text>
+			<Text style={styles.HeaderText(theme.colorText)}>Select a Workout:</Text>
 
-			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start"}}>
-				<View style={{flex:1, }}>
+			<View style={{ flex: .1, flexDirection: "row", justifyContent: "flex-start", backgroundColor: theme.colorBackground}}>
+				<View style={{flex:1, backgroundColor: theme.colorBackground}}>
 					<SearchBar
 						platform="default"
 						lightTheme={true}
-						containerStyle={{ backgroundColor: "white",}}
+						containerStyle={{ backgroundColor: theme.colorBackground,}}
 						inputStyle={{ color: "black" }}
 						// showLoading={true}
 						onChangeText={(val) => {
@@ -345,104 +346,99 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 					/>
 				</View>
 
-				<View style={{ flex: .1}}>
-				
-                <TouchableOpacity onPress={toggleFiltersShowing}>
-                  
-                <View style={{ flex: 1,}}></View>
-                    <Image source = {require("../../../assets/filter_icon.png")}
-                      style={styles.filterImage}
-                    />
-                  {/* Filters Modal */}
-                  <Modal 
-                    isVisible = {areFiltersVisible}
-                    coverScreen = {true}
-                    //backdropOpacity = "1"
-                    backdropColor = "white"
-                    presentationStyle='fullScreen'
-                    transparent={false}
-                    >
-                    <View style={styles.modalBackground}>
-                        <View style={styles.filtersContainer}>
-                          <View style={[styles.filterButtonContainer, {marginTop:40}]}>
-                            <SelectBox
-                              label="Equipment"
-                              labelStyle={styles.filterLabels}
-                              inputPlaceholder = "Add one or more Equipment"
-                              listEmptyText='No Equipment Found'
-                              searchInputProps = {{placeholder: "Search..."}}
-                              inputFilterStyle={styles.filterSearch}
-                              arrowIconColor = '#000000'
-                              multiOptionContainerStyle = {styles.selectedFilterContainers}
-                              multiOptionsLabelStyle = {styles.selectedFilterLabels}
-                              
-                              searchIconColor = "#000"
-                              toggleIconColor = "#2193BC"
+				<View style={{ flex: .1, backgroundColor: theme.colorBackground}}>
+               		<TouchableOpacity onPress={toggleFiltersShowing} style={{backgroundColor: theme.colorBackground}}>
+						<View style={{ flex: 1,}}></View>
+							<MaterialCommunityIcons name="filter-menu-outline" size={34} style={styles.filterImage(theme.colorText)}/>
+						{/* Filters Modal */}
+						<Modal 
+							isVisible = {areFiltersVisible}
+							coverScreen = {true}
+							//backdropOpacity = "1"
+							backdropColor = {globalState.theme.colorBackground}
+							transparent={true}
+							>
+							<View style={[styles.modalBackground, {backgroundColor: globalState.theme.colorBackground}]}>
+								<View style={styles.filtersContainer}>
+									<View style={[styles.filterButtonContainer, {marginTop:40}]}>
+										<SelectBox
+										label="Equipment"
+										labelStyle={styles.filterLabels}
+										inputPlaceholder = "Add one or more Equipment"
+										listEmptyText='No Equipment Found'
+										searchInputProps = {{placeholder: "Search..."}}
+										inputFilterStyle={styles.filterSearch}
+										arrowIconColor = '#000000'
+										multiOptionContainerStyle = {styles.selectedFilterContainers}
+										multiOptionsLabelStyle = {styles.selectedFilterLabels}
+										
+										searchIconColor = "#000"
+										toggleIconColor = "#2193BC"
 
-                              options = {equipmentFilters}
-                              optionsLabelStyle = {styles.filterOptions}
-                              
-                              selectedValues = {selectedEquipmentFilter}
-                              onMultiSelect = {onMultiChangeEquipment()}
-                              onTapClose = {onMultiChangeEquipment()}
-                              isMulti
-                            />
-                          </View>
-                          <View style={styles.filterButtonContainer}>
-                            <SelectBox
-                              label="Muscle Groups"
-                              labelStyle={styles.filterLabels}
-                              inputPlaceholder = "Add one or more Muscle Groups"
-                              listEmptyText='No Muscle Groups Found'
-                              searchInputProps = {{placeholder: "Search..."}}
-                              multiOptionsLabelStyle = {styles.selectedFilterLabels}
-                              multiOptionContainerStyle = {styles.selectedFilterContainers}
-                              options = {muscleGroupsFilters}
-                              optionsLabelStyle = {styles.filterOptions}
-                              arrowIconColor = '#000'
+										options = {equipmentFilters}
+										optionsLabelStyle = {styles.filterOptions}
+										
+										selectedValues = {selectedEquipmentFilter}
+										onMultiSelect = {onMultiChangeEquipment()}
+										onTapClose = {onMultiChangeEquipment()}
+										isMulti
+										/>
+									</View>
+									<View style={styles.filterButtonContainer}>
+										<SelectBox
+										label="Muscle Groups"
+										labelStyle={styles.filterLabels}
+										inputPlaceholder = "Add one or more Muscle Groups"
+										listEmptyText='No Muscle Groups Found'
+										searchInputProps = {{placeholder: "Search..."}}
+										multiOptionsLabelStyle = {styles.selectedFilterLabels}
+										multiOptionContainerStyle = {styles.selectedFilterContainers}
+										options = {muscleGroupsFilters}
+										optionsLabelStyle = {styles.filterOptions}
+										arrowIconColor = '#000'
 
-                              searchIconColor = "#000"
-                              toggleIconColor = "#2193BC"
-                              
-                              selectedValues = {selectedMuscleGroupsFilter}
-                              onMultiSelect = {onMultiChangeMuscleGroups()}
-                              onTapClose = {onMultiChangeMuscleGroups()}
-                              isMulti
-                            />
-                          </View>
-                          <View style={styles.filterButtonContainer}>                      
-                            <SelectBox
-                              label="Owner Types"
-                              inputPlaceholder = "Add one or more owner types"
-                              labelStyle = {styles.filterLabels}
-                              options = {ownerFilters}
-                              optionsLabelStyle = {styles.filterOptions}
-                              hideInputFilter = 'true'
-                              //containerStyle={{backgroundColor:"black"}}
-                              toggleIconColor = "#2193BC"
-                              arrowIconColor = '#000'
-                              
-                              multiOptionsLabelStyle={styles.selectedFilterLabels}
-                              multiOptionContainerStyle={styles.selectedFilterContainers}
-                              selectedValues = {selectedOwnerFilter}
-                              onMultiSelect = {onMultiChangeOwner()}
-                              onTapClose = {onMultiChangeOwner()}
-                              isMulti
-                            />
-                          </View>
-                      </View>
-                      <View style={styles.modalCloseButton}>
-                        <TouchableOpacity onPress={toggleFiltersShowing}>
-                          <View style={styles.closeFiltersButtonContainer}>
-                            <Text style={styles.closeText}>Close</Text>
-                          </View>
-                        </TouchableOpacity>
-                      </View>
-                      
-                    </View>
-                  </Modal>
-                  </TouchableOpacity>
-              </View>
+										searchIconColor = "#000"
+										toggleIconColor = "#2193BC"
+										
+										selectedValues = {selectedMuscleGroupsFilter}
+										onMultiSelect = {onMultiChangeMuscleGroups()}
+										onTapClose = {onMultiChangeMuscleGroups()}
+										isMulti
+										/>
+								</View>
+								<View style={styles.filterButtonContainer}>                      
+									<SelectBox
+									label="Owner Types"
+									inputPlaceholder = "Add one or more owner types"
+									labelStyle = {styles.filterLabels}
+									options = {ownerFilters}
+									optionsLabelStyle = {styles.filterOptions}
+									hideInputFilter = 'true'
+									//containerStyle={{backgroundColor:"black"}}
+									toggleIconColor = "#2193BC"
+									arrowIconColor = '#000'
+									
+									multiOptionsLabelStyle={styles.selectedFilterLabels}
+									multiOptionContainerStyle={styles.selectedFilterContainers}
+									selectedValues = {selectedOwnerFilter}
+									onMultiSelect = {onMultiChangeOwner()}
+									onTapClose = {onMultiChangeOwner()}
+									isMulti
+									/>
+								</View>
+							</View>
+							<View style={styles.modalCloseButton}>
+								<TouchableOpacity onPress={toggleFiltersShowing}>
+								<View style={styles.closeFiltersButtonContainer}>
+									<Text style={styles.closeText}>Close</Text>
+								</View>
+								</TouchableOpacity>
+							</View>
+							
+							</View>
+						</Modal>
+					</TouchableOpacity>
+              	</View>
 			</View>
 
 			<View style={{ flex: 1, }}>
@@ -485,44 +481,54 @@ export default function ChooseTemplateComponent({ setCurrState, setCurrWorkout, 
 }
 
 const styles = StyleSheet.create({
-	Background: {
-		backgroundColor: "white",
-		flex: 1,
-		borderTopWidth:1.5,
-		justifyContent: "space-evenly"
+	Background: (color) => {
+		return {
+			backgroundColor: color,
+			flex: 1,
+			borderTopWidth:1.5,
+			justifyContent: "space-evenly"
+		}
 	},
-	HeaderText: {
-		fontSize: 20,
-    	fontWeight: 'bold',
-		marginLeft: 10
+	HeaderText: (color) => {
+		return {
+			fontSize: 20,
+			fontWeight: 'bold',
+			marginLeft: 10,
+			color: color
+		}
 	},
-	createButton: {
-		borderWidth: 1.5, 
-		width: '60%', 
-		alignSelf: 'center',
-		marginVertical: 15, 
-		backgroundColor: '#DDF2FF',
-		// borderRadius: 8,
-		...Platform.select({
-			ios: {
-				borderRadius: '8rem'
-			},
-			android: {
-				borderRadius: 8
-			},
-		}),
-		shadowColor: 'rgba(0,0,0, .4)', // IOS
-		shadowOffset: { height: 2, width: 2 }, // IOS
-		shadowOpacity: 1, // IOS
-		shadowRadius: 1, //IOS
-		elevation: 2,
+	createButton: (color) => {
+		return {
+			borderWidth: 1.5, 
+			width: '60%', 
+			alignSelf: 'center',
+			marginVertical: 15, 
+			backgroundColor: color,
+			// borderRadius: 8,
+			...Platform.select({
+				ios: {
+					borderRadius: '8rem'
+				},
+				android: {
+					borderRadius: 8
+				},
+			}),
+			shadowColor: 'rgba(0,0,0, .4)', // IOS
+			shadowOffset: { height: 2, width: 2 }, // IOS
+			shadowOpacity: 1, // IOS
+			shadowRadius: 1, //IOS
+			elevation: 2,
+		}
 	},
-	filterImage:{
-		width: 30,
-		height: 30,
-		// marginTop: 25,
-		marginTop: "55%",
-		marginLeft: 5,
+	filterImage:(color) => {
+		return {
+			width: 30,
+			height: 30,
+			// marginTop: 25,
+			marginTop: "55%",
+			marginLeft: 5,
+			color: color,
+		}
 	},
 	modalBackground:{
 		backgroundColor: "white",

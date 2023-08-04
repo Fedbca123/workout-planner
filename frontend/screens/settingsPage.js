@@ -6,7 +6,8 @@ import {
     TextInput,
 	View,
     TouchableOpacity,
-    Alert
+    Alert,
+    Switch
 } from "react-native";
 import React, { useState, useRef, useEffect } from "react";
 import { Icon } from 'react-native-elements';
@@ -30,6 +31,8 @@ export default function SettingsPage({ navigation })
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [darkMode, setDarkMode] = useState(globalState.theme.name == 'darkmode' ? true : false);
+    //const [darkMode, setDarkMode] = useState(globalState.user && globalState.user.darkMode ? globalState.user.darkMode : false);
     const [userMessage, setUserMessage] = useState("");
     const isFocused = useIsFocused();
 
@@ -63,8 +66,7 @@ export default function SettingsPage({ navigation })
 
     function updateFirstName() 
     {
-        if (firstName == globalState.user.firstName || firstName == '')
-        {
+        if (firstName == globalState.user.firstName || firstName == ''){
             return;
         }
         
@@ -116,6 +118,47 @@ export default function SettingsPage({ navigation })
         .catch((error) => {
             setUserMessage(error.response.data.errors.lastName.message);
         });
+    }
+
+    function updateDarkMode() {
+      if (darkMode == globalState.user.darkMode)
+        {
+            return;
+        }
+
+        console.log("dm", darkMode)
+        API_Instance
+        .patch(`users/${globalState.user._id}/contact`, {
+            darkMode: darkMode
+        },
+        {
+          headers: {
+            Authorization : `Bearer ${globalState.authToken}`,
+          },
+        })
+        .then((response) => 
+        {
+            
+            if (response.status == 200) {
+                updateGlobalState("user", response.data);
+            }
+        })
+        .catch((error) => {
+            setUserMessage(error.response.data.errors.lastName.message);
+        });
+    }
+
+    function darkModeTester()
+    {
+        //let tmp = {...globalState.user};
+        let newVal = !darkMode
+        //tmp.darkMode = newVal;
+        setDarkMode(newVal);
+        const newTheme = newVal ? "darkmode" : "lightmode";
+        updateGlobalState("theme", newTheme);
+        // console.log(tmp.darkMode);
+        //updateGlobalState("user", tmp);
+        SecureStore.setItemAsync("appTheme", newTheme);
     }
 
     function updateEmail()
@@ -220,13 +263,13 @@ export default function SettingsPage({ navigation })
         return (<></>);
     }
     return(
-        <View style={styles.container}>
+        <View style={styles.container(globalState.theme.colorBackground)}>
             <View style={styles.contentArea}>
                 <View style={{flex: 1, width: '90%', alignItems: 'flex-start'}}>
-                    <Text style={styles.text}>First Name:{"\t\t"}</Text>
-                    <View style={styles.rowView}>
+                    <Text style={styles.text(globalState.theme.colorText)}>First Name:{"\t\t"}</Text>
+                    <View style={styles.rowView(globalState.theme.colorText)}>
                         {!editFirstName && 
-                        <Text style={styles.text2}>{globalState.user.firstName}</Text>}
+                        <Text style={styles.text2(globalState.theme.colorText)}>{globalState.user.firstName}</Text>}
                         {editFirstName && 
                         <TextInput style={styles.inputfield}
                         placeholder={globalState.user.firstName}
@@ -242,7 +285,9 @@ export default function SettingsPage({ navigation })
                             }}>
                             <Icon
                                 name='edit'
-                                type='material'/>
+                                type='material'
+                                color = {globalState.theme.colorText}
+                                />
                         </TouchableOpacity>}
                         {editFirstName && <View style={{flexDirection: 'row'}}>
                              <TouchableOpacity
@@ -253,21 +298,23 @@ export default function SettingsPage({ navigation })
                                 style={{marginRight: 10}}> 
                                 <Icon
                                     name='done'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setEditFirstName(!editFirstName)}>
                                     <Icon
                                     name='close'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                         </View> }
                     </View>
                 
-                    <Text style={styles.text}>Last Name:{"\t\t"}</Text>
-                    <View style={styles.rowView}>  
+                    <Text style={styles.text(globalState.theme.colorText)}>Last Name:{"\t\t"}</Text>
+                    <View style={styles.rowView(globalState.theme.colorText)}>  
                         {!editLastName && 
-                        <Text style={styles.text2}>{globalState.user.lastName}</Text>}
+                        <Text style={styles.text2(globalState.theme.colorText)}>{globalState.user.lastName}</Text>}
                         {editLastName && 
                         <TextInput style={styles.inputfield}
                         placeholder={globalState.user.lastName}
@@ -281,7 +328,8 @@ export default function SettingsPage({ navigation })
                             onPress={() => setEditLastName(true)}>
                             <Icon
                                 name='edit'
-                                type='material'/>
+                                type='material'
+                                color = {globalState.theme.colorText}/>
                         </TouchableOpacity>}
                         {editLastName && <View style={{flexDirection: 'row'}}>
                             <TouchableOpacity
@@ -292,21 +340,23 @@ export default function SettingsPage({ navigation })
                                 style={{marginRight: 10}}> 
                                 <Icon
                                     name='done'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setEditLastName(!editLastName)}>
                                     <Icon
                                     name='close'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                         </View>}
                     </View>
 
-                    <Text style={styles.text}>Email: {"\t\t\t"}</Text>
-                    <View style={styles.rowView}>      
+                    <Text style={styles.text(globalState.theme.colorText)}>Email: {"\t\t\t"}</Text>
+                    <View style={styles.rowView(globalState.theme.colorText)}>      
                         {!editEmail && 
-                        <Text style={styles.text2}>{globalState.user.email}</Text>}
+                        <Text style={styles.text2(globalState.theme.colorText)}>{globalState.user.email}</Text>}
                         {editEmail && 
                         <TextInput style={styles.inputfield}
                         placeholder={globalState.user.email}
@@ -321,7 +371,8 @@ export default function SettingsPage({ navigation })
                             onPress={() => setEditEmail(true)}>
                             <Icon
                                 name='edit'
-                                type='material'/>
+                                type='material'
+                                color = {globalState.theme.colorText}/>
                         </TouchableOpacity>}
                         {editEmail && <View style={{flexDirection: 'row'}}>
                             <TouchableOpacity
@@ -332,20 +383,32 @@ export default function SettingsPage({ navigation })
                                 style={{marginRight: 10}}> 
                                 <Icon
                                     name='done'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setEditEmail(!editEmail)}>
                                     <Icon
                                     name='close'
-                                    type='material'/>
+                                    type='material'
+                                    color = {globalState.theme.colorText}/>
                             </TouchableOpacity>
                         </View>}
                     </View>
+                    <Text style={styles.text(globalState.theme.colorText)}>Dark Mode: {`${darkMode ? 'On' : 'Off'}\t\t\t`}</Text>
+                    <View style={styles.switch}>
+                    <Switch
+                        value={darkMode}
+                        onValueChange={darkModeTester}
+                        trackColor={{ false: '#767577', true: '#81b0ff' }}
+                        thumbColor={darkMode ? '#FFFFFF' : '#f4f3f4'}
+                      />
+                    </View>
                 </View>
 
+
                 <View style={styles.belowFieldView}>
-                    <Text style={styles.text3}>{userMessage}</Text>
+                    <Text style={styles.text3(globalState.theme.colorText)}>{userMessage}</Text>
                     <Button
                         title="Reset Password"
                         onPress={() => handleResetPassword()}
@@ -364,37 +427,48 @@ export default function SettingsPage({ navigation })
 }
 
 styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
+    container: (color) => {
+        return {
+            flex: 1,
+            backgroundColor: color,
+        }    
     },
-    rowView: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomColor:'black',
-        borderBottomWidth: .4,
-        justifyContent: 'space-between',
-        width: '100%',
-        marginVertical: 10,
-        // borderWidth: 2
+    rowView: (color) => {
+        return {
+            flexDirection: 'row',
+            alignItems: 'center',
+            borderBottomColor: color,
+            borderBottomWidth: .4,
+            justifyContent: 'space-between',
+            width: '100%',
+            marginVertical: 10,
+            // borderWidth: 2
+        } 
     },
     contentArea: {
         marginTop: '10%',
         alignItems: 'center',
         flex: 1
     },
-    text: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        marginRight: 10,
+    text: (color) => {
+        return {
+            fontWeight: 'bold',
+            fontSize: 20,
+            marginRight: 10,
+            color: color
+        }
     },
-    text2: {
-        fontSize: 16,
-        marginRight: 10,
-        width: text_field_width,
-        marginBottom: 5,
-        paddingVertical: 8,
-        marginLeft: 5,
+    text2: (color) => {
+        return {
+            fontSize: 16,
+            marginRight: 10,
+            width: text_field_width,
+            marginBottom: 5,
+            paddingVertical: 8,
+            marginLeft: 5,
+            color: color
+        }
+       
     },
     inputfield: {
 		borderWidth: 1,
@@ -417,7 +491,15 @@ styles = StyleSheet.create({
         flex: .2,
         // borderWidth: 2,
     },
-    text3: {
-        fontSize: 12
+    text3: (color) => {
+        return{
+            fontSize: 12,
+            color: color
+        } 
+    },
+    switch: {
+      alignSelf: 'center',
+      marginRight: 'auto',
+      marginLeft: 'auto',
     }
 });

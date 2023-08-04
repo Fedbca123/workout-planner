@@ -118,6 +118,7 @@ router.route('/register').post(async (req,res) =>
         completedWorkouts: [],
         customWorkouts: [],
         customExercises: [],
+        darkMode: false
     });
 
 
@@ -284,7 +285,7 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
     return res.sendStatus(403);
   }
 
-  const {firstName, lastName} = req.body
+  const {firstName, lastName, darkMode} = req.body
 
   // Check if user exists
   const user = await User.findById(id);
@@ -295,6 +296,8 @@ router.route('/:id/contact').patch(authenticateToken, async (req, res) => {
 
   if (firstName) {user.firstName = firstName;}
   if (lastName) {user.lastName = lastName;}
+  // slightly different bc it could be a true or false and this avoids only updating to activate dark mode
+  if (darkMode != null && darkMode != undefined) {user.darkMode = darkMode;}
 
   await user.save((err, newUser) => {
       if (err) return res.status(499).send(err);
@@ -1116,9 +1119,11 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
     // for all scheduled workouts
     for(const workoutID of userObj.scheduledWorkouts){
       const workoutObj = await Workout.findById(workoutID);
-      
       if (!workoutObj) {
-        return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
+        // console.log("Test")
+        // Should we do some cleaning up here?
+        // return res.status(494).send({Error: `Workout ${workoutID} does not exist!`});
+        continue;
       }
 
       const workout = {
@@ -1138,13 +1143,16 @@ router.route('/:id/calendar/all').get(authenticateToken, async (req,res) => {
 
       scheduled.push(workout);
     }
+
     if(!userObj.completedWorkouts){continue;}
+
     // for all completed workouts
     for(const workoutID of userObj.completedWorkouts){
       const workoutObj = await CompletedWorkout.findById(workoutID);
-      
       if (!workoutObj) {
-        return res.status(494).send({Error: `Completed workout ${workoutID} does not exist!`});
+        // Should we do some cleaning up here?/
+        // return res.status(494).send({Error: `Completed workout ${workoutID} does not exist!`});
+        continue;
       }
 
       const completedWorkout = {

@@ -1,0 +1,24 @@
+{
+    "lightmode": {
+        "name":"lightmode",
+        "colorBackground": "#FFFFFF",
+        "color1": "#b7d1e8",
+        "color2": "#92B4EC",
+        "color3": "#FFE69A",
+        "color4": "#d1e8b7",
+        "colorText": "#000000",
+        "black": "#000000",
+        "white": "#FFFFFF"
+    },
+    "darkmode": {
+        "name":"darkmode",
+        "colorBackground": "#000000",
+        "color1": "#282A3A",
+        "color2": "#2D4263", 
+        "color3": "#ECDBBA",
+        "color4": "#C84B31",
+        "colorText": "#FFFFFF",
+        "black": "#000000",
+        "white": "#FFFFFF"
+    }
+}

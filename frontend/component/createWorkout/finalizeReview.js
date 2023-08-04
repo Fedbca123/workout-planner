@@ -30,7 +30,7 @@ import config from "../../../backend/config.js";
 import Modal from "react-native-modal";
 import moment from 'moment';
 
-export default function FinalizeReview({ workout, updateWorkout, setCurrState, navigation, route, modifyScheduledWorkout }) {
+export default function FinalizeReview({ workout, updateWorkout, setCurrState, navigation, route, modifyScheduledWorkout, theme }) {
 	const [expanded, setExpanded] = useState(false);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const [isScheduling, setIsScheduling] = useState(false);
@@ -210,7 +210,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 	}
 
 	return (
-		<View style={styles.container}>
+		<View style={[styles.container, {backgroundColor: theme.colorBackground}]}>
 			<View style={styles.navButtonContainer}>
 				<View style={{ backgroundColor: "#FF8C4B", flex: 1 }}>
 					<TouchableOpacity
@@ -270,10 +270,10 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 									/>
 								</View>
 								<View style={styles.workoutCardTitleContainer}>
-									<Text style={styles.workoutCardTitle}>
+									<Text style={[styles.workoutCardTitle, {color: theme.colorText}]}>
 										{workout[0].title}
 									</Text>
-									<Text style={styles.workoutCardDescription}>
+									<Text style={[styles.workoutCardDescription, {color: theme.colorText}]}>
 										{workout[0].description}
 									</Text>
 								</View>
@@ -281,17 +281,17 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
 							
 							<View style={styles.workoutCardText}>
 								
-								<Text style={styles.workoutCardDuration}>
+								<Text style={[styles.workoutCardDuration, {color: theme.colorText}]}>
 									Duration: {Math.floor(workout[0].duration / 60)}h {workout[0].duration % 60}s
 								</Text>
 								{workout[0].location && (
 								<Text
-									style={styles.workoutCardDuration}
+									style={[styles.workoutCardDuration, {color: theme.colorText}]}
 								>
 									Location: {workout[0].location}
 								</Text>
 								)}
-								<Text style={styles.workoutCardDuration}>
+								<Text style={[styles.workoutCardDuration, {color: theme.colorText}]}>
 									Time:{" "}
 									{(new Date(workout[0].scheduledDate).toLocaleDateString('en-us',{
                               weekday: 'long',
@@ -303,7 +303,7 @@ export default function FinalizeReview({ workout, updateWorkout, setCurrState, n
                             }))}
 								</Text>
 								<Text
-									style={styles.workoutCardMuscleGroups}
+									style={[styles.workoutCardMuscleGroups, {color: theme.colorText}]}
 								>
 									{workout[0].muscleGroups?.length > 0 && ('Muscle Groups: ')}
 									{workout[0].muscleGroups?.length > 0 && workout[0].muscleGroups.join(", ")}

@@ -18,7 +18,7 @@ export default function Login({navigation}) {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
-  	const [showPassword, setShowPassword] = useState(true);
+  const [showPassword, setShowPassword] = useState(true);
 	const [globalState, updateGlobalState] = useGlobalState();
 	const passwordRef = useRef(0);
 	const { setIsLoggedIn } = React.useContext(AuthContext);
@@ -51,6 +51,7 @@ export default function Login({navigation}) {
 				password: password,
 			})
 			.then((response) => {
+		
 				if (response.status == 200) {
 					setError("");
 					updateGlobalState("user", response.data.user);
@@ -92,7 +93,7 @@ export default function Login({navigation}) {
 	return (
 		<KeyboardAwareScrollView
 			extraHeight={100}
-			contentContainerStyle={styles.container}
+			contentContainerStyle={styles.container(globalState.theme.colorBackground)}
 			keyboardShouldPersistTaps="handled"
 			bounces={false}>
 			<Image
@@ -102,7 +103,7 @@ export default function Login({navigation}) {
 
 		<View style={{flex:1, alignItems: 'center', width: '100%'}}>
 			<View style={styles.textcontainer}>
-				<Text style={styles.heading}> Welcome! </Text>
+				<Text style={styles.heading(globalState.theme.colorText)}> Welcome! </Text>
 				<Text style={styles.text}>
 					{" "}
 					You will have everything you need to reach your personal
@@ -110,11 +111,11 @@ export default function Login({navigation}) {
 				</Text>
 			</View>
       
-        {/* <Button
+        <Button
         title="BACKDOOR"
         onPress={() =>
-          backDoorHandler("Test@gmail.com", "Password1")}/> */}
-
+          backDoorHandler("Test@gmail.com", "Password1")}/>
+       
       {/*code will break at the end to home bc name can't be rendered}
       */}
       
@@ -215,13 +216,15 @@ export default function Login({navigation}) {
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flexDirection: "column",
-		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-		backgroundColor: "white",
+	container: (color) => {
+    return {
+      flexDirection: "column",
+		  flex: 1,
+		  alignItems: "center",
+		  justifyContent: "center",
+		  backgroundColor: color,
+    }
+		
 	},
 	textcontainer: {
 		flex: 0.45,
@@ -239,20 +242,22 @@ const styles = StyleSheet.create({
 		width: "100%",
     //borderWidth:1
 	},
-	heading: {
-		color: "#2B2B2B",
-		...Platform.select({
-      ios: {
-        fontFamily: 'HelveticaNeue-Bold'
-      },
-      android: {
-        fontFamily: "Roboto"
-      },
-    }),
-		// fontFamily: "HelveticaNeue-Bold",
-		fontSize: 36,
-		textAlign: "center",
-	},
+	heading: (color) => {
+    return {
+      color: color,
+      ...Platform.select({
+        ios: {
+          fontFamily: 'HelveticaNeue-Bold'
+        },
+        android: {
+          fontFamily: "Roboto"
+        },
+        
+      }),
+		  fontSize: 36,
+		  textAlign: "center",
+    }
+  },
 	text: {
 		...Platform.select({
       ios: {

@@ -1,4 +1,5 @@
-import { useState, createContext, useContext } from "react"
+import { useState, createContext, useContext } from "react";
+import colors from "./resources/ColorPalettes.json";
 
 // The initial state, you can setup any properties initilal values here.
 const initialState = {
@@ -18,8 +19,19 @@ export const GlobalState = (props) => {
   const updateGlobalState = (key, newValue) => {
     setGlobalState(oldState => {
       if (oldState[key] !== newValue) {
+
         const newState = { ...oldState }
         newState[key] = newValue
+
+        if(key === "theme")
+        {
+          if (newValue == 'darkmode'){
+            newState["theme"] = colors.darkmode;
+          }
+          else{
+            newState["theme"] = colors.lightmode;
+          }
+        }
         return newState
       } else {
         return oldState

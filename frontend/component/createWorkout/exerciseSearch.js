@@ -25,8 +25,9 @@ import ExerciseInfo from "../exerciseInfo.js";
 import { Header, SearchBar } from "react-native-elements";
 import SelectBox from 'react-native-multi-selectbox';
 import {xorBy} from 'lodash';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function ExerciseSearch({ workout, updateWorkout, setCurrState }) {
+export default function ExerciseSearch({ workout, updateWorkout, setCurrState, theme }) {
 
     const [exercises, updateExercises] = useState([]);
     const [modalVisible, setModalVisibility] = useState(false);
@@ -286,18 +287,18 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 	}
 
     return (
-    <View style={[styles.Background, { minHeight: windowHeight - (useWindowDimensions().height * 0.1) }]}>
+    <View style={[styles.Background, { minHeight: windowHeight - (useWindowDimensions().height * 0.1), backgroundColor: theme.colorBackground }]}>
         <TouchableOpacity 
-				style={styles.createButton}
+				style={[styles.createButton, {backgroundColor: theme.color1} ]}
 				onPress={() => {
 					setCurrState("CustomExercise");
 				}}
 			>
-			<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold'}}>Create a Custom Exercise</Text>
+			<Text style={{fontSize: 18, padding: 5, textAlign: 'center', fontWeight: 'bold', color: theme.colorText}}>Create a Custom Exercise</Text>
 		</TouchableOpacity>
 			
 
-		<Text style={{fontSize:20, textAlign:"center", fontWeight: 'bold'}}>-OR-</Text>
+		<Text style={{fontSize:20, textAlign:"center", fontWeight: 'bold', color: theme.colorText}}>-OR-</Text>
 
             <Text style={styles.HeaderText}>Select an Exercise:</Text>
             
@@ -306,7 +307,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
 					<SearchBar
                         platform="default"
                         lightTheme={true}
-                        containerStyle={{ backgroundColor: "white" }}
+                        containerStyle={{ backgroundColor: theme.colorBackground }}
                         inputStyle={{ color: "black" }}
                         autoComplete='off'
                         autoCapitalize='none'
@@ -333,19 +334,17 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                 <TouchableOpacity onPress={toggleFiltersShowing} style={{}}>
                   
                 <View style={styles.modalContainer}></View>
-                    <Image source = {require("../../../assets/filter_icon.png")}
-                      style={styles.filterImage}
-                    />
+                  <MaterialCommunityIcons name="filter-menu-outline" size={34} style={styles.filterImage(theme.colorText)}/>
                   {/* Filters Modal */}
                   <Modal 
                     isVisible = {areFiltersVisible}
                     coverScreen = {true}
                     //backdropOpacity = "1"
-                    backdropColor = "white"
+                    backdropColor = {theme.colorBackground}
                     presentationStyle='fullScreen'
                     transparent={false}
                     >
-                    <View style={styles.modalBackground}>
+                    <View style={[styles.modalBackground, {backgroundColor: theme.colorBackground}]}>
                         <View style={styles.filtersContainer}>
                           <View style={[styles.filterButtonContainer, {marginTop:40}]}>
                             <SelectBox
@@ -446,7 +445,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                   </Modal>
                   </TouchableOpacity>
               </View>
-			</View>
+			  </View>
             
             <View style={{ flex: 1.1, maxHeight: "80%" }}>
                 {isExercisesLoading ?
@@ -464,7 +463,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                         }
                         renderItem={({ item }) => (
                             <View>
-                                <TouchableOpacity style={styles.ExerciseCard}
+                                <TouchableOpacity style={[styles.ExerciseCard, {backgroundColor: theme.color1}]}
                                     onPress={() => {
                                         if (workout[0].exercises.filter(a => (
                                             a._id == item._id
@@ -478,14 +477,14 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
                                     }}
                                 >
                                     <Image source={{ uri: item.image }} style={styles.ExerciseImage} />
-                                    <Text style={styles.ExerciseText}>{item.title}</Text>
+                                    <Text style={[styles.ExerciseText, {color: theme.colorText}]}>{item.title}</Text>
                                     {/* Button to take user to page about info for the workout */}
                                     <TouchableOpacity onPress={() => {
                                         setExercise(item); 
                                         setModalVisibility(true);
                                     }}>
-                                    <AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color="black" />
-                                </TouchableOpacity>
+                                    <AntDesign name="infocirlceo" style={{alignSelf: 'center'}} size={24} color={theme.colorText} />
+                                    </TouchableOpacity>
                                 </TouchableOpacity>
                                 
                             </View>
@@ -498,7 +497,7 @@ export default function ExerciseSearch({ workout, updateWorkout, setCurrState })
         <Modal
 			isVisible={modalVisible}
 			coverScreen={true}
-			backdropColor="white"
+			backdropColor={theme.colorBackground}
 			backdropOpacity={1}
 		>
 		    <ExerciseInfo exercise={exercise} setModalVisbility={setModalVisibility}/>
@@ -583,13 +582,16 @@ const styles = StyleSheet.create({
 		shadowRadius: 1, //IOS
 		elevation: 2,
     },
-    filterImage:{
-		width: 30,
-		height: 30,
-		// marginTop: 25,
-		marginTop: "55%",
-		marginLeft: 5,
-	},
+    filterImage:(color) => {
+      return {
+        width: 30,
+        height: 30,
+        // marginTop: 25,
+        marginTop: "55%",
+        marginLeft: 5,
+        color: color,
+      }
+    },
 	modalBackground:{
 		backgroundColor: "white",
 		flex: 1,

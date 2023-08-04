@@ -16,7 +16,7 @@ import { useGlobalState } from "../GlobalState.js";
 import { useIsFocused } from "@react-navigation/native";
 import WorkOuts from "../component/workout";
 import * as SecureStore from 'expo-secure-store';
-import { AuthContext } from '../AuthProvider';
+import { AuthContext } from '../AuthProvider'
 
 export default function LandingPage({navigation}) {
 	const [globalState, updateGlobalState] = useGlobalState();
@@ -100,29 +100,28 @@ export default function LandingPage({navigation}) {
 		loadCurrentDayWorkouts();
 		loadTodaysWorkout();
 		loadCurrentDayWorkoutStatus();
+		// console.log(globalState.user.darkMode);
+		// console.log(colors.darkmode.color1)
+		// setColorsPalette(((globalState.user && globalState.user.darkMode) == true ? colors.darkmode : colors.lightmode));
     }
 	}, [isFocused]);
 
-	//componentWillMount(){
-	// could do a call through axios to get user info for each render.
-	// this would be a lot of API calls though I think.
-	// either way this is something to consider and discuss but for now we have loaded info
-	//}
 
 	return (
-		<SafeAreaView style={styles.container}>
+	
+		<SafeAreaView style={styles.container(globalState.theme.colorBackground)}>
 			{/*<View style={{ marginTop: 30 }}>
 				<Text style={styles.bodyHeader}>Create a Workout from</Text>
 			</View>*/}
 			<View style={styles.CreateWorkoutCntnr}>	
 				<View>
-					<TouchableOpacity onPress={handleTemplatePress} style={styles.CreateWorkoutBttnsContainer}>
-						<Text style={styles.CreateWorkoutBttns}>Create A Workout</Text>
+					<TouchableOpacity onPress={handleTemplatePress} style={styles.CreateWorkoutBttnsContainer(globalState.theme.color1)}>
+						<Text style={styles.CreateWorkoutBttns(globalState.theme.colorText)}>Create A Workout</Text>
 					</TouchableOpacity>
 				</View>
 			</View>
 			<View style={styles.Header}>
-				<Text style={styles.HeaderText}>
+				<Text style={styles.HeaderText(globalState.theme.colorText)}>
 					You have {loadCurrentDayWorkoutStatus()}
 				</Text>
 			</View>
@@ -137,11 +136,14 @@ export default function LandingPage({navigation}) {
 }
 
 const styles = StyleSheet.create({
-	HeaderText: {
-		fontWeight: "bold",
-		fontSize: 20,
-		alignSelf: "center",
-		marginTop: 40,
+	HeaderText: (textColor) => {
+		return {
+			fontWeight: "bold",
+			fontSize: 20,
+			alignSelf: "center",
+			marginTop: 40,
+			color: textColor
+		}
 	},
 	HeaderContainer: {
 		alignItems: "center",
@@ -150,9 +152,11 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignSelf: "center",
 	},
-	container: {
-		flex: 1,
-		backgroundColor: "white",
+	container: (color) => {
+		return {
+			flex: 1,
+			backgroundColor: color,
+		}
 	},
 	bodyHeader: {
 		fontSize: 18,
@@ -169,21 +173,25 @@ const styles = StyleSheet.create({
 	BoldText: {
 		fontWeight: "bold",
 	},
-	CreateWorkoutBttns: {
-		color: "black",
-		fontWeight: "bold",
-		fontSize: 23,
+	CreateWorkoutBttns: (color) => {
+		return {
+			color: color,
+			fontWeight: "bold",
+			fontSize: 23,	
+		}	
 	},
-	CreateWorkoutBttnsContainer: {
-		alignItems: "center",
-		backgroundColor: "#E0F0FE",
-		marginTop: 15,
-		padding: 25,
-		borderRadius: 20,
-		borderWidth: .5,
-		// flex: 2,
-		width: 350,
-		height:82
+	CreateWorkoutBttnsContainer: (color) => {
+		return {
+			alignItems: "center",
+			backgroundColor: color,
+			marginTop: 15,
+			padding: 25,
+			borderRadius: 20,
+			borderWidth: .5,
+			// flex: 2,
+			width: 350,
+			height:82
+		}
 	},
 	CreateWorkoutText: {
 		...Platform.select({

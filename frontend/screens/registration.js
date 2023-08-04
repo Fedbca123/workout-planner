@@ -203,17 +203,17 @@ export default function Register({navigation}) {
 
   //render(){
     return  (
-      <ScrollView bounces={false} style={{flex:1, backgroundColor: 'white'}}>
+      <ScrollView bounces={false} style={{flex:1, backgroundColor: `${globalState.theme.colorBackground}`}}>
       <KeyboardAwareScrollView 
         extraHeight={100}
-        contentContainerStyle={styles.container}
+        contentContainerStyle={styles.container(globalState.theme.colorBackground)}
         keyboardShouldPersistTaps="handled"  
         bounces={false}
       >
         <View style={{flex:1}}>
-          <Text style={styles.heading} >Tell us a little about yourself</Text>
+          <Text style={styles.heading(globalState.theme.colorText)} >Tell us a little about yourself</Text>
           <View style={styles.form}>
-            <Text style={styles.text}>First Name</Text>
+            <Text style={styles.text(globalState.theme.colorText)}>First Name</Text>
             <TextInput
             style={styles.inputstyle} 
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
@@ -223,13 +223,14 @@ export default function Register({navigation}) {
             autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={FNError == true ? '#fb9357' : '#C4C4C4'}
+            outlineStyle={{borderWidth: 3}}
             placeholder="John"
             returnKeyType="next"
             ref={firstNameRef}
             onSubmitEditing={() => {lastNameRef.current.focus();}}
             onChangeText={(text)=> setFirstName(text)}/>
             
-            <Text style={styles.text}>Last Name</Text>
+            <Text style={styles.text(globalState.theme.colorText)}>Last Name</Text>
             <TextInput
             style={styles.inputstyle}
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }} 
@@ -239,13 +240,14 @@ export default function Register({navigation}) {
             autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={LNError == true ? '#fb9357' : '#C4C4C4'}
+            outlineStyle={{borderWidth: 3}}
             placeholder="Smith"
             returnKeyType="next"
             ref={lastNameRef}
             onSubmitEditing={() => {emailRef.current.focus();}}
             onChangeText={(text)=>setLastName(text)}/>
 
-            <Text style={styles.text}>Email Address</Text>
+            <Text style={styles.text(globalState.theme.colorText)}>Email Address</Text>
             <TextInput 
             style={styles.inputstyle} 
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
@@ -257,6 +259,7 @@ export default function Register({navigation}) {
             autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={emailError == true ? '#fb9357' : '#C4C4C4'}
+            outlineStyle={{borderWidth: 3}}
             placeholder="user@server.com"
             returnKeyType="next"
             ref={emailRef}
@@ -266,7 +269,7 @@ export default function Register({navigation}) {
               setSent(false);
             }}/>
 
-            <Text style={styles.text}>Password</Text>
+            <Text style={styles.text(globalState.theme.colorText)}>Password</Text>
             <TextInput
             style={styles.inputstyle} 
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
@@ -276,6 +279,7 @@ export default function Register({navigation}) {
             autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={PW1Error == true ? '#fb9357' : '#C4C4C4'}
+            outlineStyle={{borderWidth: 3}}
             placeholder="***"
             secureTextEntry={showPW1}
             right={ showPW1 ? 
@@ -290,7 +294,7 @@ export default function Register({navigation}) {
             onSubmitEditing={() => {passwordConfRef.current.focus();}}
             onChangeText={(text)=> setPassword(text)}/>
 
-            <Text style={styles.text}>Confirm Password</Text>
+            <Text style={styles.text(globalState.theme.colorText)}>Confirm Password</Text>
             <TextInput 
             style={styles.inputstyle} 
             theme={{ colors: { onSurfaceVariant: '#C4C4C4'} }}
@@ -300,6 +304,7 @@ export default function Register({navigation}) {
             autoCorrect={false}
             activeOutlineColor='#10B9F1'
             outlineColor={PW2Error == true ? '#fb9357' : '#C4C4C4'}
+            outlineStyle={{borderWidth: 3}}
             placeholder="***"
             secureTextEntry={showPW2}
             right={ showPW2 ? 
@@ -347,12 +352,14 @@ export default function Register({navigation}) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-      flexDirection: 'column',
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center'
+  container: (color) => {
+      return {
+        flexDirection: 'column',
+        flex: 1,
+        backgroundColor: color,
+        alignItems: 'center',
+        justifyContent: 'center'
+      } 
   },
   textcontainer: {
       flex: .8,
@@ -368,37 +375,41 @@ const styles = StyleSheet.create({
       alignSelf: 'center',
       flex:1
   },
-  heading:{
-    color: '#2B2B2B',
-    ...Platform.select({
-      ios: {
-        fontFamily: 'HelveticaNeue-Bold'
-      },
-      android: {
-        fontFamily: "Roboto"
-      },
-    }),
-    // fontFamily: 'HelveticaNeue-Bold',
-    fontSize: 36,
-    textAlign: 'center',
-    paddingVertical: 10,
-    marginTop: 60
+  heading:(color)=>{
+    return {
+      color: color,
+      ...Platform.select({
+        ios: {
+          fontFamily: 'HelveticaNeue-Bold'
+        },
+        android: {
+          fontFamily: "Roboto"
+        },
+      }),
+      // fontFamily: 'HelveticaNeue-Bold',
+      fontSize: 36,
+      textAlign: 'center',
+      paddingVertical: 10,
+      marginTop: 60
+    }
   },
-  text: {
-    ...Platform.select({
-      ios: {
-        fontFamily: 'HelveticaNeue',
-      },
-      android: {
-        fontFamily: "Roboto",
-      },
-    }),
+  text: (color) => {
+    return {
+      ...Platform.select({
+        ios: {
+          fontFamily: 'HelveticaNeue',
+        },
+        android: {
+          fontFamily: "Roboto",
+        },
+      }),
       // fontFamily: 'HelveticaNeue',
       fontWeight: 400,
       fontSize: 16,
       fontWeight: 'normal',
-      color: 'black',
+      color: color,
       textAlign: 'center',
+    }
   },
   image: {
       top: 0,

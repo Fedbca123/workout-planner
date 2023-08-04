@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { TouchableWithoutFeedback, Modal, Button, StyleSheet, Text, TextInput, View, Switch, FlatList, TouchableOpacity, Dimensions, Alert, Platform, ActivityIndicator} from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import API_Instance from "../../backend/axios_instance";
@@ -11,6 +11,10 @@ import {ReactNativeModal} from "react-native-modal";
 
 const CalendarScreen = ({}) => {
     const navigation = useNavigation();
+
+    const [globalState, updateGlobalState] = useGlobalState();
+
+    const CalendarMemo = memo(Calendar);
 
     const [isDateValid, setIsDateValid] = useState(true);
 
@@ -31,7 +35,6 @@ const CalendarScreen = ({}) => {
     const [editedRecurrence, setEditedRecurrence] = useState(false);
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     
-    const [globalState, updateGlobalState] = useGlobalState();
     const [weeklyEvents, setWeeklyEvents] = useState({});
     const isFocused = useIsFocused();
 
@@ -304,15 +307,20 @@ const CalendarScreen = ({}) => {
     };
 
     return (
-      <View style ={styles.container}>
-        <Calendar
+      <View style ={styles.container(globalState.theme.colorBackground)}>
+        <CalendarMemo
           onDayPress={handleDayPress}
           markedDates={{...weeklyEvents, [selectedDate]: {dots: (weeklyEvents[selectedDate] ? [...weeklyEvents[selectedDate].dots] : []), selected: true, selectedColor: '#E5DAE7'}}}
           markingType={'multi-dot'}
+          //headerStyle={styles.calendarHeader(globalState.globalState.theme)}
+          style={styles.calendar(globalState.theme)}
+          theme={styles.calendarTheme(globalState.theme)}
+          //headerStyle={styles.calendarHeader(globalState.globalState.theme)}
+          //calendarBackground={globalState.globalState.theme.black}
         />
       
         {selectedDate !== '' && 
-          <Text style={styles.Title}>
+          <Text style={styles.Title(globalState.theme.colorText)}>
             {moment(selectedDate).format('MMMM D, YYYY')}
           </Text>
         }
@@ -332,10 +340,10 @@ const CalendarScreen = ({}) => {
         onRequestClose={() => setEditModalVisible(false)}
         >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={styles.modalContent(globalState.theme)}>
             {workoutToEdit && (
               <>
-                  <Text style={styles.modalTitle}>Edit Workout</Text>
+                  <Text style={styles.modalTitle(globalState.theme.colorText)}>Edit Workout</Text>
                   <View style={styles.timedate}>
                     <TouchableOpacity onPress={()=>{
                       navigation.navigate("createWorkout", { workoutData: workoutToEdit, modifyScheduledWorkout: true })
@@ -344,7 +352,7 @@ const CalendarScreen = ({}) => {
                       <Text style={styles.datePickerText}>Modify Workout Content</Text>
                     </TouchableOpacity>
                   </View>
-                  <Text>Date & Time:</Text>
+                  <Text style={styles.modalSubTitle(globalState.theme.colorText)}>Date & Time:</Text>
                   <View style={styles.timedate}>
                     <TouchableOpacity onPress={showDatePicker} style={styles.datePickerContainer}>
                       <Text style={styles.datePickerText}>{datePickerText}</Text>
@@ -357,16 +365,16 @@ const CalendarScreen = ({}) => {
                     onConfirm={handleConfirm}
                     onCancel={hideDatePicker}
                   />
-                  <Text>Recurrence:</Text>
+                  <Text style={styles.modalSubTitle(globalState.theme.colorText)}>Recurrence:</Text>
                   <View style={styles.modalSwitch}>
-                    <Text>No</Text>
+                    <Text style={styles.recurrenceSwitch(globalState.theme.colorText)}>No</Text>
                     <Switch
                       value={editedRecurrence}
                       onValueChange={setEditedRecurrence}
                       trackColor={{ false: '#767577', true: '#81b0ff' }}
                       thumbColor={editedRecurrence ? '#FFFFFF' : '#f4f3f4'}
                     />
-                    <Text>Yes</Text>
+                    <Text style={styles.recurrenceSwitch(globalState.theme.colorText)}>Yes</Text>
                   </View>
 
                   <View style={styles.modalButtons}>
@@ -389,7 +397,7 @@ const CalendarScreen = ({}) => {
             <ScrollView contentContainerStyle={styles.modalContent}>
               {selectedCompletedWorkout && (
                 <>
-                  <Text style={styles.modalTitle}>Workout Details</Text>
+                  <Text style={styles.modalTitle(globalState.theme.colorText)}>Workout Details</Text>
                   <Text>{selectedCompletedWorkout.title}</Text>
                   {/* <Text>Description: {selectedCompletedWorkout.description}</Text>
                   <Text>Owner Name: {selectedCompletedWorkout.ownerName}</Text>
@@ -439,24 +447,56 @@ const CalendarScreen = ({}) => {
   
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
+  calendar: (theme) => {
+    return {
+      color: theme.colorText
+    }
   },
-  Title: {
-    ...Platform.select({
-      ios: {
-        fontFamily: 'HelveticaNeue-Bold'
-      },
-      android: {
-        fontFamily: "Roboto"
-      },
-    }),
-    color: '#2B2B2B',
-    fontSize: 24,
-    textAlign: 'left',
-    padding: 10,
-},
+  calendarTheme: (theme) => {
+    return {
+      arrowColor: theme.name == 'lightmode' ? null : theme.color3,
+      monthTextColor: theme.name == 'lightmode' ? 'black' : theme.color3, 
+      calendarBackground: theme.name == 'lightmode' ? 'white' : theme.color2,
+      dayTextColor: theme.colorText,
+      textSectionTitleColor: theme.name == 'lightmode' ? theme.black : theme.color3,
+      todayTextColor: theme.black,
+      todayBackgroundColor: theme.color4,
+      textDisabledColor: 'gray',
+      selectedDayTextColor: theme.black
+    }
+  },
+  calendarHeader: (theme) => {
+    return {
+      current: {
+        textSectionTitleColor: theme.color4,
+        monthTextColor: theme.colorText,
+        arrowColor: theme.color3
+      }
+      
+    }
+  },
+  container: (color) => {
+    return {
+      flex: 1,
+      backgroundColor: color,
+    }
+  },
+  Title: (color) => {
+    return {
+      ...Platform.select({
+        ios: {
+          fontFamily: 'HelveticaNeue-Bold'
+        },
+        android: {
+          fontFamily: "Roboto"
+        },
+      }),
+      color: color,
+      fontSize: 24,
+      textAlign: 'left',
+      padding: 10,
+    }
+  },
   datePickerText:{
     color: '#9FA2AE',
     fontSize: 15,
@@ -512,16 +552,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    width: '90%',
+  modalContent: (theme) => {
+    return {
+      backgroundColor: theme.name == 'darkmode' ? theme.color1 : theme.white,
+      borderRadius: 10,
+      padding: 20,
+      width: '90%',
+    }
   },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+  modalTitle: (color) => {
+    return {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      color: color
+    }
   },
   modalButtons: {
     flexDirection: 'row',
@@ -548,12 +593,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 5,
   },
-  modalSubTitle: {
-    fontSize: 18,
+  modalSubTitle: (color) => {
+    return {
+      color: color
+      /*
+      fontSize: 18,
     fontWeight: 'bold',
     marginTop: 15,
     marginBottom: 5,
+      */  
+    }
+    
   },
+  recurrenceSwitch: (color) => {
+    return {
+      color: color
+    }
+  }
+  ,
   exerciseDetails: {
     paddingVertical: 5,
     paddingHorizontal: 10,

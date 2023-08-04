@@ -27,7 +27,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import config from "../../../backend/config.js"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
-export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrState}) {
+export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrState, theme}) {
 	const [imageUri, setImageUri] = useState(workout[0].image || config.DEFAULTWORKIMAGE);
 	const [cameraStatus, requestCameraPermission] = ImagePicker.useCameraPermissions(ImagePicker.PermissionStatus.UNDETERMINED);
 	const [photoStatus, requestPhotoLibraryPermission] = ImagePicker.useMediaLibraryPermissions();
@@ -96,7 +96,10 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 	}
 
     return (
-		<KeyboardAwareScrollView contentContainerStyle={styles.container}>
+		<KeyboardAwareScrollView 
+			contentContainerStyle={[styles.container, {backgroundColor: theme.colorBackground}]}
+			bounces={false}
+		>
 			<View style={styles.imageContainer}>
 				<Image source={{ uri: imageUri }} style={styles.imageStyle} />
 				<Button title = "Choose image"
@@ -107,7 +110,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 			
 			<View style={styles.inputContainer}>
 				<View style={{width: '70%'}}>
-					<Text style={styles.text}>Title</Text>
+					<Text style={[styles.text, {color: theme.colorText}]}>Title</Text>
 					<TextInput style={styles.inputfield}
 						maxLength= {40}
 						multiline = {false}
@@ -126,7 +129,7 @@ export default function BeginFinalizeWorkout({workout, updateWorkout, setCurrSta
 				</View>
 				
 				<View style={{width: '70%'}}>
-					<Text style={styles.text}>Description {"(optional)"}</Text>
+					<Text style={[styles.text, {color: theme.colorText}]}>Description {"(optional)"}</Text>
 					<TextInput style={styles.inputfield}
 						maxLength= {200}
 						multiline = {true}

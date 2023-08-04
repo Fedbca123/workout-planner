@@ -19,12 +19,12 @@ export default function RootNav()
     const [ checking, setIsChecking ] = React.useState(true);
     const [ globalState, updateGlobalState] = useGlobalState();
     
-
     React.useEffect(() => {
         const checkIfUserIsLoggedIn = async () => {
             const authToken = await SecureStore.getItemAsync("authKey");
             const id = await SecureStore.getItemAsync("userId");
-    
+            const appTheme = await SecureStore.getItemAsync("appTheme");
+            updateGlobalState('theme', appTheme);
           // user is logged in
           if (authToken !== null && id !== null) {
             API_Instance

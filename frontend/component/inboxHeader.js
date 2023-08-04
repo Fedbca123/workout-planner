@@ -2,48 +2,59 @@ import { StyleSheet, Button, ListItem, Text, Image, View, SafeAreaView, TextInpu
 import React from 'react';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default function inboxHeader ({navigation}) {
+export default function InboxHeader ({navigation, globalState}) {
     return (
-        <View style= {styles.container}>
-            <View style={styles.buttonContainer}>
+        <View style= {styles.container(globalState.theme.colorBackground)}>
+            <View style={styles.buttonContainer(globalState.theme.colorBackground)}>
                 <TouchableOpacity
                 onPress={() => { navigation.openDrawer() }}>
                     <Image
                         source={require('../../assets/menu-burger.png')}
-                        style={styles.ImageIconStyle}
+                        style={styles.ImageIconStyle(globalState.theme.colorText)}
                     />
                 </TouchableOpacity>
             </View>
             <View style={styles.textContainer}>
-                <Text style={styles.text}>Inbox</Text>
+                <Text style={styles.text(globalState.theme.colorText)}>Inbox</Text>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    container: {
-        height: 110,
-        backgroundColor: "white",
-    },
-    buttonContainer: {
-        height: 30,
-        width: 40,
-        marginLeft: 20,
-        marginTop: 50,
-        backgroundColor: "white"
+    container: (color) => {
+        return {
+            height: 110,
+            backgroundColor: color,
+    }},
+    buttonContainer: (color) => {
+        return {
+            height: 30,
+            width: 40,
+            marginLeft: 20,
+            marginTop: 50,
+            backgroundColor: color 
+        }
+        
     },
     textContainer: {
     },
     button: {
     },
-    text:{
-        fontWeight: 'bold',
-        fontSize: 20,
-        textAlign: 'center'
+    text: (color) => {
+        return {
+            fontWeight: 'bold',
+            fontSize: 20,
+            textAlign: 'center',
+            color: color
+        }
+        
     },
-    ImageIconStyle: {
-        width: 30,
-        height: 30
+    ImageIconStyle: (color) => {
+        return {
+            width: 30,
+            height: 30  ,
+            tintColor: color
+        }
     }
 });
